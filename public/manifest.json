@@ -1,0 +1,21 @@
+{
+  "short_name": "SquidPay",
+  "name": "SquidPay",
+  "description": "Empowering Filipinos through advanced payment solutions accessible to all.",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "squid_logo.png",
+      "type": "image/png",
+      "sizes": "300x300"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#e9cc8a",
+  "background_color": "#ffffff"
+}
