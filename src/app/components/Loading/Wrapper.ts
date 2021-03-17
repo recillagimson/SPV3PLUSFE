@@ -11,6 +11,7 @@ const Wrapper = styled.div<Props>`
   align-items: center;
   justify-content: center;
   position: ${p => (p.position ? p.position : 'relative')};
+  padding: 20px;
 
   ${p =>
     p.position &&
@@ -20,6 +21,7 @@ const Wrapper = styled.div<Props>`
     right: 0;
     bottom: 0;
     background-color: rgba(255,255,255,.5);
+    z-index: 50;
   `}
 
   img {

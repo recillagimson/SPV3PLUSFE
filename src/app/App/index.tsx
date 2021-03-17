@@ -14,6 +14,8 @@ import { createSelector } from '@reduxjs/toolkit';
 import { useTranslation } from 'react-i18next';
 
 import Main from 'app/components/Layouts/Main';
+import Header from 'app/components/Header';
+import Footer from 'app/components/Footer';
 
 import { GlobalStyle } from 'styles/global-styles';
 
@@ -53,6 +55,7 @@ export function App() {
       </Helmet>
 
       <Main>
+        <Header isLoggedIn={false} />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route
@@ -62,6 +65,7 @@ export function App() {
           <Route path="/login" component={LoginPage} />
           <Route component={NotFoundPage} />
         </Switch>
+        <Footer />
       </Main>
       <GlobalStyle />
     </BrowserRouter>

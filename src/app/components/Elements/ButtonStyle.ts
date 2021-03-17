@@ -1,67 +1,188 @@
 /**
  * Basic style that looks like a button
  * Extend this style for use in <button> and <a> tags
+ * @prop {string}   color       defined button color one of ('default' | 'primary' | 'secondary' | 'danger') default: 'default'
+ * @prop {string}   size        button size one of ('small' | 'medium' | 'large') default: 'medium'
+ * @prop {string}   variant     the variant of the design one of ('contained' | 'outlined' | 'default') default: 'default'
+ * @prop {boolean}  fullWidth   render a full width button style
+ *
+ * any props that is passed down will be the elements html valid attributes
  */
 import { css } from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
 type Props = {
-  primary?: boolean;
-  secondary?: boolean;
+  color?: 'default' | 'primary' | 'secondary' | 'danger';
+  size?: 'small' | 'medium' | 'large';
+  variant?: 'contained' | 'outlined' | 'default';
+  fullWidth?: boolean;
 };
 
+const defaultstyle = css<Props>`
+  ${p =>
+    p.color === 'primary' &&
+    `
+    color: ${StyleConstants.BUTTONS.primary.main};
+
+    &:hover {
+      color: ${StyleConstants.BUTTONS.primary.dark};
+    }
+  `};
+  ${p =>
+    p.color === 'secondary' &&
+    `
+    color: ${StyleConstants.BUTTONS.secondary.main};
+
+    &:hover {
+      color: ${StyleConstants.BUTTONS.secondary.dark};
+    }
+  `};
+
+  ${p =>
+    p.color === 'danger' &&
+    `
+    color: ${StyleConstants.BUTTONS.danger.main};
+
+    &:hover {
+      color: ${StyleConstants.BUTTONS.danger.dark};
+    }
+  `};
+
+  ${p =>
+    (!p.color || p.color === 'default') &&
+    `
+    color: ${StyleConstants.BUTTONS.neutral.main};
+
+    &:hover {
+      color: ${StyleConstants.BUTTONS.neutral.dark};
+    }
+  `};
+`;
+
+const contained = css<Props>`
+  ${p =>
+    p.color === 'primary' &&
+    `
+    background-color: ${StyleConstants.BUTTONS.primary.main};
+    color: ${StyleConstants.BUTTONS.primary.textColor};
+
+    &:hover {
+      background-color: ${StyleConstants.BUTTONS.primary.dark};
+    }
+  `};
+  ${p =>
+    p.color === 'secondary' &&
+    `
+    background-color: ${StyleConstants.BUTTONS.secondary.main};
+    color: ${StyleConstants.WHITE};
+
+    &:hover {
+      background-color: ${StyleConstants.BUTTONS.secondary.dark};
+    }
+  `};
+
+  ${p =>
+    p.color === 'danger' &&
+    `
+    background-color: ${StyleConstants.BUTTONS.danger.main};
+    color: ${StyleConstants.WHITE};
+
+    &:hover {
+      background-color: ${StyleConstants.BUTTONS.danger.dark};
+    }
+  `};
+
+  ${p =>
+    (!p.color || p.color === 'default') &&
+    `
+    background-color: ${StyleConstants.BUTTONS.neutral.main};
+    color: ${StyleConstants.BUTTONS.neutral.textColor};
+
+    &:hover {
+      background-color: ${StyleConstants.BUTTONS.neutral.dark};
+    }
+  `};
+`;
+
+const outlined = css<Props>`
+  ${p =>
+    p.color === 'primary' &&
+    `
+    border-color: ${StyleConstants.BUTTONS.primary.main};
+    color: ${StyleConstants.BUTTONS.mainTextColor};
+
+    &:hover {
+      border-color: ${StyleConstants.BUTTONS.primary.dark};
+    }
+  `};
+  ${p =>
+    p.color === 'secondary' &&
+    `
+    border-color: ${StyleConstants.BUTTONS.secondary.main};
+    color: ${StyleConstants.BUTTONS.mainTextColor};
+
+    &:hover {
+      border-color: ${StyleConstants.BUTTONS.secondary.dark};
+    }
+  `};
+
+  ${p =>
+    p.color === 'danger' &&
+    `
+    border-color: ${StyleConstants.BUTTONS.danger.main};
+    color: ${StyleConstants.BUTTONS.danger.main};
+
+    &:hover {
+      border-color: ${StyleConstants.BUTTONS.danger.dark};
+      color: ${StyleConstants.BUTTONS.danger.dark};
+    }
+  `};
+
+  ${p =>
+    (!p.color || p.color === 'default') &&
+    `
+    border-color: ${StyleConstants.BUTTONS.neutral.main};
+    color: ${StyleConstants.BUTTONS.mainTextColor};
+
+    &:hover {
+      border-color: ${StyleConstants.BUTTONS.neutral.dark};
+    }
+  `};
+`;
+
 const ButtonStyle = css<Props>`
-  border: 0;
+  border: 1px solid transparent;
   text-decoration: none;
   text-align: center;
   transition: outline 0.2s ease-in-out;
   outline: 1px solid transparent;
-  padding: 15px;
-  border-radius: ${StyleConstants.BORDER_RADIUS};
+  border-radius: ${StyleConstants.BUTTON_RADIUS};
   transition: all 0.2s ease;
-  color: #fff;
   cursor: pointer;
-  width: 100%;
-  font-size: inherit;
+  font-size: 1rem;
+  width: ${p => (p.fullWidth ? '100%' : 'auto')};
 
   ${p =>
-    p.primary &&
+    p.size === 'small' &&
     `
-    background-color: ${StyleConstants.GOLD};
-  `};
+    padding: 5px 10px;
+  `}
+
   ${p =>
-    p.secondary &&
+    p.size === 'medium' &&
     `
-    background-color: ${StyleConstants.BLACK};
-  `};
+    padding: 7px 14px;
+  `}
 
-  &:hover {
-    ${p =>
-      p.primary &&
-      `
-      background-color: ${StyleConstants.LINK_TEXT_GOLD_HOVER};
-    `};
-    ${p =>
-      p.secondary &&
-      `
-      background-color: #000;
-    `};
-  }
+  ${p =>
+    p.size === 'large' &&
+    `
+    padding: 10px 18px;
+  `}
 
-  &:focus {
-    ${p =>
-      p.primary &&
-      `
-      outline-color ${StyleConstants.WHITE};
-      background-color: ${StyleConstants.LINK_TEXT_GOLD_HOVER};
-    `};
-    ${p =>
-      p.secondary &&
-      `
-      outline-color: ${StyleConstants.GOLD};
-      background-color: #000;
-    `};
-  }
+  ${p => p.variant === 'contained' && contained};
+  ${p => p.variant === 'outlined' && outlined};
+  ${p => (!p.variant || p.variant === 'default') && defaultstyle};
 `;
 
 export default ButtonStyle;

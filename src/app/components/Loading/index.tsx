@@ -7,9 +7,9 @@ import * as React from 'react';
 import Wrapper from './Wrapper';
 import loading from './loading.gif';
 
-interface Props {
+type Props = {
   position?: string;
-}
+};
 
 function Loading(props: Props) {
   return (

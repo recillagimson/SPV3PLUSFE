@@ -6,8 +6,6 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 
-import logo from './img/SPLogo.png';
-
 type Props = {
   isInline?: boolean;
   size?: 'small' | 'medium' | 'large';
@@ -30,7 +28,7 @@ const Wrapper = styled.span<Props>`
 export default function Logo(props: Props) {
   return (
     <Wrapper size={props.size || 'small'} isInline={props.isInline}>
-      <img src={logo} alt="SquidPay logo" />
+      <img src="/img/SPLogo.png" alt="SquidPay logo" />
     </Wrapper>
   );
 }

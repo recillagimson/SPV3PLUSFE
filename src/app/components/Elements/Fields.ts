@@ -1,11 +1,18 @@
 /**
  * Form separating input fields
+ * @prop {string}   padding
+ * @prop {string}   margin
  */
 import styled from 'styled-components/macro';
 
-const Field = styled.div`
-  margin: 0 0 20px;
-  padding: 0 0;
+type Props = {
+  padding?: string;
+  margin?: string;
+};
+
+const Field = styled.div<Props>`
+  margin: ${p => (p.margin ? p.margin : '0 0 20px')};
+  padding: ${p => (p.padding ? p.padding : '0 0')};
   font-size: inherit;
   position: relative;
 `;

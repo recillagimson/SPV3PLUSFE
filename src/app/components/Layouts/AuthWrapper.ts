@@ -1,5 +1,4 @@
 import styled from 'styled-components/macro';
-import { StyleConstants } from 'styles/StyleConstants';
 
 import { media } from 'styles/media';
 
@@ -7,7 +6,7 @@ const Wrapper = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
 
   .form-container {
     border-radius: 20px;
@@ -16,6 +15,9 @@ const Wrapper = styled.section`
   }
 
   form {
+    margin: 30px 0 0;
+    position: relative;
+
     .icon-btn {
       position: absolute;
       top: 5px;
