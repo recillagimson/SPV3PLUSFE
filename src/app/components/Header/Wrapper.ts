@@ -5,7 +5,7 @@ import { StyleConstants } from 'styles/StyleConstants';
 import { Props } from './type';
 
 const Wrapper = styled.header<Props>`
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;

@@ -1,6 +1,6 @@
 export const StyleConstants = Object.freeze({
   // sizes
-  SIDEBAR_WIDTH: '12.5rem',
+  SIDEBAR_WIDTH: '300px',
   BORDER_RADIUS: '7px',
   BUTTON_RADIUS: '100px',
   MAX_WIDTH: '1170px',
@@ -28,6 +28,7 @@ export const StyleConstants = Object.freeze({
     },
     mainTextColor: '#38434D',
   },
+  BODY_COLOR: '#D9E6F2',
   DEFAULT: '#ECEAE0',
   WHITE: '#fff',
   GOLD: '#E0AC3B',

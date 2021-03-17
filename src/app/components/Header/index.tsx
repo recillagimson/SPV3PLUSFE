@@ -10,12 +10,16 @@ import { Props } from './type';
 
 import Wrapper from './Wrapper';
 import Navigation from './Navigation';
+import IconButton from '../Elements/IconButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function HeaderComponent({ isLoggedIn }: Props) {
   return (
     <Wrapper isLoggedIn={isLoggedIn}>
       <div className="wrapped">
-        <img src="/img/SPLogo.png" alt="SquidPay" className="logo" />
+        {!isLoggedIn && (
+          <img src="/img/SPLogo.png" alt="SquidPay" className="logo" />
+        )}
 
         {!isLoggedIn && (
           <Navigation>
@@ -44,6 +48,14 @@ export default function HeaderComponent({ isLoggedIn }: Props) {
             >
               Register
             </ButtonLink>
+          </Navigation>
+        )}
+
+        {isLoggedIn && (
+          <Navigation>
+            <IconButton onClick={() => alert('notifications')}>
+              <FontAwesomeIcon icon="bell" />
+            </IconButton>
           </Navigation>
         )}
       </div>
