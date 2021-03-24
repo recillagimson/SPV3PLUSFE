@@ -41,10 +41,10 @@ export default function HeaderComponent({ isLoggedIn }: Props) {
               Login
             </ButtonLink>
             <ButtonLink
-              size="large"
+              size="medium"
               to="/register"
               color="primary"
-              variant="contained"
+              variant="outlined"
             >
               Register
             </ButtonLink>

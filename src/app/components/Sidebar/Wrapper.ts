@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro';
+import { media } from 'styles/media';
 import { StyleConstants } from 'styles/StyleConstants';
 
 const SidebarWrapper = styled.aside`
@@ -6,6 +7,7 @@ const SidebarWrapper = styled.aside`
   left: 0;
   top: 0;
   bottom: 0;
+  transform: translateX(-100%);
   width: ${StyleConstants.SIDEBAR_WIDTH};
   background-color: ${StyleConstants.WHITE};
   box-shadow: 0px 12px 15px rgba(140, 152, 164, 0.05);
@@ -13,6 +15,18 @@ const SidebarWrapper = styled.aside`
   padding: 30px 15px;
   display: flex;
   flex-direction: column;
+  transition: transform 0.3s ease;
+  will-change: transform;
+
+  .btn-trigger {
+    position: absolute;
+    top: 15px;
+    left: calc(100% + 10px);
+  }
+
+  &.show {
+    transform: translateX(0);
+  }
 
   .logout {
     justify-self: flex-end;
@@ -54,6 +68,14 @@ const SidebarWrapper = styled.aside`
       font-size: 1.5rem;
     }
   }
+
+  ${media.medium`
+    transform: translateX(0);
+
+    .btn-trigger {
+      display: none;
+    }
+  `}
 `;
 
 export default SidebarWrapper;

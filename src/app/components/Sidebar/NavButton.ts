@@ -1,8 +1,8 @@
-import styled from 'styled-components/macro';
 /**
  * Nav Button for Sidebar
  *
  */
+import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
 const NavButton = styled.button<{ icon?: string; fullWidth?: boolean }>`

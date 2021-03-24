@@ -28,7 +28,7 @@ export function LoginPage() {
   const [password, setPassword] = React.useState({ value: '', error: false });
 
   React.useEffect(() => {
-    // do something is log in is successfull
+    // do something if log in is successfull
   }, [success]);
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

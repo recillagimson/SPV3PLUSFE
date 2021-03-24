@@ -11,7 +11,7 @@ export function* getRequestToken() {
     client_id: process.env.REACT_APP_CLIENT_ID,
     client_secret: process.env.REACT_APP_CLIENT_SECRET,
     grant_type: 'client_credentials',
-    scope: 'hive-api IdentityServerApi',
+    scope: 'spv3-api IdentityServerApi',
   };
 
   const formBody: string[] = [];
@@ -95,7 +95,7 @@ export function* getResponseKey(id) {
  * Root saga manages watcher lifecycle
  */
 export function* appSaga() {
-  // Watches for loadRepos actions and calls getRepos when one comes in.
+  // Watches for  actions and calls the function associated with it when one comes in.
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount

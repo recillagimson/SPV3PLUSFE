@@ -20,11 +20,13 @@ import Sidebar from 'app/components/Sidebar';
 
 import { GlobalStyle } from 'styles/global-styles';
 
-import { HomePage } from 'app/pages/HomePage/Loadable';
+import { DashboardPage } from 'app/pages/DashboardPage/Loadable';
 import { CardMemberAgreementPage } from 'app/pages/CardMemberAgreementPage/Loadable';
 import { LoginPage } from 'app/pages/LoginPage/Loadable';
 
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
+
+import PrivateRoute from './PrivateRoute';
 
 /** selectors, slice */
 // import { useAppSaga } from './slice';
@@ -64,17 +66,19 @@ export function App() {
         />
       </Helmet>
 
-      <Main>
+      <Main className={isAuthenticated ? 'spdin' : undefined}>
         <Header isLoggedIn={isAuthenticated} />
         {isAuthenticated && <Sidebar />}
         <Content className={isAuthenticated ? 'authenticated' : undefined}>
           <Switch>
             <Route exact path="/" component={LoginPage} />
             <Route
+              exact
               path="/card-member-agreement"
               component={CardMemberAgreementPage}
             />
-            <Route path="/dashboard" component={HomePage} />
+            <Route exact path="/dashboard" component={DashboardPage} />
+            <PrivateRoute exact path="/restricted" component={DashboardPage} />
             <Route component={NotFoundPage} />
           </Switch>
           <Footer />
