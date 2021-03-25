@@ -26,7 +26,12 @@ export function* getLogin() {
     if (apirequest) {
       yield put(actions.getFetchSuccess({ data: 'sample data' }));
     } else {
-      yield put(actions.getFetchError({ error: true }));
+      yield put(
+        actions.getFetchError({
+          error: true,
+          message: 'An error has occured.',
+        }),
+      );
     }
   } catch (err) {
     yield put(actions.getFetchError(err));

@@ -12,16 +12,18 @@ import Button from 'app/components/Elements/Button';
 import A from 'app/components/Elements/A';
 
 import Wrapper from 'app/components/Layouts/AuthWrapper';
+// import { validateEmail } from 'app/components/Helper';
 
 /** slice */
 import { useContainerSaga } from './slice';
 import { selectLoading, selectError, selectData } from './slice/selectors';
+import { ErrorState } from './slice/types';
 
 export function LoginPage() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
+  const error: any = useSelector(selectError);
   const success = useSelector(selectData);
 
   const [email, setEmail] = React.useState({ value: '', error: false });
@@ -40,6 +42,12 @@ export function LoginPage() {
       error = true;
       setEmail({ ...email, error: true });
     }
+
+    // if (email.value !== '' && !validateEmail(email.value)) {
+    //   error = true;
+    //   setEmail({ ...email, error: true });
+    // }
+
     if (password.value === '') {
       error = true;
       setPassword({ ...password, error: true });
@@ -60,8 +68,8 @@ export function LoginPage() {
     <Wrapper>
       <Helmet title="Login" />
       <div className="form-container">
-        <H1>We're glad you're back!</H1>
-        <p>Login to manage your account.</p>
+        <H1 margin="0 0 5px">We're glad you're back!</H1>
+        <Label>Login to manage your account.</Label>
 
         <form>
           {loading && <Loading position="absolute" />}
@@ -98,8 +106,10 @@ export function LoginPage() {
             )}
           </Field>
 
-          {error && (
-            <ErrorMsg formError>* Invalid email/mobile or password.</ErrorMsg>
+          {error && Object.keys(error).length > 0 && (
+            <ErrorMsg formError>
+              * {error.response ? error.response.statusText : error.message}
+            </ErrorMsg>
           )}
 
           <Button
@@ -113,7 +123,7 @@ export function LoginPage() {
             LOGIN
           </Button>
           <Field className="text-center" margin="20px 0 10px">
-            Not yet a member? <A to="/">Sign up</A>
+            Not yet a member? <A to="/register">Sign up</A>
           </Field>
           <Field className="text-center">
             <A to="/">Forgot Password?</A>

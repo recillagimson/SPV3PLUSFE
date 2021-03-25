@@ -1,6 +1,7 @@
-import { call, select } from 'redux-saga/effects';
+import { call, select, takeLatest, put } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
+import { appActions as actions } from '.';
 import { selectToken } from './selectors';
 
 /**
@@ -10,8 +11,6 @@ export function* getRequestToken() {
   const config = {
     client_id: process.env.REACT_APP_CLIENT_ID,
     client_secret: process.env.REACT_APP_CLIENT_SECRET,
-    grant_type: 'client_credentials',
-    scope: 'spv3-api IdentityServerApi',
   };
 
   const formBody: string[] = [];
@@ -19,7 +18,7 @@ export function* getRequestToken() {
     formBody.push(`${encodeURIComponent(i)}=${encodeURIComponent(config[i])}`),
   );
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/connect/token`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/api/clients/token`;
 
   const options = {
     method: 'POST',
@@ -31,8 +30,9 @@ export function* getRequestToken() {
 
   try {
     const apirequest = yield call(request, requestURL, options);
-    return apirequest;
+    yield put(actions.getTokenSuccess(apirequest));
   } catch (err) {
+    yield put(actions.getTokenError(err));
     return err;
   }
 }
@@ -99,5 +99,5 @@ export function* appSaga() {
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
-  // yield takeLatest(actions.getFetchLoading.type, getRequestToken);
+  yield takeLatest(actions.getTokenLoading.type, getRequestToken);
 }

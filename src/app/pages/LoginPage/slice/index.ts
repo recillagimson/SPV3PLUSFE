@@ -2,12 +2,12 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from 'utils/@reduxjs/toolkit';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
-import { ContainerState } from './types';
+import { ContainerState, ErrorState } from './types';
 import { containerSaga } from './saga';
 
 export const initialState: ContainerState = {
   loading: false,
-  error: false,
+  error: {},
   data: false,
   request: false,
 };
@@ -18,7 +18,7 @@ const slice = createSlice({
   reducers: {
     getFetchLoading(state, action: PayloadAction<object>) {
       state.loading = true;
-      state.error = false;
+      state.error = {};
       state.data = false;
       state.request = action.payload;
     },
@@ -27,7 +27,7 @@ const slice = createSlice({
       state.request = false;
       state.data = action.payload;
     },
-    getFetchError(state, action: PayloadAction<object>) {
+    getFetchError(state, action: PayloadAction<ErrorState>) {
       state.error = action.payload;
       state.loading = false;
     },

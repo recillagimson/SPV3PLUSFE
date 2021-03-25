@@ -19,22 +19,21 @@ const slice = createSlice({
   name: 'global',
   initialState,
   reducers: {
-    getFetchLoading(state, action: PayloadAction<object | boolean>) {
+    getTokenLoading(state, action: PayloadAction) {
       state.loading = true;
       state.error = false;
       state.data = false;
-      state.request = action.payload;
     },
-    getFetchSuccess(state, action: PayloadAction<object>) {
+    getTokenSuccess(state, action: PayloadAction<string>) {
       state.loading = false;
       state.request = false;
-      state.user = action.payload;
+      state.token = action.payload;
     },
-    getFetchError(state, action: PayloadAction<object>) {
+    getTokenError(state, action: PayloadAction<object>) {
       state.error = action.payload;
       state.loading = false;
     },
-    getFetchReset(state, action: PayloadAction) {
+    getTokenReset(state, action: PayloadAction) {
       state = initialState;
     },
   },
