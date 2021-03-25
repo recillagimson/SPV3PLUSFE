@@ -43,6 +43,33 @@ const Wrapper = styled.section`
     align-items: flex-start;
   }
 
+  .agreement {
+    input[type='checkbox'],
+    span {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    input[type='checkbox'] {
+      cursor: pointer;
+    }
+
+    span {
+      width: calc(100% - 25px);
+    }
+
+    a {
+      font-weight: 600;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
   ${media.large`
     .form-container {
       max-width: 500px;

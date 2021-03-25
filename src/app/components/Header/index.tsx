@@ -32,12 +32,7 @@ export default function HeaderComponent({ isLoggedIn }: Props) {
             <ButtonLink as={NavLink} size="medium" to="/" color="secondary">
               Partner
             </ButtonLink>
-            <ButtonLink
-              as={NavLink}
-              size="medium"
-              to="/login"
-              color="secondary"
-            >
+            <ButtonLink as={NavLink} size="medium" to="/" color="secondary">
               Login
             </ButtonLink>
             <ButtonLink

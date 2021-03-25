@@ -165,19 +165,19 @@ const ButtonStyle = css<Props>`
   ${p =>
     p.size === 'small' &&
     `
-    padding: 5px 10px;
+    padding: 6px 12px;
   `}
 
   ${p =>
     p.size === 'medium' &&
     `
-    padding: 7px 14px;
+    padding: 8px 15px;
   `}
 
   ${p =>
     p.size === 'large' &&
     `
-    padding: 10px 18px;
+    padding: 12px 20px;
   `}
 
   ${p => p.variant === 'contained' && contained};

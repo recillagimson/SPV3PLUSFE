@@ -9,3 +9,12 @@ export interface StoreState {
   data: object | boolean;
   request: object | boolean;
 }
+
+export interface ApiErrorState {
+  response?: {
+    status?: string | number;
+    statusText?: string;
+  };
+  error?: boolean;
+  message?: string;
+}
