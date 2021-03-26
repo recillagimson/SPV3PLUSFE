@@ -25,6 +25,7 @@ import { CardMemberAgreementPage } from 'app/pages/CardMemberAgreementPage/Loada
 import { LoginPage } from 'app/pages/LoginPage/Loadable';
 
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
+import { SendMoney } from 'app/pages/SendMoney/Loadable';
 
 /** selectors, slice */
 // import { useAppSaga } from './slice';
@@ -75,6 +76,7 @@ export function App() {
               component={CardMemberAgreementPage}
             />
             <Route path="/dashboard" component={HomePage} />
+            <Route path="/SendMoney" component={SendMoney} />
             <Route component={NotFoundPage} />
           </Switch>
           <Footer />
