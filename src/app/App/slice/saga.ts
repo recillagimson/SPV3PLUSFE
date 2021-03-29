@@ -77,7 +77,6 @@ export function* getRequestPassphrase() {
     token = yield select(selectToken);
   }
 
-  console.log(token);
   const requestURL = `${process.env.REACT_APP_API_URL}/api/payloads/generate`;
 
   const options = {
