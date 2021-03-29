@@ -18,3 +18,22 @@ export interface ApiErrorState {
   error?: boolean;
   message?: string;
 }
+
+/**
+ * ClientTokenState
+ * Result from the API
+ */
+export interface ClientTokenState {
+  access_token?: string;
+  created_at?: string;
+  expires_in?: number;
+  message?: string;
+  errors?: {
+    client: string[];
+  };
+}
+
+export interface PassphraseState {
+  id: string;
+  passPhrase: string;
+}

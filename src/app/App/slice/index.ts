@@ -2,6 +2,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from 'utils/@reduxjs/toolkit';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
+import { ClientTokenState } from 'types/Default';
 import { GlobalState } from './types';
 import { appSaga } from './saga';
 
@@ -13,6 +14,7 @@ export const initialState: GlobalState = {
   user: false,
   isAuthenticated: false,
   token: '',
+  isSessionExpired: false,
 };
 
 const slice = createSlice({
@@ -24,17 +26,25 @@ const slice = createSlice({
       state.error = false;
       state.data = false;
     },
-    getTokenSuccess(state, action: PayloadAction<string>) {
+    getTokenSuccess(state, action: PayloadAction<ClientTokenState>) {
       state.loading = false;
       state.request = false;
       state.token = action.payload;
     },
-    getTokenError(state, action: PayloadAction<object>) {
+    getTokenError(state, action: PayloadAction<ClientTokenState>) {
       state.error = action.payload;
       state.loading = false;
     },
     getTokenReset(state, action: PayloadAction) {
-      state = initialState;
+      state.loading = false;
+      state.error = false;
+      state.data = false;
+    },
+    getIsAuthenticated(state, action: PayloadAction<boolean>) {
+      state.isAuthenticated = action.payload;
+    },
+    getIsSessionExpired(state, action: PayloadAction<boolean>) {
+      state.isSessionExpired = action.payload;
     },
   },
 });

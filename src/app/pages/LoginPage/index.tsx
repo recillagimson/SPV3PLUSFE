@@ -12,12 +12,13 @@ import Button from 'app/components/Elements/Button';
 import A from 'app/components/Elements/A';
 
 import Wrapper from 'app/components/Layouts/AuthWrapper';
-// import { validateEmail } from 'app/components/Helper';
+// import { validateEmail } from 'app/components/Helpers';
 
 /** slice */
 import { useContainerSaga } from './slice';
 import { selectLoading, selectError, selectData } from './slice/selectors';
 import { ErrorState } from './slice/types';
+import { validateEmail } from 'app/components/Helpers';
 
 export function LoginPage() {
   const { actions } = useContainerSaga();
@@ -30,6 +31,12 @@ export function LoginPage() {
   const [password, setPassword] = React.useState({ value: '', error: false });
 
   React.useEffect(() => {
+    return () => {
+      dispatch(actions.getFetchReset()); // reset store state on unmount
+    };
+  }, [actions, dispatch]);
+
+  React.useEffect(() => {
     // do something if log in is successfull
   }, [success]);
 
@@ -37,6 +44,7 @@ export function LoginPage() {
     if (e && e.preventDefault) e.preventDefault();
 
     let error = false;
+    let isEmail = false;
 
     if (email.value === '') {
       error = true;
@@ -48,6 +56,10 @@ export function LoginPage() {
     //   setEmail({ ...email, error: true });
     // }
 
+    if (email.value !== '' && validateEmail(email.value)) {
+      isEmail = true;
+    }
+
     if (password.value === '') {
       error = true;
       setPassword({ ...password, error: true });
@@ -55,14 +67,28 @@ export function LoginPage() {
 
     if (!error) {
       const data = {
-        email: email.value,
+        email: isEmail ? email.value : undefined,
+        mobile_number: !isEmail ? email.value : undefined,
         password: password.value,
       };
-      console.log(data);
+
       // enable code below to integrate api
-      // dispatch(actions.getFetchLoading(data));
+      dispatch(actions.getFetchLoading(data));
     }
   };
+
+  let apiError: any;
+  if (error && Object.keys(error).length > 0) {
+    if (error.response && error.response.status === 422) {
+      apiError = 'Invalid username/password. Please try again.';
+    }
+    if (error.response && error.response.status !== 422) {
+      apiError = error.response.statusText;
+    }
+    if (!error.response) {
+      apiError = error.message;
+    }
+  }
 
   return (
     <Wrapper>
@@ -107,9 +133,7 @@ export function LoginPage() {
           </Field>
 
           {error && Object.keys(error).length > 0 && (
-            <ErrorMsg formError>
-              * {error.response ? error.response.statusText : error.message}
-            </ErrorMsg>
+            <ErrorMsg formError>* {apiError}</ErrorMsg>
           )}
 
           <Button

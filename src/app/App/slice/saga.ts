@@ -1,6 +1,9 @@
 import { call, select, takeLatest, put } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
+import { getCookie, setCookie } from 'app/components/Helpers';
+
+import { ClientTokenState } from 'types/Default';
 import { appActions as actions } from '.';
 import { selectToken } from './selectors';
 
@@ -8,29 +11,45 @@ import { selectToken } from './selectors';
  * Global function for user data or other data
  */
 export function* getRequestToken() {
-  const config = {
-    client_id: process.env.REACT_APP_CLIENT_ID,
-    client_secret: process.env.REACT_APP_CLIENT_SECRET,
-  };
+  const client_id = process.env.REACT_APP_CLIENT_ID || '';
+  const client_secret = process.env.REACT_APP_CLIENT_SECRET || '';
 
-  const formBody: string[] = [];
-  Object.keys(config).map(i =>
-    formBody.push(`${encodeURIComponent(i)}=${encodeURIComponent(config[i])}`),
-  );
+  // payload URL params
+  const payload = new URLSearchParams();
+  payload.append('client_id', client_id);
+  payload.append('client_secret', client_secret);
 
   const requestURL = `${process.env.REACT_APP_API_URL}/api/clients/token`;
 
   const options = {
     method: 'POST',
     headers: {
+      Accept: 'applications/json',
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: formBody.join('&'),
+    body: payload,
   };
 
   try {
-    const apirequest = yield call(request, requestURL, options);
-    yield put(actions.getTokenSuccess(apirequest));
+    const apirequest: ClientTokenState = yield call(
+      request,
+      requestURL,
+      options,
+    );
+
+    if (apirequest && apirequest.expires_in) {
+      const now = new Date();
+      now.setSeconds(now.getSeconds() + apirequest.expires_in);
+      setCookie('spv_expire', now.toUTCString(), 1);
+
+      yield put(actions.getTokenSuccess(apirequest));
+    }
+
+    if (apirequest && apirequest.errors) {
+      yield put(actions.getTokenError(apirequest));
+    }
+
+    return apirequest;
   } catch (err) {
     yield put(actions.getTokenError(err));
     return err;
@@ -41,10 +60,25 @@ export function* getRequestToken() {
  * Call to get passphrase
  * @return  {object}      Returns the result from the api call
  */
-export function* getPassphrase() {
-  // get the requested access token
-  const token = yield select(selectToken);
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/payload/generate`;
+export function* getRequestPassphrase() {
+  let token: any;
+
+  // check if we have a cookie set
+  const spvExpireCookie = getCookie('spv_expire');
+  if (spvExpireCookie && spvExpireCookie !== '') {
+    const now = new Date();
+    const tokenExpire = new Date(spvExpireCookie);
+    if (now.getTime() > tokenExpire.getTime()) {
+      token = yield call(getRequestToken);
+    } else {
+      token = yield select(selectToken);
+    }
+  } else {
+    token = yield select(selectToken);
+  }
+
+  console.log(token);
+  const requestURL = `${process.env.REACT_APP_API_URL}/api/payloads/generate`;
 
   const options = {
     method: 'GET',
@@ -65,14 +99,12 @@ export function* getPassphrase() {
 
 /**
  * Get a response key
- * @param {string}  id    encrypted data ID
+ * @param {string}  id    request passphrase id
  * @return {object}       Returns the result from the api call
  */
-export function* getResponseKey(id) {
+export function* getResponsePassphrase(id: string) {
   const token = yield select(selectToken);
-  const requestURL = `${
-    process.env.REACT_APP_API_URL
-  }/api/payload/${encodeURIComponent(id)}/key`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/api/payloads/${id}/key`;
 
   const options = {
     method: 'GET',

@@ -14,30 +14,56 @@ import IconButton from '../Elements/IconButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function HeaderComponent({ isLoggedIn }: Props) {
+  const publicURL = process.env.PUBLIC_URL || '';
+
   return (
     <Wrapper isLoggedIn={isLoggedIn}>
       <div className="wrapped">
         {!isLoggedIn && (
-          <img src="/img/SPLogo.png" alt="SquidPay" className="logo" />
+          <img
+            src={`${publicURL}/img/SPLogo.png`}
+            alt="SquidPay"
+            className="logo"
+          />
         )}
 
         {!isLoggedIn && (
           <Navigation>
-            <ButtonLink as={NavLink} size="medium" to="/" color="secondary">
+            <ButtonLink
+              as={NavLink}
+              size="medium"
+              to={`${publicURL}/`}
+              color="secondary"
+            >
               User
             </ButtonLink>
-            <ButtonLink as={NavLink} size="medium" to="/" color="secondary">
+            <ButtonLink
+              as={NavLink}
+              size="medium"
+              to={`${publicURL}/`}
+              color="secondary"
+            >
               Merchant
             </ButtonLink>
-            <ButtonLink as={NavLink} size="medium" to="/" color="secondary">
+            <ButtonLink
+              as={NavLink}
+              size="medium"
+              to={`${publicURL}/`}
+              color="secondary"
+            >
               Partner
             </ButtonLink>
-            <ButtonLink as={NavLink} size="medium" to="/" color="secondary">
+            <ButtonLink
+              as={NavLink}
+              size="medium"
+              to={`${publicURL}/`}
+              color="secondary"
+            >
               Login
             </ButtonLink>
             <ButtonLink
               size="medium"
-              to="/register"
+              to={`${publicURL}/register`}
               color="primary"
               variant="outlined"
             >

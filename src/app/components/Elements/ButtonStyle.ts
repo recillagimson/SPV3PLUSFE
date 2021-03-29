@@ -166,12 +166,14 @@ const ButtonStyle = css<Props>`
     p.size === 'small' &&
     `
     padding: 6px 12px;
+    font-size: 0.8rem;
   `}
 
   ${p =>
     p.size === 'medium' &&
     `
     padding: 8px 15px;
+    font-size: 0.9rem;
   `}
 
   ${p =>

@@ -40,3 +40,8 @@ export const selectToken = createSelector(
   [selectDomain],
   subState => subState.token,
 );
+
+export const selectSessionExpired = createSelector(
+  [selectDomain],
+  subState => subState.isSessionExpired,
+);

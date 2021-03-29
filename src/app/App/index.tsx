@@ -17,6 +17,7 @@ import Content from 'app/components/Layouts/Content';
 import Header from 'app/components/Header';
 import Footer from 'app/components/Footer';
 import Sidebar from 'app/components/Sidebar';
+import Dialog from 'app/components/Dialog';
 
 import { GlobalStyle } from 'styles/global-styles';
 
@@ -31,28 +32,27 @@ import PrivateRoute from './PrivateRoute';
 
 /** selectors, slice */
 import { useAppSaga } from './slice';
-// import { selectUser, selectIsAuthenticated } from './slice/selectors';
+import { selectSessionExpired, selectIsAuthenticated } from './slice/selectors';
 
 export function App() {
   const { i18n } = useTranslation();
-  const location = useLocation();
 
-  // sample usage of slice (react reduce)
+  // sample usage of slice (react redux)
   const { actions } = useAppSaga();
   const dispatch = useDispatch();
   // const user = useSelector(selectUser);
-  // const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isSessionExpired = useSelector(selectSessionExpired);
 
   React.useEffect(() => {
     dispatch(actions.getTokenLoading());
   }, [actions, dispatch]);
 
-  // this is a sample only, authentication should be taken from the store state
-  // and set to true by the successfull login
-  let isAuthenticated = false;
-  if (location.pathname === '/dashboard') {
-    isAuthenticated = true;
-  }
+  const onClickSessionExpired = () => {
+    window.location.replace('/');
+  };
+
+  const publicURL = process.env.PUBLIC_URL || '';
 
   return (
     <>
@@ -72,20 +72,39 @@ export function App() {
         {isAuthenticated && <Sidebar />}
         <Content className={isAuthenticated ? 'authenticated' : undefined}>
           <Switch>
-            <Route exact path="/" component={LoginPage} />
-            <Route exact path="/register" component={RegisterPage} />
+            <Route exact path={`${publicURL}/`} component={LoginPage} />
             <Route
               exact
-              path="/card-member-agreement"
+              path={`${publicURL}/register`}
+              component={RegisterPage}
+            />
+            <Route
+              exact
+              path={`${publicURL}/card-member-agreement`}
               component={CardMemberAgreementPage}
             />
-            <Route exact path="/dashboard" component={DashboardPage} />
-            <PrivateRoute exact path="/restricted" component={DashboardPage} />
+            <Route
+              exact
+              path={`${publicURL}/dashboard`}
+              component={DashboardPage}
+            />
+            <PrivateRoute
+              exact
+              path={`${publicURL}/restricted`}
+              component={DashboardPage}
+            />
             <Route component={NotFoundPage} />
           </Switch>
           <Footer />
         </Content>
       </Main>
+      <Dialog
+        show={isSessionExpired}
+        onClick={onClickSessionExpired}
+        okText="OK"
+        message="Your session has expired, please login again to continue."
+        title="SESSION EXPIRED"
+      />
       <GlobalStyle />
     </>
   );

@@ -22,7 +22,7 @@ export default function Sidebar() {
 
   return (
     <Wrapper className={show ? 'show' : undefined}>
-      <img src="/img/SPLogo.png" alt="SquidPay" className="sp-logo" />
+      <img src="./img/SPLogo.png" alt="SquidPay" className="sp-logo" />
       <IconButton
         className="btn-trigger"
         onClick={() => setShow(prev => !prev)}

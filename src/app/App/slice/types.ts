@@ -1,3 +1,5 @@
+import { ClientTokenState } from 'types/Default';
+
 /* --- STATE --- */
 export interface GlobalState {
   loading: boolean;
@@ -6,5 +8,6 @@ export interface GlobalState {
   request: object | boolean;
   user: object | boolean;
   isAuthenticated: boolean;
-  token: string;
+  token: ClientTokenState | string;
+  isSessionExpired: boolean;
 }

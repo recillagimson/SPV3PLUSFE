@@ -1,30 +1,71 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
+import CryptoJS from 'crypto-js';
+
+import encDec from 'app/components/Helpers/EncyptDecrypt';
+
+import { PassphraseState } from 'types/Default';
+
+import { appActions } from 'app/App/slice';
 import { selectToken } from 'app/App/slice/selectors';
+import {
+  getRequestPassphrase,
+  getResponsePassphrase,
+} from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
+import { selectRequest } from './selectors';
 
 /**
  * Login
  */
 export function* getLogin() {
-  const token = yield select(selectToken);
-  const requestURL = `${process.env.REACT_APP_API_URL}/connect/token`;
+  const token = yield select(selectToken); // access_token
+  const payload = yield select(selectRequest); // payload body from main component
+  const requestURL = `${process.env.REACT_APP_API_URL}/api/auth/login`; // url
+
+  let encryptPayload: string = '';
+
+  let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
+
+  if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
+    encryptPayload = CryptoJS.AES.encrypt(
+      JSON.stringify(payload),
+      requestPhrase.passPhrase,
+      { format: encDec },
+    ).toString();
+  }
 
   const options = {
     method: 'POST',
     headers: {
+      Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token.access_token}`,
     },
-    body: JSON.stringify({}),
+    body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
   };
 
   try {
     const apirequest = yield call(request, requestURL, options);
-    if (apirequest) {
-      yield put(actions.getFetchSuccess({ data: 'sample data' }));
+
+    if (apirequest && apirequest.id) {
+      // request decryption passphrase
+      let decryptPhrase: PassphraseState = yield call(
+        getResponsePassphrase,
+        apirequest.id,
+      );
+
+      // decrypt payload data
+      let decryptData = CryptoJS.AES.decrypt(
+        apirequest.payload,
+        decryptPhrase.passPhrase,
+        { format: encDec },
+      ).toString(CryptoJS.enc.Utf8);
+
+      yield put(appActions.getTokenSuccess(JSON.parse(decryptData))); // write the new access token
+      yield put(actions.getFetchSuccess(true)); // return true on main component
     } else {
       yield put(
         actions.getFetchError({
@@ -34,6 +75,11 @@ export function* getLogin() {
       );
     }
   } catch (err) {
+    if (err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      return;
+    }
+
     yield put(actions.getFetchError(err));
   }
 }
