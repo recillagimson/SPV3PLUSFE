@@ -50,9 +50,9 @@ export function App() {
 
   const onClickSessionExpired = () => {
     window.location.replace('/');
+    dispatch(actions.getIsAuthenticated(false));
+    dispatch(actions.getIsSessionExpired(false));
   };
-
-  const publicURL = process.env.PUBLIC_URL || '';
 
   return (
     <>
@@ -72,27 +72,15 @@ export function App() {
         {isAuthenticated && <Sidebar />}
         <Content className={isAuthenticated ? 'authenticated' : undefined}>
           <Switch>
-            <Route exact path={`${publicURL}/`} component={LoginPage} />
+            <Route exact path="/" component={LoginPage} />
+            <Route exact path="/register" component={RegisterPage} />
             <Route
               exact
-              path={`${publicURL}/register`}
-              component={RegisterPage}
-            />
-            <Route
-              exact
-              path={`${publicURL}/card-member-agreement`}
+              path="/card-member-agreement"
               component={CardMemberAgreementPage}
             />
-            <Route
-              exact
-              path={`${publicURL}/dashboard`}
-              component={DashboardPage}
-            />
-            <PrivateRoute
-              exact
-              path={`${publicURL}/restricted`}
-              component={DashboardPage}
-            />
+            <PrivateRoute exact path="/dashboard" component={DashboardPage} />
+
             <Route component={NotFoundPage} />
           </Switch>
           <Footer />

@@ -40,6 +40,7 @@ fontObserver.load().then(() => {
   document.body.classList.add('fontLoaded');
 });
 
+const publicURL = process.env.PUBLIC_URL || '';
 const store = configureAppStore();
 const MOUNT_NODE = document.getElementById('appMain') as HTMLElement;
 
@@ -47,7 +48,7 @@ ReactDOM.render(
   <Provider store={store}>
     <HelmetProvider>
       <React.StrictMode>
-        <BrowserRouter>
+        <BrowserRouter basename={publicURL !== '' ? publicURL : undefined}>
           <App />
         </BrowserRouter>
       </React.StrictMode>

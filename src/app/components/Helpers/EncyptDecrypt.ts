@@ -9,7 +9,6 @@ const encDec = {
     const e: any = {
       ct: cipherParams.ciphertext.toString(CryptoJS.enc.Base64),
     };
-
     if (cipherParams.iv) e.iv = cipherParams.iv.toString();
     if (cipherParams.salt) e.s = cipherParams.salt.toString();
 

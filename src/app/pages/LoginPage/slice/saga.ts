@@ -65,6 +65,7 @@ export function* getLogin() {
       ).toString(CryptoJS.enc.Utf8);
 
       yield put(appActions.getTokenSuccess(JSON.parse(decryptData))); // write the new access token
+      yield put(appActions.getIsAuthenticated(true));
       yield put(actions.getFetchSuccess(true)); // return true on main component
     } else {
       yield put(
@@ -75,10 +76,12 @@ export function* getLogin() {
       );
     }
   } catch (err) {
-    if (err.response && err.response.status === 401) {
-      yield put(appActions.getIsSessionExpired(true));
-      return;
-    }
+    // code below is sample session expired to be used for logged in pages
+    // if (err.response && err.response.status === 401) {
+    // unauthorized code for invalid or expired access_token as per BE api
+    // yield put(appActions.getIsSessionExpired(true));
+    // return; // return immediately so we won't continue on the rest of the code
+    // }
 
     yield put(actions.getFetchError(err));
   }

@@ -6,18 +6,29 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useDispatch } from 'react-redux';
 
 import Avatar from 'app/components/Elements/Avatar';
 import IconButton from 'app/components/Elements/IconButton';
+
+import { appActions } from 'app/App/slice';
 
 import Wrapper from './Wrapper';
 import Navigation from './Navigation';
 import NavButton from './NavButton';
 
 export default function Sidebar() {
+  const dispatch = useDispatch();
+
   const [show, setShow] = React.useState(false);
+
   const onLogout = () => {
-    alert('logging out');
+    // we might not need this next two lines, check the logging out scenario
+    // delete if not needed anymore
+    dispatch(appActions.getTokenReset());
+    dispatch(appActions.getIsAuthenticated(false));
+
+    window.location.replace('/');
   };
 
   return (

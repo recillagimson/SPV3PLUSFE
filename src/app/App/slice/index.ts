@@ -39,6 +39,7 @@ const slice = createSlice({
       state.loading = false;
       state.error = false;
       state.data = false;
+      state.token = '';
     },
     getIsAuthenticated(state, action: PayloadAction<boolean>) {
       state.isAuthenticated = action.payload;

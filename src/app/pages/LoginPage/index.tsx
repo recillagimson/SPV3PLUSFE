@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Loading from 'app/components/Loading';
@@ -17,7 +18,6 @@ import Wrapper from 'app/components/Layouts/AuthWrapper';
 /** slice */
 import { useContainerSaga } from './slice';
 import { selectLoading, selectError, selectData } from './slice/selectors';
-import { ErrorState } from './slice/types';
 import { validateEmail } from 'app/components/Helpers';
 
 export function LoginPage() {
@@ -35,10 +35,6 @@ export function LoginPage() {
       dispatch(actions.getFetchReset()); // reset store state on unmount
     };
   }, [actions, dispatch]);
-
-  React.useEffect(() => {
-    // do something if log in is successfull
-  }, [success]);
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -79,15 +75,26 @@ export function LoginPage() {
 
   let apiError: any;
   if (error && Object.keys(error).length > 0) {
-    if (error.response && error.response.status === 422) {
+    if (
+      error.response &&
+      (error.response.status === 422 || error.response.status === 401)
+    ) {
       apiError = 'Invalid username/password. Please try again.';
     }
-    if (error.response && error.response.status !== 422) {
+    if (
+      error.response &&
+      error.response.status !== 422 &&
+      error.response.status !== 401
+    ) {
       apiError = error.response.statusText;
     }
     if (!error.response) {
       apiError = error.message;
     }
+  }
+
+  if (success) {
+    return <Redirect to="/dashboard" />;
   }
 
   return (
@@ -100,7 +107,9 @@ export function LoginPage() {
         <form>
           {loading && <Loading position="absolute" />}
           <Field>
-            <Label>Email or Mobile No.</Label>
+            <Label>
+              Email or Mobile No. <i>*</i>
+            </Label>
             <Input
               type="text"
               value={email.value}
@@ -109,6 +118,7 @@ export function LoginPage() {
                 setEmail({ value: e.currentTarget.value, error: false })
               }
               placeholder="Email or Mobile No."
+              required
             />
             {email.error && (
               <ErrorMsg formError>
@@ -117,7 +127,9 @@ export function LoginPage() {
             )}
           </Field>
           <Field>
-            <Label>Password</Label>
+            <Label>
+              Password <i>*</i>
+            </Label>
             <Input
               type="password"
               value={password.value}
@@ -126,6 +138,7 @@ export function LoginPage() {
                 setPassword({ value: e.currentTarget.value, error: false })
               }
               placeholder="Password"
+              required
             />
             {password.error && (
               <ErrorMsg formError>* Please enter your password</ErrorMsg>
