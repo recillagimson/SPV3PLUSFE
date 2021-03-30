@@ -4,7 +4,7 @@
 
 import { lazyLoad } from 'utils/loadable';
 
-export const SendMoney = lazyLoad(
+export const ForgotPasswordPage = lazyLoad(
   () => import('./index'),
-  module => module.SendMoney,
+  module => module.ForgotPasswordPage,
 );

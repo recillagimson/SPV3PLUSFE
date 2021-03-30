@@ -3,7 +3,7 @@ import { createSlice } from 'utils/@reduxjs/toolkit';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
 import { ComponentState } from './types';
-import { appSaga } from './saga';
+import { componentSaga } from './saga';
 
 export const initialState: ComponentState = {
   loading: false,
@@ -41,6 +41,6 @@ export const { actions: appActions, reducer } = slice;
 
 export const useComponentSaga = () => {
   useInjectReducer({ key: slice.name, reducer: slice.reducer });
-  useInjectSaga({ key: slice.name, saga: appSaga });
+  useInjectSaga({ key: slice.name, saga: componentSaga });
   return { actions: slice.actions };
 };

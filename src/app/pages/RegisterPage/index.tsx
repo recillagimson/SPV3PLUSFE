@@ -16,7 +16,7 @@ import A from 'app/components/Elements/A';
 import Dialog from 'app/components/Dialog';
 import Wrapper from 'app/components/Layouts/AuthWrapper';
 
-import { validateEmail } from 'app/components/Helpers';
+import { validateEmail, validatePhone } from 'app/components/Helpers';
 
 /** slice */
 import { useContainerSaga } from './slice';
@@ -32,7 +32,11 @@ export function RegisterPage() {
   const success = useSelector(selectData);
 
   const [apiError, setApiError] = React.useState('');
-  const [email, setEmail] = React.useState({ value: '', error: false });
+  const [email, setEmail] = React.useState({
+    value: '',
+    error: false,
+    phoneError: false,
+  });
   const [password, setPassword] = React.useState({ value: '', error: false });
   const [confirmPassword, setConfirmPassword] = React.useState({
     value: '',
@@ -53,6 +57,7 @@ export function RegisterPage() {
     }
   }, [error]);
 
+  // check the error payload
   const apiErrorMessage = () => {
     if (error.code && error.code === 422) {
       let emailError = '';
@@ -79,6 +84,7 @@ export function RegisterPage() {
     }
   };
 
+  // submit
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
 
@@ -87,11 +93,27 @@ export function RegisterPage() {
 
     if (email.value === '') {
       error = true;
-      setEmail({ ...email, error: true });
+      setEmail({ ...email, error: true, phoneError: true });
     }
 
     if (email.value !== '' && validateEmail(email.value)) {
       isEmail = true;
+    }
+
+    if (
+      email.value !== '' &&
+      !validateEmail(email.value) &&
+      !/^0(9)/.test(email.value)
+    ) {
+      setEmail({ ...email, error: true, phoneError: false });
+    }
+
+    if (
+      email.value !== '' &&
+      /^0(9)/.test(email.value) &&
+      !validatePhone(email.value)
+    ) {
+      setEmail({ ...email, error: false, phoneError: true });
     }
 
     if (password.value === '') {
@@ -154,13 +176,26 @@ export function RegisterPage() {
               value={email.value}
               autoComplete="off"
               onChange={e =>
-                setEmail({ value: e.currentTarget.value, error: false })
+                setEmail({
+                  value: e.currentTarget.value,
+                  error: false,
+                  phoneError: false,
+                })
               }
               placeholder="Email or Mobile No."
             />
-            {email.error && (
+            {(email.error || email.phoneError) && (
               <ErrorMsg formError>
-                * Please enter your email or mobile number
+                *{' '}
+                {!email.error &&
+                  email.phoneError &&
+                  'Please enter phone in correct format ie: 09xxxxxxxxx'}
+                {email.error &&
+                  !email.phoneError &&
+                  'Please enter your email in valid format or try your mobile number'}
+                {email.error &&
+                  email.phoneError &&
+                  'Please enter your email or mobile number'}
               </ErrorMsg>
             )}
           </Field>

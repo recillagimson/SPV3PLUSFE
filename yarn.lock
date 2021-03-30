@@ -11085,6 +11085,11 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
+react-pin-input@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-pin-input/-/react-pin-input-1.0.1.tgz#be3958d43dcafb493b4ac484d078a86cf372466a"
+  integrity sha512-nppjO8ft5EJspJ9O57TMf2nMG0rBadASVSqQhFEjGio7uSrAWfwu35ZacXl4R7iGT0OKGh3rv1d5s+MWnBAzLw==
+
 react-redux@7.2.1:
   version "7.2.1"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.2.1.tgz#8dedf784901014db2feca1ab633864dee68ad985"

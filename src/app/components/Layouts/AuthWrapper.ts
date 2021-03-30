@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro';
 
 import { media } from 'styles/media';
+import { StyleConstants } from 'styles/StyleConstants';
 
 const Wrapper = styled.section`
   display: flex;
@@ -8,13 +9,19 @@ const Wrapper = styled.section`
   justify-content: center;
   padding-top: 110px;
   min-height: calc(100vh - 60px);
+  position: relative;
 
   .form-container {
     border-radius: 20px;
     min-width: 300px;
-    max-width: 80%;
+    max-width: 95%;
   }
 
+  .content {
+    padding: 0 25px;
+  }
+
+  .content,
   form {
     margin: 30px 0 0;
     position: relative;
@@ -68,6 +75,12 @@ const Wrapper = styled.section`
       &:hover {
         text-decoration: underline;
       }
+    }
+  }
+
+  .code {
+    .pincode-input-container {
+      text-align: center;
     }
   }
 

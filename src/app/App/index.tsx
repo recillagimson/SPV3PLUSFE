@@ -6,33 +6,34 @@
  * contain code that should be seen on all pages. (e.g. navigation bar)
  */
 
-import * as React from "react";
-import { Helmet } from "react-helmet-async";
-import { Switch, Route, useLocation } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { useTranslation } from "react-i18next";
+import * as React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Switch, Route } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
-import Main from "app/components/Layouts/Main";
-import Content from "app/components/Layouts/Content";
-import Header from "app/components/Header";
-import Footer from "app/components/Footer";
-import Sidebar from "app/components/Sidebar";
-import Dialog from "app/components/Dialog";
+import Main from 'app/components/Layouts/Main';
+import Content from 'app/components/Layouts/Content';
+import Header from 'app/components/Header';
+import Footer from 'app/components/Footer';
+import Sidebar from 'app/components/Sidebar';
+import Dialog from 'app/components/Dialog';
 
-import { GlobalStyle } from "styles/global-styles";
-import { NotFoundPage } from "app/components/NotFoundPage/Loadable";
+import { GlobalStyle } from 'styles/global-styles';
+import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
 
-import { DashboardPage } from "app/pages/DashboardPage/Loadable";
-import { CardMemberAgreementPage } from "app/pages/CardMemberAgreementPage/Loadable";
-import { LoginPage } from "app/pages/LoginPage/Loadable";
-import { RegisterPage } from "app/pages/RegisterPage/Loadable";
-import { SendMoney } from "app/pages/SendMoney/Loadable";
+import { DashboardPage } from 'app/pages/DashboardPage/Loadable';
+import { CardMemberAgreementPage } from 'app/pages/CardMemberAgreementPage/Loadable';
+import { LoginPage } from 'app/pages/LoginPage/Loadable';
+import { RegisterPage } from 'app/pages/RegisterPage/Loadable';
+import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
+import { SendMoney } from 'app/pages/SendMoney/Loadable';
 
-import PrivateRoute from "./PrivateRoute";
+import PrivateRoute from './PrivateRoute';
 
 /** selectors, slice */
-import { useAppSaga } from "./slice";
-import { selectSessionExpired, selectIsAuthenticated } from "./slice/selectors";
+import { useAppSaga } from './slice';
+import { selectSessionExpired, selectIsAuthenticated } from './slice/selectors';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -49,7 +50,7 @@ export function App() {
   }, [actions, dispatch]);
 
   const onClickSessionExpired = () => {
-    window.location.replace("/");
+    window.location.replace('/');
     dispatch(actions.getIsAuthenticated(false));
     dispatch(actions.getIsSessionExpired(false));
   };
@@ -67,10 +68,10 @@ export function App() {
         />
       </Helmet>
 
-      <Main className={isAuthenticated ? "spdin" : undefined}>
+      <Main className={isAuthenticated ? 'spdin' : undefined}>
         <Header isLoggedIn={isAuthenticated} />
         {isAuthenticated && <Sidebar />}
-        <Content className={isAuthenticated ? "authenticated" : undefined}>
+        <Content className={isAuthenticated ? 'authenticated' : undefined}>
           <Switch>
             <Route exact path="/" component={LoginPage} />
             <Route exact path="/register" component={RegisterPage} />
@@ -79,6 +80,8 @@ export function App() {
               path="/card-member-agreement"
               component={CardMemberAgreementPage}
             />
+            <Route path="/forgotpassword" component={ForgotPasswordPage} />
+
             <Route path="/SendMoney" component={SendMoney} />
             <PrivateRoute exact path="/dashboard" component={DashboardPage} />
 

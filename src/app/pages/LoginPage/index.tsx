@@ -163,7 +163,7 @@ export function LoginPage() {
             Not yet a member? <A to="/register">Sign up</A>
           </Field>
           <Field className="text-center">
-            <A to="/">Forgot Password?</A>
+            <A to="/forgotpassword">Forgot Password?</A>
           </Field>
         </form>
       </div>

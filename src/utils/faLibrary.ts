@@ -10,6 +10,18 @@ import {
   faAngleRight,
   faBell,
   faTimes,
+  faMobile,
+  faEnvelope,
+  faLock,
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faEye, faEyeSlash, faAngleRight, faBell, faTimes);
+library.add(
+  faEye,
+  faEyeSlash,
+  faAngleRight,
+  faBell,
+  faTimes,
+  faMobile,
+  faEnvelope,
+  faLock,
+);

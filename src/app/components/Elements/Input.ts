@@ -16,7 +16,6 @@ const Input = styled.input`
   color: ${StyleConstants.MAIN_TEXT};
   display: block;
   width: 100%;
-  outline: 2px solid transparent;
   font-size: inherit;
 
   &:focus {

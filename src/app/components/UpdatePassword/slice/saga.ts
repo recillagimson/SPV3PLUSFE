@@ -12,7 +12,7 @@ function* getUpdatePassword() {
   // select the request data
   const body: object = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/posts`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/auth/reset/password`;
 
   const options = {
     method: 'POST',
@@ -40,7 +40,7 @@ function* getUpdatePassword() {
 /**
  * Root saga manages watcher lifecycle
  */
-export function* appSaga() {
+export function* componentSaga() {
   // Watches for loadRepos actions and calls getRepos when one comes in.
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution

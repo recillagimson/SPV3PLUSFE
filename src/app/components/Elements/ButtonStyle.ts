@@ -24,6 +24,7 @@ const defaultstyle = css<Props>`
     `
     color: ${StyleConstants.BUTTONS.primary.main};
 
+    &:focus,
     &:hover {
       color: ${StyleConstants.BUTTONS.primary.dark};
     }
@@ -33,6 +34,7 @@ const defaultstyle = css<Props>`
     `
     color: ${StyleConstants.BUTTONS.secondary.main};
 
+    &:focus,
     &:hover {
       color: ${StyleConstants.BUTTONS.secondary.dark};
     }
@@ -43,6 +45,7 @@ const defaultstyle = css<Props>`
     `
     color: ${StyleConstants.BUTTONS.danger.main};
 
+    &:focus,
     &:hover {
       color: ${StyleConstants.BUTTONS.danger.dark};
     }
@@ -53,6 +56,7 @@ const defaultstyle = css<Props>`
     `
     color: ${StyleConstants.BUTTONS.neutral.main};
 
+    &:focus,
     &:hover {
       color: ${StyleConstants.BUTTONS.neutral.dark};
     }
@@ -66,6 +70,7 @@ const contained = css<Props>`
     background-color: ${StyleConstants.BUTTONS.primary.main};
     color: ${StyleConstants.BUTTONS.primary.textColor};
 
+    &:focus,
     &:hover {
       background-color: ${StyleConstants.BUTTONS.primary.dark};
     }
@@ -76,6 +81,7 @@ const contained = css<Props>`
     background-color: ${StyleConstants.BUTTONS.secondary.main};
     color: ${StyleConstants.WHITE};
 
+    &:focus,
     &:hover {
       background-color: ${StyleConstants.BUTTONS.secondary.dark};
     }
@@ -87,6 +93,7 @@ const contained = css<Props>`
     background-color: ${StyleConstants.BUTTONS.danger.main};
     color: ${StyleConstants.WHITE};
 
+    &:focus,
     &:hover {
       background-color: ${StyleConstants.BUTTONS.danger.dark};
     }
@@ -98,6 +105,7 @@ const contained = css<Props>`
     background-color: ${StyleConstants.BUTTONS.neutral.main};
     color: ${StyleConstants.BUTTONS.neutral.textColor};
 
+    &:focus,
     &:hover {
       background-color: ${StyleConstants.BUTTONS.neutral.dark};
     }
@@ -111,6 +119,7 @@ const outlined = css<Props>`
     border-color: ${StyleConstants.BUTTONS.primary.main};
     color: ${StyleConstants.BUTTONS.mainTextColor};
 
+    &:focus,
     &:hover {
       border-color: ${StyleConstants.BUTTONS.primary.dark};
     }
@@ -121,6 +130,7 @@ const outlined = css<Props>`
     border-color: ${StyleConstants.BUTTONS.secondary.main};
     color: ${StyleConstants.BUTTONS.mainTextColor};
 
+    &:focus,
     &:hover {
       border-color: ${StyleConstants.BUTTONS.secondary.dark};
     }
@@ -132,6 +142,7 @@ const outlined = css<Props>`
     border-color: ${StyleConstants.BUTTONS.danger.main};
     color: ${StyleConstants.BUTTONS.danger.main};
 
+    &:focus,
     &:hover {
       border-color: ${StyleConstants.BUTTONS.danger.dark};
       color: ${StyleConstants.BUTTONS.danger.dark};
@@ -144,6 +155,7 @@ const outlined = css<Props>`
     border-color: ${StyleConstants.BUTTONS.neutral.main};
     color: ${StyleConstants.BUTTONS.mainTextColor};
 
+    &:focus,
     &:hover {
       border-color: ${StyleConstants.BUTTONS.neutral.dark};
     }
@@ -154,12 +166,11 @@ const ButtonStyle = css<Props>`
   border: 1px solid transparent;
   text-decoration: none;
   text-align: center;
-  transition: outline 0.2s ease-in-out;
-  outline: 1px solid transparent;
-  border-radius: ${StyleConstants.BUTTON_RADIUS};
-  transition: all 0.2s ease;
+  outline: 0;
   cursor: pointer;
   font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+  border-radius: ${StyleConstants.BUTTON_RADIUS};
   width: ${p => (p.fullWidth ? '100%' : 'auto')};
 
   ${p =>
@@ -179,7 +190,7 @@ const ButtonStyle = css<Props>`
   ${p =>
     p.size === 'large' &&
     `
-    padding: 12px 20px;
+    padding: 15px 23px;
   `}
 
   ${p => p.variant === 'contained' && contained};
