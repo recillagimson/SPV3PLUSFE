@@ -3,11 +3,11 @@ import { ApiErrorState } from 'types/Default';
 /* --- STATE --- */
 export type ErrorState = ApiErrorState;
 
-export interface LoginState {
+export interface RegisterState {
   loading: boolean;
   error?: object;
   data: boolean;
   request: object | boolean;
 }
 
-export type ContainerState = LoginState;
+export type ContainerState = RegisterState;

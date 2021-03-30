@@ -28,7 +28,7 @@ const Wrapper = styled.span<Props>`
 export default function Logo(props: Props) {
   return (
     <Wrapper size={props.size || 'small'} isInline={props.isInline}>
-      <img src="/img/SPLogo.png" alt="SquidPay logo" />
+      <img src="./img/SPLogo.png" alt="SquidPay logo" />
     </Wrapper>
   );
 }

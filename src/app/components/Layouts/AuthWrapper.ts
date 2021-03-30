@@ -6,6 +6,7 @@ const Wrapper = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 110px;
   min-height: calc(100vh - 60px);
 
   .form-container {
@@ -41,6 +42,33 @@ const Wrapper = styled.section`
   .flex {
     display: flex;
     align-items: flex-start;
+  }
+
+  .agreement {
+    input[type='checkbox'],
+    span {
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    input[type='checkbox'] {
+      cursor: pointer;
+    }
+
+    span {
+      width: calc(100% - 25px);
+    }
+
+    a {
+      font-weight: 600;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 
   ${media.large`

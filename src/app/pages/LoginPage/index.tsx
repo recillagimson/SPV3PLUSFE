@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Loading from 'app/components/Loading';
@@ -12,34 +13,49 @@ import Button from 'app/components/Elements/Button';
 import A from 'app/components/Elements/A';
 
 import Wrapper from 'app/components/Layouts/AuthWrapper';
+// import { validateEmail } from 'app/components/Helpers';
 
 /** slice */
 import { useContainerSaga } from './slice';
 import { selectLoading, selectError, selectData } from './slice/selectors';
+import { validateEmail } from 'app/components/Helpers';
 
 export function LoginPage() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
+  const error: any = useSelector(selectError);
   const success = useSelector(selectData);
 
   const [email, setEmail] = React.useState({ value: '', error: false });
   const [password, setPassword] = React.useState({ value: '', error: false });
 
   React.useEffect(() => {
-    // do something is log in is successfull
-  }, [success]);
+    return () => {
+      dispatch(actions.getFetchReset()); // reset store state on unmount
+    };
+  }, [actions, dispatch]);
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
 
     let error = false;
+    let isEmail = false;
 
     if (email.value === '') {
       error = true;
       setEmail({ ...email, error: true });
     }
+
+    // if (email.value !== '' && !validateEmail(email.value)) {
+    //   error = true;
+    //   setEmail({ ...email, error: true });
+    // }
+
+    if (email.value !== '' && validateEmail(email.value)) {
+      isEmail = true;
+    }
+
     if (password.value === '') {
       error = true;
       setPassword({ ...password, error: true });
@@ -47,26 +63,53 @@ export function LoginPage() {
 
     if (!error) {
       const data = {
-        email: email.value,
+        email: isEmail ? email.value : undefined,
+        mobile_number: !isEmail ? email.value : undefined,
         password: password.value,
       };
-      console.log(data);
+
       // enable code below to integrate api
-      // dispatch(actions.getFetchLoading(data));
+      dispatch(actions.getFetchLoading(data));
     }
   };
+
+  let apiError: any;
+  if (error && Object.keys(error).length > 0) {
+    if (
+      error.response &&
+      (error.response.status === 422 || error.response.status === 401)
+    ) {
+      apiError = 'Invalid username/password. Please try again.';
+    }
+    if (
+      error.response &&
+      error.response.status !== 422 &&
+      error.response.status !== 401
+    ) {
+      apiError = error.response.statusText;
+    }
+    if (!error.response) {
+      apiError = error.message;
+    }
+  }
+
+  if (success) {
+    return <Redirect to="/dashboard" />;
+  }
 
   return (
     <Wrapper>
       <Helmet title="Login" />
       <div className="form-container">
-        <H1>We're glad you're back!</H1>
-        <p>Login to manage your account.</p>
+        <H1 margin="0 0 5px">We're glad you're back!</H1>
+        <Label>Login to manage your account.</Label>
 
         <form>
           {loading && <Loading position="absolute" />}
           <Field>
-            <Label>Email or Mobile No.</Label>
+            <Label>
+              Email or Mobile No. <i>*</i>
+            </Label>
             <Input
               type="text"
               value={email.value}
@@ -75,6 +118,7 @@ export function LoginPage() {
                 setEmail({ value: e.currentTarget.value, error: false })
               }
               placeholder="Email or Mobile No."
+              required
             />
             {email.error && (
               <ErrorMsg formError>
@@ -83,7 +127,9 @@ export function LoginPage() {
             )}
           </Field>
           <Field>
-            <Label>Password</Label>
+            <Label>
+              Password <i>*</i>
+            </Label>
             <Input
               type="password"
               value={password.value}
@@ -92,14 +138,15 @@ export function LoginPage() {
                 setPassword({ value: e.currentTarget.value, error: false })
               }
               placeholder="Password"
+              required
             />
             {password.error && (
               <ErrorMsg formError>* Please enter your password</ErrorMsg>
             )}
           </Field>
 
-          {error && (
-            <ErrorMsg formError>* Invalid email/mobile or password.</ErrorMsg>
+          {error && Object.keys(error).length > 0 && (
+            <ErrorMsg formError>* {apiError}</ErrorMsg>
           )}
 
           <Button
@@ -113,7 +160,7 @@ export function LoginPage() {
             LOGIN
           </Button>
           <Field className="text-center" margin="20px 0 10px">
-            Not yet a member? <A to="/">Sign up</A>
+            Not yet a member? <A to="/register">Sign up</A>
           </Field>
           <Field className="text-center">
             <A to="/">Forgot Password?</A>

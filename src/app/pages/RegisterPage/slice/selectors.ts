@@ -4,12 +4,7 @@ import { RootState } from 'types';
 import { initialState } from '.';
 
 // First select the relevant part from the state
-const selectDomain = (state: RootState) => state.global || initialState;
-
-export const selectUser = createSelector(
-  [selectDomain],
-  subState => subState.user,
-);
+const selectDomain = (state: RootState) => state.register || initialState;
 
 export const selectData = createSelector(
   [selectDomain],
@@ -29,19 +24,4 @@ export const selectError = createSelector(
 export const selectRequest = createSelector(
   [selectDomain],
   subState => subState.request,
-);
-
-export const selectIsAuthenticated = createSelector(
-  [selectDomain],
-  subState => subState.isAuthenticated,
-);
-
-export const selectToken = createSelector(
-  [selectDomain],
-  subState => subState.token,
-);
-
-export const selectSessionExpired = createSelector(
-  [selectDomain],
-  subState => subState.isSessionExpired,
 );

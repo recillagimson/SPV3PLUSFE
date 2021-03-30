@@ -2,6 +2,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from 'utils/@reduxjs/toolkit';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
+import { ClientTokenState } from 'types/Default';
 import { GlobalState } from './types';
 import { appSaga } from './saga';
 
@@ -13,29 +14,38 @@ export const initialState: GlobalState = {
   user: false,
   isAuthenticated: false,
   token: '',
+  isSessionExpired: false,
 };
 
 const slice = createSlice({
   name: 'global',
   initialState,
   reducers: {
-    getFetchLoading(state, action: PayloadAction<object | boolean>) {
+    getTokenLoading(state, action: PayloadAction) {
       state.loading = true;
       state.error = false;
       state.data = false;
-      state.request = action.payload;
     },
-    getFetchSuccess(state, action: PayloadAction<object>) {
+    getTokenSuccess(state, action: PayloadAction<ClientTokenState>) {
       state.loading = false;
       state.request = false;
-      state.user = action.payload;
+      state.token = action.payload;
     },
-    getFetchError(state, action: PayloadAction<object>) {
+    getTokenError(state, action: PayloadAction<ClientTokenState>) {
       state.error = action.payload;
       state.loading = false;
     },
-    getFetchReset(state, action: PayloadAction) {
-      state = initialState;
+    getTokenReset(state, action: PayloadAction) {
+      state.loading = false;
+      state.error = false;
+      state.data = false;
+      state.token = '';
+    },
+    getIsAuthenticated(state, action: PayloadAction<boolean>) {
+      state.isAuthenticated = action.payload;
+    },
+    getIsSessionExpired(state, action: PayloadAction<boolean>) {
+      state.isSessionExpired = action.payload;
     },
   },
 });

@@ -9,6 +9,7 @@ import {
   faEyeSlash,
   faAngleRight,
   faBell,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faEye, faEyeSlash, faAngleRight, faBell);
+library.add(faEye, faEyeSlash, faAngleRight, faBell, faTimes);

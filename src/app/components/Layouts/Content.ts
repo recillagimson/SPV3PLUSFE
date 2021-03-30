@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro';
+import { media } from 'styles/media';
 import { StyleConstants } from 'styles/StyleConstants';
 
 const Content = styled.div`
@@ -8,9 +9,14 @@ const Content = styled.div`
 
   &.authenticated {
     background-color: ${StyleConstants.BODY_COLOR};
-    margin-left: ${StyleConstants.SIDEBAR_WIDTH};
     padding: 30px;
   }
+
+  ${media.medium`
+    &.authenticated {
+      margin-left: ${StyleConstants.SIDEBAR_WIDTH};
+    }
+  `}
 `;
 
 export default Content;

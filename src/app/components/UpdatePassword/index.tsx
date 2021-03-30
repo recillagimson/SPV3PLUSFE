@@ -36,7 +36,7 @@ export default function UpdatePasswordComponent(props: Props) {
 
   React.useEffect(() => {
     if (success) {
-      console.log('success');
+      // console.log('success');
     }
   }, [success]);
 

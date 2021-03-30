@@ -13,7 +13,7 @@ export const initialState: ContainerState = {
 };
 
 const slice = createSlice({
-  name: 'login',
+  name: 'register',
   initialState,
   reducers: {
     getFetchLoading(state, action: PayloadAction<object>) {
@@ -29,9 +29,10 @@ const slice = createSlice({
     },
     getFetchError(state, action: PayloadAction<ErrorState>) {
       state.error = action.payload;
+      state.request = false;
       state.loading = false;
     },
-    getFetchReset(state, action: PayloadAction) {
+    getFetchReset(state) {
       state.loading = false;
       state.error = {};
       state.data = false;

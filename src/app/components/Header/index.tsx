@@ -18,7 +18,7 @@ export default function HeaderComponent({ isLoggedIn }: Props) {
     <Wrapper isLoggedIn={isLoggedIn}>
       <div className="wrapped">
         {!isLoggedIn && (
-          <img src="/img/SPLogo.png" alt="SquidPay" className="logo" />
+          <img src="./img/SPLogo.png" alt="SquidPay" className="logo" />
         )}
 
         {!isLoggedIn && (
@@ -32,19 +32,14 @@ export default function HeaderComponent({ isLoggedIn }: Props) {
             <ButtonLink as={NavLink} size="medium" to="/" color="secondary">
               Partner
             </ButtonLink>
-            <ButtonLink
-              as={NavLink}
-              size="medium"
-              to="/login"
-              color="secondary"
-            >
+            <ButtonLink as={NavLink} size="medium" to="/" color="secondary">
               Login
             </ButtonLink>
             <ButtonLink
-              size="large"
+              size="medium"
               to="/register"
               color="primary"
-              variant="contained"
+              variant="outlined"
             >
               Register
             </ButtonLink>

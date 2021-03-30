@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import { StyleConstants } from './StyleConstants';
 
 export const GlobalStyle = createGlobalStyle`
   html,
@@ -13,7 +14,7 @@ export const GlobalStyle = createGlobalStyle`
 
   body {
     background: #fff;
-    color: #526372;
+    color: ${StyleConstants.MAIN_TEXT};
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 16px;
     font-weight: 400;
