@@ -18,7 +18,7 @@ export default function HeaderComponent({ isLoggedIn }: Props) {
     <Wrapper isLoggedIn={isLoggedIn}>
       <div className="wrapped">
         {!isLoggedIn && (
-          <img src="/img/SPLogo.png" alt="SquidPay" className="logo" />
+          <img src="./img/SPLogo.png" alt="SquidPay" className="logo" />
         )}
 
         {!isLoggedIn && (

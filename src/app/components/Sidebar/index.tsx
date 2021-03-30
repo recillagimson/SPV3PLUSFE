@@ -27,8 +27,9 @@ export default function Sidebar() {
     // delete if not needed anymore
     dispatch(appActions.getTokenReset());
     dispatch(appActions.getIsAuthenticated(false));
+    const publicURL = process.env.PUBLIC_URL || '';
 
-    window.location.replace('/');
+    window.location.replace(`${publicURL}/`);
   };
 
   return (

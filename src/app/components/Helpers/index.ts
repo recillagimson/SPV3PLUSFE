@@ -2,6 +2,7 @@
  * Application Helpers
  */
 const regExEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+const regExMobile = /^0(9)\d{9}$/; // number must start with 0 followed by 9 and have 9 more digit after ie: 09171234567
 
 /**
  * Validate Email
@@ -11,6 +12,15 @@ const regExEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]
  */
 export function validateEmail(email: string = '') {
   return regExEmail.test(String(email).toLowerCase());
+}
+
+/**
+ * Validate Phone
+ * @param {string}  mobile
+ * @returns
+ */
+export function validatePhone(phone: string = '') {
+  return regExMobile.test(phone);
 }
 
 /**

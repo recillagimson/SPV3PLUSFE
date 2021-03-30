@@ -82,6 +82,7 @@ export function* getRequestPassphrase() {
   const options = {
     method: 'GET',
     headers: {
+      Accept: 'application/json',
       'content-type': 'application/json',
       Authorization: `Bearer ${token.access_token}`,
     },
@@ -108,6 +109,7 @@ export function* getResponsePassphrase(id: string) {
   const options = {
     method: 'GET',
     headers: {
+      Accept: 'application/json',
       'content-type': 'application/json',
       Authorization: `Bearer ${token.access_token}`,
     },

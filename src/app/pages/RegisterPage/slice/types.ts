@@ -6,7 +6,7 @@ export type ErrorState = ApiErrorState;
 export interface RegisterState {
   loading: boolean;
   error?: object;
-  data: object | boolean;
+  data: boolean;
   request: object | boolean;
 }
 

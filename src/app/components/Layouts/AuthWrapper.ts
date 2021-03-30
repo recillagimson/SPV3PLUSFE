@@ -6,6 +6,7 @@ const Wrapper = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 110px;
   min-height: calc(100vh - 60px);
 
   .form-container {

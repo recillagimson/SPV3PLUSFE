@@ -39,6 +39,7 @@ export default function DialogComponent({
   onClick,
   onClose,
 }: Props) {
+  const nodeRef = React.useRef(null);
   let buttons: boolean = false;
   let okButton: React.ReactNode | undefined;
   let cancelButton: React.ReactNode | undefined;
@@ -71,10 +72,11 @@ export default function DialogComponent({
       in={show}
       timeout={300}
       classNames="dialog"
+      nodeRef={nodeRef}
       mountOnEnter
       unmountOnExit
     >
-      <Wrapper>
+      <Wrapper ref={nodeRef}>
         <div className="dialog-child">
           {title && <Title>{title}</Title>}
           <div className="dialog-content">

@@ -13,6 +13,7 @@ const ErrorMsg = styled.span<Props>`
   text-align: ${p => (p.align ? p.align : 'left')};
   font-size: ${p => (p.formError ? '0.75rem' : 'inherit')};
   color: ${p => (p.formError ? StyleConstants.BUTTONS.danger.main : 'inherit')};
+  white-space: pre-wrap;
 `;
 
 export default ErrorMsg;

@@ -8,6 +8,7 @@ const Wrapper = styled.header<Props>`
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 999;
   width: 100%;
   background-color: ${StyleConstants.WHITE};
   box-shadow: ${StyleConstants.BOX_SHADOW};

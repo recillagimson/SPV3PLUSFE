@@ -2,11 +2,9 @@ import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
 import CryptoJS from 'crypto-js';
-
 import encDec from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
-
 import { appActions } from 'app/App/slice';
 import { selectToken } from 'app/App/slice/selectors';
 import {
