@@ -28,20 +28,20 @@ export const selectRequest = createSelector(
 
 export const selectVerifyData = createSelector(
   [selectDomain],
-  subState => subState.data,
+  subState => subState.verify.data,
 );
 
 export const selectVerifyLoading = createSelector(
   [selectDomain],
-  subState => subState.loading,
+  subState => subState.verify.loading,
 );
 
 export const selectVerifyError = createSelector(
   [selectDomain],
-  subState => subState.error,
+  subState => subState.verify.error,
 );
 
 export const selectVerifyRequest = createSelector(
   [selectDomain],
-  subState => subState.request,
+  subState => subState.verify.request,
 );

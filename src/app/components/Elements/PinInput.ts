@@ -6,10 +6,14 @@ import { StyleConstants } from 'styles/StyleConstants';
 const PinInputStyle = {
   borderRadius: StyleConstants.BUTTON_RADIUS,
   backgroundColor: StyleConstants.GRAY_BG,
-  border: 0,
-  font: 'small-caption',
-  fontSize: '1rem',
-  margin: '3px 8px',
+  fontFamily: 'monospace',
+  mozAppearance: 'textfield',
+  webkitAppearance: 'textfield',
+  border: '1px solid',
+  margin: '4px',
+  width: '36px',
+  height: '42px',
+  fontSize: '32px',
 };
 
 export default PinInputStyle;

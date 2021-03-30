@@ -79,8 +79,51 @@ const Wrapper = styled.section`
   }
 
   .code {
-    .pincode-input-container {
-      text-align: center;
+    text-align: center;
+
+    .pin-input {
+      input {
+        border-radius: ${StyleConstants.BUTTON_RADIUS};
+        background-color: ${StyleConstants.GRAY_BG};
+        appearance: textfield;
+        border: 1px solid transparent;
+        margin: 2px 5px;
+        font-size: 1.25rem;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        outline: 0;
+
+        &:hover,
+        &:focus {
+          border-color: ${StyleConstants.GOLD};
+        }
+
+        &[data-valid='false'] {
+          background-color: transparent;
+          color: #ff645e;
+          border-color: #ff645e;
+        }
+      }
+    }
+  }
+
+  .link {
+    color: inherit;
+    transition: all 0.3s ease-in-out;
+    text-decoration: underline;
+    border: 0;
+    outline: 0;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+
+    &:hover {
+      opacity: 0.9;
+      text-decoration: none;
     }
   }
 
