@@ -10,6 +10,7 @@ import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
 import A from 'app/components/Elements/A';
 import Flex from 'app/components/Elements/Flex';
+import Textarea from 'app/components/Elements/Textarea';
 
 import Wrapper from './Wrapper';
 
@@ -107,14 +108,13 @@ export function SendMoney() {
 
           <Field>
             <Label>Message (Optional)</Label>
-            <Input
-              type="text"
+            <Textarea
               value={message.value}
               autoComplete="off"
               onChange={e =>
                 setMessage({ value: e.currentTarget.value, error: false })
               }
-            />
+            ></Textarea>
           </Field>
         </Card>
       </Wrapper>

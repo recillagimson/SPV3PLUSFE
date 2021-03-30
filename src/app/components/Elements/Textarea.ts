@@ -1,14 +1,11 @@
-/**
- * Input Element
- * NOTE: this element should always be in full width,
- *       to make this element in an inline manner, wrap it in a element
- *       common style use for input element
- *       extend this style if necessary
- */
+// Textarea styled component
+
 import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
-const Input = styled.input`
+const Textarea = styled.textarea`
+  height: 5em;
+  resize: none;
   background-color: ${StyleConstants.WHITE};
   border-radius: ${StyleConstants.BORDER_RADIUS};
   border: 1px solid ${StyleConstants.BORDER_COLOR};
@@ -20,9 +17,9 @@ const Input = styled.input`
   font-size: inherit;
 
   &:focus {
-    border-radius: ${StyleConstants.BORDER_RADIUS};
     border: 1px solid ${StyleConstants.GOLD};
+    border-radius: ${StyleConstants.BORDER_RADIUS};
   }
 `;
 
-export default Input;
+export default Textarea;
