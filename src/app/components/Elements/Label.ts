@@ -6,6 +6,12 @@ const Label = styled.label`
   font-size: 0.9rem;
   margin: 0 0 5px;
   display: block;
+
+  i {
+    font-style: normal;
+    font-size: 0.9em;
+    color: ${StyleConstants.BUTTONS.danger.main};
+  }
 `;
 
 export default Label;

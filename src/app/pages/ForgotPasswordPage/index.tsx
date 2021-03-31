@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/**
+ * Forgot Password Page
+ */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ReactCodeInput from 'react-code-input';
 
 import Loading from 'app/components/Loading';
 import H1 from 'app/components/Elements/H1';
@@ -13,54 +14,40 @@ import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
-import A from 'app/components/Elements/A';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Flex from 'app/components/Elements/Flex';
 
-import Dialog from 'app/components/Dialog';
 import Wrapper from 'app/components/Layouts/AuthWrapper';
-
-// pin styles
-import PinInputStyle from 'app/components/Elements/PinInput';
 
 import { validateEmail, validatePhone } from 'app/components/Helpers';
 
+import VerifyOTP from 'app/components/VerifyOTP';
+import UpdatePassword from 'app/components/UpdatePassword';
+
 /** slice */
 import { useContainerSaga } from './slice';
-import {
-  selectLoading,
-  selectError,
-  selectData,
-  selectVerifyLoading,
-  selectVerifyError,
-  selectVerifyData,
-} from './slice/selectors';
+import { selectLoading, selectError, selectData } from './slice/selectors';
 
 export function ForgotPasswordPage() {
-  const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
 
-  const verifyLoading = useSelector(selectVerifyLoading);
-  const verifyError: any = useSelector(selectVerifyError);
-  const verifySuccess = useSelector(selectVerifyData);
-
   const [subTitle, setSubTitle] = React.useState(
     'We got you! Let us know which contact detail should we use to reset your password',
   );
+  const [showChoose, setShowChoose] = React.useState(true);
   const [showMobile, setShowMobile] = React.useState(false);
   const [showEmail, setShowEmail] = React.useState(false);
   const [showVerify, setShowVerify] = React.useState(false);
+  const [showUpdate, setShowUpdate] = React.useState(false);
+  const [showSuccess, setShowSuccess] = React.useState(false);
   const [isEmail, setIsEmail] = React.useState(false);
-
-  const [isCodeValid, setIsCodeValid] = React.useState(true); // set to true
 
   const [email, setEmail] = React.useState({ value: '', error: false });
   const [mobile, setMobile] = React.useState({ value: '', error: false });
-  const [code, setCode] = React.useState({ value: '', error: false });
 
   React.useEffect(() => {
     return () => {
@@ -79,16 +66,12 @@ export function ForgotPasswordPage() {
       setShowVerify(true);
       setShowEmail(false);
       setShowMobile(false);
+      dispatch(actions.getFetchReset());
     }
   }, [success]);
 
-  React.useEffect(() => {
-    if (verifyError && Object.keys(verifyError).length > 0) {
-      setIsCodeValid(false);
-    }
-  }, [verifyError]);
-
   const onClickViaSms = () => {
+    setShowChoose(false);
     setShowMobile(true);
     setIsEmail(false);
     setSubTitle(
@@ -97,10 +80,25 @@ export function ForgotPasswordPage() {
   };
 
   const onClickEmail = () => {
+    setShowChoose(false);
     setShowEmail(true);
     setIsEmail(true);
     setSubTitle(
       "Simply enter your email associated with your account and we'll send you the code",
+    );
+  };
+
+  const onSuccessVerify = () => {
+    setShowVerify(false);
+    setShowUpdate(true);
+  };
+
+  const onSuccessUpdate = () => {
+    setShowUpdate(false);
+    setShowSuccess(true);
+    setIsEmail(false);
+    setSubTitle(
+      "All set! You've successfully reset your password. Please try logging in again.",
     );
   };
 
@@ -151,39 +149,28 @@ export function ForgotPasswordPage() {
   };
 
   const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (e && e.preventDefault) e.preventDefault();
-    const data = {
-      mobile_number: !isEmail ? mobile.value : undefined,
-      email: isEmail ? email.value : undefined,
-    };
-    dispatch(actions.getFetchLoading(data));
+    // send the previous entered information if this is the approach for this
+    // if (e && e.preventDefault) e.preventDefault();
+    // const data = {
+    //   mobile_number: !isEmail ? mobile.value : undefined,
+    //   email: isEmail ? email.value : undefined,
+    // };
+    // dispatch(actions.getFetchLoading(data));
+
+    // redirect user to choosing via sms or email code sending
+    setShowChoose(true);
+    setShowVerify(false);
+    setShowEmail(false);
+    setShowMobile(false);
+    setIsEmail(false);
+    setEmail({ value: '', error: false });
+    setMobile({ value: '', error: false });
   };
 
-  const onChangePin = (val: any) => {
-    console.log(val);
-    setCode({ value: val, error: false });
-  };
-
-  const onSubmitVerify = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    if (e && e.preventDefault) e.preventDefault();
-    let error = false;
-
-    if (!error) {
-      const data = {
-        code_type: 'password_recovery',
-        mobile_number: !isEmail ? mobile.value : undefined,
-        email: isEmail ? email.value : undefined,
-        code: isEmail ? code.value : undefined,
-      };
-      dispatch(actions.getVerifyLoading(data));
-    }
-  };
-
-  const onClickVerifySuccess = () => {
-    dispatch(actions.getFetchReset());
-    dispatch(actions.getVerifyReset());
+  const gotoLogin = () => {
+    setEmail({ value: '', error: false });
+    setMobile({ value: '', error: false });
+    window.location.replace('/');
   };
 
   return (
@@ -191,19 +178,22 @@ export function ForgotPasswordPage() {
       <Helmet title="Forgot Password" />
       <div className="form-container">
         {loading && <Loading position="absolute" />}
-        {verifyLoading && <Loading position="absolute" />}
 
         <div className="text-center">
           <CircleIndicator size="large">
-            <FontAwesomeIcon icon="lock" />
+            <FontAwesomeIcon icon={showSuccess ? 'check' : 'lock'} />
           </CircleIndicator>
         </div>
 
         <H1 className="text-center" margin="20px 0 0">
-          {showVerify ? 'Enter 4-Digit recovery code' : 'Forgot Password?'}
+          {showVerify
+            ? 'Enter 4-Digit recovery code'
+            : showSuccess
+            ? 'Password reset successful'
+            : 'Forgot Password?'}
         </H1>
         <p className="text-center">{subTitle}</p>
-        {!showVerify && !showMobile && !showEmail && (
+        {showChoose && (
           <div className="content">
             <Flex alignItems="center" justifyContent="center">
               <Button
@@ -312,41 +302,12 @@ export function ForgotPasswordPage() {
         )}
         {showVerify && (
           <div className="content">
-            <Field className="code">
-              <ReactCodeInput
-                name="verify"
-                inputMode="numeric"
-                type="text"
-                fields={4}
-                onChange={onChangePin}
-                className="pin-input"
-                isValid={isCodeValid}
-              />
-              {email.error && (
-                <ErrorMsg formError>
-                  * Please enter your email address and in valid format
-                </ErrorMsg>
-              )}
-            </Field>
-            {verifyError && Object.keys(verifyError).length > 0 && (
-              <ErrorMsg formError>
-                *{' '}
-                {verifyError.code && verifyError.code === 422
-                  ? verifyError.errors.code.join(' ')
-                  : verifyError.message}
-              </ErrorMsg>
-            )}
-
-            <Button
-              type="submit"
-              onClick={onSubmitVerify}
-              color="primary"
-              fullWidth={true}
-              size="large"
-              variant="contained"
-            >
-              VERIFY
-            </Button>
+            <VerifyOTP
+              mount={showVerify}
+              onSuccess={onSuccessVerify}
+              isEmail={isEmail}
+              viaValue={isEmail ? email.value : mobile.value}
+            />
 
             <Field className="text-center" margin="20px 0 10px">
               Need a new code?{' '}
@@ -356,15 +317,31 @@ export function ForgotPasswordPage() {
             </Field>
           </div>
         )}
+        {showUpdate && (
+          <div className="content">
+            <UpdatePassword
+              mount={showUpdate}
+              onSuccess={onSuccessUpdate}
+              isEmail={isEmail}
+              viaValue={isEmail ? email.value : mobile.value}
+            />
+          </div>
+        )}
+        {showSuccess && (
+          <div className="content">
+            <Button
+              type="button"
+              onClick={gotoLogin}
+              color="primary"
+              fullWidth={true}
+              size="large"
+              variant="contained"
+            >
+              LOGIN
+            </Button>
+          </div>
+        )}
       </div>
-
-      <Dialog
-        show={verifySuccess}
-        onClick={onClickVerifySuccess}
-        okText="OK"
-        message="You have successfully registered your account. Click OK to go to the Login Page."
-        title="REGISTRATION SUCCESS"
-      />
     </Wrapper>
   );
 }

@@ -16,7 +16,11 @@ import A from 'app/components/Elements/A';
 import Dialog from 'app/components/Dialog';
 import Wrapper from 'app/components/Layouts/AuthWrapper';
 
-import { validateEmail, validatePhone } from 'app/components/Helpers';
+import {
+  validateEmail,
+  validatePhone,
+  regExStrongPassword,
+} from 'app/components/Helpers';
 
 /** slice */
 import { useContainerSaga } from './slice';
@@ -133,8 +137,21 @@ export function RegisterPage() {
     ) {
       error = true;
       setPassError(
-        "Your password and confirm password doesn't match. Please try again",
+        'Your password and confirm password did not match. Please enter again',
       );
+    }
+
+    if (
+      password.value !== '' &&
+      confirmPassword.value !== '' &&
+      password.value === confirmPassword.value
+    ) {
+      if (!regExStrongPassword.test(password.value)) {
+        error = true;
+        setPassError(
+          'Your password is too short and weak. A minimum of 12 characters and with a least one uppercase and lowercase alphabet, numeric and special character is needed',
+        );
+      }
     }
 
     if (!agree.value) {
@@ -151,14 +168,14 @@ export function RegisterPage() {
         password_confirmation: password.value,
       };
 
-      // enable code below to integrate api
+      // pass payload to saga
       dispatch(actions.getFetchLoading(data));
     }
   };
 
   const onClickSuccess = () => {
-    dispatch(actions.getFetchReset());
-    history.push('/');
+    dispatch(actions.getFetchReset()); // reset stote state first
+    history.push('/'); // redirect to home
   };
 
   return (

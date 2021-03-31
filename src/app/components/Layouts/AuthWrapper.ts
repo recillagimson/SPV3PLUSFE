@@ -1,7 +1,6 @@
 import styled from 'styled-components/macro';
 
 import { media } from 'styles/media';
-import { StyleConstants } from 'styles/StyleConstants';
 
 const Wrapper = styled.section`
   display: flex;
@@ -15,10 +14,6 @@ const Wrapper = styled.section`
     border-radius: 20px;
     min-width: 300px;
     max-width: 95%;
-  }
-
-  .content {
-    padding: 0 25px;
   }
 
   .content,
@@ -44,6 +39,12 @@ const Wrapper = styled.section`
     span {
       font-size: 0.85rem;
     }
+  }
+
+  .content {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .flex {
@@ -80,32 +81,6 @@ const Wrapper = styled.section`
 
   .code {
     text-align: center;
-
-    .pin-input {
-      input {
-        border-radius: ${StyleConstants.BUTTON_RADIUS};
-        background-color: ${StyleConstants.GRAY_BG};
-        appearance: textfield;
-        border: 1px solid transparent;
-        margin: 2px 5px;
-        font-size: 1.25rem;
-        width: 50px;
-        height: 50px;
-        text-align: center;
-        outline: 0;
-
-        &:hover,
-        &:focus {
-          border-color: ${StyleConstants.GOLD};
-        }
-
-        &[data-valid='false'] {
-          background-color: transparent;
-          color: #ff645e;
-          border-color: #ff645e;
-        }
-      }
-    }
   }
 
   .link {

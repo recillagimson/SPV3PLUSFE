@@ -2,7 +2,7 @@
 export interface UpdatePasswordState {
   loading: boolean;
   error?: object | boolean;
-  data: object | boolean;
+  data: boolean;
   request: object | boolean;
 }
 

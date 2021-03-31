@@ -1,4 +1,4 @@
-import { call, put, select, takeLatest, delay } from 'redux-saga/effects';
+import { delay, call, put, select, takeLatest } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
 import CryptoJS from 'crypto-js';
@@ -8,19 +8,19 @@ import { PassphraseState } from 'types/Default';
 import { selectToken } from 'app/App/slice/selectors';
 import { getRequestPassphrase } from 'app/App/slice/saga';
 
+import { containerActions as actions } from '.';
 import { selectRequest } from './selectors';
-import { appActions as actions } from '.';
 
 /**
- * Global function for user data or other data
+ * Verify Code
  */
-function* getUpdatePassword() {
+function* getVerifyCode() {
   yield delay(500);
 
   const token = yield select(selectToken);
-  const payload: object = yield select(selectRequest);
+  const payload = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/auth/reset/password`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/api/auth/verify`;
 
   let encryptPayload: string = '';
 
@@ -45,10 +45,8 @@ function* getUpdatePassword() {
   };
 
   try {
-    // Call our request helper (see 'utils/request')
     const apirequest = yield call(request, requestURL, options);
-
-    if (apirequest) {
+    if (apirequest && apirequest.status && apirequest.status === 'success') {
       yield put(actions.getFetchSuccess(true));
     } else {
       yield put(
@@ -66,7 +64,6 @@ function* getUpdatePassword() {
         code: 422,
         ...body,
       };
-      console.log(newError);
       yield put(actions.getFetchError(newError));
     } else {
       yield put(actions.getFetchError(err));
@@ -78,9 +75,9 @@ function* getUpdatePassword() {
  * Root saga manages watcher lifecycle
  */
 export function* componentSaga() {
-  // Watches for loadRepos actions and calls getRepos when one comes in.
+  // Watches for  actions and calls the function associated with it when one comes in.
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
-  yield takeLatest(actions.getFetchLoading.type, getUpdatePassword);
+  yield takeLatest(actions.getFetchLoading.type, getVerifyCode);
 }

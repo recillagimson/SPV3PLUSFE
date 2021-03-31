@@ -3,6 +3,7 @@
  * For use with the Font Awesome icons
  */
 import styled from 'styled-components';
+import { StyleConstants } from 'styles/StyleConstants';
 
 const IconButton = styled.button`
   width: 36px;
@@ -10,16 +11,18 @@ const IconButton = styled.button`
   line-height: 36px;
   padding: 0 0;
   border: none;
-  transition: 0.3s;
-  background-color: #efefef;
+  background-color: transparent;
+  transition: 0.3s ease;
   border-radius: 50%;
   cursor: pointer;
   outline: 0;
   font-size: 0.9rem;
+  color: #a9b1b8;
 
   &:hover,
   &:focus {
-    background-color: #ccc;
+    background-color: ${StyleConstants.GRAY_BG};
+    color: inherit;
   }
 `;
 

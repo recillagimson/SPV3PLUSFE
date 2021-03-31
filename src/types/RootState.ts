@@ -8,6 +8,7 @@ import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
+import { VerifyOTPState } from 'app/components/VerifyOTP/slice/types';
 
 /* 
   Because the redux-injectors injects your reducers asynchronously somewhere in your code
@@ -18,6 +19,7 @@ export interface RootState {
   login?: LoginState;
   register?: RegisterState;
   forgotPassword: ForgotPasswordState;
+  verifyOTP: VerifyOTPState;
   updatePassword?: UpdatePasswordState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

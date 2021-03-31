@@ -5,6 +5,7 @@
  */
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
+  faCheck,
   faEye,
   faEyeSlash,
   faAngleRight,
@@ -16,6 +17,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
+  faCheck,
   faEye,
   faEyeSlash,
   faAngleRight,
