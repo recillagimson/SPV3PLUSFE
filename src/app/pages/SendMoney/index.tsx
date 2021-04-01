@@ -30,7 +30,7 @@ export function SendMoney() {
       error = true;
       setEmail({ ...email, error: true });
     }
-    if (amount.value === '') {
+    if (parseFloat(amount.value) <= 0) {
       error = true;
       setAmount({ ...amount, error: true });
     }
@@ -43,7 +43,7 @@ export function SendMoney() {
     if (!error) {
       const data = {
         email: email.value,
-        amount: amount.value,
+        amount: parseFloat(amount.value),
         message: message.value,
       };
       console.log(data);
@@ -72,7 +72,6 @@ export function SendMoney() {
     <>
       <Helmet>
         <title>Send Money</title>
-        <meta name="description" content="A Boilerplate application homepage" />
       </Helmet>
 
       <Wrapper>
@@ -118,43 +117,6 @@ export function SendMoney() {
           </Field>
         </Card>
       </Wrapper>
-
-      {/* <Wrapper>
-        <Card>
-          <div className="card-header">
-            <h3>Send Money</h3>
-          </div>
-
-          <div className="card-body">
-            <Field>
-              <Label>Send to</Label>
-              <Input type="text" placeholder="Email or Mobile No." />
-            </Field>
-
-            <Field>
-              <Label>Amount</Label>
-              <Input type="text" placeholder="0.00" />
-            </Field>
-
-            <Field>
-              <Label>Description (Optional)</Label>
-              <Input type="text" placeholder="Message" />
-            </Field>
-
-            <div className="button-right">
-              <Button
-                type="submit"
-                color="primary"
-                fullWidth={false}
-                size="large"
-                variant="contained"
-              >
-                SEND
-              </Button>
-            </div>
-          </div>
-        </Card>
-      </Wrapper> */}
     </>
   );
 }

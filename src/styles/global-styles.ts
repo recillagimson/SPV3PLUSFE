@@ -64,4 +64,36 @@ export const GlobalStyle = createGlobalStyle`
   .text-justify {
     text-align: justify;
   }
+
+  .ml-1{
+    margin-left: 0.2em;
+  }
+  .ml-2{
+    margin-left: 0.4em;
+  }
+  .ml-3{
+    margin-left: 0.6em;
+  }
+  .ml-4{
+    margin-left: 0.8em;
+  }
+  .ml-5{
+    margin-left: 1em;
+  }
+
+  .mr-1{
+    margin-right: 0.2em;
+  }
+  .mr-2{
+    margin-right: 0.4em;
+  }
+  .mr-3{
+    margin-right: 0.6em;
+  }
+  .mr-4{
+    margin-right: 0.8em;
+  }
+  .mr-5{
+    margin-right: 1em;
+  }
 `;

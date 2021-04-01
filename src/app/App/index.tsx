@@ -26,6 +26,8 @@ import { LoginPage } from 'app/pages/LoginPage/Loadable';
 
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
+import { ScanQR } from 'app/pages/ScanQR/Loadable';
+import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 
 /** selectors, slice */
 // import { useAppSaga } from './slice';
@@ -77,6 +79,8 @@ export function App() {
             />
             <Route path="/dashboard" component={HomePage} />
             <Route path="/SendMoney" component={SendMoney} />
+            <Route path="/ScanQR" component={ScanQR} />
+            <Route path="/OnlineBank" component={OnlineBank} />
             <Route component={NotFoundPage} />
           </Switch>
           <Footer />
