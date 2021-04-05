@@ -11,7 +11,7 @@ const SidebarWrapper = styled.aside`
   width: ${StyleConstants.SIDEBAR_WIDTH};
   background-color: ${StyleConstants.WHITE};
   box-shadow: 0px 12px 15px rgba(140, 152, 164, 0.05);
-  z-index: 100;
+  z-index: 1000;
   padding: 30px 15px;
   display: flex;
   flex-direction: column;
