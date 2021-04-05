@@ -23,7 +23,13 @@ export default function HeaderComponent({ isLoggedIn }: Props) {
 
         {!isLoggedIn && (
           <Navigation>
-            <ButtonLink as={NavLink} size="medium" to="/" color="secondary">
+            <ButtonLink
+              as={NavLink}
+              size="large"
+              to="/"
+              color="secondary"
+              variant="outlined"
+            >
               User
             </ButtonLink>
             <ButtonLink as={NavLink} size="medium" to="/" color="secondary">

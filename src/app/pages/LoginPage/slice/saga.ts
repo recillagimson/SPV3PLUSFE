@@ -27,6 +27,8 @@ function* getLogin() {
 
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
 
+  console.log(requestPhrase);
+
   if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
     encryptPayload = CryptoJS.AES.encrypt(
       JSON.stringify(payload),

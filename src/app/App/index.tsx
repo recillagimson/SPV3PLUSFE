@@ -50,7 +50,9 @@ export function App() {
   }, [actions, dispatch]);
 
   const onClickSessionExpired = () => {
-    window.location.replace('/');
+    const publicURL = process.env.PUBLIC_URL || '';
+
+    window.location.replace(`${publicURL}/`);
     dispatch(actions.getIsAuthenticated(false));
     dispatch(actions.getIsSessionExpired(false));
   };
