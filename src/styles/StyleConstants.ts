@@ -26,6 +26,10 @@ export const StyleConstants = Object.freeze({
       main: '#FF645E',
       textColor: '#FFFFFF',
     },
+    white: {
+      dark: '#21262c',
+      main: '#39434d',
+    },
     mainTextColor: '#38434D',
   },
   BODY_COLOR: '#D9E6F2',

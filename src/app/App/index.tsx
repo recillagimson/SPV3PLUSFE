@@ -28,6 +28,8 @@ import { LoginPage } from 'app/pages/LoginPage/Loadable';
 import { RegisterPage } from 'app/pages/RegisterPage/Loadable';
 import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
+import { ScanQR } from 'app/pages/ScanQR/Loadable';
+import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 
 import PrivateRoute from './PrivateRoute';
 
@@ -83,10 +85,10 @@ export function App() {
               component={CardMemberAgreementPage}
             />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
-
-            <Route path="/SendMoney" component={SendMoney} />
             <PrivateRoute exact path="/dashboard" component={DashboardPage} />
-
+            <Route path="/SendMoney" component={SendMoney} />
+            <Route path="/ScanQR" component={ScanQR} />
+            <Route path="/OnlineBank" component={OnlineBank} />
             <Route component={NotFoundPage} />
           </Switch>
           <Footer />

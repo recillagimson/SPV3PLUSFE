@@ -68,28 +68,61 @@ export const GlobalStyle = createGlobalStyle`
 
   /** pin input styles */
   .pin-input {
-      input {
-        border-radius: ${StyleConstants.BUTTON_RADIUS};
-        background-color: ${StyleConstants.GRAY_BG};
-        appearance: textfield;
-        border: 1px solid transparent;
-        margin: 2px 5px;
-        font-size: 1.25rem;
-        width: 50px;
-        height: 50px;
-        text-align: center;
-        outline: 0;
+    input {
+      border-radius: ${StyleConstants.BUTTON_RADIUS};
+      background-color: ${StyleConstants.GRAY_BG};
+      appearance: textfield;
+      border: 1px solid transparent;
+      margin: 2px 5px;
+      font-size: 1.25rem;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      outline: 0;
 
-        &:hover,
-        &:focus {
-          border-color: ${StyleConstants.GOLD};
-        }
+      &:hover,
+      &:focus {
+        border-color: ${StyleConstants.GOLD};
+      }
 
-        &[data-valid='false'] {
-          background-color: transparent;
-          color: ${StyleConstants.BUTTONS.danger.main};
-          border-color: ${StyleConstants.BUTTONS.danger.main};
-        }
+      &[data-valid='false'] {
+        background-color: transparent;
+        color: ${StyleConstants.BUTTONS.danger.main};
+        border-color: ${StyleConstants.BUTTONS.danger.main};
       }
     }
+  }
+
+  /** margins */
+  .ml-1{
+    margin-left: 0.2em;
+  }
+  .ml-2{
+    margin-left: 0.4em;
+  }
+  .ml-3{
+    margin-left: 0.6em;
+  }
+  .ml-4{
+    margin-left: 0.8em;
+  }
+  .ml-5{
+    margin-left: 1em;
+  }
+
+  .mr-1{
+    margin-right: 0.2em;
+  }
+  .mr-2{
+    margin-right: 0.4em;
+  }
+  .mr-3{
+    margin-right: 0.6em;
+  }
+  .mr-4{
+    margin-right: 0.8em;
+  }
+  .mr-5{
+    margin-right: 1em;
+  }
 `;
