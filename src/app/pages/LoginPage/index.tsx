@@ -13,12 +13,11 @@ import Button from 'app/components/Elements/Button';
 import A from 'app/components/Elements/A';
 
 import Wrapper from 'app/components/Layouts/AuthWrapper';
-// import { validateEmail } from 'app/components/Helpers';
+import { validateEmail, regExStrongPassword } from 'app/components/Helpers';
 
 /** slice */
 import { useContainerSaga } from './slice';
 import { selectLoading, selectError, selectData } from './slice/selectors';
-import { validateEmail } from 'app/components/Helpers';
 
 export function LoginPage() {
   const { actions } = useContainerSaga();
@@ -28,7 +27,11 @@ export function LoginPage() {
   const success = useSelector(selectData);
 
   const [email, setEmail] = React.useState({ value: '', error: false });
-  const [password, setPassword] = React.useState({ value: '', error: false });
+  const [password, setPassword] = React.useState({
+    value: '',
+    error: false,
+    isWeak: false,
+  });
 
   React.useEffect(() => {
     return () => {
@@ -59,6 +62,11 @@ export function LoginPage() {
     if (password.value === '') {
       error = true;
       setPassword({ ...password, error: true });
+    }
+
+    if (password.value !== '' && !regExStrongPassword.test(password.value)) {
+      error = true;
+      setPassword({ ...password, error: false, isWeak: true });
     }
 
     if (!error) {
@@ -135,13 +143,24 @@ export function LoginPage() {
               value={password.value}
               autoComplete="off"
               onChange={e =>
-                setPassword({ value: e.currentTarget.value, error: false })
+                setPassword({
+                  value: e.currentTarget.value,
+                  error: false,
+                  isWeak: false,
+                })
               }
               placeholder="Password"
               required
             />
             {password.error && (
               <ErrorMsg formError>* Please enter your password</ErrorMsg>
+            )}
+            {password.isWeak && (
+              <ErrorMsg formError>
+                * You have entered a short and weak password, password must be a
+                minimum of 12 characters and with at least one uppercase and
+                lowercase alphabet, numeric and special character.
+              </ErrorMsg>
             )}
           </Field>
 
