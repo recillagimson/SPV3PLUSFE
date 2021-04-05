@@ -149,7 +149,7 @@ export function RegisterPage() {
       if (!regExStrongPassword.test(password.value)) {
         error = true;
         setPassError(
-          'Your password is too short and weak. A minimum of 12 characters and with a least one uppercase and lowercase alphabet, numeric and special character is needed',
+          'Your password is too short and weak. A minimum of 12 characters and with at least one uppercase and lowercase alphabet, numeric and special character is needed',
         );
       }
     }
