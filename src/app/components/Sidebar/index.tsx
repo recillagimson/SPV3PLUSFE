@@ -6,27 +6,31 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 
 import Avatar from 'app/components/Elements/Avatar';
 import IconButton from 'app/components/Elements/IconButton';
+import { deleteCookie } from 'app/components/Helpers';
 
-import { appActions } from 'app/App/slice';
-
+// import { appActions } from 'app/App/slice';
 import Wrapper from './Wrapper';
 import Navigation from './Navigation';
 import NavButton from './NavButton';
 
 export default function Sidebar() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const [show, setShow] = React.useState(false);
 
   const onLogout = () => {
     // we might not need this next two lines, check the logging out scenario
     // delete if not needed anymore
-    dispatch(appActions.getTokenReset());
-    dispatch(appActions.getIsAuthenticated(false));
+    // dispatch(appActions.getTokenReset());
+    // dispatch(appActions.getIsAuthenticated(false));
+    deleteCookie('spv_uat_hmc');
+    deleteCookie('spv_uat');
+    deleteCookie('spv_expire');
+
     const publicURL = process.env.PUBLIC_URL || '';
 
     window.location.replace(`${publicURL}/`);

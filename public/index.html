@@ -29,13 +29,46 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@400;700&family=Merriweather:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="appMain"></div>
+    <div id="appMain">
+      <!-- Initial Style (Splash Screen )-->
+      <style rel="stylesheet">
+        .splash {
+          width: 100vw;
+          height: calc(100vh - 20px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: row;
+          background-image: url('./squid_logo.png');
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+        .copyright {
+          text-align: center;
+          align-self: flex-end;
+          color: #a9b1b8;
+          margin: 0 0;
+          padding: 10px;
+          width: 100%;
+          font-family: sans-serif;
+          font-size: 0.9rem;
+        }
+      </style>
+      <div class="splash">
+        <p class="copyright">&copy; SquidPay&nbsp;</p>
+        <script>
+          const copy = document.querySelector('.copyright');
+          const year = new Date().getFullYear();
+          copy.appendChild(document.createTextNode(year));
+        </script>
+      </div>
+    </div>
 
     <!--
       This HTML file is a template.

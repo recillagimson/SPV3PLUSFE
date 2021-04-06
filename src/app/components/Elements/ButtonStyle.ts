@@ -12,13 +12,15 @@ import { css } from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
 type Props = {
-  color?: 'default' | 'primary' | 'secondary' | 'danger' | 'white';
+  color?: 'default' | 'primary' | 'secondary' | 'danger';
   size?: 'small' | 'medium' | 'large';
   variant?: 'contained' | 'outlined' | 'default';
   fullWidth?: boolean;
 };
 
 const defaultstyle = css<Props>`
+  background-color: ${StyleConstants.WHITE};
+
   ${p =>
     p.color === 'primary' &&
     `
@@ -111,6 +113,8 @@ const contained = css<Props>`
 `;
 
 const outlined = css<Props>`
+  background-color: ${StyleConstants.WHITE};
+
   ${p =>
     p.color === 'primary' &&
     `
@@ -144,19 +148,6 @@ const outlined = css<Props>`
     &:hover {
       border-color: ${StyleConstants.BUTTONS.danger.dark};
       color: ${StyleConstants.BUTTONS.danger.dark};
-    }
-  `};
-  ${p =>
-    p.color === 'white' &&
-    `
-    background-color: ${StyleConstants.WHITE};
-    border-color: ${StyleConstants.BUTTONS.white.main};
-    color: ${StyleConstants.BUTTONS.mainTextColor};
-
-    &:hover {
-      border-color: ${StyleConstants.BUTTONS.white.dark};
-      background-color: ${StyleConstants.BUTTONS.white.main};
-      color: ${StyleConstants.WHITE};
     }
   `};
   ${p =>
@@ -200,7 +191,7 @@ const ButtonStyle = css<Props>`
   ${p =>
     p.size === 'large' &&
     `
-    padding: 15px 23px;
+    padding: 13px 20px;
   `}
 
   ${p => p.variant === 'contained' && contained};

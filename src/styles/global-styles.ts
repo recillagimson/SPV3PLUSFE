@@ -28,7 +28,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body.fontLoaded {
-    font-family: 'Merriweather Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Nunito', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 
   #appMain {

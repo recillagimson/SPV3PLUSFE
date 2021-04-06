@@ -1,7 +1,7 @@
 /**
  * Flex
- * @prop {string} justifyContent    Left, Center, Right
- * @prop {string} alignItems        Left, Center, Right
+ * @prop {string} justifyContent    valid css value ('flex-start' | 'flex-end' | 'center' | 'stretch')
+ * @prop {string} alignItems        valid css value ('flex-start' | 'flex-end' | 'center' | 'stretch')
  * @prop {sring}  direction         Flex direction, must be valid CSS value
  */
 

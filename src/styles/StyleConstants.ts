@@ -4,6 +4,7 @@ export const StyleConstants = Object.freeze({
   BORDER_RADIUS: '7px',
   BUTTON_RADIUS: '100px',
   MAX_WIDTH: '1170px',
+  PROTECTED_CONTENT_MAX_WIDTH: '950px',
   // colors
   BUTTONS: {
     primary: {
@@ -25,10 +26,6 @@ export const StyleConstants = Object.freeze({
       dark: '#ff0900',
       main: '#FF645E',
       textColor: '#FFFFFF',
-    },
-    white: {
-      dark: '#21262c',
-      main: '#39434d',
     },
     mainTextColor: '#38434D',
   },

@@ -1,14 +1,28 @@
 /**
  * Icon Button
  * For use with the Font Awesome icons
+ * @prop {string} size        'small' | 'medium' default: 'medium'
+ * @prop {string} color       'primary' | 'secondary' | 'default'
  */
 import styled from 'styled-components';
 import { StyleConstants } from 'styles/StyleConstants';
 
-const IconButton = styled.button`
-  width: 36px;
-  height: 36px;
-  line-height: 36px;
+type IconButtonProps = {
+  size?: 'small' | 'medium';
+  color?: 'primary' | 'secondary' | 'default';
+};
+
+const colors = {
+  primary: StyleConstants.BUTTONS.primary.main,
+  secondary: StyleConstants.BUTTONS.secondary.main,
+  default: StyleConstants.BUTTONS.neutral.main,
+};
+
+const IconButton = styled.button<IconButtonProps>`
+  width: ${p => (p.size === 'small' ? '26px' : '36px')};
+  height: ${p => (p.size === 'small' ? '26px' : '36px')};
+  line-height: ${p => (p.size === 'small' ? '28px' : '36px')};
+  text-align: center;
   padding: 0 0;
   border: none;
   background-color: transparent;
@@ -17,12 +31,14 @@ const IconButton = styled.button`
   cursor: pointer;
   outline: 0;
   font-size: 0.9rem;
-  color: #a9b1b8;
+  background-color: ${p => (p.color ? colors[p.color] : colors['default'])};
+  opacity: 0.7;
 
   &:hover,
   &:focus {
-    background-color: ${StyleConstants.GRAY_BG};
-    color: inherit;
+    /* background-color: ${StyleConstants.GRAY_BG};
+    color: inherit; */
+    opacity: 1;
   }
 `;
 

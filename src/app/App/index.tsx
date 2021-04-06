@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /**
  *
  * App
@@ -8,16 +9,21 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+
+import CryptoJS from 'crypto-js';
+import encDec from 'app/components/Helpers/EncyptDecrypt';
 
 import Main from 'app/components/Layouts/Main';
 import Content from 'app/components/Layouts/Content';
 import Header from 'app/components/Header';
 import Footer from 'app/components/Footer';
 import Sidebar from 'app/components/Sidebar';
+import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Dialog from 'app/components/Dialog';
+import { getCookie } from 'app/components/Helpers';
 
 import { GlobalStyle } from 'styles/global-styles';
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
@@ -30,20 +36,23 @@ import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
-
-import PrivateRoute from './PrivateRoute';
-import { ScanQR } from 'app/pages/ScanQR/Loadable';
-import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
+
+// private routes, use this component in rendering pages
+// that should only be accessible with the logged in user
+import PrivateRoute from './PrivateRoute';
 
 // Importing the Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 /** selectors, slice */
 import { useAppSaga } from './slice';
 import { selectSessionExpired, selectIsAuthenticated } from './slice/selectors';
 
 export function App() {
   const { i18n } = useTranslation();
+  const location = useLocation();
+  const history = useHistory();
 
   // sample usage of slice (react redux)
   const { actions } = useAppSaga();
@@ -53,8 +62,26 @@ export function App() {
   const isSessionExpired = useSelector(selectSessionExpired);
 
   React.useEffect(() => {
-    dispatch(actions.getTokenLoading());
-  }, [actions, dispatch]);
+    const path: string | boolean = location ? location.pathname : '/';
+    const phrase = getCookie('spv_uat_hmc');
+    const sessionCookie = getCookie('spv_uat');
+
+    let decrypt: any = false;
+
+    if (phrase && sessionCookie) {
+      decrypt = CryptoJS.AES.decrypt(sessionCookie, phrase, {
+        format: encDec,
+      }).toString(CryptoJS.enc.Utf8);
+    }
+
+    if (decrypt) {
+      dispatch(actions.getIsAuthenticated(true));
+      dispatch(actions.getTokenSuccess(JSON.parse(decrypt)));
+      history.replace(path);
+    } else {
+      dispatch(actions.getTokenLoading());
+    }
+  }, []);
 
   const onClickSessionExpired = () => {
     const publicURL = process.env.PUBLIC_URL || '';
@@ -90,12 +117,13 @@ export function App() {
               component={CardMemberAgreementPage}
             />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
-            <PrivateRoute path="/dashboard" component={HomePage} />
-            <Route path="/SendMoney" component={SendMoney} />
-            <Route path="/sendmoney" component={SendMoney} />
-            <Route path="/scanqr" component={ScanQR} />
-            <Route path="/onlinebank" component={OnlineBank} />
-            <Route path="/buyload" component={BuyLoad} />
+            <ProtectedContent>
+              <PrivateRoute path="/dashboard" component={DashboardPage} />
+              <Route path="/sendmoney" component={SendMoney} />
+              <Route path="/scanqr" component={ScanQR} />
+              <Route path="/onlinebank" component={OnlineBank} />
+              <Route path="/buyload" component={BuyLoad} />
+            </ProtectedContent>
             <Route component={NotFoundPage} />
           </Switch>
           <Footer />

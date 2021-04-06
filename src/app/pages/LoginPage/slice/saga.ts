@@ -14,6 +14,7 @@ import {
 
 import { containerActions as actions } from '.';
 import { selectRequest } from './selectors';
+import { setCookie } from 'app/components/Helpers';
 
 /**
  * Login
@@ -26,8 +27,6 @@ function* getLogin() {
   let encryptPayload: string = '';
 
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
-
-  console.log(requestPhrase);
 
   if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
     encryptPayload = CryptoJS.AES.encrypt(
@@ -64,6 +63,8 @@ function* getLogin() {
         { format: encDec },
       ).toString(CryptoJS.enc.Utf8);
 
+      setCookie('spv_uat', apirequest.payload, 1);
+      setCookie('spv_uat_hmc', decryptPhrase.passPhrase, 1);
       yield put(appActions.getTokenSuccess(JSON.parse(decryptData))); // write the new access token
       yield put(appActions.getIsAuthenticated(true));
       yield put(actions.getFetchSuccess(true)); // return true on main component
