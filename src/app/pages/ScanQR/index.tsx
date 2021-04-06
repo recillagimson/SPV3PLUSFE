@@ -31,7 +31,7 @@ export function ScanQR() {
         </Button>
         <Button
           type="submit"
-          color="white"
+          color="secondary"
           size="large"
           variant="outlined"
           className="ml-3"

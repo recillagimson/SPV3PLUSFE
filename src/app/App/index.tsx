@@ -32,7 +32,12 @@ import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 
 import PrivateRoute from './PrivateRoute';
+import { ScanQR } from 'app/pages/ScanQR/Loadable';
+import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
+import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 
+// Importing the Bootstrap CSS
+import 'bootstrap/dist/css/bootstrap.min.css';
 /** selectors, slice */
 import { useAppSaga } from './slice';
 import { selectSessionExpired, selectIsAuthenticated } from './slice/selectors';
@@ -85,10 +90,12 @@ export function App() {
               component={CardMemberAgreementPage}
             />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
-            <PrivateRoute exact path="/dashboard" component={DashboardPage} />
+            <PrivateRoute path="/dashboard" component={HomePage} />
             <Route path="/SendMoney" component={SendMoney} />
-            <Route path="/ScanQR" component={ScanQR} />
-            <Route path="/OnlineBank" component={OnlineBank} />
+            <Route path="/sendmoney" component={SendMoney} />
+            <Route path="/scanqr" component={ScanQR} />
+            <Route path="/onlinebank" component={OnlineBank} />
+            <Route path="/buyload" component={BuyLoad} />
             <Route component={NotFoundPage} />
           </Switch>
           <Footer />
