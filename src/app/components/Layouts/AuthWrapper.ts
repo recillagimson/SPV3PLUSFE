@@ -14,6 +14,7 @@ const Wrapper = styled.section`
     border-radius: 20px;
     min-width: 300px;
     max-width: 95%;
+    width: 100%;
   }
 
   .content,
@@ -68,13 +69,12 @@ const Wrapper = styled.section`
     }
 
     a {
-      font-weight: 600;
-      text-decoration: none;
+      text-decoration: underline;
       color: inherit;
       transition: all 0.3s ease;
 
       &:hover {
-        text-decoration: underline;
+        text-decoration: none;
       }
     }
   }
@@ -104,7 +104,7 @@ const Wrapper = styled.section`
 
   ${media.large`
     .form-container {
-      max-width: 500px;
+      max-width: 510px;
     }
   `}
 `;

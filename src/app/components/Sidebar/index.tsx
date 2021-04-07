@@ -4,7 +4,7 @@
  * NOTE: the svg files here maybe moved into the assets if this will be used in other components
  */
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import { useDispatch } from 'react-redux';
 
@@ -18,9 +18,14 @@ import Navigation from './Navigation';
 import NavButton from './NavButton';
 
 export default function Sidebar() {
+  const history = useHistory();
   // const dispatch = useDispatch();
 
   const [show, setShow] = React.useState(false);
+
+  const gotoProfile = () => {
+    history.push('/profile');
+  };
 
   const onLogout = () => {
     // we might not need this next two lines, check the logging out scenario
@@ -57,10 +62,12 @@ export default function Sidebar() {
             Status: <strong>Gold Member</strong>
           </p>
         </div>
-        <FontAwesomeIcon icon="angle-right" />
+        <IconButton onClick={gotoProfile} color="secondary">
+          <FontAwesomeIcon icon="angle-right" />
+        </IconButton>
       </div>
       <Navigation>
-        <NavButton as={NavLink} to="/">
+        <NavButton as={NavLink} to="/dashboard">
           <svg
             width="34"
             height="26"

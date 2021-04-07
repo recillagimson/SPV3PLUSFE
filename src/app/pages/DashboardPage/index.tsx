@@ -43,6 +43,11 @@ export function DashboardPage() {
 
         <Box
           title="Recent Transaction"
+          titleAction={
+            <IconButton onClick={() => alert('clicked')}>
+              <FontAwesomeIcon icon="ellipsis-h" />
+            </IconButton>
+          }
           footerBorder
           footer={
             <Button color="secondary" size="medium">

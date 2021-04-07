@@ -252,29 +252,6 @@ export function RegisterPage() {
             )}
             {passError !== '' && <ErrorMsg formError>* {passError}</ErrorMsg>}
           </Field>
-          <Field className="agreement">
-            <input
-              type="checkbox"
-              defaultChecked={agree.value}
-              value="agree"
-              onChange={() => setAgree({ value: !agree.value, error: false })}
-            />
-            <span>
-              By creating an account, I agree to the{' '}
-              <Link to="/card-member-agreement" target="_blank">
-                Card Member Agreement
-              </Link>{' '}
-              and{' '}
-              <Link to="/" target="_blank">
-                Privacy Policy
-              </Link>
-            </span>
-            {agree.error && (
-              <ErrorMsg formError>
-                * You must agree to continue creating your account.
-              </ErrorMsg>
-            )}
-          </Field>
 
           {apiError !== '' && <ErrorMsg formError>{apiError}</ErrorMsg>}
 
@@ -290,6 +267,23 @@ export function RegisterPage() {
           </Button>
           <Field className="text-center" margin="20px 0 10px">
             Already have an account? <A to="/">Log In</A>
+          </Field>
+          <Field className="agreement text-center" margin="25px 0 0">
+            <span>
+              By creating an account, I agree to the{' '}
+              <Link to="/terms-and-conditions" target="_blank">
+                Terms and Condition
+              </Link>{' '}
+              and{' '}
+              <Link to="/" target="_blank">
+                Privacy Policy
+              </Link>
+            </span>
+            {agree.error && (
+              <ErrorMsg formError>
+                * You must agree to continue creating your account.
+              </ErrorMsg>
+            )}
           </Field>
         </form>
       </div>

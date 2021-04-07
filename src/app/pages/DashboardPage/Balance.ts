@@ -14,7 +14,7 @@ const Balance = styled.div`
   }
 
   .amount {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 1.75em;
     align-self: flex-end;
   }

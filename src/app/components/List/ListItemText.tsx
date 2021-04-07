@@ -24,14 +24,14 @@ const Wrapper = styled.div<{ small?: boolean; align?: string }>`
   font-size: ${p => (p.small ? '0.8rem' : '1rem')};
   text-align: ${p => (p.align ? p.align : 'left')};
 
-  caption {
+  small {
     max-width: ${p => (p.small ? '100px' : '120px')};
   }
 `;
 
 const Primary = styled.p`
   font-size: 1em;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0;
 `;
 
@@ -40,7 +40,7 @@ const Secondary = styled.p`
   margin: 0 0;
 `;
 
-const Caption = styled.caption`
+const Caption = styled.small`
   font-size: 0.75em;
   margin: 0 0;
   padding: 0 0;

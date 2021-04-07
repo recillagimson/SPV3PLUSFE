@@ -4,7 +4,7 @@ import { StyleConstants } from 'styles/StyleConstants';
 
 const Title = styled.div<{ border?: boolean }>`
   align-self: flex-start;
-  padding: 25px;
+  padding: ${p => (!p.border ? '20px 25px' : '25px')};
   display: flex;
   align-items: center;
   justify-content: flex-start;
