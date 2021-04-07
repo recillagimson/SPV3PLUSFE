@@ -45,3 +45,8 @@ export const selectSessionExpired = createSelector(
   [selectDomain],
   subState => subState.isSessionExpired,
 );
+
+export const selectIsBlankPage = createSelector(
+  [selectDomain],
+  subState => subState.isBlankPage,
+);

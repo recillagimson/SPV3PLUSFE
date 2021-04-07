@@ -7,7 +7,7 @@ const FooterAction = styled.div<{ border?: boolean; align?: string }>`
   padding: ${p => (p.align ? '5px 10px' : '10px')};
   text-align: ${p => (p.align ? p.align : 'left')};
   border-top: ${p =>
-    p.border ? `1px solid ${StyleConstants.BORDER_COLOR}` : '0'};
+    p.border ? `1px solid ${StyleConstants.LIGHT_BORDER_COLOR}` : '0'};
 
   & > * {
     margin: 0 5px;

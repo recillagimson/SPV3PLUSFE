@@ -60,9 +60,9 @@ export function setCookie(name: string, value: string, days: number = 0) {
     d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
   }
 
-  // if days is 0, set expiration after 9 hours
+  // if days is 0, set expiration after 1 hour
   if (days === 0) {
-    d.setTime(d.getTime() + 9 * 60 * 60 * 1000);
+    d.setTime(d.getTime() + 1 * 3600 * 1000);
   }
 
   // set the expiry

@@ -10,7 +10,7 @@ const Title = styled.div<{ border?: boolean }>`
   justify-content: flex-start;
   flex-direction: row;
   border-bottom: ${p =>
-    p.border ? `1px solid ${StyleConstants.BORDER_COLOR}` : '0'};
+    p.border ? `1px solid ${StyleConstants.LIGHT_BORDER_COLOR}` : '0'};
 
   .bt-text {
     flex: 1;

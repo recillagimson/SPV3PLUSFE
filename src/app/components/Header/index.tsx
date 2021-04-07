@@ -13,7 +13,11 @@ import Navigation from './Navigation';
 import IconButton from '../Elements/IconButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default function HeaderComponent({ isLoggedIn }: Props) {
+export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
+  if (blankPage) {
+    return null;
+  }
+
   return (
     <Wrapper isLoggedIn={isLoggedIn}>
       <div className="wrapped">

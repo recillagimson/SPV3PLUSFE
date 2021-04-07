@@ -173,6 +173,7 @@ const ButtonStyle = css<Props>`
   transition: all 0.2s ease-in-out;
   border-radius: ${StyleConstants.BUTTON_RADIUS};
   width: ${p => (p.fullWidth ? '100%' : 'auto')};
+  display: inline-block;
 
   ${p =>
     p.size === 'small' &&
@@ -182,7 +183,7 @@ const ButtonStyle = css<Props>`
   `}
 
   ${p =>
-    p.size === 'medium' &&
+    (!p.size || p.size === 'medium') &&
     `
     padding: 8px 15px;
     font-size: 0.9rem;

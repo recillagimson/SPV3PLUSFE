@@ -63,8 +63,13 @@ function* getLogin() {
         { format: encDec },
       ).toString(CryptoJS.enc.Utf8);
 
-      setCookie('spv_uat', apirequest.payload, 1);
-      setCookie('spv_uat_hmc', decryptPhrase.passPhrase, 1);
+      // set appropriate cookies
+      // a 0 in parameter will set the cookie 1 hour from the current time
+      setCookie('spv_expire', 'expiration', 0);
+      setCookie('spv_uat', apirequest.payload, 0);
+      setCookie('spv_uat_hmc', decryptPhrase.passPhrase, 0);
+
+      // write data in store state
       yield put(appActions.getTokenSuccess(JSON.parse(decryptData))); // write the new access token
       yield put(appActions.getIsAuthenticated(true));
       yield put(actions.getFetchSuccess(true)); // return true on main component

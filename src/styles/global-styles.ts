@@ -34,6 +34,10 @@ export const GlobalStyle = createGlobalStyle`
   #appMain {
     min-height: 100%;
     min-width: 100%;
+
+    &.not-found {
+      background-color: #fff;
+    }
   }
 
   img {

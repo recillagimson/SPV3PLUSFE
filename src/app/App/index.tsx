@@ -21,7 +21,6 @@ import Content from 'app/components/Layouts/Content';
 import Header from 'app/components/Header';
 import Footer from 'app/components/Footer';
 import Sidebar from 'app/components/Sidebar';
-import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Dialog from 'app/components/Dialog';
 import { getCookie } from 'app/components/Helpers';
 
@@ -47,7 +46,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 /** selectors, slice */
 import { useAppSaga } from './slice';
-import { selectSessionExpired, selectIsAuthenticated } from './slice/selectors';
+import {
+  selectSessionExpired,
+  selectIsAuthenticated,
+  selectIsBlankPage,
+} from './slice/selectors';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -60,6 +63,7 @@ export function App() {
   // const user = useSelector(selectUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isSessionExpired = useSelector(selectSessionExpired);
+  const isBlankPage = useSelector(selectIsBlankPage);
 
   React.useEffect(() => {
     const path: string | boolean = location ? location.pathname : '/';
@@ -77,7 +81,7 @@ export function App() {
     if (decrypt) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getTokenSuccess(JSON.parse(decrypt)));
-      history.replace(path);
+      history.push(path);
     } else {
       dispatch(actions.getTokenLoading());
     }
@@ -105,8 +109,11 @@ export function App() {
       </Helmet>
 
       <Main className={isAuthenticated ? 'spdin' : undefined}>
-        <Header isLoggedIn={isAuthenticated} />
-        {isAuthenticated && <Sidebar />}
+        <Header
+          isLoggedIn={isAuthenticated}
+          blankPage={isBlankPage ? true : false}
+        />
+        {!isBlankPage && isAuthenticated && <Sidebar />}
         <Content className={isAuthenticated ? 'authenticated' : undefined}>
           <Switch>
             <Route exact path="/" component={LoginPage} />
@@ -117,16 +124,16 @@ export function App() {
               component={CardMemberAgreementPage}
             />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
-            <ProtectedContent>
-              <PrivateRoute path="/dashboard" component={DashboardPage} />
-              <Route path="/sendmoney" component={SendMoney} />
-              <Route path="/scanqr" component={ScanQR} />
-              <Route path="/onlinebank" component={OnlineBank} />
-              <Route path="/buyload" component={BuyLoad} />
-            </ProtectedContent>
-            <Route component={NotFoundPage} />
+
+            <PrivateRoute path="/dashboard" component={DashboardPage} />
+            <PrivateRoute path="/sendmoney" component={SendMoney} />
+            <PrivateRoute path="/scanqr" component={ScanQR} />
+            <PrivateRoute path="/onlinebank" component={OnlineBank} />
+            <PrivateRoute path="/buyload" component={BuyLoad} />
+
+            <Route path="*" component={NotFoundPage} />
           </Switch>
-          <Footer />
+          {!isBlankPage && <Footer />}
         </Content>
       </Main>
       <Dialog

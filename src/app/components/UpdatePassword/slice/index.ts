@@ -40,7 +40,7 @@ const slice = createSlice({
   },
 });
 
-export const { actions: appActions, reducer } = slice;
+export const { actions: componentActions, reducer } = slice;
 
 export const useComponentSaga = () => {
   useInjectReducer({ key: slice.name, reducer: slice.reducer });
