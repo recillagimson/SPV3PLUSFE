@@ -11,7 +11,7 @@ import { StyleConstants } from 'styles/StyleConstants';
 const Wrapper = styled.div<{ children?: any }>`
   background-color: ${StyleConstants.WHITE};
   border-radius: ${StyleConstants.BORDER_RADIUS};
-  margin: 20px auto;
+  margin: 15px auto;
   display: flex;
   align-items: flex-start;
   justify-content: stretch;

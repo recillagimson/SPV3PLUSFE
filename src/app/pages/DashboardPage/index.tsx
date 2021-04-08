@@ -121,13 +121,13 @@ export function DashboardPage() {
           </div>
         </Box>
       </div>
-      <Grid columns="1fr 1fr" gap="25px" alignItems="start">
+      <Grid columns="1fr 1fr" gap="0 25px" alignItems="start">
         <Box
           title="Box UI with Button in Title"
           titleBorder
           titleAction={
             <IconButton onClick={() => alert('clicked')}>
-              <FontAwesomeIcon icon="ellipsis-v" />
+              <FontAwesomeIcon icon="trash" />
             </IconButton>
           }
           footerBorder
@@ -153,6 +153,12 @@ export function DashboardPage() {
         <Box title="Box UI" titleBorder>
           <div style={{ padding: '25px' }}>
             <p>This element has no action footer buttons</p>
+          </div>
+        </Box>
+
+        <Box>
+          <div style={{ padding: '25px' }}>
+            <p>this element are child elements only, no title and footer</p>
           </div>
         </Box>
       </Grid>
