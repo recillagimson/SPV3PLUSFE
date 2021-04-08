@@ -30,7 +30,7 @@ const colors = {
 const IconButton = styled.button<IconButtonProps>`
   width: ${p => (p.size === 'small' ? '26px' : '36px')};
   height: ${p => (p.size === 'small' ? '26px' : '36px')};
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   border: none;

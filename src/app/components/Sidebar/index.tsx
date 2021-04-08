@@ -62,7 +62,7 @@ export default function Sidebar() {
             Status: <strong>Gold Member</strong>
           </p>
         </div>
-        <IconButton onClick={gotoProfile} color="secondary">
+        <IconButton onClick={gotoProfile}>
           <FontAwesomeIcon icon="angle-right" />
         </IconButton>
       </div>
@@ -100,7 +100,7 @@ export default function Sidebar() {
           </svg>
           Home
         </NavButton>
-        <NavButton as={NavLink} to="/">
+        <NavButton as={NavLink} to="/scanqr">
           <svg
             width="31"
             height="26"

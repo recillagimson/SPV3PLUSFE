@@ -87,7 +87,7 @@ export function LoginPage() {
       error.response &&
       (error.response.status === 422 || error.response.status === 401)
     ) {
-      apiError = 'Invalid username/password. Please try again.';
+      apiError = 'Invalid email/mobile orpassword. Please try again.';
     }
     if (
       error.response &&

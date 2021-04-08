@@ -58,7 +58,10 @@ export default function BoxComponent({
   return (
     <Wrapper>
       {showTitle && (
-        <Title border={titleBorder || undefined}>
+        <Title
+          border={titleBorder || undefined}
+          hasbutton={Boolean(titleAction) || undefined}
+        >
           {title ? <span className="bt-text">{title}</span> : ''} {titleAction}
         </Title>
       )}

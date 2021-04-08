@@ -31,7 +31,7 @@ const Wrapper = styled.header<Props>`
 
   ${media.medium`
     .wrapped {
-      max-width: ${p => (!p.isLoggedIn ? StyleConstants.MAX_WIDTH : 'auto')};
+      max-width: ${p => (!p.isLoggedIn ? StyleConstants.MAX_WIDTH : 'none')};
     }
   `}
 `;

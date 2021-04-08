@@ -6,23 +6,10 @@
  *       extend this style if necessary
  */
 import styled from 'styled-components/macro';
-import { StyleConstants } from 'styles/StyleConstants';
+import FormElementStyle from './FormElementsStyle';
 
 const Input = styled.input`
-  background-color: ${StyleConstants.WHITE};
-  border-radius: ${StyleConstants.BORDER_RADIUS};
-  border: 1px solid ${StyleConstants.BORDER_COLOR};
-  padding: 15px;
-  color: ${StyleConstants.MAIN_TEXT};
-  display: block;
-  width: 100%;
-  outline: none;
-  font-size: inherit;
-
-  &:focus {
-    border-radius: ${StyleConstants.BORDER_RADIUS};
-    border: 1px solid ${StyleConstants.GOLD};
-  }
+  ${FormElementStyle}// basic css style for all form elements
 `;
 
 export default Input;

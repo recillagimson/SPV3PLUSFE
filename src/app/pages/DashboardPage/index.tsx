@@ -92,6 +92,70 @@ export function DashboardPage() {
           </List>
         </Box>
       </Grid>
+      <div>
+        <Box
+          title="Sample Container for Box UI"
+          titleBorder
+          footerBorder
+          footer={
+            <>
+              <Button size="medium" color="primary" variant="contained">
+                SEND
+              </Button>
+              <Button size="medium" color="secondary" variant="outlined">
+                CANCEL
+              </Button>
+            </>
+          }
+          footerAlign="right"
+        >
+          <div style={{ padding: '25px' }}>
+            <p>
+              This element has a parent container that has a padding. The
+              content element of this box component has no padding, so it's up
+              to the child elements container to have the padding
+            </p>
+          </div>
+          <div>
+            <p>This element has a parent container that has no padding</p>
+          </div>
+        </Box>
+      </div>
+      <Grid columns="1fr 1fr" gap="25px" alignItems="start">
+        <Box
+          title="Box UI with Button in Title"
+          titleBorder
+          titleAction={
+            <IconButton onClick={() => alert('clicked')}>
+              <FontAwesomeIcon icon="ellipsis-v" />
+            </IconButton>
+          }
+          footerBorder
+          footer={
+            <>
+              <Button size="medium" color="primary" variant="contained">
+                SEND
+              </Button>
+              <Button size="medium" color="secondary" variant="outlined">
+                CANCEL
+              </Button>
+            </>
+          }
+          footerAlign="center"
+        >
+          <div style={{ padding: '25px' }}>
+            <p>
+              This is inside a grid element with 2 columns and action footer
+              aligned center
+            </p>
+          </div>
+        </Box>
+        <Box title="Box UI" titleBorder>
+          <div style={{ padding: '25px' }}>
+            <p>This element has no action footer buttons</p>
+          </div>
+        </Box>
+      </Grid>
     </ProtectedContent>
   );
 }
