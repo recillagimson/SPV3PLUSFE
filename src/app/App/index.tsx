@@ -28,6 +28,7 @@ import { LoginPage } from 'app/pages/LoginPage/Loadable';
 import { RegisterPage } from 'app/pages/RegisterPage/Loadable';
 import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
+import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
 
 import PrivateRoute from './PrivateRoute';
 
@@ -86,6 +87,7 @@ export function App() {
 
             <Route path="/SendMoney" component={SendMoney} />
             <PrivateRoute exact path="/dashboard" component={DashboardPage} />
+            <PrivateRoute exact path="/transaction-history" component={TransactionHistoryPage} />
 
             <Route component={NotFoundPage} />
           </Switch>

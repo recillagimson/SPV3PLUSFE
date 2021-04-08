@@ -56,7 +56,7 @@ export default function Sidebar() {
         <FontAwesomeIcon icon="angle-right" />
       </div>
       <Navigation>
-        <NavButton as={NavLink} to="/">
+        <NavButton as={NavLink} to="/transaction-history">
           <svg
             width="34"
             height="26"
