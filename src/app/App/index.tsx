@@ -32,8 +32,6 @@ import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 
 import PrivateRoute from './PrivateRoute';
-import { ScanQR } from 'app/pages/ScanQR/Loadable';
-import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 
 // Importing the Bootstrap CSS
@@ -90,12 +88,11 @@ export function App() {
               component={CardMemberAgreementPage}
             />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
-            <PrivateRoute path="/dashboard" component={HomePage} />
-            <Route path="/SendMoney" component={SendMoney} />
-            <Route path="/sendmoney" component={SendMoney} />
-            <Route path="/scanqr" component={ScanQR} />
-            <Route path="/onlinebank" component={OnlineBank} />
-            <Route path="/buyload" component={BuyLoad} />
+            <PrivateRoute path="/dashboard" component={DashboardPage} />
+            <PrivateRoute path="/sendmoney" component={SendMoney} />
+            <PrivateRoute path="/scanqr" component={ScanQR} />
+            <PrivateRoute path="/onlinebank" component={OnlineBank} />
+            <PrivateRoute path="/buyload" component={BuyLoad} />
             <Route component={NotFoundPage} />
           </Switch>
           <Footer />

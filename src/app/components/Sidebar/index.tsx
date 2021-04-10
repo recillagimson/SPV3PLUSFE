@@ -56,6 +56,15 @@ export default function Sidebar() {
         <FontAwesomeIcon icon="angle-right" />
       </div>
       <Navigation>
+        <NavButton as={NavLink} to="/sendmoney">
+          Send Money
+        </NavButton>
+        <NavButton as={NavLink} to="/buyload">
+          Buy Load
+        </NavButton>
+        <NavButton as={NavLink} to="/scanqr">
+          Scan QR
+        </NavButton>
         <NavButton as={NavLink} to="/">
           <svg
             width="34"

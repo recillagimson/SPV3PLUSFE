@@ -125,4 +125,8 @@ export const GlobalStyle = createGlobalStyle`
   .mr-5{
     margin-right: 1em;
   }
+
+  .fw-bold{
+    font-weight: bold;
+  }
 `;
