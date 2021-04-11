@@ -8,7 +8,7 @@ const Wrapper = styled.section`
   min-height: calc(100vh - 60px);
 
   .grid {
-    padding: 1em 1.75em;
+    padding: 1em 1.50em;
     border: 1px solid #efefefff;
     border-radius: 0.5em;
     cursor: pointer;

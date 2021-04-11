@@ -12,15 +12,19 @@ import A from 'app/components/Elements/A';
 import Flex from 'app/components/Elements/Flex';
 import Ratio from 'app/components/Elements/Ratio';
 import Card from 'app/components/Elements/Card/Card';
+
+// For the custom sidebar for the pills
 import { Scrollbars } from 'react-custom-scrollbars';
 
 import Wrapper from './Wrapper';
+import Promo from './PromoCard/Promo';
 
-import Promo from './PromoCard/PromoCard';
+// For the list of promo
+import GlobeCallAndText from './Network/Globe/GlobeSurf.json';
 
 import Grid from '@material-ui/core/Grid';
 
-// get our fontawesome imports
+// FontAwesome import
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -29,6 +33,7 @@ export function BuyLoad() {
   const [amount, setAmount] = React.useState({ value: '', error: false });
   const [selectedPromo, setSelectedPromo] = React.useState({
     code: '',
+    title: '',
     description: '',
     amount: '',
   });
@@ -127,6 +132,11 @@ export function BuyLoad() {
     setShowActive('surf');
   };
 
+  const onClickTM = () => {
+    setSelectedNetwork('tm');
+    setShowNext(true);
+  };
+
   const action = (
     <>
       <Flex justifyContent="flex-end">
@@ -168,18 +178,32 @@ export function BuyLoad() {
         >
           {showList && (
             <>
-              {/* <Grid container> */}
-              <Grid item xs={6} sm={3} md={3} lg={2} className="grid">
-                <Ratio size="1x1" fit="contain" onClick={onClickGlobe}>
-                  <img
-                    src="/telecom/globe.png"
-                    alt="Globe Logo"
-                    className="circle"
-                  />
-                </Ratio>
-                <span className="network-name">Globe</span>
+              <Grid container spacing={2}>
+                <Grid item xs={6} sm={3} md={3} lg={2}>
+                  <div className="grid">
+                    <Ratio size="1x1" fit="contain" onClick={onClickGlobe}>
+                      <img
+                        src="/telecom/globe.png"
+                        alt="Globe Logo"
+                        className="circle"
+                      />
+                    </Ratio>
+                    <span className="network-name">Globe</span>
+                  </div>
+                </Grid>
+                <Grid item xs={6} sm={3} md={3} lg={2}>
+                  <div className="grid">
+                    <Ratio size="1x1" fit="cover" onClick={onClickTM}>
+                      <img
+                        src="https://www.rechargestatic.com/spree/taxons/30000791/product/recharge_touchmobile_philippines.png?1533819668"
+                        alt="Globe Logo"
+                        className="circle"
+                      />
+                    </Ratio>
+                    <span className="network-name">TM</span>
+                  </div>
+                </Grid>
               </Grid>
-              {/* </Grid> */}
 
               <br />
               {selectedNetwork === 'globe' && (
@@ -252,14 +276,13 @@ export function BuyLoad() {
                     <>
                       <div className="selected-promo">
                         <small>You selected</small>
-                        <h5 className="fw-bold mb-0">
-                          {selectedPromo.description}
-                        </h5>
+                        <h5 className="fw-bold mb-0">{selectedPromo.title}</h5>
                         <small>PHP {selectedPromo.amount}</small>
                         <div
                           onClick={() =>
                             setSelectedPromo({
                               code: '',
+                              title: '',
                               description: '',
                               amount: '',
                             })
@@ -474,7 +497,7 @@ export function BuyLoad() {
                   {showGlobeCallAndText && (
                     <>
                       <Scrollbars style={{ height: 300 }}>
-                        <section
+                        {/* <section
                           onClick={() =>
                             setSelectedPromo({
                               code: 'TMXSHKF10',
@@ -492,7 +515,7 @@ export function BuyLoad() {
                         Valid for 1 day"
                             amount="PHP 10.00"
                           ></Promo>
-                        </section>
+                        </section> */}
                         {/* <Promo
                           image={globe}
                           title="TM ALL-NET SURF 10"
@@ -503,6 +526,50 @@ export function BuyLoad() {
                           amount="PHP 10.00"
                         ></Promo> */}
 
+                        {/* <span
+                          onClick={() =>
+                            setSelectedPromo({
+                              code: 'TMXSHKF10',
+                              description: 'TM ALL-NET SURF 10',
+                              amount: '10.00',
+                            })
+                          }
+                        >
+                          <Globe></Globe>
+                        </span> */}
+                        {GlobeCallAndText.map((globeCallAndText, index) => {
+                          return (
+                            <span
+                              onClick={() =>
+                                setSelectedPromo({
+                                  code: globeCallAndText.code,
+                                  title: globeCallAndText.title,
+                                  description: globeCallAndText.description,
+                                  amount: globeCallAndText.amount,
+                                })
+                              }
+                            >
+                              <Promo>
+                                <Grid container wrap="nowrap" spacing={2}>
+                                  <Grid item xs={2} md={1}>
+                                    {globe}
+                                  </Grid>
+                                  <Grid item xs={10} md={11}>
+                                    <p className="promo-title">
+                                      {globeCallAndText.code}
+                                    </p>
+                                    <p className="promo-description">
+                                      {globeCallAndText.description}
+                                    </p>
+                                    <p className="promo-amount">
+                                      {globeCallAndText.amount}
+                                    </p>
+                                  </Grid>
+                                </Grid>
+                              </Promo>
+                            </span>
+                          );
+                        })}
                         <br />
                       </Scrollbars>
                     </>
