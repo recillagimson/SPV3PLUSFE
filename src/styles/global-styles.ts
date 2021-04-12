@@ -62,6 +62,10 @@ export const GlobalStyle = createGlobalStyle`
     font-weight: 700;
   }
 
+  .f-small {
+    font-size: 0.85rem;
+  }
+
   /** Text Alignments */
   .text-left {
     text-align: left;

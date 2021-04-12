@@ -6,7 +6,7 @@ const Wrapper = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 110px;
+  padding: 100px 10px 0;
   min-height: calc(100vh - 60px);
   position: relative;
 
@@ -103,6 +103,8 @@ const Wrapper = styled.section`
   }
 
   ${media.large`
+    padding: 100px 0 0;
+
     .form-container {
       max-width: 510px;
     }

@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Loading from 'app/components/Loading';
-import H1 from 'app/components/Elements/H1';
+import Logo from 'app/components/Assets/Logo';
 import H3 from 'app/components/Elements/H3';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
@@ -141,8 +141,9 @@ export function LoginPage() {
     <Wrapper>
       <Helmet title="Login" />
       <div className="form-container">
-        <H1 margin="0 0 5px">We're glad you're back!</H1>
-        <Label>Login to manage your account.</Label>
+        {/* <H1 margin="0 0 5px">We're glad you're back!</H1>
+        <Label>Login to manage your account.</Label> */}
+        <Logo size="medium" />
 
         <form>
           {loading && <Loading position="absolute" />}
@@ -206,11 +207,15 @@ export function LoginPage() {
           >
             LOGIN
           </Button>
-          <Field className="text-center" margin="20px 0 10px">
-            Not yet a member? <A to="/register">Sign up</A>
-          </Field>
-          <Field className="text-center">
+          <Field className="text-center" margin="10px 0 0">
             <A to="/forgotpassword">Forgot Password?</A>
+          </Field>
+
+          <Field className="text-center f-small" margin="30px 0 0">
+            Not yet a member?{' '}
+            <A to="/register" underline>
+              Sign up
+            </A>
           </Field>
         </form>
       </div>
