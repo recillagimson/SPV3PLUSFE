@@ -9,7 +9,7 @@ import { StyleConstants } from 'styles/StyleConstants';
 
 type Props = {
   color?: 'default' | 'gold';
-  underline?: boolean;
+  underline?: string | undefined;
 };
 
 const A = styled(Link)<Props>`

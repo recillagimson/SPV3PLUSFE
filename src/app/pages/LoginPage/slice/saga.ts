@@ -73,13 +73,16 @@ function* getLogin() {
       yield put(appActions.getTokenSuccess(JSON.parse(decryptData))); // write the new access token
       yield put(appActions.getIsAuthenticated(true));
       yield put(actions.getFetchSuccess(true)); // return true on main component
-    } else {
-      yield put(
-        actions.getFetchError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
+      return;
+    }
+
+    if (
+      apirequest &&
+      apirequest.message &&
+      apirequest.message === 'Login successful'
+    ) {
+      yield put(appActions.getIsAuthenticated(true));
+      yield put(actions.getFetchSuccess(true)); // return true on main component
     }
   } catch (err) {
     if (err && err.response && err.response.status === 422) {

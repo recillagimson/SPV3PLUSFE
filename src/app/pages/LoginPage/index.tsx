@@ -19,7 +19,11 @@ import Dialog from 'app/components/Dialog';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 
 import Wrapper from 'app/components/Layouts/AuthWrapper';
-import { validateEmail } from 'app/components/Helpers';
+import {
+  validateEmail,
+  regExMobile,
+  regExIsGonnaBeEmail,
+} from 'app/components/Helpers';
 
 /** slice */
 import { useContainerSaga } from './slice';
@@ -34,11 +38,16 @@ export function LoginPage() {
 
   const [isError, setIsError] = React.useState(false);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
-  const [email, setEmail] = React.useState({ value: '', error: false });
+  const [isEmail, setIsEmail] = React.useState(false);
+  const [email, setEmail] = React.useState({
+    value: '',
+    error: false,
+    msg: '',
+  });
   const [password, setPassword] = React.useState({
     value: '',
     error: false,
-    isWeak: false,
+    msg: '',
   });
 
   React.useEffect(() => {
@@ -55,7 +64,9 @@ export function LoginPage() {
         if (error.errors && error.errors.error_code) {
           apiError = error.errors.error_code.map((i: any) => {
             if (i === 101 || i === 103) {
-              return 'Email or Mobile number and password is invalid. Please try again.';
+              return isEmail
+                ? 'Email and password is invalid. Please try again.'
+                : 'Mobile number and password is invalid. Please try again.';
             }
             if (i === 102) {
               return 'Your login account is not yet verified. Please check your email/mobile number for verification process.';
@@ -89,47 +100,85 @@ export function LoginPage() {
     if (e && e.preventDefault) e.preventDefault();
 
     let error = false;
-    let isEmail = false;
+    let anEmail = false;
 
+    // first check if field is not empty
     if (email.value === '') {
       error = true;
-      setEmail({ ...email, error: true });
+      setEmail({
+        ...email,
+        error: true,
+        msg: 'Please enter your email/mobile number',
+      });
     }
 
-    // if (email.value !== '' && !validateEmail(email.value)) {
-    //   error = true;
-    //   setEmail({ ...email, error: true });
-    // }
+    // check if field is not empty and we are typing in an email format
+    if (
+      email.value !== '' && // check if not empty
+      (!/\d/g.test(email.value) || regExIsGonnaBeEmail.test(email.value)) && // check if we are typing into an email format ie: asb@
+      !validateEmail(email.value) // check if what we type is a valid email format ie: email@example.com
+    ) {
+      // set error message we did't pass email validation
+      error = true;
+      setEmail({
+        ...email,
+        error: true,
+        msg: 'Please enter your email in valid format ie: email@example.com',
+      });
+    }
 
+    // check if value is not empty
+    if (
+      email.value !== '' && // check if not empty
+      !regExIsGonnaBeEmail.test(email.value) && // check if we are not typing into an email format
+      !validateEmail(email.value) && // validate if it's not valid email
+      /\d/g.test(email.value) // check if we started with a digit
+    ) {
+      // we have typed a digit and did not pass the email validation
+      // now check if it's in valid mobile format ie: 09 + 9 digit number
+      if (!regExMobile.test(email.value)) {
+        error = true;
+        setEmail({
+          ...email,
+          error: true,
+          msg:
+            'Please enter valid mobile number (09 + 9 digit number) ie: 09xxxxxxxxx',
+        });
+      }
+    }
+
+    // if we pass the validation above, set if we are going to pass an email or mobile
     if (email.value !== '' && validateEmail(email.value)) {
-      isEmail = true;
+      anEmail = true;
+      setIsEmail(true);
+    } else if (email.value !== '' && regExMobile.test(email.value)) {
+      setIsEmail(false);
     }
 
     if (password.value === '') {
       error = true;
-      setPassword({ ...password, error: true });
+      setPassword({
+        ...password,
+        error: true,
+        msg: 'Please enter your password.',
+      });
     }
-
-    // enable if we need to verify password rules in login
-    // if (password.value !== '' && !regExStrongPassword.test(password.value)) {
-    //   error = true;
-    //   setPassword({ ...password, error: false, isWeak: true });
-    // }
 
     if (!error) {
       const data = {
-        email: isEmail ? email.value : undefined,
-        mobile_number: !isEmail ? email.value : undefined,
+        email: anEmail ? email.value : undefined,
+        mobile_number: !anEmail ? email.value : undefined,
         password: password.value,
       };
 
-      // enable code below to integrate api
+      // dispatch payload to saga
       dispatch(actions.getFetchLoading(data));
     }
   };
 
   const onCloseDialog = () => {
     setIsError(false);
+    setIsEmail(false);
     dispatch(actions.getFetchReset());
   };
 
@@ -156,16 +205,16 @@ export function LoginPage() {
               value={email.value}
               autoComplete="off"
               onChange={e =>
-                setEmail({ value: e.currentTarget.value, error: false })
+                setEmail({
+                  value: e.currentTarget.value,
+                  error: false,
+                  msg: '',
+                })
               }
               placeholder="Email or Mobile No."
               required
             />
-            {email.error && (
-              <ErrorMsg formError>
-                * Please enter your email or mobile number
-              </ErrorMsg>
-            )}
+            {email.error && <ErrorMsg formError>{email.msg}</ErrorMsg>}
           </Field>
           <Field>
             <Label>
@@ -179,22 +228,13 @@ export function LoginPage() {
                 setPassword({
                   value: e.currentTarget.value,
                   error: false,
-                  isWeak: false,
+                  msg: '',
                 })
               }
               placeholder="Password"
               required
             />
-            {password.error && (
-              <ErrorMsg formError>* Please enter your password</ErrorMsg>
-            )}
-            {password.isWeak && (
-              <ErrorMsg formError>
-                * You have entered a short and weak password, password must be a
-                minimum of 12 characters and with at least one uppercase and
-                lowercase alphabet, numeric and special character.
-              </ErrorMsg>
-            )}
+            {password.error && <ErrorMsg formError>{password.msg}</ErrorMsg>}
           </Field>
 
           <Button
@@ -213,7 +253,7 @@ export function LoginPage() {
 
           <Field className="text-center f-small" margin="30px 0 0">
             Not yet a member?{' '}
-            <A to="/register" underline>
+            <A to="/register" underline="true">
               Sign up
             </A>
           </Field>
