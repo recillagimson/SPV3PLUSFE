@@ -17,7 +17,14 @@ import {
   faPlus,
   faEllipsisH,
   faEllipsisV,
+  faEdit,
   faTrash,
+  faChevronLeft,
+  faChevronRight,
+  faChevronDown,
+  faChevronUp,
+  faCaretDown,
+  faCaretUp,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -33,5 +40,12 @@ library.add(
   faPlus,
   faEllipsisH,
   faEllipsisV,
+  faEdit,
   faTrash,
+  faChevronLeft,
+  faChevronRight,
+  faChevronDown,
+  faChevronUp,
+  faCaretDown,
+  faCaretUp,
 );

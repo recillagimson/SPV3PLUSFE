@@ -36,6 +36,7 @@ import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
+import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
@@ -124,13 +125,12 @@ export function App() {
               component={CardMemberAgreementPage}
             />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
-
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/scanqr" component={ScanQR} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
-
+            <PrivateRoute path="/profile" component={UserProfilePage} />
             <Route path="*" component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}

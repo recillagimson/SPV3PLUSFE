@@ -5,10 +5,10 @@
 import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
-const List = styled.ul<{ divider?: boolean }>`
+const List = styled.ul<{ divider?: boolean; padding?: string }>`
   list-style: none;
   margin: 0 0;
-  padding: 20px 25px;
+  padding: ${p => (p.padding ? p.padding : '0 0')};
 
   ${p =>
     p.divider &&

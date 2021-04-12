@@ -1,6 +1,7 @@
 /**
  * Application Helpers
  */
+
 // email and mobile regex validation
 const regExEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/; // email must be in valid format ie: example@domain.com
 const regExMobile = /^0(9)\d{9}$/; // number must start with 0 followed by 9 and have 9 more digit after ie: 09171234567

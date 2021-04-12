@@ -20,6 +20,7 @@ const Title = styled.div<TitleProps>`
 
   .bt-text {
     flex: 1;
+    font-weight: 700;
   }
 `;
 

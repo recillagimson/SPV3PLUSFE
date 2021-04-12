@@ -56,7 +56,7 @@ export function DashboardPage() {
           }
           footerAlign="center"
         >
-          <List divider>
+          <List divider padding="20px 25px">
             <ListItem flex>
               <ListItemText
                 primary="Online Transfer"

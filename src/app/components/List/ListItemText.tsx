@@ -12,7 +12,10 @@ import * as React from 'react';
 import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
+import Label from 'app/components/Elements/Label';
+
 interface TypographyProps extends React.HTMLAttributes<any> {
+  label?: string;
   primary: string;
   secondary?: string;
   caption?: string;
@@ -51,6 +54,7 @@ const Caption = styled.small`
 `;
 
 export default function TypographyComponent({
+  label,
   primary,
   secondary,
   caption,
@@ -60,6 +64,7 @@ export default function TypographyComponent({
 }: TypographyProps) {
   return (
     <Wrapper small={small || undefined} align={align || undefined} {...rest}>
+      {Boolean(label) && <Label>{label}</Label>}
       {Boolean(primary) && <Primary>{primary}</Primary>}
       {Boolean(caption) && <Caption>{caption}</Caption>}
       {Boolean(secondary) && <Secondary>{secondary}</Secondary>}
