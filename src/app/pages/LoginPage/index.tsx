@@ -1,19 +1,25 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import Loading from 'app/components/Loading';
 import H1 from 'app/components/Elements/H1';
+import H3 from 'app/components/Elements/H3';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
 import A from 'app/components/Elements/A';
+import Dialog from 'app/components/Dialog';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
 
 import Wrapper from 'app/components/Layouts/AuthWrapper';
-import { validateEmail, regExStrongPassword } from 'app/components/Helpers';
+import { validateEmail } from 'app/components/Helpers';
 
 /** slice */
 import { useContainerSaga } from './slice';
@@ -26,6 +32,8 @@ export function LoginPage() {
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
 
+  const [isError, setIsError] = React.useState(false);
+  const [apiErrorMsg, setApiErrorMsg] = React.useState('');
   const [email, setEmail] = React.useState({ value: '', error: false });
   const [password, setPassword] = React.useState({
     value: '',
@@ -37,7 +45,45 @@ export function LoginPage() {
     return () => {
       dispatch(actions.getFetchReset()); // reset store state on unmount
     };
-  }, [actions, dispatch]);
+  }, []);
+
+  React.useEffect(() => {
+    // set error message based on error code from api
+    let apiError: string | undefined;
+    if (error && Object.keys(error).length > 0) {
+      if (error.code && error.code === 422) {
+        if (error.errors && error.errors.error_code) {
+          apiError = error.errors.error_code.map((i: any) => {
+            if (i === 101 || i === 103) {
+              return 'Email or Mobile number and password is invalid. Please try again.';
+            }
+            if (i === 102) {
+              return 'Your login account is not yet verified. Please check your email/mobile number for verification process.';
+            }
+            if (i === 104) {
+              return 'You are attempting to login from an untrusted client. Please check your internet connection';
+            }
+            if (i === 105) {
+              return 'Too many failed login attempts. This device is temporarily blocked. Please try again later.';
+            }
+            return undefined;
+          });
+        }
+        setApiErrorMsg(apiError || '');
+        setIsError(true);
+      }
+      if (error.code && error.code !== 422) {
+        apiError = error.response.statusText;
+        setApiErrorMsg(apiError || '');
+        setIsError(true);
+      }
+      if (!error.response && (!error.code || error.code !== 422)) {
+        apiError = error.message;
+        setApiErrorMsg(apiError || '');
+        setIsError(true);
+      }
+    }
+  }, [error]);
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -64,10 +110,11 @@ export function LoginPage() {
       setPassword({ ...password, error: true });
     }
 
-    if (password.value !== '' && !regExStrongPassword.test(password.value)) {
-      error = true;
-      setPassword({ ...password, error: false, isWeak: true });
-    }
+    // enable if we need to verify password rules in login
+    // if (password.value !== '' && !regExStrongPassword.test(password.value)) {
+    //   error = true;
+    //   setPassword({ ...password, error: false, isWeak: true });
+    // }
 
     if (!error) {
       const data = {
@@ -81,25 +128,10 @@ export function LoginPage() {
     }
   };
 
-  let apiError: any;
-  if (error && Object.keys(error).length > 0) {
-    if (
-      error.response &&
-      (error.response.status === 422 || error.response.status === 401)
-    ) {
-      apiError = 'Invalid email/mobile orpassword. Please try again.';
-    }
-    if (
-      error.response &&
-      error.response.status !== 422 &&
-      error.response.status !== 401
-    ) {
-      apiError = error.response.statusText;
-    }
-    if (!error.response) {
-      apiError = error.message;
-    }
-  }
+  const onCloseDialog = () => {
+    setIsError(false);
+    dispatch(actions.getFetchReset());
+  };
 
   if (success) {
     return <Redirect to="/dashboard" />;
@@ -164,10 +196,6 @@ export function LoginPage() {
             )}
           </Field>
 
-          {error && Object.keys(error).length > 0 && (
-            <ErrorMsg formError>* {apiError}</ErrorMsg>
-          )}
-
           <Button
             type="submit"
             onClick={onSubmit}
@@ -186,6 +214,23 @@ export function LoginPage() {
           </Field>
         </form>
       </div>
+      <Dialog show={isError} size="small">
+        <div className="text-center">
+          <CircleIndicator size="medium" color="danger">
+            <FontAwesomeIcon icon="times" />
+          </CircleIndicator>
+          <H3 margin="15px 0 10px">Login Error</H3>
+          <p>{apiErrorMsg}</p>
+          <Button
+            fullWidth
+            onClick={onCloseDialog}
+            variant="outlined"
+            color="secondary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
     </Wrapper>
   );
 }

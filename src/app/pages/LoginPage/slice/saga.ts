@@ -82,14 +82,16 @@ function* getLogin() {
       );
     }
   } catch (err) {
-    // code below is sample session expired to be used for logged in pages
-    // if (err.response && err.response.status === 401) {
-    // unauthorized code for invalid or expired access_token as per BE api
-    // yield put(appActions.getIsSessionExpired(true));
-    // return; // return immediately so we won't continue on the rest of the code
-    // }
-
-    yield put(actions.getFetchError(err));
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.getFetchError(newError));
+    } else {
+      yield put(actions.getFetchError(err));
+    }
   }
 }
 

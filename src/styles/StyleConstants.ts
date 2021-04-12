@@ -40,7 +40,7 @@ export const StyleConstants = Object.freeze({
   TITLE: '#343A40',
   LINK_TEXT_GOLD: '#E0AC3B',
   LINK_TEXT_GOLD_HOVER: '#D7C481',
-  BLACK_TRANSPARENT_BG: 'rgba(0, 0, 0, 0.3)',
+  BLACK_TRANSPARENT_BG: 'rgba(0, 0, 0, 0.25)',
   WHITE_TRANSPARENT_BG: 'rgba(255, 255, 255, 0.5)',
   BORDER_COLOR: '#CED4DA',
   LIGHT_BORDER_COLOR: '#E7EAF3',
