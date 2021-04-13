@@ -1,5 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import { StyleConstants } from './StyleConstants';
+import 'app/components/Assets/FontFace.css';
 
 export const GlobalStyle = createGlobalStyle`
   html,
@@ -17,7 +18,7 @@ export const GlobalStyle = createGlobalStyle`
     color: ${StyleConstants.MAIN_TEXT};
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.4;
     overflow-x: hidden;
     /* min-width: 420px; */
@@ -28,12 +29,16 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body.fontLoaded {
-    font-family: 'Merriweather Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Museo Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 
   #appMain {
     min-height: 100%;
     min-width: 100%;
+
+    &.not-found {
+      background-color: #fff;
+    }
   }
 
   img {
@@ -50,6 +55,15 @@ export const GlobalStyle = createGlobalStyle`
   ::placeholder {
     color: #777;
     opacity: 1;
+  }
+
+  b,
+  strong {
+    font-weight: 700;
+  }
+
+  .f-small {
+    font-size: 0.85rem;
   }
 
   /** Text Alignments */

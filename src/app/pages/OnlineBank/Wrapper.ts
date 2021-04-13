@@ -46,7 +46,7 @@ const Wrapper = styled.section`
           padding-bottom: 0;
 
           span {
-            font-weight: 600;
+            font-weight: 700;
             text-align: right;
           }
         }

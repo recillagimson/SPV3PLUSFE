@@ -10,4 +10,5 @@ export interface GlobalState {
   isAuthenticated: boolean;
   token: ClientTokenState | string;
   isSessionExpired: boolean;
+  isBlankPage: boolean;
 }

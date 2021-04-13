@@ -9,7 +9,7 @@ import { selectToken } from 'app/App/slice/selectors';
 import { getRequestPassphrase } from 'app/App/slice/saga';
 
 import { selectRequest } from './selectors';
-import { appActions as actions } from '.';
+import { componentActions as actions } from '.';
 
 /**
  * Global function for user data or other data

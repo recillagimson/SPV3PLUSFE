@@ -142,7 +142,7 @@ export function ForgotPasswordPage() {
         mobile_number: !isEmail ? mobile.value : undefined,
         email: isEmail ? email.value : undefined,
       };
-      console.log(data);
+
       // enable code below to integrate api
       dispatch(actions.getFetchLoading(data));
     }
