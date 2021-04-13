@@ -18,6 +18,9 @@ import A from 'app/components/Elements/A';
 import Dialog from 'app/components/Dialog';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 
+import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
+import IconButton from 'app/components/Elements/IconButton';
+
 import Wrapper from 'app/components/Layouts/AuthWrapper';
 import {
   validateEmail,
@@ -38,6 +41,7 @@ export function LoginPage() {
 
   const [isError, setIsError] = React.useState(false);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
+  const [showPass, setShowPass] = React.useState(false);
   const [isEmail, setIsEmail] = React.useState(false);
   const [email, setEmail] = React.useState({
     value: '',
@@ -179,6 +183,7 @@ export function LoginPage() {
   const onCloseDialog = () => {
     setIsError(false);
     setIsEmail(false);
+    setApiErrorMsg('');
     dispatch(actions.getFetchReset());
   };
 
@@ -201,9 +206,9 @@ export function LoginPage() {
               Email or Mobile No. <i>*</i>
             </Label>
             <Input
+              required
               type="text"
               value={email.value}
-              autoComplete="off"
               onChange={e =>
                 setEmail({
                   value: e.currentTarget.value,
@@ -212,7 +217,6 @@ export function LoginPage() {
                 })
               }
               placeholder="Email or Mobile No."
-              required
             />
             {email.error && <ErrorMsg formError>{email.msg}</ErrorMsg>}
           </Field>
@@ -220,20 +224,28 @@ export function LoginPage() {
             <Label>
               Password <i>*</i>
             </Label>
-            <Input
-              type="password"
-              value={password.value}
-              autoComplete="off"
-              onChange={e =>
-                setPassword({
-                  value: e.currentTarget.value,
-                  error: false,
-                  msg: '',
-                })
-              }
-              placeholder="Password"
-              required
-            />
+            <InputIconWrapper>
+              <Input
+                type={showPass ? 'text' : 'password'}
+                value={password.value}
+                placeholder="Password"
+                required
+                onChange={e =>
+                  setPassword({
+                    value: e.currentTarget.value,
+                    error: false,
+                    msg: '',
+                  })
+                }
+              />
+              <IconButton
+                type="button"
+                onClick={() => setShowPass(prev => !prev)}
+              >
+                <FontAwesomeIcon icon={showPass ? 'eye-slash' : 'eye'} />
+              </IconButton>
+            </InputIconWrapper>
+
             {password.error && <ErrorMsg formError>{password.msg}</ErrorMsg>}
           </Field>
 

@@ -4,8 +4,11 @@ import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import Loading from 'app/components/Loading';
 import H1 from 'app/components/Elements/H1';
+import H3 from 'app/components/Elements/H3';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
@@ -13,12 +16,17 @@ import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
 import A from 'app/components/Elements/A';
 
+import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
+import IconButton from 'app/components/Elements/IconButton';
+
 import Dialog from 'app/components/Dialog';
 import Wrapper from 'app/components/Layouts/AuthWrapper';
 
+import VerifyOTP from 'app/components/VerifyOTP';
+
 import {
   validateEmail,
-  validatePhone,
+  regExMobile,
   regExStrongPassword,
 } from 'app/components/Helpers';
 
@@ -35,11 +43,14 @@ export function RegisterPage() {
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
 
+  const [isError, setIsError] = React.useState(false);
   const [apiError, setApiError] = React.useState('');
-  const [email, setEmail] = React.useState({
+  const [showChoose, setShowChoose] = React.useState(true);
+  const [isEmail, setIsEmail] = React.useState(false);
+  const [username, setUsername] = React.useState({
     value: '',
     error: false,
-    phoneError: false,
+    msg: '',
   });
   const [password, setPassword] = React.useState({ value: '', error: false });
   const [confirmPassword, setConfirmPassword] = React.useState({
@@ -47,6 +58,8 @@ export function RegisterPage() {
     error: false,
   });
   const [passError, setPassError] = React.useState('');
+  const [showPass, setShowPass] = React.useState(false);
+  const [showConfirm, setShowConfirm] = React.useState(false);
   const [agree, setAgree] = React.useState({ value: false, error: false });
 
   React.useEffect(() => {
@@ -93,31 +106,49 @@ export function RegisterPage() {
     if (e && e.preventDefault) e.preventDefault();
 
     let error = false;
-    let isEmail = false;
 
-    if (email.value === '') {
-      error = true;
-      setEmail({ ...email, error: true, phoneError: true });
+    // validate as email
+    if (isEmail) {
+      if (username.value === '') {
+        error = true;
+        setUsername({
+          ...username,
+          error: true,
+          msg: 'Kindly enter your email address',
+        });
+      }
+
+      if (username.value !== '' && !validateEmail(username.value)) {
+        error = true;
+        setUsername({
+          ...username,
+          error: true,
+          msg:
+            'Oops, please enter your email in valid format ie: email@example.com',
+        });
+      }
     }
 
-    if (email.value !== '' && validateEmail(email.value)) {
-      isEmail = true;
-    }
+    // validate as phone
+    if (!isEmail) {
+      if (username.value === '') {
+        error = true;
+        setUsername({
+          ...username,
+          error: true,
+          msg: 'Kindly enter your mobile number',
+        });
+      }
 
-    if (
-      email.value !== '' &&
-      !validateEmail(email.value) &&
-      !/^0(9)/.test(email.value)
-    ) {
-      setEmail({ ...email, error: true, phoneError: false });
-    }
-
-    if (
-      email.value !== '' &&
-      /^0(9)/.test(email.value) &&
-      !validatePhone(email.value)
-    ) {
-      setEmail({ ...email, error: false, phoneError: true });
+      if (username.value !== '' && !regExMobile.test(username.value)) {
+        error = true;
+        setUsername({
+          ...username,
+          error: true,
+          msg:
+            'Please enter valid mobile number (09 + 9 digit number) ie: 09xxxxxxxxx',
+        });
+      }
     }
 
     if (password.value === '') {
@@ -162,8 +193,8 @@ export function RegisterPage() {
     if (!error) {
       setApiError('');
       const data = {
-        email: isEmail ? email.value : undefined,
-        mobile_number: !isEmail ? email.value : undefined,
+        email: isEmail ? username.value : undefined,
+        mobile_number: !isEmail ? username.value : undefined,
         password: password.value,
         password_confirmation: password.value,
       };
@@ -175,117 +206,174 @@ export function RegisterPage() {
 
   const onClickSuccess = () => {
     dispatch(actions.getFetchReset()); // reset stote state first
-    history.push('/'); // redirect to home
+    history.replace('/'); // redirect to home
+  };
+
+  const onShowForm = (bool: boolean) => {
+    setShowChoose(prev => !prev);
+    setIsEmail(bool);
   };
 
   return (
     <Wrapper>
       <Helmet title="Register" />
       <div className="form-container">
-        <H1 margin="0 0 5px">Create your account</H1>
+        {loading && <Loading position="absolute" />}
+        {showChoose && (
+          <div className="text-center" style={{ padding: '0 40px' }}>
+            <H3>Create your Account</H3>
+            <p className="sub-title">
+              We got you! Let us know which contact detail you want to use to
+              create your account
+            </p>
+            <Button
+              type="button"
+              onClick={() => onShowForm(false)}
+              color="primary"
+              fullWidth={true}
+              size="large"
+              variant="contained"
+            >
+              <FontAwesomeIcon icon="mobile" /> Mobile Number
+            </Button>
+            <Field margin="10px 0">Or</Field>
+            <Button
+              type="button"
+              onClick={() => onShowForm(true)}
+              color="primary"
+              fullWidth={true}
+              size="large"
+              variant="contained"
+            >
+              <FontAwesomeIcon icon="envelope" /> Email
+            </Button>
 
-        <form>
-          {loading && <Loading position="absolute" />}
-          <Field>
-            <Label>Email or Mobile No.</Label>
-            <Input
-              type="text"
-              value={email.value}
-              autoComplete="off"
-              onChange={e =>
-                setEmail({
-                  value: e.currentTarget.value,
-                  error: false,
-                  phoneError: false,
-                })
-              }
-              placeholder="Email or Mobile No."
+            <VerifyOTP
+              mount
+              onSuccess={() => {}}
+              isEmail={isEmail}
+              viaValue="1234"
             />
-            {(email.error || email.phoneError) && (
-              <ErrorMsg formError>
-                *{' '}
-                {!email.error &&
-                  email.phoneError &&
-                  'Please enter phone in correct format ie: 09xxxxxxxxx'}
-                {email.error &&
-                  !email.phoneError &&
-                  'Please enter your email in valid format or try your mobile number'}
-                {email.error &&
-                  email.phoneError &&
-                  'Please enter your email or mobile number'}
-              </ErrorMsg>
-            )}
-          </Field>
-          <Field>
-            <Label>Password</Label>
-            <Input
-              type="password"
-              value={password.value}
-              autoComplete="off"
-              onChange={e => {
-                setPassword({ value: e.currentTarget.value, error: false });
-                setPassError('');
-              }}
-              placeholder="Password"
-            />
-            {password.error && (
-              <ErrorMsg formError>* Please enter your password</ErrorMsg>
-            )}
-          </Field>
-          <Field>
-            <Label>Confirm Password</Label>
-            <Input
-              type="password"
-              value={confirmPassword.value}
-              autoComplete="off"
-              onChange={e => {
-                setConfirmPassword({
-                  value: e.currentTarget.value,
-                  error: false,
-                });
-                setPassError('');
-              }}
-              placeholder="Confirm password"
-            />
-            {confirmPassword.error && (
-              <ErrorMsg formError>* Please confirm your password</ErrorMsg>
-            )}
-            {passError !== '' && <ErrorMsg formError>* {passError}</ErrorMsg>}
-          </Field>
+          </div>
+        )}
 
-          {apiError !== '' && <ErrorMsg formError>{apiError}</ErrorMsg>}
+        {!showChoose && (
+          <>
+            <H1 margin="0 0 5px">Create your account</H1>
 
-          <Button
-            type="submit"
-            onClick={onSubmit}
-            color="primary"
-            fullWidth={true}
-            size="large"
-            variant="contained"
-          >
-            CREATE ACCOUNT
-          </Button>
-          <Field className="text-center" margin="20px 0 10px">
-            Already have an account? <A to="/">Log In</A>
-          </Field>
-          <Field className="agreement text-center" margin="25px 0 0">
-            <span>
-              By creating an account, I agree to the{' '}
-              <Link to="/terms-and-conditions" target="_blank">
-                Terms and Condition
-              </Link>{' '}
-              and{' '}
-              <Link to="/" target="_blank">
-                Privacy Policy
-              </Link>
-            </span>
-            {agree.error && (
-              <ErrorMsg formError>
-                * You must agree to continue creating your account.
-              </ErrorMsg>
-            )}
-          </Field>
-        </form>
+            <form>
+              <Field>
+                <Label>{isEmail ? 'Email' : 'Mobile No.'}</Label>
+                <Input
+                  hidespinner
+                  required
+                  type={isEmail ? 'text' : 'number'}
+                  value={username.value}
+                  autoComplete="off"
+                  min={0}
+                  onChange={e =>
+                    setUsername({
+                      value: e.currentTarget.value,
+                      error: false,
+                      msg: '',
+                    })
+                  }
+                  placeholder={
+                    isEmail
+                      ? 'Ex: email@example.com'
+                      : 'Ex: 09 + 9 digit (09xxxxxxxxx)'
+                  }
+                />
+                {username.error && (
+                  <ErrorMsg formError>{username.msg}</ErrorMsg>
+                )}
+              </Field>
+              <Field>
+                <Label>
+                  Password <i>*</i>
+                </Label>
+                <InputIconWrapper>
+                  <Input
+                    type={showPass ? 'text' : 'password'}
+                    value={password.value}
+                    autoComplete="off"
+                    placeholder="Password"
+                    required
+                    onChange={e => {
+                      setPassword({
+                        value: e.currentTarget.value,
+                        error: false,
+                      });
+                      setPassError('');
+                    }}
+                  />
+                  <IconButton onClick={() => setShowPass(prev => !prev)}>
+                    <FontAwesomeIcon icon={showPass ? 'eye-slash' : 'eye'} />
+                  </IconButton>
+                </InputIconWrapper>
+
+                {password.error && (
+                  <ErrorMsg formError>Please enter your password</ErrorMsg>
+                )}
+              </Field>
+              <Field>
+                <Label>Confirm Password</Label>
+                <InputIconWrapper>
+                  <Input
+                    type={showConfirm ? 'text' : 'password'}
+                    value={confirmPassword.value}
+                    autoComplete="off"
+                    placeholder="Password"
+                    required
+                    onChange={e => {
+                      setConfirmPassword({
+                        value: e.currentTarget.value,
+                        error: false,
+                      });
+                      setPassError('');
+                    }}
+                  />
+                  <IconButton onClick={() => setShowConfirm(prev => !prev)}>
+                    <FontAwesomeIcon icon={showConfirm ? 'eye-slash' : 'eye'} />
+                  </IconButton>
+                </InputIconWrapper>
+
+                {confirmPassword.error && (
+                  <ErrorMsg formError>Please confirm your password</ErrorMsg>
+                )}
+                {passError !== '' && <ErrorMsg formError>{passError}</ErrorMsg>}
+              </Field>
+
+              {apiError !== '' && <ErrorMsg formError>{apiError}</ErrorMsg>}
+
+              <Button
+                type="submit"
+                onClick={onSubmit}
+                color="primary"
+                fullWidth={true}
+                size="large"
+                variant="contained"
+              >
+                CREATE ACCOUNT
+              </Button>
+              <Field className="text-center" margin="20px 0 10px">
+                Already have an account? <A to="/">Log In</A>
+              </Field>
+              <Field className="agreement text-center" margin="25px 0 0">
+                <span>
+                  By creating an account, I agree to the{' '}
+                  <Link to="/terms-and-conditions" target="_blank">
+                    Terms and Condition
+                  </Link>{' '}
+                  and{' '}
+                  <Link to="/" target="_blank">
+                    Privacy Policy
+                  </Link>
+                </span>
+              </Field>
+            </form>
+          </>
+        )}
       </div>
 
       <Dialog

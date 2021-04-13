@@ -35,6 +35,7 @@ export const StyleConstants = Object.freeze({
   GOLD: '#E0AC3B',
   BLACK: '#000000',
   GRAY_BG: '#DBDBDB',
+  GRAY_TEXT: '#C4C4C4',
   LABEL_TEXT: '#526372',
   MAIN_TEXT: '#526372',
   TITLE: '#343A40',
