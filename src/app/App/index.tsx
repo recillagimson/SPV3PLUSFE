@@ -89,7 +89,7 @@ export function App() {
             />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
-            <PrivateRoute path="/sendmoney" component={SendMoney} />
+            <Route path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/scanqr" component={ScanQR} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />

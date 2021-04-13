@@ -17,32 +17,36 @@ import Wrapper from './Wrapper';
 import Card from 'app/components/Elements/Card/Card';
 
 export function SendMoney() {
-  const [email, setEmail] = React.useState({ value: '', error: false });
+  const [mobile, setMobile] = React.useState({ value: '', error: false });
   const [amount, setAmount] = React.useState({ value: '', error: false });
   const [message, setMessage] = React.useState({ value: '', error: false });
+
+  // Error Message
+  const [errorMobile, setShowErrorMobile] = React.useState(false);
+  const [errorEmail, setShowErrorEmail] = React.useState(false);
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
 
     let error = false;
 
-    if (email.value === '') {
+    if (mobile.value === '') {
       error = true;
-      setEmail({ ...email, error: true });
+      setMobile({ ...mobile, error: true });
     }
-    if (parseFloat(amount.value) <= 0) {
-      error = true;
-      setAmount({ ...amount, error: true });
-    }
+    // if (parseFloat(amount.value) <= 0) {
+    //   error = true;
+    //   setAmount({ ...amount, error: true });
+    // }
 
-    if (message.value === '') {
-      error = true;
-      setMessage({ ...message, error: true });
-    }
+    // if (message.value === '') {
+    //   error = true;
+    //   setMessage({ ...message, error: true });
+    // }
 
     if (!error) {
       const data = {
-        email: email.value,
+        mobile: mobile.value,
         amount: parseFloat(amount.value),
         message: message.value,
       };
@@ -81,12 +85,13 @@ export function SendMoney() {
             <Input
               type="text"
               placeholder="Email or Mobile No."
-              value={email.value}
+              value={mobile.value}
               autoComplete="off"
               onChange={e =>
-                setEmail({ value: e.currentTarget.value, error: false })
+                setMobile({ value: e.currentTarget.value, error: false })
               }
             />
+            {mobile.error && <ErrorMsg formError>* Invalid Amount</ErrorMsg>}
           </Field>
           <Field>
             <Label>Amount</Label>
@@ -113,7 +118,9 @@ export function SendMoney() {
               onChange={e =>
                 setMessage({ value: e.currentTarget.value, error: false })
               }
+              maxLength={64}
             ></Textarea>
+            <small>{message.value.length}/64</small>
           </Field>
         </Card>
       </Wrapper>

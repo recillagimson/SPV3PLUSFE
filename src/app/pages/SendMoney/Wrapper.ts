@@ -8,7 +8,7 @@ const Wrapper = styled.section`
 
   small {
     display: block;
-    color: #929da7ff;
+    color: #526372;
     margin-top: 5px;
     font-weight: lighter;
   }
