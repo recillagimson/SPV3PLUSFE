@@ -7,7 +7,8 @@
  * @prop {boolean}    isEmail       If OTP code came from email or via sms
  * @prop {string}     viaValue      Email or mobile number of the requestor
  * @prop {function}   onSuccess     callback when code is verified
- * @prop {boolean}    isPin         If defined, will show a different style for PIN input
+ * @prop {string}     verifyType    select one for verifying code 'password' | 'account' | undefined
+ *                                  NOTE: add more in the selection if we will have more url for verification
  */
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -61,6 +62,7 @@ type Props = {
   viaValue: string;
   onSuccess: () => void;
   isPin?: boolean;
+  verifyType: 'password' | 'account';
 };
 export default function VerifyOTPComponent({
   mount,
@@ -68,6 +70,7 @@ export default function VerifyOTPComponent({
   isEmail,
   viaValue,
   onSuccess,
+  verifyType,
 }: Props) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
@@ -113,10 +116,13 @@ export default function VerifyOTPComponent({
 
     if (!error) {
       const data = {
-        code_type: codeType ? codeType : 'password_recovery',
-        mobile_number: !isEmail ? viaValue : undefined,
-        email: isEmail ? viaValue : undefined,
-        code: isEmail ? code.value : undefined,
+        url: verifyType,
+        body: {
+          code_type: codeType ? codeType : 'password_recovery',
+          mobile_number: !isEmail ? viaValue : undefined,
+          email: isEmail ? viaValue : undefined,
+          code: isEmail ? code.value : undefined,
+        },
       };
       dispatch(actions.getFetchLoading(data));
     }

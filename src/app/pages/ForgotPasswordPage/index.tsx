@@ -331,6 +331,7 @@ export function ForgotPasswordPage() {
               onSuccess={onSuccessVerify}
               isEmail={isEmail}
               viaValue={isEmail ? email.value : mobile.value}
+              verifyType="password"
             />
 
             <Field className="text-center" margin="20px 0 10px">

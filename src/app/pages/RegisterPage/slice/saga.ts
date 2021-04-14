@@ -51,12 +51,12 @@ function* getRegister() {
       // request decryption passphrase
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
-        apirequest.id,
+        apirequest.data.id,
       );
 
       // decrypt payload data
       let decryptData = CryptoJS.AES.decrypt(
-        apirequest.payload,
+        apirequest.data.payload,
         decryptPhrase.passPhrase,
         { format: encDec },
       ).toString(CryptoJS.enc.Utf8);
