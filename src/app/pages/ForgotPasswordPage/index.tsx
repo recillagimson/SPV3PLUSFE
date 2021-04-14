@@ -78,21 +78,46 @@ export function ForgotPasswordPage() {
     let apiError: string | undefined;
     if (error && Object.keys(error).length > 0) {
       if (error.code && error.code === 422) {
-        if (error.errors && error.errors.error_code) {
-          apiError = `The ${
-            isEmail ? 'email' : 'mobile number'
-          } you have entered doesn't exists in our records. Please try again`;
+        if (
+          error.errors &&
+          error.errors.error_code &&
+          error.errors.error_code.length > 0
+        ) {
+          apiError = error.errors.error_code.map(i => {
+            if (i === 101 || i === 103) {
+              return `The ${
+                isEmail ? 'email' : 'mobile number'
+              } you have entered doesn't exists in our records. Please try again.`;
+            }
+            if (i === 102) {
+              return `Your account is not yet verified. Please check your ${
+                isEmail ? 'email' : 'mobile number'
+              } for verification process.`;
+            }
+            if (i === 108) {
+              return `You cannot change your password yet at it hasn't reach it's 1 day minimum age.`;
+            }
+            if (i === 104) {
+              return 'You are attempting to login from an untrusted client. Please check your internet connection.';
+            }
+            if (i === 105) {
+              return 'Too many failed login attempts. This device is temporarily blocked. Please try again later.';
+            }
+
+            return undefined;
+          });
         }
         setApiErrorMsg(apiError || '');
         setIsError(true);
       }
-      if (error.response && !error.code) {
+
+      if (error.code && error.code !== 422) {
         apiError = error.response.statusText;
         setApiErrorMsg(apiError || '');
         setIsError(true);
       }
       if (!error.response && (!error.code || error.code !== 422)) {
-        apiError = error.message;
+        apiError = 'Uh-oh! Invalid Code';
         setApiErrorMsg(apiError || '');
         setIsError(true);
       }
@@ -137,6 +162,7 @@ export function ForgotPasswordPage() {
 
     let error = false;
 
+    // validate as email
     if (isEmail) {
       if (email.value === '') {
         error = true;
@@ -149,8 +175,13 @@ export function ForgotPasswordPage() {
       }
     }
 
+    // validate as mobile number
     if (!isEmail) {
-      // validate as mobile number
+      if (mobile.value === '') {
+        error = true;
+        setMobile({ ...mobile, error: true });
+      }
+
       if (mobile.value !== '' && !/^0(9)/.test(mobile.value)) {
         error = true;
         setMobile({ ...mobile, error: true });
@@ -327,7 +358,7 @@ export function ForgotPasswordPage() {
         {showVerify && (
           <div className="content">
             <VerifyOTP
-              mount={showVerify}
+              mount={!showVerify}
               onSuccess={onSuccessVerify}
               isEmail={isEmail}
               viaValue={isEmail ? email.value : mobile.value}

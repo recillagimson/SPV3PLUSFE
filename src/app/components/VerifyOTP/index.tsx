@@ -27,6 +27,8 @@ import { useComponentSaga } from './slice';
 import { selectLoading, selectError, selectData } from './slice/selectors';
 
 const Wrapper = styled.div`
+  text-align: center;
+
   /** pin input styles */
   .pin-input {
     input {
@@ -144,9 +146,9 @@ export default function VerifyOTPComponent({
       </Field>
       {error && Object.keys(error).length > 0 && (
         <ErrorMsg formError>
-          *{' '}
+          {' '}
           {error.code && error.code === 422
-            ? error.errors.code.join(' ')
+            ? 'Uh-oh! Invalid Code'
             : error.message}
         </ErrorMsg>
       )}
