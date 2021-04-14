@@ -15,6 +15,7 @@ export const initialState: GlobalState = {
   isAuthenticated: false,
   token: '',
   isSessionExpired: false,
+  isBlankPage: false,
 };
 
 const slice = createSlice({
@@ -46,6 +47,9 @@ const slice = createSlice({
     },
     getIsSessionExpired(state, action: PayloadAction<boolean>) {
       state.isSessionExpired = action.payload;
+    },
+    getIsBlankPage(state, action: PayloadAction<boolean>) {
+      state.isBlankPage = action.payload;
     },
   },
 });

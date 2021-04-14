@@ -6,21 +6,29 @@
  *       extend this style if necessary
  */
 import styled from 'styled-components/macro';
-import { StyleConstants } from 'styles/StyleConstants';
+import FormElementStyle from './FormElementsStyle';
 
-const Input = styled.input`
-  background-color: ${StyleConstants.WHITE};
-  border-radius: ${StyleConstants.BORDER_RADIUS};
-  border: 1px solid ${StyleConstants.BORDER_COLOR};
-  padding: 15px;
-  color: ${StyleConstants.MAIN_TEXT};
-  display: block;
-  width: 100%;
-  font-size: inherit;
+const Input = styled.input<{ hidespinner?: boolean }>`
+  ${FormElementStyle} // basic css style for all form elements
 
-  &:focus {
-    outline-color: ${StyleConstants.GOLD};
-  }
+  // this will set to hide the spinner if input type is number
+  // hidespinner should be declare in the <Input /> tag
+  ${p =>
+    p.hidespinner &&
+    `
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+    &[type=number] {
+      appearance: textfield;
+    }
+  `}
 `;
 
 export default Input;

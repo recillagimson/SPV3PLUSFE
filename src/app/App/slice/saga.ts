@@ -40,7 +40,7 @@ export function* getRequestToken() {
     if (apirequest && apirequest.expires_in) {
       const now = new Date();
       now.setSeconds(now.getSeconds() + apirequest.expires_in);
-      setCookie('spv_expire', now.toUTCString(), 1);
+      setCookie('spv_expire', now.toUTCString(), 0);
 
       yield put(actions.getTokenSuccess(apirequest));
     }

@@ -1,5 +1,6 @@
 /**
  * Dialog Component
+ * @prop  {string}    size        Dialog size oneOf 'small' | 'medium' | 'large' | 'xlarge' | undefined
  * @prop  {boolean}   show        show/hide dialog
  * @prop  {string}    title       Dialog title
  * @prop  {function}  onClick     function callback for OK button, if not defined, will not show the button
@@ -19,10 +20,11 @@ import Title from './Title';
 import Actions from './Action';
 
 type Props = {
+  size?: 'small' | 'medium' | 'large' | 'xlarge' | undefined;
   show: boolean;
-  title: string;
+  title?: string;
   message?: string;
-  children?: React.ReactNodeArray;
+  children?: React.ReactNode;
   onClick?: () => void;
   onClose?: () => void;
   okText?: string;
@@ -30,6 +32,7 @@ type Props = {
 };
 
 export default function DialogComponent({
+  size,
   show,
   title,
   message,
@@ -76,7 +79,7 @@ export default function DialogComponent({
       mountOnEnter
       unmountOnExit
     >
-      <Wrapper ref={nodeRef}>
+      <Wrapper ref={nodeRef} size={size || undefined}>
         <div className="dialog-child">
           {title && <Title>{title}</Title>}
           <div className="dialog-content">
