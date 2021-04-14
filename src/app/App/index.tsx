@@ -37,6 +37,7 @@ import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
+import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
 
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
@@ -131,7 +132,13 @@ export function App() {
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
             <PrivateRoute path="/profile" component={UserProfilePage} />
-            <Route path="*" component={NotFoundPage} />
+            <PrivateRoute
+              exact
+              path="/transaction-history"
+              component={TransactionHistoryPage}
+            />
+
+            <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}
         </Content>
