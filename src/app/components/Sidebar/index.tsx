@@ -76,7 +76,7 @@ export default function Sidebar() {
         <NavButton as={NavLink} to="/scanqr">
           Scan QR
         </NavButton>
-        <NavButton as={NavLink} to="/">
+        {/* <NavButton as={NavLink} to="/"> */}
         <NavButton as={NavLink} to="/dashboard">
           <svg
             width="34"
