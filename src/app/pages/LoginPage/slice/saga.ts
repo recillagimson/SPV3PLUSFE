@@ -1,8 +1,7 @@
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
-import CryptoJS from 'crypto-js';
-import encDec from 'app/components/Helpers/EncyptDecrypt';
+import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
 import { appActions } from 'app/App/slice';
@@ -13,7 +12,7 @@ import {
 } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
-import { selectRequest } from './selectors';
+import { selectRequest, selectResendCodeRequest } from './selectors';
 import { setCookie } from 'app/components/Helpers';
 
 /**
@@ -29,11 +28,10 @@ function* getLogin() {
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
 
   if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
-    encryptPayload = CryptoJS.AES.encrypt(
+    encryptPayload = spdCrypto.encrypt(
       JSON.stringify(payload),
       requestPhrase.passPhrase,
-      { format: encDec },
-    ).toString();
+    );
   }
 
   const options = {
@@ -49,40 +47,32 @@ function* getLogin() {
   try {
     const apirequest = yield call(request, requestURL, options);
 
-    if (apirequest && apirequest.id) {
+    if (apirequest && apirequest.data) {
       // request decryption passphrase
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
-        apirequest.id,
+        apirequest.data.id,
       );
 
       // decrypt payload data
-      let decryptData = CryptoJS.AES.decrypt(
-        apirequest.payload,
+      let decryptData = spdCrypto.decrypt(
+        apirequest.data.payload,
         decryptPhrase.passPhrase,
-        { format: encDec },
-      ).toString(CryptoJS.enc.Utf8);
+      );
 
       // set appropriate cookies
       // a 0 in parameter will set the cookie 1 hour from the current time
       setCookie('spv_expire', 'expiration', 0);
-      setCookie('spv_uat', apirequest.payload, 0);
+      setCookie('spv_uat', apirequest.data.payload, 0);
       setCookie('spv_uat_hmc', decryptPhrase.passPhrase, 0);
 
       // write data in store state
-      yield put(appActions.getTokenSuccess(JSON.parse(decryptData))); // write the new access token
+      yield put(appActions.getTokenSuccess(decryptData.user_token)); // write the new access token
       yield put(appActions.getIsAuthenticated(true));
-      yield put(actions.getFetchSuccess(true)); // return true on main component
+      // TODO: wait for UI to display, if password has expired and user need to update it
+      //       for now, we will just send as true to redirect to dashboard page
+      yield put(actions.getFetchSuccess(true));
       return;
-    }
-
-    if (
-      apirequest &&
-      apirequest.message &&
-      apirequest.message === 'Login successful'
-    ) {
-      yield put(appActions.getIsAuthenticated(true));
-      yield put(actions.getFetchSuccess(true)); // return true on main component
     }
   } catch (err) {
     if (err && err.response && err.response.status === 422) {
@@ -99,6 +89,56 @@ function* getLogin() {
 }
 
 /**
+ * Resend Activation Code
+ * @returns
+ */
+function* getResendActivationCode() {
+  const token = yield select(selectToken); // access_token
+  const payload = yield select(selectResendCodeRequest); // payload body from main component
+  const requestURL = `${process.env.REACT_APP_API_URL}/auth/login`; // url NOTE: change to resending activation code
+
+  let encryptPayload: string = '';
+
+  let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
+
+  if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
+    encryptPayload = spdCrypto.encrypt(
+      JSON.stringify(payload),
+      requestPhrase.passPhrase,
+    );
+  }
+
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token.access_token}`,
+    },
+    body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
+  };
+
+  try {
+    const apirequest = yield call(request, requestURL, options);
+
+    if (apirequest) {
+      yield put(actions.getResendCodeSuccess(true));
+    }
+  } catch (err) {
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.getResendCodeError(newError));
+    } else {
+      yield put(actions.getResendCodeError(err));
+    }
+  }
+}
+
+/**
  * Root saga manages watcher lifecycle
  */
 export function* containerSaga() {
@@ -107,4 +147,5 @@ export function* containerSaga() {
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
   yield takeLatest(actions.getFetchLoading.type, getLogin);
+  yield takeLatest(actions.getResendCodeLoading.type, getResendActivationCode);
 }

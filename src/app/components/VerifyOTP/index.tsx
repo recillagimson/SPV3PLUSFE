@@ -2,7 +2,6 @@
 /**
  * This will verify OTP code
  * NOTE: this will only render the input fields and submit button
- * @prop {boolean}    mount         true/false to mount the component
  * @prop {string}     codeType      Code type ie: password_recovery or others specified in the BE API
  * @prop {boolean}    isEmail       If OTP code came from email or via sms
  * @prop {string}     viaValue      Email or mobile number of the requestor
@@ -31,6 +30,8 @@ const Wrapper = styled.div`
 
   /** pin input styles */
   .pin-input {
+    margin: 0 0 5px;
+
     input {
       border-radius: ${StyleConstants.BUTTON_RADIUS};
       background-color: ${StyleConstants.GRAY_BG};
@@ -58,7 +59,6 @@ const Wrapper = styled.div`
 `;
 
 type Props = {
-  mount: boolean;
   codeType?: string;
   isEmail: boolean;
   viaValue: string;
@@ -67,7 +67,6 @@ type Props = {
   verifyType: 'password' | 'account';
 };
 export default function VerifyOTPComponent({
-  mount,
   codeType,
   isEmail,
   viaValue,
@@ -101,11 +100,6 @@ export default function VerifyOTPComponent({
     }
   }, [success, error]);
 
-  // before we load all the codes below, check if we are going to be mounted first
-  if (!mount) {
-    return null;
-  }
-
   const onChangePin = (val: any) => {
     setCode({ value: val, error: false });
   };
@@ -115,6 +109,11 @@ export default function VerifyOTPComponent({
   ) => {
     if (e && e.preventDefault) e.preventDefault();
     let error = false;
+
+    if (code.value === '') {
+      error = true;
+      setCode({ ...code, error: true });
+    }
 
     if (!error) {
       const data = {
@@ -143,15 +142,16 @@ export default function VerifyOTPComponent({
           className="pin-input"
           isValid={isCodeValid}
         />
+        {code.error && <ErrorMsg formError>Please input your code</ErrorMsg>}
+        {error && Object.keys(error).length > 0 && (
+          <ErrorMsg formError>
+            {' '}
+            {error.code && error.code === 422
+              ? 'Uh-oh! Invalid Code'
+              : error.message}
+          </ErrorMsg>
+        )}
       </Field>
-      {error && Object.keys(error).length > 0 && (
-        <ErrorMsg formError>
-          {' '}
-          {error.code && error.code === 422
-            ? 'Uh-oh! Invalid Code'
-            : error.message}
-        </ErrorMsg>
-      )}
 
       <Button
         type="submit"

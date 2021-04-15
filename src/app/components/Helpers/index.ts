@@ -9,7 +9,7 @@ export const regExMobile = /^0(9)\d{9}$/; // number must start with 0 followed b
 
 // password strength regex
 export const regExPassword = /.{12,}$/; // password should be 12 or more characters
-export const regExStrongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*\{\}\[\]\;\:\'\"\|\-\_\=\+\<\>\,\.\/\?])(?=.{12,})/; // eslint-disable-line no-useless-escape
+export const regExStrongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&_])(?=.{12,})/; // eslint-disable-line no-useless-escape
 export const regExMediumPassword = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{8,})/;
 export const regExWeakPassword = /.{2,}$/;
 

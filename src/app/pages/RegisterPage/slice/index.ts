@@ -10,6 +10,12 @@ export const initialState: ContainerState = {
   error: {},
   data: false,
   request: false,
+  validate: {
+    loading: false,
+    error: {},
+    data: false,
+    request: false,
+  },
 };
 
 const slice = createSlice({
@@ -37,6 +43,28 @@ const slice = createSlice({
       state.error = {};
       state.data = false;
       state.request = false;
+    },
+    getValidateLoading(state, action: PayloadAction<object>) {
+      state.validate.loading = true;
+      state.validate.error = {};
+      state.validate.data = false;
+      state.validate.request = action.payload;
+    },
+    getValidateSuccess(state, action: PayloadAction<boolean>) {
+      state.validate.loading = false;
+      state.validate.request = false;
+      state.validate.data = action.payload;
+    },
+    getValidateError(state, action: PayloadAction<ErrorState>) {
+      state.validate.loading = false;
+      state.validate.request = false;
+      state.validate.error = action.payload;
+    },
+    getValidateReset(state) {
+      state.validate.loading = false;
+      state.validate.error = {};
+      state.validate.data = false;
+      state.validate.request = false;
     },
   },
 });

@@ -1,8 +1,7 @@
 import { call, put, select, takeLatest, delay } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
-import CryptoJS from 'crypto-js';
-import encDec from 'app/components/Helpers/EncyptDecrypt';
+import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
 import { selectToken } from 'app/App/slice/selectors';
@@ -27,11 +26,10 @@ function* getUpdatePassword() {
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
 
   if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
-    encryptPayload = CryptoJS.AES.encrypt(
+    encryptPayload = spdCrypto.encrypt(
       JSON.stringify(payload),
       requestPhrase.passPhrase,
-      { format: encDec },
-    ).toString();
+    );
   }
 
   const options = {
@@ -66,7 +64,6 @@ function* getUpdatePassword() {
         code: 422,
         ...body,
       };
-      console.log(newError);
       yield put(actions.getFetchError(newError));
     } else {
       yield put(actions.getFetchError(err));

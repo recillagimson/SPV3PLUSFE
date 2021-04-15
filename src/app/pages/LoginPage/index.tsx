@@ -18,6 +18,7 @@ import A from 'app/components/Elements/A';
 import Dialog from 'app/components/Dialog';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 
+import VerifyOTP from 'app/components/VerifyOTP';
 import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
 import IconButton from 'app/components/Elements/IconButton';
 
@@ -30,7 +31,14 @@ import {
 
 /** slice */
 import { useContainerSaga } from './slice';
-import { selectLoading, selectError, selectData } from './slice/selectors';
+import {
+  selectLoading,
+  selectError,
+  selectData,
+  selectResendCodeLoading,
+  selectResendCodeError,
+  selectResendCodeData,
+} from './slice/selectors';
 
 export function LoginPage() {
   const { actions } = useContainerSaga();
@@ -39,8 +47,19 @@ export function LoginPage() {
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
 
+  const resendLoading = useSelector(selectResendCodeLoading);
+  const resendError: any = useSelector(selectResendCodeError);
+  const resendSuccess = useSelector(selectResendCodeData);
+
+  // api related state
   const [isError, setIsError] = React.useState(false);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
+
+  // show verification
+  const [toVerify, setToVerify] = React.useState(false);
+  const [showVerify, setShowVerify] = React.useState(false);
+
+  // fields related states
   const [showPass, setShowPass] = React.useState(false);
   const [isEmail, setIsEmail] = React.useState(false);
   const [email, setEmail] = React.useState({
@@ -73,7 +92,8 @@ export function LoginPage() {
                 : 'Mobile number and password is invalid. Please try again.';
             }
             if (i === 102) {
-              return 'Your login account is not yet verified. Please check your email/mobile number for verification process.';
+              setToVerify(true);
+              return 'Your login account is not yet verified. Click OK to Verify your Account.';
             }
             if (i === 104) {
               return 'You are attempting to login from an untrusted client. Please check your internet connection';
@@ -185,6 +205,37 @@ export function LoginPage() {
     setIsEmail(false);
     setApiErrorMsg('');
     dispatch(actions.getFetchReset());
+    if (toVerify) {
+      setShowVerify(true);
+    }
+  };
+
+  const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    // since we already have the login information, send the user email or mobile number to receive activation code
+    const data = {
+      email: isEmail ? email.value : undefined,
+      mobile_number: !isEmail ? email.value : undefined,
+    };
+    console.log(data);
+    // dispatch(actions.getResendCodeLoading(data));
+  };
+
+  const onSuccessVerify = () => {
+    // reset the previous user input and show the login form
+    setShowPass(false);
+    setIsEmail(false);
+    setEmail({
+      value: '',
+      error: false,
+      msg: '',
+    });
+    setPassword({
+      value: '',
+      error: false,
+      msg: '',
+    });
+    setToVerify(false);
+    setShowVerify(false);
   };
 
   if (success) {
@@ -195,82 +246,108 @@ export function LoginPage() {
     <Wrapper>
       <Helmet title="Login" />
       <div className="form-container">
+        {loading && <Loading position="absolute" />}
+        {resendLoading && <Loading position="absolute" />}
         {/* <H1 margin="0 0 5px">We're glad you're back!</H1>
         <Label>Login to manage your account.</Label> */}
         <Logo size="medium" />
 
-        <form>
-          {loading && <Loading position="absolute" />}
-          <Field>
-            <Label>
-              Email or Mobile No. <i>*</i>
-            </Label>
-            <Input
-              required
-              type="text"
-              value={email.value}
-              onChange={e =>
-                setEmail({
-                  value: e.currentTarget.value,
-                  error: false,
-                  msg: '',
-                })
-              }
-              placeholder="Email or Mobile No."
-            />
-            {email.error && <ErrorMsg formError>{email.msg}</ErrorMsg>}
-          </Field>
-          <Field>
-            <Label>
-              Password <i>*</i>
-            </Label>
-            <InputIconWrapper>
+        {!showVerify && (
+          <form>
+            <Field>
+              <Label>
+                Email or Mobile No. <i>*</i>
+              </Label>
               <Input
-                type={showPass ? 'text' : 'password'}
-                value={password.value}
-                placeholder="Password"
                 required
+                type="text"
+                value={email.value}
                 onChange={e =>
-                  setPassword({
+                  setEmail({
                     value: e.currentTarget.value,
                     error: false,
                     msg: '',
                   })
                 }
+                placeholder="Email or Mobile No."
               />
-              <IconButton
-                type="button"
-                onClick={() => setShowPass(prev => !prev)}
-              >
-                <FontAwesomeIcon icon={showPass ? 'eye-slash' : 'eye'} />
-              </IconButton>
-            </InputIconWrapper>
+              {email.error && <ErrorMsg formError>{email.msg}</ErrorMsg>}
+            </Field>
+            <Field>
+              <Label>
+                Password <i>*</i>
+              </Label>
+              <InputIconWrapper>
+                <Input
+                  type={showPass ? 'text' : 'password'}
+                  value={password.value}
+                  placeholder="Password"
+                  required
+                  onChange={e =>
+                    setPassword({
+                      value: e.currentTarget.value,
+                      error: false,
+                      msg: '',
+                    })
+                  }
+                />
+                <IconButton
+                  type="button"
+                  onClick={() => setShowPass(prev => !prev)}
+                >
+                  <FontAwesomeIcon icon={showPass ? 'eye-slash' : 'eye'} />
+                </IconButton>
+              </InputIconWrapper>
 
-            {password.error && <ErrorMsg formError>{password.msg}</ErrorMsg>}
-          </Field>
+              {password.error && <ErrorMsg formError>{password.msg}</ErrorMsg>}
+            </Field>
 
-          <Button
-            type="submit"
-            onClick={onSubmit}
-            color="primary"
-            fullWidth={true}
-            size="large"
-            variant="contained"
-          >
-            LOGIN
-          </Button>
-          <Field className="text-center" margin="10px 0 0">
-            <A to="/forgotpassword">Forgot Password?</A>
-          </Field>
+            <Button
+              type="submit"
+              onClick={onSubmit}
+              color="primary"
+              fullWidth={true}
+              size="large"
+              variant="contained"
+            >
+              LOGIN
+            </Button>
+            <Field className="text-center" margin="10px 0 0">
+              <A to="/forgotpassword">Forgot Password?</A>
+            </Field>
 
-          <Field className="text-center f-small" margin="30px 0 0">
-            Not yet a member?{' '}
-            <A to="/register" underline="true">
-              Sign up
-            </A>
-          </Field>
-        </form>
+            <Field className="text-center f-small" margin="30px 0 0">
+              Not yet a member?{' '}
+              <A to="/register" underline="true">
+                Sign up
+              </A>
+            </Field>
+          </form>
+        )}
+        {showVerify && (
+          <div className="text-center">
+            <H3 margin="35px 0 10px">Account Activation</H3>
+            <p className="f-small">
+              Check your mobile or email for the activation code
+            </p>
+
+            <VerifyOTP
+              onSuccess={onSuccessVerify}
+              isEmail={isEmail}
+              viaValue={email.value}
+              verifyType="password"
+            />
+
+            <Field className="text-center" margin="20px 0 10px">
+              Need a new code?{' '}
+              <button className="link" onClick={onResendCode}>
+                Resend Code
+              </button>
+            </Field>
+          </div>
+        )}
       </div>
+      {/* Show login errors */}
       <Dialog show={isError} size="small">
         <div className="text-center">
           <CircleIndicator size="medium" color="danger">
@@ -281,6 +358,33 @@ export function LoginPage() {
           <Button
             fullWidth
             onClick={onCloseDialog}
+            variant="outlined"
+            color="secondary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
+
+      {/* show resend code error */}
+      <Dialog
+        show={resendError && Object.keys(resendError).length > 0}
+        size="small"
+      >
+        <div className="text-center">
+          <CircleIndicator size="medium" color="danger">
+            <FontAwesomeIcon icon="times" />
+          </CircleIndicator>
+          <H3 margin="15px 0 10px">Activation Code Resend Error</H3>
+          <p>
+            There was a problem resending your activation code. Please try again
+            later.
+          </p>
+          <Button
+            fullWidth
+            onClick={() => {
+              dispatch(actions.getResendCodeReset());
+            }}
             variant="outlined"
             color="secondary"
           >

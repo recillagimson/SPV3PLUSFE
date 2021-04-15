@@ -33,7 +33,13 @@ import {
 
 /** slice */
 import { useContainerSaga } from './slice';
-import { selectLoading, selectError, selectData } from './slice/selectors';
+import {
+  selectLoading,
+  selectError,
+  selectData,
+  selectValidateError,
+  selectValidateData,
+} from './slice/selectors';
 import { Link } from 'react-router-dom';
 
 export function RegisterPage() {
@@ -43,6 +49,8 @@ export function RegisterPage() {
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
+  const validateError: any = useSelector(selectValidateError);
+  const validateSuccess = useSelector(selectValidateData);
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
@@ -52,6 +60,7 @@ export function RegisterPage() {
   const [showPin, setShowPin] = React.useState(false);
   const [showPinConfirm, setShowPinConfirm] = React.useState(false);
   const [showPinCreated, setShowPinCreated] = React.useState(false);
+  const [showSuccess, setShowSuccess] = React.useState(false);
 
   const [isEmail, setIsEmail] = React.useState(false);
   const [username, setUsername] = React.useState({
@@ -84,11 +93,66 @@ export function RegisterPage() {
   React.useEffect(() => {
     if (success) {
       setShowPinCreated(false);
+      setShowSuccess(true);
     }
     if (error && Object.keys(error).length > 0) {
       apiErrorMessage();
     }
-  }, [success, error]);
+
+    if (validateError && Object.keys(validateError).length > 0) {
+      setIsLoading(false);
+      // return the errors
+      if (
+        validateError.errors &&
+        validateError.errors.email &&
+        validateError.errors.email.length > 0
+      ) {
+        const idx = validateError.errors.email.findIndex(
+          j => j === 'The email has already been taken.',
+        );
+        setUsername({
+          ...username,
+          error: true,
+          msg:
+            idx !== -1
+              ? 'Oops, this email address is already taken. Please try again.'
+              : 'Oops, there is an error with your email address, please kindly check if it is in right email format.',
+        });
+      }
+      if (
+        validateError.errors &&
+        validateError.errors.mobile_number &&
+        validateError.errors.mobile_number.length > 0
+      ) {
+        const idx = validateError.errors.mobile_number.findIndex(
+          j => j === 'The mobile number has already been taken.',
+        );
+        setUsername({
+          ...username,
+          error: true,
+          msg:
+            idx !== -1
+              ? 'Oops, this mobile number is already taken. Please try again.'
+              : 'Oops, there is an error with your mobile number, please kindly check if it is start with 09 + 9 digit number',
+        });
+      }
+      if (
+        validateError.errors &&
+        validateError.errors.password &&
+        validateError.errors.password.length > 0
+      ) {
+        setPassError(
+          'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
+        );
+      }
+    }
+
+    if (validateSuccess) {
+      setShowCreate(false);
+      setShowPin(true);
+      setIsLoading(false);
+    }
+  }, [success, error, validateError, validateSuccess]);
 
   // check the error payload
   const apiErrorMessage = () => {
@@ -135,8 +199,8 @@ export function RegisterPage() {
     setShowCreate(true);
   };
 
-  // when click, will show the set pin option
-  const onClickNextForPin = (
+  // validate the entered information (email/mobile, password)
+  const onValidateFields = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -217,19 +281,20 @@ export function RegisterPage() {
       if (!regExStrongPassword.test(password.value)) {
         hasError = true;
         setPassError(
-          'Your password is too short and weak. A minimum of 12 characters and with at least one uppercase and lowercase alphabet, numeric and special character is needed',
+          'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
         );
       }
     }
 
     if (!hasError) {
       setIsLoading(true);
-
-      setTimeout(() => {
-        setShowCreate(false);
-        setShowPin(true);
-        setIsLoading(false);
-      }, 800);
+      const data = {
+        email: isEmail ? username.value : undefined,
+        mobile_number: !isEmail ? username.value : undefined,
+        password: password.value,
+        password_confirmation: password.value,
+      };
+      dispatch(actions.getValidateLoading(data));
     }
   };
 
@@ -238,6 +303,7 @@ export function RegisterPage() {
     if (pin.value !== '' && pin.value.length === 4) {
       setShowPin(false);
       setShowPinConfirm(true);
+      dispatch(actions.getValidateReset());
     } else {
       setPin({ ...pin, error: true });
     }
@@ -312,6 +378,7 @@ export function RegisterPage() {
   // close error dialog
   const onCloseErrorDialog = () => {
     dispatch(actions.getFetchReset());
+    dispatch(actions.getValidateReset());
     setIsError(false);
     setApiError('');
   };
@@ -452,7 +519,7 @@ export function RegisterPage() {
 
               <Button
                 type="submit"
-                onClick={onClickNextForPin}
+                onClick={onValidateFields}
                 color="primary"
                 fullWidth={true}
                 size="large"
@@ -568,7 +635,7 @@ export function RegisterPage() {
           </div>
         )}
 
-        {success && (
+        {showSuccess && (
           <div className="text-center" style={{ padding: '0 40px' }}>
             <CircleIndicator size="large">
               <FontAwesomeIcon icon="check" />

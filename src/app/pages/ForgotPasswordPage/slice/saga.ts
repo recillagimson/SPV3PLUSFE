@@ -1,8 +1,7 @@
 import { delay, call, put, select, takeLatest } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
-import CryptoJS from 'crypto-js';
-import encDec from 'app/components/Helpers/EncyptDecrypt';
+import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
 import { selectToken } from 'app/App/slice/selectors';
@@ -26,11 +25,10 @@ function* getForgotPassword() {
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
 
   if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
-    encryptPayload = CryptoJS.AES.encrypt(
+    encryptPayload = spdCrypto.encrypt(
       JSON.stringify(payload),
       requestPhrase.passPhrase,
-      { format: encDec },
-    ).toString();
+    );
   }
 
   const options = {
