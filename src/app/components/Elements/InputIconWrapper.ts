@@ -2,6 +2,7 @@
  * Use this wrapper if you want to have a button beside the input tag
  */
 import styled from 'styled-components/macro';
+import { StyleConstants } from 'styles/StyleConstants';
 
 const InputIconWrapper = styled.div`
   position: relative;
@@ -15,6 +16,7 @@ const InputIconWrapper = styled.div`
     right: 5px;
     top: 50%;
     transform: translateY(-50%);
+    color: ${StyleConstants.GRAY_TEXT};
   }
 `;
 

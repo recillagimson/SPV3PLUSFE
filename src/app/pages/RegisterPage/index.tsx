@@ -4,21 +4,30 @@ import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import Loading from 'app/components/Loading';
 import H1 from 'app/components/Elements/H1';
+import H3 from 'app/components/Elements/H3';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
 import A from 'app/components/Elements/A';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
+
+import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
+import IconButton from 'app/components/Elements/IconButton';
 
 import Dialog from 'app/components/Dialog';
 import Wrapper from 'app/components/Layouts/AuthWrapper';
 
+import PinInput from 'app/components/Elements/PinInput';
+
 import {
   validateEmail,
-  validatePhone,
+  regExMobile,
   regExStrongPassword,
 } from 'app/components/Helpers';
 
@@ -35,11 +44,20 @@ export function RegisterPage() {
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
 
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
   const [apiError, setApiError] = React.useState('');
-  const [email, setEmail] = React.useState({
+  const [showChoose, setShowChoose] = React.useState(true);
+  const [showCreate, setShowCreate] = React.useState(false);
+  const [showPin, setShowPin] = React.useState(false);
+  const [showPinConfirm, setShowPinConfirm] = React.useState(false);
+  const [showPinCreated, setShowPinCreated] = React.useState(false);
+
+  const [isEmail, setIsEmail] = React.useState(false);
+  const [username, setUsername] = React.useState({
     value: '',
     error: false,
-    phoneError: false,
+    msg: '',
   });
   const [password, setPassword] = React.useState({ value: '', error: false });
   const [confirmPassword, setConfirmPassword] = React.useState({
@@ -47,7 +65,15 @@ export function RegisterPage() {
     error: false,
   });
   const [passError, setPassError] = React.useState('');
-  const [agree, setAgree] = React.useState({ value: false, error: false });
+  const [showPass, setShowPass] = React.useState(false);
+  const [showConfirm, setShowConfirm] = React.useState(false);
+
+  const [pin, setPin] = React.useState({ value: '', error: false });
+  const [pinConfirm, setPinConfirm] = React.useState({
+    value: '',
+    error: false,
+    msg: '',
+  });
 
   React.useEffect(() => {
     return () => {
@@ -56,16 +82,20 @@ export function RegisterPage() {
   }, [actions, dispatch]);
 
   React.useEffect(() => {
+    if (success) {
+      setShowPinCreated(false);
+    }
     if (error && Object.keys(error).length > 0) {
       apiErrorMessage();
     }
-  }, [error]);
+  }, [success, error]);
 
   // check the error payload
   const apiErrorMessage = () => {
     if (error.code && error.code === 422) {
       let emailError = '';
       let passError = '';
+      let mobileError = '';
       if (error.errors) {
         if (error.errors.email && error.errors.email.length > 0) {
           emailError = error.errors.email.join(' ');
@@ -73,9 +103,17 @@ export function RegisterPage() {
         if (error.errors.password && error.errors.password.length > 0) {
           passError = error.errors.password.join(' ');
         }
+        if (
+          error.errors.mobile_number &&
+          error.errors.mobile_number.length > 0
+        ) {
+          mobileError = error.errros.mobile_number.join(' ');
+        }
       }
 
-      let msg = `${emailError !== '' ? `* ${emailError}\n` : ''}* ${passError}`;
+      let msg = `${emailError !== '' ? `${emailError}\n` : ''} ${
+        passError !== '' ? `${passError}\n` : ''
+      } ${mobileError !== '' ? mobileError : ''}`;
       setApiError(msg);
     }
 
@@ -86,47 +124,77 @@ export function RegisterPage() {
     if (!error.response && (!error.code || error.code !== 422)) {
       setApiError(error.message);
     }
+
+    setIsError(true);
   };
 
-  // submit
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  // show the correct form based on selection (email or mobile)
+  const onShowForm = (bool: boolean) => {
+    setIsEmail(bool);
+    setShowChoose(false);
+    setShowCreate(true);
+  };
+
+  // when click, will show the set pin option
+  const onClickNextForPin = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     if (e && e.preventDefault) e.preventDefault();
 
-    let error = false;
-    let isEmail = false;
+    let hasError = false;
 
-    if (email.value === '') {
-      error = true;
-      setEmail({ ...email, error: true, phoneError: true });
+    // validate first the user inputs in the create account form
+    // validate as email
+    if (isEmail) {
+      if (username.value === '') {
+        hasError = true;
+        setUsername({
+          ...username,
+          error: true,
+          msg: 'Kindly enter your email address',
+        });
+      }
+
+      if (username.value !== '' && !validateEmail(username.value)) {
+        hasError = true;
+        setUsername({
+          ...username,
+          error: true,
+          msg:
+            'Oops, please enter your email in valid format ie: email@example.com',
+        });
+      }
     }
 
-    if (email.value !== '' && validateEmail(email.value)) {
-      isEmail = true;
-    }
+    // validate as phone
+    if (!isEmail) {
+      if (username.value === '') {
+        hasError = true;
+        setUsername({
+          ...username,
+          error: true,
+          msg: 'Kindly enter your mobile number',
+        });
+      }
 
-    if (
-      email.value !== '' &&
-      !validateEmail(email.value) &&
-      !/^0(9)/.test(email.value)
-    ) {
-      setEmail({ ...email, error: true, phoneError: false });
-    }
-
-    if (
-      email.value !== '' &&
-      /^0(9)/.test(email.value) &&
-      !validatePhone(email.value)
-    ) {
-      setEmail({ ...email, error: false, phoneError: true });
+      if (username.value !== '' && !regExMobile.test(username.value)) {
+        hasError = true;
+        setUsername({
+          ...username,
+          error: true,
+          msg:
+            'Please enter valid mobile number (09 + 9 digit number) ie: 09xxxxxxxxx',
+        });
+      }
     }
 
     if (password.value === '') {
-      error = true;
+      hasError = true;
       setPassword({ ...password, error: true });
     }
 
     if (confirmPassword.value === '') {
-      error = true;
+      hasError = true;
       setConfirmPassword({ ...confirmPassword, error: true });
     }
 
@@ -135,7 +203,7 @@ export function RegisterPage() {
       confirmPassword.value !== '' &&
       password.value !== confirmPassword.value
     ) {
-      error = true;
+      hasError = true;
       setPassError(
         'Your password and confirm password did not match. Please enter again',
       );
@@ -147,154 +215,397 @@ export function RegisterPage() {
       password.value === confirmPassword.value
     ) {
       if (!regExStrongPassword.test(password.value)) {
-        error = true;
+        hasError = true;
         setPassError(
           'Your password is too short and weak. A minimum of 12 characters and with at least one uppercase and lowercase alphabet, numeric and special character is needed',
         );
       }
     }
 
-    if (!agree.value) {
-      error = true;
-      setAgree({ ...agree, error: true });
-    }
+    if (!hasError) {
+      setIsLoading(true);
 
-    if (!error) {
-      setApiError('');
-      const data = {
-        email: isEmail ? email.value : undefined,
-        mobile_number: !isEmail ? email.value : undefined,
-        password: password.value,
-        password_confirmation: password.value,
-      };
-
-      // pass payload to saga
-      dispatch(actions.getFetchLoading(data));
+      setTimeout(() => {
+        setShowCreate(false);
+        setShowPin(true);
+        setIsLoading(false);
+      }, 800);
     }
   };
 
+  // if validation passed, show the reenter pin
+  const onPinNext = () => {
+    if (pin.value !== '' && pin.value.length === 4) {
+      setShowPin(false);
+      setShowPinConfirm(true);
+    } else {
+      setPin({ ...pin, error: true });
+    }
+  };
+
+  // validate the re-entered pin and then show PIN created
+  const onPinConfirmNext = () => {
+    let hasError = false;
+    // validate the pin if they are the same
+    // notify user
+    if (pinConfirm.value === '') {
+      hasError = true;
+      setPinConfirm({
+        ...pinConfirm,
+        error: true,
+        msg: 'You have not re-entered your PIN. Please try again.',
+      });
+    }
+
+    if (pinConfirm.value !== '') {
+      if (pinConfirm.value.length < 4) {
+        hasError = true;
+        setPinConfirm({
+          ...pinConfirm,
+          error: true,
+          msg: 'You have not re-entered your PIN correctly. Please try again.',
+        });
+      }
+
+      if (pinConfirm.value.length === 4 && pinConfirm.value !== pin.value) {
+        hasError = true;
+        setPinConfirm({
+          ...pinConfirm,
+          error: true,
+          msg: 'Uh-oh! The PIN you entered is incorrect. Please try again.',
+        });
+      }
+    }
+
+    if (!hasError) {
+      setIsLoading(true);
+
+      setTimeout(() => {
+        setShowPinConfirm(false);
+        setShowPinCreated(true);
+        setIsLoading(false);
+      }, 800);
+    }
+  };
+
+  // submit data to api
+  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (e && e.preventDefault) e.preventDefault();
+
+    const data = {
+      email: isEmail ? username.value : undefined,
+      mobile_number: !isEmail ? username.value : undefined,
+      password: password.value,
+      password_confirmation: password.value,
+      pin_code: pin.value,
+    };
+
+    // pass payload to saga
+    dispatch(actions.getFetchLoading(data));
+  };
+
+  // clicking the success dialog
   const onClickSuccess = () => {
-    dispatch(actions.getFetchReset()); // reset stote state first
-    history.push('/'); // redirect to home
+    history.replace('/'); // redirect to home
+  };
+
+  // close error dialog
+  const onCloseErrorDialog = () => {
+    dispatch(actions.getFetchReset());
+    setIsError(false);
+    setApiError('');
   };
 
   return (
     <Wrapper>
       <Helmet title="Register" />
       <div className="form-container">
-        <H1 margin="0 0 5px">Create your account</H1>
+        {loading && <Loading position="absolute" />}
+        {isLoading && <Loading position="absolute" />}
+        {showChoose && (
+          <div className="text-center" style={{ padding: '0 40px' }}>
+            <H3>Create your Account</H3>
+            <p className="f-small">
+              We got you! Let us know which contact detail you want to use to
+              create your account
+            </p>
+            <Button
+              type="button"
+              onClick={() => onShowForm(false)}
+              color="primary"
+              fullWidth={true}
+              size="large"
+              variant="contained"
+            >
+              <FontAwesomeIcon icon="mobile" /> Mobile Number
+            </Button>
+            <Field margin="10px 0">Or</Field>
+            <Button
+              type="button"
+              onClick={() => onShowForm(true)}
+              color="primary"
+              fullWidth={true}
+              size="large"
+              variant="contained"
+            >
+              <FontAwesomeIcon icon="envelope" /> Email
+            </Button>
+          </div>
+        )}
 
-        <form>
-          {loading && <Loading position="absolute" />}
-          <Field>
-            <Label>Email or Mobile No.</Label>
-            <Input
-              type="text"
-              value={email.value}
-              autoComplete="off"
-              onChange={e =>
-                setEmail({
-                  value: e.currentTarget.value,
-                  error: false,
-                  phoneError: false,
-                })
-              }
-              placeholder="Email or Mobile No."
-            />
-            {(email.error || email.phoneError) && (
-              <ErrorMsg formError>
-                *{' '}
-                {!email.error &&
-                  email.phoneError &&
-                  'Please enter phone in correct format ie: 09xxxxxxxxx'}
-                {email.error &&
-                  !email.phoneError &&
-                  'Please enter your email in valid format or try your mobile number'}
-                {email.error &&
-                  email.phoneError &&
-                  'Please enter your email or mobile number'}
-              </ErrorMsg>
-            )}
-          </Field>
-          <Field>
-            <Label>Password</Label>
-            <Input
-              type="password"
-              value={password.value}
-              autoComplete="off"
-              onChange={e => {
-                setPassword({ value: e.currentTarget.value, error: false });
-                setPassError('');
-              }}
-              placeholder="Password"
-            />
-            {password.error && (
-              <ErrorMsg formError>* Please enter your password</ErrorMsg>
-            )}
-          </Field>
-          <Field>
-            <Label>Confirm Password</Label>
-            <Input
-              type="password"
-              value={confirmPassword.value}
-              autoComplete="off"
-              onChange={e => {
-                setConfirmPassword({
-                  value: e.currentTarget.value,
-                  error: false,
-                });
-                setPassError('');
-              }}
-              placeholder="Confirm password"
-            />
-            {confirmPassword.error && (
-              <ErrorMsg formError>* Please confirm your password</ErrorMsg>
-            )}
-            {passError !== '' && <ErrorMsg formError>* {passError}</ErrorMsg>}
-          </Field>
+        {showCreate && (
+          <>
+            <H1 margin="0 0 5px">Create your account</H1>
 
-          {apiError !== '' && <ErrorMsg formError>{apiError}</ErrorMsg>}
+            <form>
+              <Field>
+                <Label>{isEmail ? 'Email' : 'Mobile No.'}</Label>
+                <Input
+                  hidespinner
+                  required
+                  type={isEmail ? 'text' : 'number'}
+                  value={username.value}
+                  autoComplete="off"
+                  min={0}
+                  onChange={e =>
+                    setUsername({
+                      value: e.currentTarget.value,
+                      error: false,
+                      msg: '',
+                    })
+                  }
+                  placeholder={
+                    isEmail
+                      ? 'Ex: email@example.com'
+                      : 'Ex: 09 + 9 digit (09xxxxxxxxx)'
+                  }
+                />
+                {username.error && (
+                  <ErrorMsg formError>{username.msg}</ErrorMsg>
+                )}
+              </Field>
+              <Field>
+                <Label>
+                  Password <i>*</i>
+                </Label>
+                <InputIconWrapper>
+                  <Input
+                    type={showPass ? 'text' : 'password'}
+                    value={password.value}
+                    autoComplete="off"
+                    placeholder="Password"
+                    required
+                    onChange={e => {
+                      setPassword({
+                        value: e.currentTarget.value,
+                        error: false,
+                      });
+                      setPassError('');
+                    }}
+                  />
+                  <IconButton
+                    type="button"
+                    onClick={() => setShowPass(prev => !prev)}
+                    tabIndex={-1}
+                  >
+                    <FontAwesomeIcon icon={showPass ? 'eye-slash' : 'eye'} />
+                  </IconButton>
+                </InputIconWrapper>
 
-          <Button
-            type="submit"
-            onClick={onSubmit}
-            color="primary"
-            fullWidth={true}
-            size="large"
-            variant="contained"
-          >
-            CREATE ACCOUNT
-          </Button>
-          <Field className="text-center" margin="20px 0 10px">
-            Already have an account? <A to="/">Log In</A>
-          </Field>
-          <Field className="agreement text-center" margin="25px 0 0">
-            <span>
-              By creating an account, I agree to the{' '}
-              <Link to="/terms-and-conditions" target="_blank">
-                Terms and Condition
-              </Link>{' '}
-              and{' '}
-              <Link to="/" target="_blank">
-                Privacy Policy
-              </Link>
-            </span>
-            {agree.error && (
-              <ErrorMsg formError>
-                * You must agree to continue creating your account.
-              </ErrorMsg>
-            )}
-          </Field>
-        </form>
+                {password.error && (
+                  <ErrorMsg formError>Please enter your password</ErrorMsg>
+                )}
+              </Field>
+              <Field>
+                <Label>Confirm Password</Label>
+                <InputIconWrapper>
+                  <Input
+                    type={showConfirm ? 'text' : 'password'}
+                    value={confirmPassword.value}
+                    autoComplete="off"
+                    placeholder="Password"
+                    required
+                    onChange={e => {
+                      setConfirmPassword({
+                        value: e.currentTarget.value,
+                        error: false,
+                      });
+                      setPassError('');
+                    }}
+                  />
+                  <IconButton
+                    type="button"
+                    onClick={() => setShowConfirm(prev => !prev)}
+                    tabIndex={-1}
+                  >
+                    <FontAwesomeIcon icon={showConfirm ? 'eye-slash' : 'eye'} />
+                  </IconButton>
+                </InputIconWrapper>
+
+                {confirmPassword.error && (
+                  <ErrorMsg formError>Please confirm your password</ErrorMsg>
+                )}
+                {passError !== '' && <ErrorMsg formError>{passError}</ErrorMsg>}
+              </Field>
+
+              {apiError !== '' && <ErrorMsg formError>{apiError}</ErrorMsg>}
+
+              <Button
+                type="submit"
+                onClick={onClickNextForPin}
+                color="primary"
+                fullWidth={true}
+                size="large"
+                variant="contained"
+              >
+                Next
+              </Button>
+              <Field className="text-center" margin="20px 0 10px">
+                Already have an account? <A to="/">Log In</A>
+              </Field>
+              <Field className="agreement text-center" margin="25px 0 0">
+                <span>
+                  By creating an account, I agree to the{' '}
+                  <Link to="/terms-and-conditions" target="_blank">
+                    Terms and Condition
+                  </Link>{' '}
+                  and{' '}
+                  <Link to="/" target="_blank">
+                    Privacy Policy
+                  </Link>
+                </span>
+              </Field>
+            </form>
+          </>
+        )}
+
+        {showPin && (
+          <div className="text-center" style={{ padding: '0 40px' }}>
+            <CircleIndicator size="large">
+              <FontAwesomeIcon icon="lock" />
+            </CircleIndicator>
+            <H3 margin="20px 0 10px">Setup your unique PIN</H3>
+            <p className="f-small">
+              This will be used every time you login to your SquidPay account
+            </p>
+            <Field margin="5px 0 25px">
+              <PinInput
+                length={4}
+                onChange={p => setPin({ value: p, error: false })}
+                value={pin.value}
+                isValid={!pin.error}
+              />
+              {pin.error && <ErrorMsg>{pinConfirm.msg}</ErrorMsg>}
+            </Field>
+            <Button
+              type="button"
+              onClick={onPinNext}
+              color="primary"
+              fullWidth
+              size="large"
+              variant="contained"
+            >
+              Next
+            </Button>
+          </div>
+        )}
+        {showPinConfirm && (
+          <div className="text-center" style={{ padding: '0 40px' }}>
+            <CircleIndicator size="large">
+              <FontAwesomeIcon icon="lock" />
+            </CircleIndicator>
+            <H3 margin="20px 0 10px">Retype your unique PIN</H3>
+            <p className="f-small">
+              This will be used every time you login to your SquidPay account
+            </p>
+            <Field margin="5px 0 25px">
+              <PinInput
+                length={4}
+                onChange={p =>
+                  setPinConfirm({ value: p, error: false, msg: '' })
+                }
+                value={pinConfirm.value}
+                isValid={!pinConfirm.error}
+              />
+              {pinConfirm.error && (
+                <ErrorMsg formError>{pinConfirm.msg}</ErrorMsg>
+              )}
+            </Field>
+            <Button
+              type="button"
+              onClick={onPinConfirmNext}
+              color="primary"
+              fullWidth
+              size="large"
+              variant="contained"
+            >
+              Next
+            </Button>
+          </div>
+        )}
+
+        {showPinCreated && (
+          <div className="text-center" style={{ padding: '0 40px' }}>
+            <CircleIndicator size="large">
+              <FontAwesomeIcon icon="check" />
+            </CircleIndicator>
+            <H3 margin="20px 0 10px">User PIN successfully created</H3>
+            <p className="f-small">
+              This will be used every time you login to your SquidPay account
+            </p>
+            <Field margin="25px 0 0">
+              <Button
+                type="button"
+                onClick={onSubmit}
+                color="primary"
+                fullWidth
+                size="large"
+                variant="contained"
+              >
+                Next
+              </Button>
+            </Field>
+          </div>
+        )}
+
+        {success && (
+          <div className="text-center" style={{ padding: '0 40px' }}>
+            <CircleIndicator size="large">
+              <FontAwesomeIcon icon="check" />
+            </CircleIndicator>
+            <H3 margin="25px 0 25px">You've successfully registered.</H3>
+
+            <Button
+              type="button"
+              onClick={onClickSuccess}
+              color="primary"
+              fullWidth
+              size="large"
+              variant="contained"
+            >
+              Login
+            </Button>
+          </div>
+        )}
       </div>
 
-      <Dialog
-        show={success}
-        onClick={onClickSuccess}
-        okText="OK"
-        message="You have successfully registered your account. Click OK to go to the Login Page."
-        title="REGISTRATION SUCCESS"
-      />
+      <Dialog show={isError} size="small">
+        <div className="text-center">
+          <CircleIndicator size="medium" color="danger">
+            <FontAwesomeIcon icon="times" />
+          </CircleIndicator>
+          <H3 margin="15px 0 10px">Registration Failed</H3>
+          <p>{apiError}</p>
+          <Button
+            fullWidth
+            onClick={onCloseErrorDialog}
+            variant="outlined"
+            color="secondary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
     </Wrapper>
   );
 }

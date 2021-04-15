@@ -20,7 +20,7 @@ function* getVerifyCode() {
   const token = yield select(selectToken);
   const payload = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/auth/verify`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/api/auth/verify/${payload.url}`;
 
   let encryptPayload: string = '';
 
@@ -28,7 +28,7 @@ function* getVerifyCode() {
 
   if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
     encryptPayload = CryptoJS.AES.encrypt(
-      JSON.stringify(payload),
+      JSON.stringify(payload.body),
       requestPhrase.passPhrase,
       { format: encDec },
     ).toString();

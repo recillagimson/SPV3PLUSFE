@@ -80,33 +80,6 @@ export const GlobalStyle = createGlobalStyle`
     text-align: justify;
   }
 
-  /** pin input styles */
-  .pin-input {
-    input {
-      border-radius: ${StyleConstants.BUTTON_RADIUS};
-      background-color: ${StyleConstants.GRAY_BG};
-      appearance: textfield;
-      border: 1px solid transparent;
-      margin: 2px 5px;
-      font-size: 1.25rem;
-      width: 50px;
-      height: 50px;
-      text-align: center;
-      outline: 0;
-
-      &:hover,
-      &:focus {
-        border-color: ${StyleConstants.GOLD};
-      }
-
-      &[data-valid='false'] {
-        background-color: transparent;
-        color: ${StyleConstants.BUTTONS.danger.main};
-        border-color: ${StyleConstants.BUTTONS.danger.main};
-      }
-    }
-  }
-
   /** margins */
   .ml-1{
     margin-left: 0.2em;

@@ -102,7 +102,7 @@ const Wrapper = styled.section`
     }
   }
 
-  ${media.large`
+  ${media.medium`
     padding: 100px 0 0;
 
     .form-container {

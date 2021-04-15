@@ -8,8 +8,27 @@
 import styled from 'styled-components/macro';
 import FormElementStyle from './FormElementsStyle';
 
-const Input = styled.input`
-  ${FormElementStyle}// basic css style for all form elements
+const Input = styled.input<{ hidespinner?: boolean }>`
+  ${FormElementStyle} // basic css style for all form elements
+
+  // this will set to hide the spinner if input type is number
+  // hidespinner should be declare in the <Input /> tag
+  ${p =>
+    p.hidespinner &&
+    `
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+    &[type=number] {
+      appearance: textfield;
+    }
+  `}
 `;
 
 export default Input;
