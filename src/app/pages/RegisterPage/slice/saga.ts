@@ -21,7 +21,7 @@ function* getRegister() {
   const token = yield select(selectToken);
   const payload = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/auth/register`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/auth/register`;
 
   let encryptPayload: string = '';
 

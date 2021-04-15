@@ -19,7 +19,7 @@ export function* getRequestToken() {
   payload.append('client_id', client_id);
   payload.append('client_secret', client_secret);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/clients/token`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/clients/token`;
 
   const options = {
     method: 'POST',
@@ -77,7 +77,7 @@ export function* getRequestPassphrase() {
     token = yield select(selectToken);
   }
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/payloads/generate`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/payloads/generate`;
 
   const options = {
     method: 'GET',
@@ -104,7 +104,7 @@ export function* getRequestPassphrase() {
  */
 export function* getResponsePassphrase(id: string) {
   const token = yield select(selectToken);
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/payloads/${id}/key`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/payloads/${id}/key`;
 
   const options = {
     method: 'GET',

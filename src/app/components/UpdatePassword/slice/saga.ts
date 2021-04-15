@@ -20,7 +20,7 @@ function* getUpdatePassword() {
   const token = yield select(selectToken);
   const payload: object = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/auth/reset/password`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/auth/reset/password`;
 
   let encryptPayload: string = '';
 

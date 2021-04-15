@@ -22,7 +22,7 @@ import { setCookie } from 'app/components/Helpers';
 function* getLogin() {
   const token = yield select(selectToken); // access_token
   const payload = yield select(selectRequest); // payload body from main component
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/auth/login`; // url
+  const requestURL = `${process.env.REACT_APP_API_URL}/auth/login`; // url
 
   let encryptPayload: string = '';
 

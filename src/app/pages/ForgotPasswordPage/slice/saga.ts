@@ -19,7 +19,7 @@ function* getForgotPassword() {
   const token = yield select(selectToken);
   const payload = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/auth/forgot/password`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/auth/forgot/password`;
 
   let encryptPayload: string = '';
 
