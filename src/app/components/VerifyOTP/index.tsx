@@ -102,6 +102,7 @@ export default function VerifyOTPComponent({
 
   const onChangePin = (val: any) => {
     setCode({ value: val, error: false });
+    setIsCodeValid(true);
   };
 
   const onSubmitVerify = (
@@ -119,10 +120,10 @@ export default function VerifyOTPComponent({
       const data = {
         url: verifyType,
         body: {
-          code_type: codeType ? codeType : 'password_recovery',
+          // code_type: codeType ? codeType : 'password_recovery',
           mobile_number: !isEmail ? viaValue : undefined,
           email: isEmail ? viaValue : undefined,
-          code: isEmail ? code.value : undefined,
+          code: code.value,
         },
       };
       dispatch(actions.getFetchLoading(data));

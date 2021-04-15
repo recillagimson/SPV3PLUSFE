@@ -335,7 +335,7 @@ export function LoginPage() {
               onSuccess={onSuccessVerify}
               isEmail={isEmail}
               viaValue={email.value}
-              verifyType="password"
+              verifyType="account"
             />
 
             <Field className="text-center" margin="20px 0 10px">
@@ -347,6 +347,7 @@ export function LoginPage() {
           </div>
         )}
       </div>
+
       {/* Show login errors */}
       <Dialog show={isError} size="small">
         <div className="text-center">

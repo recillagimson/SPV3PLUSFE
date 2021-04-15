@@ -11,12 +11,16 @@ import {
 } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
-import { selectRequest, selectValidateRequest } from './selectors';
+import {
+  selectRequest,
+  selectValidateRequest,
+  selectResendCodeRequest,
+} from './selectors';
 
 /**
  * Register
  */
-function* getRegister() {
+function* getRegisterAccount() {
   const token = yield select(selectToken);
   const payload = yield select(selectRequest);
 
@@ -45,7 +49,7 @@ function* getRegister() {
 
   try {
     const apirequest = yield call(request, requestURL, options);
-    if (apirequest) {
+    if (apirequest && apirequest.data) {
       // request decryption passphrase
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
@@ -156,6 +160,56 @@ function* getValidateFields() {
 }
 
 /**
+ * Resend Activation Code
+ * @returns
+ */
+function* getResendActivationCode() {
+  const token = yield select(selectToken); // access_token
+  const payload = yield select(selectResendCodeRequest); // payload body from main component
+  const requestURL = `${process.env.REACT_APP_API_URL}/auth/login`; // url NOTE: change to resending activation code
+
+  let encryptPayload: string = '';
+
+  let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
+
+  if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
+    encryptPayload = spdCrypto.encrypt(
+      JSON.stringify(payload),
+      requestPhrase.passPhrase,
+    );
+  }
+
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token.access_token}`,
+    },
+    body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
+  };
+
+  try {
+    const apirequest = yield call(request, requestURL, options);
+
+    if (apirequest) {
+      yield put(actions.getResendCodeSuccess(true));
+    }
+  } catch (err) {
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.getResendCodeError(newError));
+    } else {
+      yield put(actions.getResendCodeError(err));
+    }
+  }
+}
+
+/**
  * Root saga manages watcher lifecycle
  */
 export function* containerSaga() {
@@ -163,6 +217,7 @@ export function* containerSaga() {
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
-  yield takeLatest(actions.getFetchLoading.type, getRegister);
+  yield takeLatest(actions.getFetchLoading.type, getRegisterAccount);
   yield takeLatest(actions.getValidateLoading.type, getValidateFields);
+  yield takeLatest(actions.getResendCodeLoading.type, getResendActivationCode);
 }

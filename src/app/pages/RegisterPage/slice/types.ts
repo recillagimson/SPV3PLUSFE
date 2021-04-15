@@ -14,6 +14,12 @@ export interface RegisterState {
     data: boolean;
     request: object | boolean;
   };
+  resendCode: {
+    loading: boolean;
+    error?: object;
+    data: boolean;
+    request: object | boolean;
+  };
 }
 
 export type ContainerState = RegisterState;

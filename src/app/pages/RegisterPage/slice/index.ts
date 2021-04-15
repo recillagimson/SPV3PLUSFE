@@ -16,6 +16,12 @@ export const initialState: ContainerState = {
     data: false,
     request: false,
   },
+  resendCode: {
+    loading: false,
+    error: {},
+    data: false,
+    request: false,
+  },
 };
 
 const slice = createSlice({
@@ -65,6 +71,28 @@ const slice = createSlice({
       state.validate.error = {};
       state.validate.data = false;
       state.validate.request = false;
+    },
+    getResendCodeLoading(state, action: PayloadAction<object>) {
+      state.resendCode.loading = true;
+      state.resendCode.error = {};
+      state.resendCode.data = false;
+      state.resendCode.request = action.payload;
+    },
+    getResendCodeSuccess(state, action: PayloadAction<boolean>) {
+      state.resendCode.loading = false;
+      state.resendCode.request = false;
+      state.resendCode.data = action.payload;
+    },
+    getResendCodeError(state, action: PayloadAction<ErrorState>) {
+      state.resendCode.loading = false;
+      state.resendCode.request = false;
+      state.resendCode.error = action.payload;
+    },
+    getResendCodeReset(state) {
+      state.resendCode.loading = false;
+      state.resendCode.error = {};
+      state.resendCode.data = false;
+      state.resendCode.request = false;
     },
   },
 });

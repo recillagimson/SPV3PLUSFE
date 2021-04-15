@@ -16,6 +16,7 @@ import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
 import A from 'app/components/Elements/A';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import VerifyOTP from 'app/components/VerifyOTP';
 
 import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
 import IconButton from 'app/components/Elements/IconButton';
@@ -39,6 +40,9 @@ import {
   selectData,
   selectValidateError,
   selectValidateData,
+  selectResendCodeLoading,
+  selectResendCodeData,
+  selectResendCodeError,
 } from './slice/selectors';
 import { Link } from 'react-router-dom';
 
@@ -51,17 +55,26 @@ export function RegisterPage() {
   const success = useSelector(selectData);
   const validateError: any = useSelector(selectValidateError);
   const validateSuccess = useSelector(selectValidateData);
+  const resendLoading = useSelector(selectResendCodeLoading);
+  const resendSuccess = useSelector(selectResendCodeData);
+  const resendError = useSelector(selectResendCodeError);
 
+  // API related states
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
   const [apiError, setApiError] = React.useState('');
+  const [resendDialog, setResendDialog] = React.useState(false);
+
+  // show proper forms
   const [showChoose, setShowChoose] = React.useState(true);
   const [showCreate, setShowCreate] = React.useState(false);
   const [showPin, setShowPin] = React.useState(false);
   const [showPinConfirm, setShowPinConfirm] = React.useState(false);
   const [showPinCreated, setShowPinCreated] = React.useState(false);
+  const [showVerify, setShowVerify] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false);
 
+  // form fields
   const [isEmail, setIsEmail] = React.useState(false);
   const [username, setUsername] = React.useState({
     value: '',
@@ -93,7 +106,7 @@ export function RegisterPage() {
   React.useEffect(() => {
     if (success) {
       setShowPinCreated(false);
-      setShowSuccess(true);
+      setShowVerify(true);
     }
     if (error && Object.keys(error).length > 0) {
       apiErrorMessage();
@@ -153,6 +166,13 @@ export function RegisterPage() {
       setIsLoading(false);
     }
   }, [success, error, validateError, validateSuccess]);
+
+  React.useEffect(() => {
+    if (resendSuccess || (resendError && Object.keys(resendError).length > 0)) {
+      setIsLoading(false);
+      setResendDialog(true);
+    }
+  }, [resendSuccess, resendError]);
 
   // check the error payload
   const apiErrorMessage = () => {
@@ -355,7 +375,9 @@ export function RegisterPage() {
   };
 
   // submit data to api
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const onSubmitCreateAccount = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     if (e && e.preventDefault) e.preventDefault();
 
     const data = {
@@ -370,6 +392,11 @@ export function RegisterPage() {
     dispatch(actions.getFetchLoading(data));
   };
 
+  const onCodeVerified = () => {
+    setShowVerify(false);
+    setShowSuccess(true);
+  };
+
   // clicking the success dialog
   const onClickSuccess = () => {
     history.replace('/'); // redirect to home
@@ -381,6 +408,21 @@ export function RegisterPage() {
     dispatch(actions.getValidateReset());
     setIsError(false);
     setApiError('');
+  };
+
+  const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    setIsLoading(true);
+    // since we already have the information, send the user email or mobile number to receive activation code
+    const data = {
+      email: isEmail ? username.value : undefined,
+      mobile_number: !isEmail ? username.value : undefined,
+    };
+    // dispatch(actions.getResendCodeLoading(data));
+  };
+
+  const onCloseResendDialog = () => {
+    setResendDialog(false);
+    dispatch(actions.getResendCodeReset());
   };
 
   return (
@@ -623,7 +665,7 @@ export function RegisterPage() {
             <Field margin="25px 0 0">
               <Button
                 type="button"
-                onClick={onSubmit}
+                onClick={onSubmitCreateAccount}
                 color="primary"
                 fullWidth
                 size="large"
@@ -631,6 +673,32 @@ export function RegisterPage() {
               >
                 Next
               </Button>
+            </Field>
+          </div>
+        )}
+
+        {showVerify && (
+          <div className="text-center" style={{ padding: '0 40px' }}>
+            <H3 margin="35px 0 10px">Authentication</H3>
+            <p className="f-small">
+              We sent 4-digit authentication code to your{' '}
+              {isEmail
+                ? `email ${username.value}`
+                : `mobile number ${username.value}`}
+            </p>
+
+            <VerifyOTP
+              onSuccess={onCodeVerified}
+              isEmail={isEmail}
+              viaValue={username.value}
+              verifyType="account"
+            />
+
+            <Field className="text-center" margin="20px 0 10px">
+              Need a new code?{' '}
+              <button className="link" onClick={onResendCode}>
+                Resend Code
+              </button>
             </Field>
           </div>
         )}
@@ -666,6 +734,37 @@ export function RegisterPage() {
           <Button
             fullWidth
             onClick={onCloseErrorDialog}
+            variant="outlined"
+            color="secondary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog show={resendDialog} size="small">
+        <div className="text-center">
+          <CircleIndicator size="medium" color="danger">
+            <FontAwesomeIcon icon={resendSuccess ? 'check' : 'times'} />
+          </CircleIndicator>
+          <H3 margin="15px 0 10px">
+            {resendSuccess ? 'Resend Code Success' : 'Resend Code Error'}
+          </H3>
+          {resendSuccess ? (
+            <p>
+              We have send the code in your registered{' '}
+              {isEmail ? 'email' : 'mobile number'}
+            </p>
+          ) : (
+            <p>
+              There was a problem resending your authentication code. Please try
+              again later.
+            </p>
+          )}
+
+          <Button
+            fullWidth
+            onClick={onCloseResendDialog}
             variant="outlined"
             color="secondary"
           >
