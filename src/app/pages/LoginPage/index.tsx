@@ -55,9 +55,14 @@ export function LoginPage() {
   const [isError, setIsError] = React.useState(false);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
 
-  // show verification
+  // show resend
+  const [resendDialog, setResendDialog] = React.useState(false);
+
+  // login, show verification and success
+  const [showLogin, setShowLogin] = React.useState(true);
   const [toVerify, setToVerify] = React.useState(false);
   const [showVerify, setShowVerify] = React.useState(false);
+  const [showSuccess, setShowSuccess] = React.useState(false); // use to show the success message after activation
 
   // fields related states
   const [showPass, setShowPass] = React.useState(false);
@@ -118,7 +123,11 @@ export function LoginPage() {
         setIsError(true);
       }
     }
-  }, [error]);
+
+    if (resendError && Object.keys(resendError).length > 0) {
+      setResendDialog(true);
+    }
+  }, [error, resendError]);
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -202,10 +211,11 @@ export function LoginPage() {
 
   const onCloseDialog = () => {
     setIsError(false);
-    setIsEmail(false);
     setApiErrorMsg('');
     dispatch(actions.getFetchReset());
+
     if (toVerify) {
+      setShowLogin(false);
       setShowVerify(true);
     }
   };
@@ -215,12 +225,19 @@ export function LoginPage() {
     const data = {
       email: isEmail ? email.value : undefined,
       mobile_number: !isEmail ? email.value : undefined,
+      otp_type: 'registration',
     };
-    console.log(data);
-    // dispatch(actions.getResendCodeLoading(data));
+
+    dispatch(actions.getResendCodeLoading(data));
   };
 
   const onSuccessVerify = () => {
+    setToVerify(false);
+    setShowVerify(false);
+    setShowSuccess(true);
+  };
+
+  const onClickSuccess = () => {
     // reset the previous user input and show the login form
     setShowPass(false);
     setIsEmail(false);
@@ -234,12 +251,30 @@ export function LoginPage() {
       error: false,
       msg: '',
     });
-    setToVerify(false);
-    setShowVerify(false);
+    setShowSuccess(false);
+    setShowLogin(true);
+  };
+
+  const onSuccessResendCode = () => {
+    dispatch(actions.getResendCodeReset());
   };
 
   if (success) {
     return <Redirect to="/dashboard" />;
+  }
+
+  let resendErrorMsg =
+    'We are encountering a problem behind our server. Please bear with use and try again later.';
+  if (resendError && Object.keys(resendError).length > 0) {
+    if (resendError.errors && resendError.errors.error_code) {
+      resendErrorMsg = resendError.errors.error_code.map(i =>
+        i === 103
+          ? `The ${
+              isEmail ? 'email' : 'mobile number'
+            } you have entered doesn't exists. Please try again.`
+          : 'We are encountering a problem behind our server. Please bear with use and try again later.',
+      );
+    }
   }
 
   return (
@@ -252,7 +287,7 @@ export function LoginPage() {
         <Label>Login to manage your account.</Label> */}
         <Logo size="medium" />
 
-        {!showVerify && (
+        {showLogin && (
           <form>
             <Field>
               <Label>
@@ -338,12 +373,33 @@ export function LoginPage() {
               verifyType="account"
             />
 
-            <Field className="text-center" margin="20px 0 10px">
+            <Field className="text-center f-small" margin="20px 0 10px">
               Need a new code?{' '}
               <button className="link" onClick={onResendCode}>
                 Resend Code
               </button>
             </Field>
+          </div>
+        )}
+        {showSuccess && (
+          <div className="text-center" style={{ padding: '0 40px' }}>
+            <CircleIndicator size="large">
+              <FontAwesomeIcon icon="check" />
+            </CircleIndicator>
+            <H3 margin="25px 0 25px">
+              You've successfully activated your account.
+            </H3>
+
+            <Button
+              type="button"
+              onClick={onClickSuccess}
+              color="primary"
+              fullWidth
+              size="large"
+              variant="contained"
+            >
+              Login
+            </Button>
           </div>
         )}
       </div>
@@ -367,23 +423,40 @@ export function LoginPage() {
         </div>
       </Dialog>
 
+      <Dialog show={resendSuccess} size="small">
+        <div className="text-center">
+          <CircleIndicator size="medium" color="primary">
+            <FontAwesomeIcon icon="check" />
+          </CircleIndicator>
+          <H3 margin="15px 0 10px">Activation Code Sent</H3>
+          <p>
+            We have sent the code. Please check your{' '}
+            {isEmail ? `email ${email.value}` : `mobile number ${email.value}`}{' '}
+            for the activation code.
+          </p>
+          <Button
+            fullWidth
+            onClick={onSuccessResendCode}
+            variant="outlined"
+            color="secondary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
+
       {/* show resend code error */}
-      <Dialog
-        show={resendError && Object.keys(resendError).length > 0}
-        size="small"
-      >
+      <Dialog show={resendDialog} size="small">
         <div className="text-center">
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="times" />
           </CircleIndicator>
           <H3 margin="15px 0 10px">Activation Code Resend Error</H3>
-          <p>
-            There was a problem resending your activation code. Please try again
-            later.
-          </p>
+          <p>{resendErrorMsg}</p>
           <Button
             fullWidth
             onClick={() => {
+              setResendDialog(false);
               dispatch(actions.getResendCodeReset());
             }}
             variant="outlined"

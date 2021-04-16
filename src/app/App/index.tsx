@@ -78,10 +78,10 @@ export function App() {
 
     if (decrypt) {
       dispatch(actions.getIsAuthenticated(true));
-      dispatch(actions.getTokenSuccess(decrypt));
+      dispatch(actions.getClientTokenSuccess(decrypt));
       history.push(path === '/' ? '/dashboard' : path);
     } else {
-      dispatch(actions.getTokenLoading());
+      dispatch(actions.getClientTokenLoading());
     }
   }, []);
 

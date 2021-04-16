@@ -4,7 +4,7 @@ import { request } from 'utils/request';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
-import { selectToken } from 'app/App/slice/selectors';
+import { selectClientToken } from 'app/App/slice/selectors';
 import { getRequestPassphrase } from 'app/App/slice/saga';
 
 import { selectRequest } from './selectors';
@@ -16,7 +16,7 @@ import { componentActions as actions } from '.';
 function* getUpdatePassword() {
   yield delay(500);
 
-  const token = yield select(selectToken);
+  const token = yield select(selectClientToken);
   const payload: object = yield select(selectRequest);
 
   const requestURL = `${process.env.REACT_APP_API_URL}/auth/reset/password`;

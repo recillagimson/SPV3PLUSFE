@@ -44,7 +44,7 @@ const slice = createSlice({
       state.request = false;
     },
     getResendCodeLoading(state, action: PayloadAction<object>) {
-      state.resendCode.loading = false;
+      state.resendCode.loading = true;
       state.resendCode.error = {};
       state.resendCode.data = false;
       state.resendCode.request = action.payload;

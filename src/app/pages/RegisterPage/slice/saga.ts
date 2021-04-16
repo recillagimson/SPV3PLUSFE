@@ -4,7 +4,7 @@ import { request } from 'utils/request';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
-import { selectToken } from 'app/App/slice/selectors';
+import { selectClientToken } from 'app/App/slice/selectors';
 import {
   getRequestPassphrase,
   getResponsePassphrase,
@@ -21,7 +21,7 @@ import {
  * Register
  */
 function* getRegisterAccount() {
-  const token = yield select(selectToken);
+  const token = yield select(selectClientToken);
   const payload = yield select(selectRequest);
 
   const requestURL = `${process.env.REACT_APP_API_URL}/auth/register`;
@@ -49,7 +49,8 @@ function* getRegisterAccount() {
 
   try {
     const apirequest = yield call(request, requestURL, options);
-    if (apirequest && apirequest.data) {
+
+    if (apirequest && apirequest.data && apirequest.data.id) {
       // request decryption passphrase
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
@@ -92,7 +93,7 @@ function* getRegisterAccount() {
  * Validate Email/Mobile and Password
  */
 function* getValidateFields() {
-  const token = yield select(selectToken);
+  const token = yield select(selectClientToken);
   const payload = yield select(selectValidateRequest);
 
   const requestURL = `${process.env.REACT_APP_API_URL}/auth/register/validate`;
@@ -164,9 +165,9 @@ function* getValidateFields() {
  * @returns
  */
 function* getResendActivationCode() {
-  const token = yield select(selectToken); // access_token
+  const token = yield select(selectClientToken); // access_token
   const payload = yield select(selectResendCodeRequest); // payload body from main component
-  const requestURL = `${process.env.REACT_APP_API_URL}/auth/login`; // url NOTE: change to resending activation code
+  const requestURL = `${process.env.REACT_APP_API_URL}/auth/resend/otp`; // url NOTE: change to resending activation code
 
   let encryptPayload: string = '';
 
@@ -192,8 +193,19 @@ function* getResendActivationCode() {
   try {
     const apirequest = yield call(request, requestURL, options);
 
-    if (apirequest) {
-      yield put(actions.getResendCodeSuccess(true));
+    if (apirequest && apirequest.data && apirequest.data.id) {
+      let decryptPhrase: PassphraseState = yield call(
+        getResponsePassphrase,
+        apirequest.data.id,
+      );
+
+      // decrypt payload data
+      let decryptData = spdCrypto.decrypt(
+        apirequest.data.payload,
+        decryptPhrase.passPhrase,
+      );
+
+      yield put(actions.getResendCodeSuccess(decryptData));
     }
   } catch (err) {
     if (err && err.response && err.response.status === 422) {

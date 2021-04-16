@@ -40,7 +40,6 @@ import {
   selectData,
   selectValidateError,
   selectValidateData,
-  selectResendCodeLoading,
   selectResendCodeData,
   selectResendCodeError,
 } from './slice/selectors';
@@ -55,9 +54,8 @@ export function RegisterPage() {
   const success = useSelector(selectData);
   const validateError: any = useSelector(selectValidateError);
   const validateSuccess = useSelector(selectValidateData);
-  const resendLoading = useSelector(selectResendCodeLoading);
-  const resendSuccess = useSelector(selectResendCodeData);
-  const resendError = useSelector(selectResendCodeError);
+  const resendSuccess: any = useSelector(selectResendCodeData);
+  const resendError: any = useSelector(selectResendCodeError);
 
   // API related states
   const [isLoading, setIsLoading] = React.useState(false);
@@ -416,14 +414,30 @@ export function RegisterPage() {
     const data = {
       email: isEmail ? username.value : undefined,
       mobile_number: !isEmail ? username.value : undefined,
+      otp_type: 'registration',
     };
-    // dispatch(actions.getResendCodeLoading(data));
+    dispatch(actions.getResendCodeLoading(data));
   };
 
   const onCloseResendDialog = () => {
     setResendDialog(false);
     dispatch(actions.getResendCodeReset());
   };
+
+  // resend code error message
+  let resendErrorMsg =
+    'We are encountering a problem behind our server. Please bear with use and try again later.';
+  if (resendError && Object.keys(resendError).length > 0) {
+    if (resendError.errors && resendError.errors.error_code) {
+      resendErrorMsg = resendError.errors.error_code.map(i =>
+        i === 103
+          ? `The ${
+              isEmail ? 'email' : 'mobile number'
+            } you have entered doesn't exists. Please try again.`
+          : 'We are encountering a problem behind our server. Please bear with use and try again later.',
+      );
+    }
+  }
 
   return (
     <Wrapper>
@@ -694,7 +708,7 @@ export function RegisterPage() {
               verifyType="account"
             />
 
-            <Field className="text-center" margin="20px 0 10px">
+            <Field className="text-center f-small" margin="20px 0 10px">
               Need a new code?{' '}
               <button className="link" onClick={onResendCode}>
                 Resend Code
@@ -744,7 +758,10 @@ export function RegisterPage() {
 
       <Dialog show={resendDialog} size="small">
         <div className="text-center">
-          <CircleIndicator size="medium" color="danger">
+          <CircleIndicator
+            size="medium"
+            color={resendSuccess ? 'primary' : 'danger'}
+          >
             <FontAwesomeIcon icon={resendSuccess ? 'check' : 'times'} />
           </CircleIndicator>
           <H3 margin="15px 0 10px">
@@ -752,14 +769,13 @@ export function RegisterPage() {
           </H3>
           {resendSuccess ? (
             <p>
-              We have send the code in your registered{' '}
-              {isEmail ? 'email' : 'mobile number'}
+              We have sent the code in your{' '}
+              {isEmail
+                ? `email - ${resendSuccess.email}`
+                : `mobile number - ${resendSuccess.mobile_number}`}
             </p>
           ) : (
-            <p>
-              There was a problem resending your authentication code. Please try
-              again later.
-            </p>
+            <p>{resendErrorMsg}</p>
           )}
 
           <Button

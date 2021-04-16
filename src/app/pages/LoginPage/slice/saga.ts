@@ -5,7 +5,7 @@ import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
 import { appActions } from 'app/App/slice';
-import { selectToken } from 'app/App/slice/selectors';
+import { selectClientToken } from 'app/App/slice/selectors';
 import {
   getRequestPassphrase,
   getResponsePassphrase,
@@ -19,7 +19,7 @@ import { setCookie } from 'app/components/Helpers';
  * Login
  */
 function* getLogin() {
-  const token = yield select(selectToken); // access_token
+  const token = yield select(selectClientToken); // access_token
   const payload = yield select(selectRequest); // payload body from main component
   const requestURL = `${process.env.REACT_APP_API_URL}/auth/login`; // url
 
@@ -67,7 +67,7 @@ function* getLogin() {
       setCookie('spv_uat_hmc', decryptPhrase.passPhrase, 0);
 
       // write data in store state
-      yield put(appActions.getTokenSuccess(decryptData.user_token)); // write the new access token
+      yield put(appActions.getUserToken(decryptData.user_token)); // write the new access token
       yield put(appActions.getIsAuthenticated(true));
       // TODO: wait for UI to display, if password has expired and user need to update it
       //       for now, we will just send as true to redirect to dashboard page
@@ -93,9 +93,9 @@ function* getLogin() {
  * @returns
  */
 function* getResendActivationCode() {
-  const token = yield select(selectToken); // access_token
+  const token = yield select(selectClientToken); // access_token
   const payload = yield select(selectResendCodeRequest); // payload body from main component
-  const requestURL = `${process.env.REACT_APP_API_URL}/auth/login`; // url NOTE: change to resending activation code
+  const requestURL = `${process.env.REACT_APP_API_URL}/auth/resend/otp`; // url NOTE: change to resending activation code
 
   let encryptPayload: string = '';
 
@@ -121,7 +121,7 @@ function* getResendActivationCode() {
   try {
     const apirequest = yield call(request, requestURL, options);
 
-    if (apirequest) {
+    if (apirequest && apirequest.data) {
       yield put(actions.getResendCodeSuccess(true));
     }
   } catch (err) {

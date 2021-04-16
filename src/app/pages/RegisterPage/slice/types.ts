@@ -17,7 +17,7 @@ export interface RegisterState {
   resendCode: {
     loading: boolean;
     error?: object;
-    data: boolean;
+    data: object | boolean;
     request: object | boolean;
   };
 }
