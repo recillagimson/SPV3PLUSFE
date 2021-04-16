@@ -16,7 +16,7 @@ interface ListItemProps extends FlexProps {
 }
 
 const flexStyles = css<ListItemProps>`
-  align-items: ${p => (p.alignItems ? p.alignItems : 'flex-start')};
+  align-items: ${p => (p.alignItems ? p.alignItems : 'center')};
   justify-content: ${p => (p.justifyContent ? p.justifyContent : 'flex-start')};
   flex-direction: ${p => (p.direction ? p.direction : 'row')};
 `;

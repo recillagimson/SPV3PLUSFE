@@ -59,6 +59,7 @@ export function DashboardPage() {
           <List divider padding="20px 25px">
             <ListItem flex>
               <ListItemText
+                bold
                 primary="Online Transfer"
                 caption={`Fund transfer via Instapay`}
                 style={{
@@ -67,6 +68,7 @@ export function DashboardPage() {
                 small
               />
               <ListItemText
+                bold
                 align="right"
                 primary="PHP 1,000.00"
                 caption={`August 10, 2020\n03:46 PM`}
@@ -75,6 +77,7 @@ export function DashboardPage() {
             </ListItem>
             <ListItem flex>
               <ListItemText
+                bold
                 primary="Online Transfer"
                 caption={`Fund transfer via Instapay`}
                 style={{
@@ -83,6 +86,7 @@ export function DashboardPage() {
                 small
               />
               <ListItemText
+                bold
                 align="right"
                 primary="PHP 1,000.00"
                 caption={`August 10, 2020\n03:46 PM`}

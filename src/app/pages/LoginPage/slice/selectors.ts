@@ -25,3 +25,23 @@ export const selectRequest = createSelector(
   [selectDomain],
   subState => subState.request,
 );
+
+export const selectResendCodeData = createSelector(
+  [selectDomain],
+  subState => subState.resendCode.data,
+);
+
+export const selectResendCodeLoading = createSelector(
+  [selectDomain],
+  subState => subState.resendCode.loading,
+);
+
+export const selectResendCodeError = createSelector(
+  [selectDomain],
+  subState => subState.resendCode.error,
+);
+
+export const selectResendCodeRequest = createSelector(
+  [selectDomain],
+  subState => subState.resendCode.request,
+);

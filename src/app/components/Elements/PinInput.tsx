@@ -1,8 +1,9 @@
 /**
  * Pin Input
- * @prop {number}   length
- * @prop {boolean}  isValid
- * @prop {function} onChange
+ * @prop {number}   length        the number of fields to show, default to 4
+ * @prop {boolean}  isValid       true/false if PIN is valid (if false, will show the red design of invalide inputs)
+ * @prop {function} onChange      callback to return the value of the PIN inputted by the user
+ * @prop {string}   value         the value of the PIN
  */
 import * as React from 'react';
 import styled from 'styled-components';
@@ -76,7 +77,7 @@ export default function PinInputComponent({
         name="verify"
         inputMode="numeric"
         type="password"
-        fields={4}
+        fields={length || 4}
         onChange={onChange}
         className="pin-input"
         isValid={isValid}

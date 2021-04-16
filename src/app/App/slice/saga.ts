@@ -5,7 +5,7 @@ import { getCookie, setCookie } from 'app/components/Helpers';
 
 import { ClientTokenState } from 'types/Default';
 import { appActions as actions } from '.';
-import { selectToken } from './selectors';
+import { selectClientToken } from './selectors';
 
 /**
  * Global function for user data or other data
@@ -19,7 +19,7 @@ export function* getRequestToken() {
   payload.append('client_id', client_id);
   payload.append('client_secret', client_secret);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/clients/token`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/clients/token`;
 
   const options = {
     method: 'POST',
@@ -42,16 +42,16 @@ export function* getRequestToken() {
       now.setSeconds(now.getSeconds() + apirequest.expires_in);
       setCookie('spv_expire', now.toUTCString(), 0);
 
-      yield put(actions.getTokenSuccess(apirequest));
+      yield put(actions.getClientTokenSuccess(apirequest));
     }
 
     if (apirequest && apirequest.errors) {
-      yield put(actions.getTokenError(apirequest));
+      yield put(actions.getClientTokenError(apirequest));
     }
 
     return apirequest;
   } catch (err) {
-    yield put(actions.getTokenError(err));
+    yield put(actions.getClientTokenError(err));
     return err;
   }
 }
@@ -71,13 +71,13 @@ export function* getRequestPassphrase() {
     if (now.getTime() > tokenExpire.getTime()) {
       token = yield call(getRequestToken);
     } else {
-      token = yield select(selectToken);
+      token = yield select(selectClientToken);
     }
   } else {
-    token = yield select(selectToken);
+    token = yield select(selectClientToken);
   }
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/payloads/generate`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/payloads/generate`;
 
   const options = {
     method: 'GET',
@@ -103,8 +103,8 @@ export function* getRequestPassphrase() {
  * @return {object}       Returns the result from the api call
  */
 export function* getResponsePassphrase(id: string) {
-  const token = yield select(selectToken);
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/payloads/${id}/key`;
+  const token = yield select(selectClientToken);
+  const requestURL = `${process.env.REACT_APP_API_URL}/payloads/${id}/key`;
 
   const options = {
     method: 'GET',
@@ -132,5 +132,5 @@ export function* appSaga() {
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
-  yield takeLatest(actions.getTokenLoading.type, getRequestToken);
+  yield takeLatest(actions.getClientTokenLoading.type, getRequestToken);
 }

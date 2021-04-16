@@ -7,6 +7,7 @@
  * @prop {string}   secondary     Secondary texts
  * @prop {boolean}  small         if defined, will render a smaller size font
  * @prop {string}   align         one of 'left' | 'right' | 'center' : default: 'left'
+ * @prop {boolean}  bold          will display a bold title
  */
 import * as React from 'react';
 import styled from 'styled-components/macro';
@@ -21,6 +22,7 @@ interface TypographyProps extends React.HTMLAttributes<any> {
   caption?: string;
   small?: boolean;
   align?: 'left' | 'right' | 'center';
+  bold?: boolean;
 }
 
 const Wrapper = styled.div<{ small?: boolean; align?: string }>`
@@ -32,9 +34,9 @@ const Wrapper = styled.div<{ small?: boolean; align?: string }>`
   }
 `;
 
-const Primary = styled.p`
+const Primary = styled.p<{ bold?: boolean }>`
   font-size: 1em;
-  font-weight: 700;
+  font-weight: ${p => (p.bold ? '700' : '500')};
   margin: 0 0;
 `;
 
@@ -60,12 +62,15 @@ export default function TypographyComponent({
   caption,
   small,
   align,
+  bold,
   ...rest
 }: TypographyProps) {
   return (
     <Wrapper small={small || undefined} align={align || undefined} {...rest}>
       {Boolean(label) && <Label>{label}</Label>}
-      {Boolean(primary) && <Primary>{primary}</Primary>}
+      {Boolean(primary) && (
+        <Primary bold={bold || undefined}>{primary}</Primary>
+      )}
       {Boolean(caption) && <Caption>{caption}</Caption>}
       {Boolean(secondary) && <Secondary>{secondary}</Secondary>}
     </Wrapper>

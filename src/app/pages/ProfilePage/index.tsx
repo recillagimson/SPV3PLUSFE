@@ -36,12 +36,10 @@ export function UserProfilePage() {
           <List divider>
             <ListItem flex>
               <ListItemText
-                primary="Online Transfer"
-                caption={`Fund transfer via Instapay`}
+                primary="Change Email Address"
                 style={{
                   flexGrow: 1,
                 }}
-                small
               />
               <IconButton onClick={() => alert('clicked')}>
                 <FontAwesomeIcon icon="chevron-right" />
@@ -49,18 +47,105 @@ export function UserProfilePage() {
             </ListItem>
             <ListItem flex>
               <ListItemText
-                primary="Online Transfer"
-                caption={`Fund transfer via Instapay`}
+                primary="Change Mobile Number"
                 style={{
                   flexGrow: 1,
                 }}
-                small
               />
+              <IconButton onClick={() => alert('clicked')}>
+                <FontAwesomeIcon icon="chevron-right" />
+              </IconButton>
+            </ListItem>
+            <ListItem flex>
               <ListItemText
-                align="right"
-                primary="PHP 1,000.00"
-                caption={`August 10, 2020\n03:46 PM`}
-                small
+                primary="Upload ID"
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+              <IconButton onClick={() => alert('clicked')}>
+                <FontAwesomeIcon icon="chevron-right" />
+              </IconButton>
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Birthdate"
+                primary="02/17/1995"
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Birthplace"
+                primary="East Avenue Medical Center"
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Country"
+                primary="Philippines"
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Address"
+                primary="11 De Castro Avenue, De Castro Subdivision, Sta. Lucia 1600"
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Province / State"
+                primary="Bohol"
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="City"
+                primary="Quezon City"
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Postal Code"
+                primary="1101"
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Source of Funds"
+                primary="Work"
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Nature of Work"
+                primary="Office"
+                style={{
+                  flexGrow: 1,
+                }}
               />
             </ListItem>
           </List>

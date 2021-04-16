@@ -3,7 +3,7 @@ import { StyleConstants } from 'styles/StyleConstants';
 
 const Label = styled.label`
   color: ${StyleConstants.LABEL_TEXT};
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   margin: 0 0 5px;
   display: block;
 
