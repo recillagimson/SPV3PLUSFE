@@ -7,7 +7,7 @@ import { media } from 'styles/media';
 import { StyleConstants } from 'styles/StyleConstants';
 
 const sizes = {
-  small: '320px',
+  small: '350px',
   medium: '640px',
   large: '960px',
   xlarge: '80%',

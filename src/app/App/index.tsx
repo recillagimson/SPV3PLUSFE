@@ -13,8 +13,7 @@ import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import CryptoJS from 'crypto-js';
-import encDec from 'app/components/Helpers/EncyptDecrypt';
+import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import Main from 'app/components/Layouts/Main';
 import Content from 'app/components/Layouts/Content';
@@ -68,24 +67,22 @@ export function App() {
   const isBlankPage = useSelector(selectIsBlankPage);
 
   React.useEffect(() => {
-    const path: string | boolean = location ? location.pathname : '/';
+    const path: string | boolean = location ? location.pathname : '/dashboard';
     const phrase = getCookie('spv_uat_hmc');
     const sessionCookie = getCookie('spv_uat');
 
     let decrypt: any = false;
 
     if (phrase && sessionCookie) {
-      decrypt = CryptoJS.AES.decrypt(sessionCookie, phrase, {
-        format: encDec,
-      }).toString(CryptoJS.enc.Utf8);
+      decrypt = spdCrypto.decrypt(sessionCookie, phrase);
     }
 
     if (decrypt) {
       dispatch(actions.getIsAuthenticated(true));
-      dispatch(actions.getTokenSuccess(JSON.parse(decrypt)));
-      history.push(path);
+      dispatch(actions.getClientTokenSuccess(decrypt));
+      history.push(path === '/' ? '/dashboard' : path);
     } else {
-      dispatch(actions.getTokenLoading());
+      dispatch(actions.getClientTokenLoading());
     }
   }, []);
 

@@ -7,6 +7,7 @@ export interface GlobalState {
   data: object | boolean;
   request: object | boolean;
   user: object | boolean;
+  userToken: ClientTokenState | string;
   isAuthenticated: boolean;
   token: ClientTokenState | string;
   isSessionExpired: boolean;
