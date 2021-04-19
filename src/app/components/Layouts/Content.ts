@@ -9,7 +9,7 @@ const Content = styled.div`
 
   &.authenticated {
     background-color: ${StyleConstants.BODY_COLOR};
-    padding: 30px;
+    padding: 30px 0 0;
   }
 
   ${media.medium`

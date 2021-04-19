@@ -25,3 +25,43 @@ export const selectRequest = createSelector(
   [selectDomain],
   subState => subState.request,
 );
+
+export const selectValidateData = createSelector(
+  [selectDomain],
+  subState => subState.validate.data,
+);
+
+export const selectValidateLoading = createSelector(
+  [selectDomain],
+  subState => subState.validate.loading,
+);
+
+export const selectValidateError = createSelector(
+  [selectDomain],
+  subState => subState.validate.error,
+);
+
+export const selectValidateRequest = createSelector(
+  [selectDomain],
+  subState => subState.validate.request,
+);
+
+export const selectResendCodeData = createSelector(
+  [selectDomain],
+  subState => subState.resendCode.data,
+);
+
+export const selectResendCodeLoading = createSelector(
+  [selectDomain],
+  subState => subState.resendCode.loading,
+);
+
+export const selectResendCodeError = createSelector(
+  [selectDomain],
+  subState => subState.resendCode.error,
+);
+
+export const selectResendCodeRequest = createSelector(
+  [selectDomain],
+  subState => subState.resendCode.request,
+);

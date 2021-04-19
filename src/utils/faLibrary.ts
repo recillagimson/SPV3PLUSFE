@@ -25,6 +25,7 @@ import {
   faChevronUp,
   faCaretDown,
   faCaretUp,
+  faPen,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -48,4 +49,5 @@ library.add(
   faChevronUp,
   faCaretDown,
   faCaretUp,
+  faPen,
 );

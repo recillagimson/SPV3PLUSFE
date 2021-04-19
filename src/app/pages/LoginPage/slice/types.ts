@@ -8,6 +8,12 @@ export interface LoginState {
   error?: object;
   data: boolean;
   request: object | boolean;
+  resendCode: {
+    loading: boolean;
+    error?: object;
+    data: boolean;
+    request: object | boolean;
+  };
 }
 
 export type ContainerState = LoginState;

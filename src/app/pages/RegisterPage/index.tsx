@@ -16,6 +16,7 @@ import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
 import A from 'app/components/Elements/A';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import VerifyOTP from 'app/components/VerifyOTP';
 
 import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
 import IconButton from 'app/components/Elements/IconButton';
@@ -33,7 +34,15 @@ import {
 
 /** slice */
 import { useContainerSaga } from './slice';
-import { selectLoading, selectError, selectData } from './slice/selectors';
+import {
+  selectLoading,
+  selectError,
+  selectData,
+  selectValidateError,
+  selectValidateData,
+  selectResendCodeData,
+  selectResendCodeError,
+} from './slice/selectors';
 import { Link } from 'react-router-dom';
 
 export function RegisterPage() {
@@ -43,16 +52,27 @@ export function RegisterPage() {
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
+  const validateError: any = useSelector(selectValidateError);
+  const validateSuccess = useSelector(selectValidateData);
+  const resendSuccess: any = useSelector(selectResendCodeData);
+  const resendError: any = useSelector(selectResendCodeError);
 
+  // API related states
   const [isLoading, setIsLoading] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
   const [apiError, setApiError] = React.useState('');
+  const [resendDialog, setResendDialog] = React.useState(false);
+
+  // show proper forms
   const [showChoose, setShowChoose] = React.useState(true);
   const [showCreate, setShowCreate] = React.useState(false);
   const [showPin, setShowPin] = React.useState(false);
   const [showPinConfirm, setShowPinConfirm] = React.useState(false);
   const [showPinCreated, setShowPinCreated] = React.useState(false);
+  const [showVerify, setShowVerify] = React.useState(false);
+  const [showSuccess, setShowSuccess] = React.useState(false);
 
+  // form fields
   const [isEmail, setIsEmail] = React.useState(false);
   const [username, setUsername] = React.useState({
     value: '',
@@ -84,11 +104,73 @@ export function RegisterPage() {
   React.useEffect(() => {
     if (success) {
       setShowPinCreated(false);
+      setShowVerify(true);
     }
     if (error && Object.keys(error).length > 0) {
       apiErrorMessage();
     }
-  }, [success, error]);
+
+    if (validateError && Object.keys(validateError).length > 0) {
+      setIsLoading(false);
+      // return the errors
+      if (
+        validateError.errors &&
+        validateError.errors.email &&
+        validateError.errors.email.length > 0
+      ) {
+        const idx = validateError.errors.email.findIndex(
+          j => j === 'The email has already been taken.',
+        );
+        setUsername({
+          ...username,
+          error: true,
+          msg:
+            idx !== -1
+              ? 'Oops, this email address is already taken. Please try again.'
+              : 'Oops, there is an error with your email address, please kindly check if it is in right email format.',
+        });
+      }
+      if (
+        validateError.errors &&
+        validateError.errors.mobile_number &&
+        validateError.errors.mobile_number.length > 0
+      ) {
+        const idx = validateError.errors.mobile_number.findIndex(
+          j => j === 'The mobile number has already been taken.',
+        );
+        setUsername({
+          ...username,
+          error: true,
+          msg:
+            idx !== -1
+              ? 'Oops, this mobile number is already taken. Please try again.'
+              : 'Oops, there is an error with your mobile number, please kindly check if it is start with 09 + 9 digit number',
+        });
+      }
+      if (
+        validateError.errors &&
+        validateError.errors.password &&
+        validateError.errors.password.length > 0
+      ) {
+        setPassError(
+          'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
+        );
+      }
+    }
+
+    if (validateSuccess) {
+      setShowCreate(false);
+      setShowPin(true);
+      setIsLoading(false);
+    }
+  }, [success, error, validateError, validateSuccess]);
+
+  React.useEffect(() => {
+    if (resendSuccess || (resendError && Object.keys(resendError).length > 0)) {
+      setIsLoading(false);
+      setResendDialog(true);
+    }
+  }, [resendSuccess, resendError]);
 
   // check the error payload
   const apiErrorMessage = () => {
@@ -135,8 +217,8 @@ export function RegisterPage() {
     setShowCreate(true);
   };
 
-  // when click, will show the set pin option
-  const onClickNextForPin = (
+  // validate the entered information (email/mobile, password)
+  const onValidateFields = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -217,19 +299,20 @@ export function RegisterPage() {
       if (!regExStrongPassword.test(password.value)) {
         hasError = true;
         setPassError(
-          'Your password is too short and weak. A minimum of 12 characters and with at least one uppercase and lowercase alphabet, numeric and special character is needed',
+          'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
         );
       }
     }
 
     if (!hasError) {
       setIsLoading(true);
-
-      setTimeout(() => {
-        setShowCreate(false);
-        setShowPin(true);
-        setIsLoading(false);
-      }, 800);
+      const data = {
+        email: isEmail ? username.value : undefined,
+        mobile_number: !isEmail ? username.value : undefined,
+        password: password.value,
+        password_confirmation: password.value,
+      };
+      dispatch(actions.getValidateLoading(data));
     }
   };
 
@@ -238,6 +321,7 @@ export function RegisterPage() {
     if (pin.value !== '' && pin.value.length === 4) {
       setShowPin(false);
       setShowPinConfirm(true);
+      dispatch(actions.getValidateReset());
     } else {
       setPin({ ...pin, error: true });
     }
@@ -289,7 +373,9 @@ export function RegisterPage() {
   };
 
   // submit data to api
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const onSubmitCreateAccount = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     if (e && e.preventDefault) e.preventDefault();
 
     const data = {
@@ -304,6 +390,11 @@ export function RegisterPage() {
     dispatch(actions.getFetchLoading(data));
   };
 
+  const onCodeVerified = () => {
+    setShowVerify(false);
+    setShowSuccess(true);
+  };
+
   // clicking the success dialog
   const onClickSuccess = () => {
     history.replace('/'); // redirect to home
@@ -312,9 +403,41 @@ export function RegisterPage() {
   // close error dialog
   const onCloseErrorDialog = () => {
     dispatch(actions.getFetchReset());
+    dispatch(actions.getValidateReset());
     setIsError(false);
     setApiError('');
   };
+
+  const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    setIsLoading(true);
+    // since we already have the information, send the user email or mobile number to receive activation code
+    const data = {
+      email: isEmail ? username.value : undefined,
+      mobile_number: !isEmail ? username.value : undefined,
+      otp_type: 'registration',
+    };
+    dispatch(actions.getResendCodeLoading(data));
+  };
+
+  const onCloseResendDialog = () => {
+    setResendDialog(false);
+    dispatch(actions.getResendCodeReset());
+  };
+
+  // resend code error message
+  let resendErrorMsg =
+    'We are encountering a problem behind our server. Please bear with use and try again later.';
+  if (resendError && Object.keys(resendError).length > 0) {
+    if (resendError.errors && resendError.errors.error_code) {
+      resendErrorMsg = resendError.errors.error_code.map(i =>
+        i === 103
+          ? `The ${
+              isEmail ? 'email' : 'mobile number'
+            } you have entered doesn't exists. Please try again.`
+          : 'We are encountering a problem behind our server. Please bear with use and try again later.',
+      );
+    }
+  }
 
   return (
     <Wrapper>
@@ -452,7 +575,7 @@ export function RegisterPage() {
 
               <Button
                 type="submit"
-                onClick={onClickNextForPin}
+                onClick={onValidateFields}
                 color="primary"
                 fullWidth={true}
                 size="large"
@@ -556,7 +679,7 @@ export function RegisterPage() {
             <Field margin="25px 0 0">
               <Button
                 type="button"
-                onClick={onSubmit}
+                onClick={onSubmitCreateAccount}
                 color="primary"
                 fullWidth
                 size="large"
@@ -568,7 +691,33 @@ export function RegisterPage() {
           </div>
         )}
 
-        {success && (
+        {showVerify && (
+          <div className="text-center" style={{ padding: '0 40px' }}>
+            <H3 margin="35px 0 10px">Authentication</H3>
+            <p className="f-small">
+              We sent 4-digit authentication code to your{' '}
+              {isEmail
+                ? `email ${username.value}`
+                : `mobile number ${username.value}`}
+            </p>
+
+            <VerifyOTP
+              onSuccess={onCodeVerified}
+              isEmail={isEmail}
+              viaValue={username.value}
+              verifyType="account"
+            />
+
+            <Field className="text-center f-small" margin="20px 0 10px">
+              Need a new code?{' '}
+              <button className="link" onClick={onResendCode}>
+                Resend Code
+              </button>
+            </Field>
+          </div>
+        )}
+
+        {showSuccess && (
           <div className="text-center" style={{ padding: '0 40px' }}>
             <CircleIndicator size="large">
               <FontAwesomeIcon icon="check" />
@@ -599,6 +748,39 @@ export function RegisterPage() {
           <Button
             fullWidth
             onClick={onCloseErrorDialog}
+            variant="outlined"
+            color="secondary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog show={resendDialog} size="small">
+        <div className="text-center">
+          <CircleIndicator
+            size="medium"
+            color={resendSuccess ? 'primary' : 'danger'}
+          >
+            <FontAwesomeIcon icon={resendSuccess ? 'check' : 'times'} />
+          </CircleIndicator>
+          <H3 margin="15px 0 10px">
+            {resendSuccess ? 'Resend Code Success' : 'Resend Code Error'}
+          </H3>
+          {resendSuccess ? (
+            <p>
+              We have sent the code in your{' '}
+              {isEmail
+                ? `email - ${resendSuccess.email}`
+                : `mobile number - ${resendSuccess.mobile_number}`}
+            </p>
+          ) : (
+            <p>{resendErrorMsg}</p>
+          )}
+
+          <Button
+            fullWidth
+            onClick={onCloseResendDialog}
             variant="outlined"
             color="secondary"
           >

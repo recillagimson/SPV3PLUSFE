@@ -358,7 +358,6 @@ export function ForgotPasswordPage() {
         {showVerify && (
           <div className="content">
             <VerifyOTP
-              mount={!showVerify}
               onSuccess={onSuccessVerify}
               isEmail={isEmail}
               viaValue={isEmail ? email.value : mobile.value}
