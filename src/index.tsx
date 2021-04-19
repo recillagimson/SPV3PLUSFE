@@ -33,7 +33,7 @@ import reportWebVitals from 'reportWebVitals';
 import './locales/i18n';
 
 // Observer font loading for custom font
-const fontObserver = new FontFaceObserver('MerriWeather', {});
+const fontObserver = new FontFaceObserver('Museo Sans', {});
 
 // When font is loaded, inject class in the body to reflect new font
 fontObserver.load().then(() => {

@@ -19,6 +19,8 @@ type Props = {
 };
 
 const defaultstyle = css<Props>`
+  background-color: ${StyleConstants.WHITE};
+
   ${p =>
     p.color === 'primary' &&
     `
@@ -50,7 +52,6 @@ const defaultstyle = css<Props>`
       color: ${StyleConstants.BUTTONS.danger.dark};
     }
   `};
-
   ${p =>
     (!p.color || p.color === 'default') &&
     `
@@ -98,7 +99,6 @@ const contained = css<Props>`
       background-color: ${StyleConstants.BUTTONS.danger.dark};
     }
   `};
-
   ${p =>
     (!p.color || p.color === 'default') &&
     `
@@ -113,6 +113,8 @@ const contained = css<Props>`
 `;
 
 const outlined = css<Props>`
+  background-color: ${StyleConstants.WHITE};
+
   ${p =>
     p.color === 'primary' &&
     `
@@ -148,7 +150,6 @@ const outlined = css<Props>`
       color: ${StyleConstants.BUTTONS.danger.dark};
     }
   `};
-
   ${p =>
     (!p.color || p.color === 'default') &&
     `
@@ -172,6 +173,7 @@ const ButtonStyle = css<Props>`
   transition: all 0.2s ease-in-out;
   border-radius: ${StyleConstants.BUTTON_RADIUS};
   width: ${p => (p.fullWidth ? '100%' : 'auto')};
+  display: inline-block;
 
   ${p =>
     p.size === 'small' &&
@@ -181,7 +183,7 @@ const ButtonStyle = css<Props>`
   `}
 
   ${p =>
-    p.size === 'medium' &&
+    (!p.size || p.size === 'medium') &&
     `
     padding: 8px 15px;
     font-size: 0.9rem;
@@ -190,7 +192,7 @@ const ButtonStyle = css<Props>`
   ${p =>
     p.size === 'large' &&
     `
-    padding: 15px 23px;
+    padding: 13px 20px;
   `}
 
   ${p => p.variant === 'contained' && contained};

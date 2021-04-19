@@ -8,21 +8,20 @@ import { containerSaga } from './saga';
 export const initialState: ContainerState = {
   loading: false,
   error: {},
-  data: false,
+  data: {},
   request: false,
 };
 
 const slice = createSlice({
-  name: 'forgotPassword',
+  name: 'helpCenter',
   initialState,
   reducers: {
-    getFetchLoading(state, action: PayloadAction<object>) {
+    getFetchLoading(state) {
       state.loading = true;
       state.error = {};
-      state.data = false;
-      state.request = action.payload;
+      state.data = {};
     },
-    getFetchSuccess(state, action: PayloadAction<boolean>) {
+    getFetchSuccess(state, action: PayloadAction<object>) {
       state.loading = false;
       state.request = false;
       state.data = action.payload;
@@ -35,7 +34,7 @@ const slice = createSlice({
     getFetchReset(state) {
       state.loading = false;
       state.error = {};
-      state.data = false;
+      state.data = {};
       state.request = false;
     },
   },

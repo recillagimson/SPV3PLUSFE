@@ -58,6 +58,11 @@ const SidebarWrapper = styled.aside`
       font-weight: 700;
     }
 
+    .mobile,
+    .status {
+      font-size: 0.875em;
+    }
+
     .status {
       strong {
         color: ${StyleConstants.GOLD};

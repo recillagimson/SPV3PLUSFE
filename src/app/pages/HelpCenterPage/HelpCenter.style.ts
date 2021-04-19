@@ -1,19 +1,19 @@
 import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.section<{
-	isBoolean?: boolean;
+  isBoolean?: boolean;
 }>`
   background: #fff;
   border-radius: 10px;
   width: 930px;
   margin: 0 auto;
 
-	${({ isBoolean }) =>
-		!isBoolean &&
-		css`
-			outline: none;
-			cursor: default;
-		`}
+  ${({ isBoolean }) =>
+    !isBoolean &&
+    css`
+      outline: none;
+      cursor: default;
+    `}
 `;
 
 export const HelpCenterHeader = styled.div`
@@ -23,6 +23,14 @@ export const HelpCenterHeader = styled.div`
   h3 {
     margin: 0;
   }
+`;
+
+export const HelpCenterBack = styled.p`
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  margin: 0;
 `;
 
 export const HelpCenterContent = styled.div`
@@ -37,9 +45,9 @@ export const SearchContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+
   h3 {
-    color: #38434D;
+    color: #38434d;
     font-size: 24px;
     font-weight: 600;
     line-height: 36px;
@@ -48,8 +56,8 @@ export const SearchContainer = styled.div`
 `;
 
 export const SearchBar = styled.input`
-  background: #FFFFFF;
-  border: 1px solid #CED4DA;
+  background: #ffffff;
+  border: 1px solid #ced4da;
   box-sizing: border-box;
   border-radius: 5px;
   font-size: 16px;
@@ -72,17 +80,53 @@ export const List = styled.ul`
 `;
 
 export const ListItem = styled.li`
-  border-bottom: 1px solid #F3F4F9;
+  border-bottom: 1px solid #f3f4f9;
   display: flex;
   justify-content: space-between;
   padding: 15px 0;
 
-  p {
-    margin: 0;
+  svg {
+    cursor: pointer;
   }
 
   &:first-child {
-    border-top: 1px solid #F3F4F9;
+    border-top: 1px solid #f3f4f9;
   }
 `;
 
+export const ItemTitle = styled.p`
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 0;
+`;
+
+export const HelpCenterDescriptionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+`;
+
+export const HelpCenterTitleDescription = styled.h3`
+  color: #38434d;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 36px;
+  margin: 0;
+`;
+
+export const HelpCenterDate = styled.span`
+  color: #a9b1b8;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 17px;
+  margin: 0;
+`;
+
+export const HelpCenterDescription = styled.p`
+  color: #526372;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 0;
+`;
