@@ -12,7 +12,7 @@ const sizes = {
 const Wrapper = styled.div<Props>`
   width: ${p => (p.size ? sizes[p.size] : '100%')};
   border: 1px solid #fff;
-  border-radius: 3px;
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
   background-color: white;
