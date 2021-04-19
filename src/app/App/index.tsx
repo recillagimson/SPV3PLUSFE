@@ -140,11 +140,6 @@ export function App() {
               path="/help-center"
               component={HelpCenterPage}
             />
-            <PrivateRoute
-              exact
-              path="/quick-guide"
-              component={HelpCenterPage}
-            />
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}
