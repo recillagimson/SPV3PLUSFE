@@ -5,7 +5,7 @@ import CryptoJS from 'crypto-js';
 import encDec from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
-import { selectToken } from 'app/App/slice/selectors';
+import { selectClientToken } from 'app/App/slice/selectors';
 import { getResponsePassphrase } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
@@ -15,7 +15,7 @@ import { containerActions as actions } from '.';
  */
 function* getHelpCenter() {
   yield delay(500);
-  const token = yield select(selectToken);
+  const token = yield select(selectClientToken);
 
   const requestURL = `${process.env.REACT_APP_API_URL}/api/help_center`;
 
