@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet-async';
 
 import Loading from 'app/components/Loading';
 import H1 from 'app/components/Elements/H1';
+import H2 from 'app/components/Elements/H2';
+import H3 from 'app/components/Elements/H3';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
@@ -12,6 +14,10 @@ import A from 'app/components/Elements/A';
 import Flex from 'app/components/Elements/Flex';
 import Ratio from 'app/components/Elements/Ratio';
 import Card from 'app/components/Elements/Card/Card';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
+import IconButton from 'app/components/Elements/IconButton';
+import Dialog from 'app/components/Dialog';
 
 // For the custom sidebar for the pills
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -28,6 +34,8 @@ import Grid from '@material-ui/core/Grid';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { regExMobile } from 'app/components/Helpers';
+
 export function BuyLoad() {
   const [mobile, setMobile] = React.useState({ value: '', error: false });
   const [amount, setAmount] = React.useState({ value: '', error: false });
@@ -43,7 +51,6 @@ export function BuyLoad() {
   const [showReview, setShowReview] = React.useState(false);
   const [showNext, setShowNext] = React.useState(false);
   const [showActive, setShowActive] = React.useState('regular');
-  const [isSuccess, setIsSuccess] = React.useState(false);
 
   //  Network
   const [selectedNetwork, setSelectedNetwork] = React.useState('');
@@ -52,6 +59,9 @@ export function BuyLoad() {
   const [showGlobeRegular, setShowGlobeRegular] = React.useState(true);
   const [showGlobeCallAndText, setShowGlobeCallAndText] = React.useState(false);
   const [showGlobeSurf, setShowGlobeSurf] = React.useState(false);
+
+  // Dialog box
+  const [isSuccess, setIsSuccess] = React.useState(true);
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -64,6 +74,11 @@ export function BuyLoad() {
     }
 
     if (mobile.value !== '' && !/^0(9)/.test(mobile.value)) {
+      error = true;
+      setMobile({ ...mobile, error: true });
+    }
+
+    if (!regExMobile.test(mobile.value)) {
       error = true;
       setMobile({ ...mobile, error: true });
     }
@@ -92,6 +107,8 @@ export function BuyLoad() {
 
     setIsSuccess(true);
     setShowReview(false);
+    setSelectedNetwork('');
+    setShowList(true);
 
     const data = {
       mobile: mobile.value,
@@ -135,6 +152,16 @@ export function BuyLoad() {
   const onClickTM = () => {
     setSelectedNetwork('tm');
     setShowNext(true);
+  };
+
+  // Dialog on click
+  const onCloseSuccessDialog = () => {
+    setIsSuccess(false);
+  };
+
+  // Replace the first 7 digit of mobile number in the receipt
+  let replaceFirst7 = (mobile: string) => {
+    return mobile.replace(/^.{1,7}/, m => '*'.repeat(m.length));
   };
 
   const action = (
@@ -267,7 +294,8 @@ export function BuyLoad() {
                     />
                     {mobile.error && (
                       <ErrorMsg formError>
-                        * Please enter your mobile (ie: 09xxxxxxxxx)
+                        Please enter valid mobile number (09 + 9 digit number)
+                        ie: 09xxxxxxxxx
                       </ErrorMsg>
                     )}
                   </Field>
@@ -625,11 +653,78 @@ export function BuyLoad() {
             </>
           )}
 
-          {isSuccess && (
+          {/* {isSuccess && (
             <>
               <h3>Success Message</h3>
             </>
-          )}
+          )} */}
+
+          <Dialog show={isSuccess} size="small">
+            <div className="dialog">
+              <div className="logoContainer">
+                <img src="./img/SPLogo.png" alt="SquidPay" className="logo" />
+              </div>
+              <div className="bg-lightgold">
+                <section className="text-center">
+                  <CircleIndicator size="medium" color="primary">
+                    <FontAwesomeIcon icon="check" />
+                  </CircleIndicator>
+                  <p className="message">Load purchase successful!</p>
+                </section>
+                <section className="details">
+                  <Grid container>
+                    <Grid item xs={6}>
+                      <span className="description">Phone Number</span>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <span className="value">
+                        {replaceFirst7(mobile.value)}
+                      </span>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <span className="description">Selected Load</span>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <span className="value">
+                        PHP{' '}
+                        {selectedPromo.amount
+                          ? selectedPromo.amount
+                          : amount.value}
+                      </span>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <span className="description">Transaction Number</span>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <span className="value">0000001</span>
+                    </Grid>
+                  </Grid>
+                </section>
+                <section className="total">
+                  <span>Total amount</span>
+                  <p>
+                    PHP{' '}
+                    {selectedPromo.amount ? selectedPromo.amount : amount.value}
+                  </p>
+                  <span>Service Fee: PHP 0.00</span>
+                </section>
+                <section className="date">
+                  <span>04 March, 2021, 3:26 PM</span>
+                </section>
+              </div>
+              <Button
+                fullWidth
+                onClick={onCloseSuccessDialog}
+                variant="contained"
+                color="primary"
+              >
+                Ok
+              </Button>
+              <span className="note">
+                You will receive a notification to confirm your transaction
+              </span>
+            </div>
+          </Dialog>
         </Card>
       </Wrapper>
     </>
