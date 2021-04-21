@@ -589,13 +589,13 @@ export function RegisterPage() {
               <Field className="agreement text-center" margin="25px 0 0">
                 <span>
                   By creating an account, I agree to the{' '}
-                  <Link to="/terms-and-conditions" target="_blank">
+                  <a href="https://squidpay.ph/tac" target="_blank">
                     Terms and Condition
-                  </Link>{' '}
+                  </a>{' '}
                   and{' '}
-                  <Link to="/" target="_blank">
+                  <a href="https://squidpay.ph/privacypolicy" target="_blank">
                     Privacy Policy
-                  </Link>
+                  </a>
                 </span>
               </Field>
             </form>
