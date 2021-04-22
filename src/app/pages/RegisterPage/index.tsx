@@ -98,6 +98,8 @@ export function RegisterPage() {
   React.useEffect(() => {
     return () => {
       dispatch(actions.getFetchReset()); // reset store state on unmount
+      dispatch(actions.getValidateReset()); // reset validate object
+      dispatch(actions.getResendCodeReset()); // reset re-send object
     };
   }, [actions, dispatch]);
 
@@ -113,40 +115,19 @@ export function RegisterPage() {
     if (validateError && Object.keys(validateError).length > 0) {
       setIsLoading(false);
       // return the errors
-      if (
-        validateError.errors &&
-        validateError.errors.email &&
-        validateError.errors.email.length > 0
-      ) {
-        const idx = validateError.errors.email.findIndex(
-          j => j === 'The email has already been taken.',
-        );
+      const i112 = validateError.errors.error_code
+        ? validateError.errors.error_code.find(j => j === 112)
+        : -1;
+      if (i112 !== -1) {
         setUsername({
           ...username,
           error: true,
-          msg:
-            idx !== -1
-              ? 'Oops, this email address is already taken. Please try again.'
-              : 'Oops, there is an error with your email address, please kindly check if it is in right email format.',
+          msg: isEmail
+            ? 'Oops, this email address is already taken. Please try again.'
+            : 'Oops, this mobile number is already taken. Please try again.',
         });
       }
-      if (
-        validateError.errors &&
-        validateError.errors.mobile_number &&
-        validateError.errors.mobile_number.length > 0
-      ) {
-        const idx = validateError.errors.mobile_number.findIndex(
-          j => j === 'The mobile number has already been taken.',
-        );
-        setUsername({
-          ...username,
-          error: true,
-          msg:
-            idx !== -1
-              ? 'Oops, this mobile number is already taken. Please try again.'
-              : 'Oops, there is an error with your mobile number, please kindly check if it is start with 09 + 9 digit number',
-        });
-      }
+
       if (
         validateError.errors &&
         validateError.errors.password &&
@@ -156,6 +137,50 @@ export function RegisterPage() {
           'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
         );
       }
+
+      // if (
+      //   validateError.errors &&
+      //   validateError.errors.email &&
+      //   validateError.errors.email.length > 0
+      // ) {
+      //   const idx = validateError.errors.email.findIndex(
+      //     j => j === 'The email has already been taken.',
+      //   );
+      //   setUsername({
+      //     ...username,
+      //     error: true,
+      //     msg:
+      //       idx !== -1
+      //         ? 'Oops, this email address is already taken. Please try again.'
+      //         : 'Oops, there is an error with your email address, please kindly check if it is in right email format.',
+      //   });
+      // }
+      // if (
+      //   validateError.errors &&
+      //   validateError.errors.mobile_number &&
+      //   validateError.errors.mobile_number.length > 0
+      // ) {
+      //   const idx = validateError.errors.mobile_number.findIndex(
+      //     j => j === 'The mobile number has already been taken.',
+      //   );
+      //   setUsername({
+      //     ...username,
+      //     error: true,
+      //     msg:
+      //       idx !== -1
+      //         ? 'Oops, this mobile number is already taken. Please try again.'
+      //         : 'Oops, there is an error with your mobile number, please kindly check if it is start with 09 + 9 digit number',
+      //   });
+      // }
+      // if (
+      //   validateError.errors &&
+      //   validateError.errors.password &&
+      //   validateError.errors.password.length > 0
+      // ) {
+      //   setPassError(
+      //     'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
+      //   );
+      // }
     }
 
     if (validateSuccess) {
@@ -502,6 +527,7 @@ export function RegisterPage() {
                       ? 'Ex: email@example.com'
                       : 'Ex: 09 + 9 digit (09xxxxxxxxx)'
                   }
+                  className={username.error ? 'error' : undefined}
                 />
                 {username.error && (
                   <ErrorMsg formError>{username.msg}</ErrorMsg>
@@ -525,6 +551,9 @@ export function RegisterPage() {
                       });
                       setPassError('');
                     }}
+                    className={
+                      Boolean(passError) || password.error ? 'error' : undefined
+                    }
                   />
                   <IconButton
                     type="button"
@@ -555,6 +584,11 @@ export function RegisterPage() {
                       });
                       setPassError('');
                     }}
+                    className={
+                      Boolean(passError) || confirmPassword.error
+                        ? 'error'
+                        : undefined
+                    }
                   />
                   <IconButton
                     type="button"
@@ -589,11 +623,11 @@ export function RegisterPage() {
               <Field className="agreement text-center" margin="25px 0 0">
                 <span>
                   By creating an account, I agree to the{' '}
-                  <Link to="/terms-and-conditions" target="_blank">
+                  <Link to="https://squidpay.ph/tac" target="_blank">
                     Terms and Condition
                   </Link>{' '}
                   and{' '}
-                  <Link to="/" target="_blank">
+                  <Link to="https://squidpay.ph/privacypolicy" target="_blank">
                     Privacy Policy
                   </Link>
                 </span>

@@ -37,6 +37,8 @@ import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 
+import pageRoutes from './Routes';
+
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
 import PrivateRoute from './PrivateRoute';
@@ -69,6 +71,7 @@ export function App() {
     const path: string | boolean = location ? location.pathname : '/dashboard';
     const phrase = getCookie('spv_uat_hmc');
     const sessionCookie = getCookie('spv_uat');
+    const clientCookie = getCookie('spv_cat') || '';
 
     let decrypt: any = false;
 
@@ -78,7 +81,13 @@ export function App() {
 
     if (decrypt) {
       dispatch(actions.getIsAuthenticated(true));
-      dispatch(actions.getClientTokenSuccess(decrypt));
+      dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
+      dispatch(actions.getUserToken(decrypt));
+
+      setTimeout(() => {
+        dispatch(actions.getLoadReferences());
+      }, 500);
+
       history.push(path === '/' ? '/dashboard' : path);
     } else {
       dispatch(actions.getClientTokenLoading());
@@ -114,6 +123,33 @@ export function App() {
         {!isBlankPage && isAuthenticated && <Sidebar />}
         <Content className={isAuthenticated ? 'authenticated' : undefined}>
           <Switch>
+            {/* this will be a sample pageRoutes mapping
+                should be enable once we figure the tiering, and app feature enable/disable
+            {pageRoutes.map(i => {
+              if (i.enabled) {
+                if (i.secured) {
+                  return (
+                    <PrivateRoute
+                      key={i.path}
+                      path={i.path}
+                      exact={i.exact}
+                      component={i.component}
+                    />
+                  );
+                }
+
+                return (
+                  <Route
+                    key={i.path}
+                    exact={i.exact}
+                    path={i.path}
+                    component={i.component}
+                  />
+                );
+              }
+
+              return null;
+            })} */}
             <Route exact path="/" component={LoginPage} />
             <Route exact path="/register" component={RegisterPage} />
             <Route

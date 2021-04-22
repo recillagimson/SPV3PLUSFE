@@ -37,7 +37,7 @@ const slice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-    getFetchReset(state, action: PayloadAction) {
+    getFetchReset(state) {
       state.loading = false;
       state.error = {};
       state.data = false;

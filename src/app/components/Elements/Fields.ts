@@ -21,9 +21,21 @@ const Field = styled.div<FieldProps>`
 
   ${media.medium`
     display: ${p => (p.flex ? 'flex' : 'block')};
+    ${p =>
+      p.flex &&
+      `
+      align-items: center;
+      justify-content: flex-start;
 
-    & > * {
-      flex: 1 0 100%;
+      & .select-wrapper {
+        margin-right: 15px;
+      }
+    `}
+
+    & > label {
+      font-size: 1rem;
+      max-width: 200px;
+      min-width: 200px;
     }
   `}
 `;

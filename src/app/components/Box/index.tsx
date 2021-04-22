@@ -9,9 +9,10 @@
  * @prop {ReactNode}  children        This are the children inside this component wrapper ie: <Box>children</Box>
  * @prop {ReactNode}  footer          buttons to show in the footer
  * @prop {boolean}    footerBorder    show or hide top border in the footer area
+ * @prop {boolean}    withPadding     If defined, will set a padding to the children wrapper
  *
  * Sample Usage:
- * <Box title="Sample Title" titleBorder={true} footer={<> <Button>Button1</Button> <Button>Button2</Button></>} footerBorder={false>
+ * <Box title="Sample Title" titleBorder={true} footer={<> <Button>Button1</Button> <Button>Button2</Button></>} footerBorder={false} withPadding>
  *   <div className="this-maybe-your-wrapping-element-in-children">
  *     <p>you may put a padding in your wrapping element for the children nodes</p>
  *     <p>this will be the children</p>
@@ -36,6 +37,7 @@ type BoxProps = {
   footer?: React.ReactNode;
   footerBorder?: boolean;
   footerAlign?: 'left' | 'right' | 'center' | undefined;
+  withPadding?: boolean;
 };
 
 export default function BoxComponent({
@@ -46,6 +48,7 @@ export default function BoxComponent({
   footer,
   footerBorder,
   footerAlign,
+  withPadding,
 }: BoxProps) {
   let showTitle = false;
   if (title && title !== '') {
@@ -56,7 +59,7 @@ export default function BoxComponent({
   }
 
   return (
-    <Wrapper>
+    <Wrapper pad={withPadding}>
       {showTitle && (
         <Title
           border={titleBorder || undefined}
