@@ -6,14 +6,12 @@ import { StyleConstants } from 'styles/StyleConstants';
  * NOTE: if all elements will share the same design, modify this
  *       if not, extend this style, and add your css on the elements styled-component ie: Input.ts
  */
-const FormElementStyle = css`
+const FormElementStyle = css<{ error?: boolean }>`
   background-color: ${StyleConstants.WHITE};
   border-radius: ${StyleConstants.BORDER_RADIUS};
   border: 1px solid ${StyleConstants.BORDER_COLOR};
-  padding: 15px;
+  padding: 13px;
   color: ${StyleConstants.MAIN_TEXT};
-  display: block;
-  width: 100%;
   outline: none;
   font-size: inherit;
 
@@ -24,6 +22,12 @@ const FormElementStyle = css`
   &:focus {
     border-color: ${StyleConstants.GOLD};
   }
+
+  ${p =>
+    p.error &&
+    `& {
+      border-color: ${StyleConstants.BUTTONS.danger.dark};
+    }`}
 
   &.error {
     border-color: ${StyleConstants.BUTTONS.danger.dark};

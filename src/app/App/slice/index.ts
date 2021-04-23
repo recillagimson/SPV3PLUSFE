@@ -17,6 +17,7 @@ export const initialState: GlobalState = {
   token: '',
   isSessionExpired: false,
   isBlankPage: false,
+  references: {},
 };
 
 const slice = createSlice({
@@ -43,6 +44,9 @@ const slice = createSlice({
       state.data = false;
       state.token = '';
     },
+    getUserProfile(state, action: PayloadAction<object>) {
+      state.user = action.payload;
+    },
     getUserToken(state, action: PayloadAction<ClientTokenState>) {
       state.userToken = action.payload;
     },
@@ -54,6 +58,10 @@ const slice = createSlice({
     },
     getIsBlankPage(state, action: PayloadAction<boolean>) {
       state.isBlankPage = action.payload;
+    },
+    getLoadReferences() {}, // an action only to dispatch retrieving of references
+    getReferences(state, action: PayloadAction<object>) {
+      state.references = action.payload;
     },
   },
 });

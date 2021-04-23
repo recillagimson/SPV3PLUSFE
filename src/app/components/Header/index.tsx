@@ -56,8 +56,11 @@ export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
 
           {isLoggedIn && (
             <Navigation>
-              <IconButton onClick={() => alert('notifications')}>
-                <FontAwesomeIcon icon="bell" />
+              <IconButton
+                onClick={() => alert('notifications')}
+                color="default"
+              >
+                <FontAwesomeIcon icon="envelope" />
               </IconButton>
             </Navigation>
           )}

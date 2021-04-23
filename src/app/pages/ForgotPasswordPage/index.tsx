@@ -94,8 +94,8 @@ export function ForgotPasswordPage() {
                 isEmail ? 'email' : 'mobile number'
               } for verification process.`;
             }
-            if (i === 108) {
-              return `You cannot change your password yet at it hasn't reach it's 1 day minimum age.`;
+            if (i === 107) {
+              return `You cannot change your password yet as it hasn't reach it's 1 day minimum age.`;
             }
             if (i === 104) {
               return 'You are attempting to login from an untrusted client. Please check your internet connection.';
@@ -210,21 +210,22 @@ export function ForgotPasswordPage() {
 
   const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     // send the previous entered information if this is the approach for this
-    // if (e && e.preventDefault) e.preventDefault();
-    // const data = {
-    //   mobile_number: !isEmail ? mobile.value : undefined,
-    //   email: isEmail ? email.value : undefined,
-    // };
-    // dispatch(actions.getFetchLoading(data));
+    if (e && e.preventDefault) e.preventDefault();
+
+    const data = {
+      mobile_number: !isEmail ? mobile.value : undefined,
+      email: isEmail ? email.value : undefined,
+    };
+    dispatch(actions.getFetchLoading(data));
 
     // redirect user to choosing via sms or email code sending
-    setShowChoose(true);
-    setShowVerify(false);
-    setShowEmail(false);
-    setShowMobile(false);
-    setIsEmail(false);
-    setEmail({ value: '', error: false });
-    setMobile({ value: '', error: false });
+    // setShowChoose(true);
+    // setShowVerify(false);
+    // setShowEmail(false);
+    // setShowMobile(false);
+    // setIsEmail(false);
+    // setEmail({ value: '', error: false });
+    // setMobile({ value: '', error: false });
   };
 
   const onCloseDialog = () => {
@@ -335,6 +336,7 @@ export function ForgotPasswordPage() {
                   setEmail({ value: e.currentTarget.value, error: false })
                 }
                 placeholder="Email address"
+                className={email.error ? 'error' : undefined}
               />
               {email.error && (
                 <ErrorMsg formError>
@@ -375,7 +377,6 @@ export function ForgotPasswordPage() {
         {showUpdate && (
           <div className="content">
             <UpdatePassword
-              mount={showUpdate}
               onSuccess={onSuccessUpdate}
               isEmail={isEmail}
               viaValue={isEmail ? email.value : mobile.value}

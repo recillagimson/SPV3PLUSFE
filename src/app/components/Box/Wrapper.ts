@@ -8,7 +8,7 @@ import { StyleConstants } from 'styles/StyleConstants';
  *       if you want to resize this box, wrap it in a container with your specified width of choice
  *       ie: <div style={{width: 300px}}><Box>child</Box></div>
  */
-const Wrapper = styled.div<{ children?: any }>`
+const Wrapper = styled.div<{ children?: any; pad?: boolean }>`
   background-color: ${StyleConstants.WHITE};
   border-radius: ${StyleConstants.BORDER_RADIUS};
   margin: 15px auto;
@@ -24,6 +24,7 @@ const Wrapper = styled.div<{ children?: any }>`
   }
 
   .bt-child {
+    padding: ${p => (p.pad ? '20px 25px' : '0 0')};
     flex-grow: 1;
   }
 

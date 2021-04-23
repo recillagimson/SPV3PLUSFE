@@ -55,3 +55,8 @@ export const selectIsBlankPage = createSelector(
   [selectDomain],
   subState => subState.isBlankPage,
 );
+
+export const selectReferences = createSelector(
+  [selectDomain],
+  subState => subState.references,
+);
