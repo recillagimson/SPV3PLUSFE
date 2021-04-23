@@ -7,7 +7,7 @@ import { getCookie, setCookie } from 'app/components/Helpers';
 
 import { ClientTokenState, PassphraseState } from 'types/Default';
 import { appActions as actions } from '.';
-import { selectClientToken, selectUser } from './selectors';
+import { selectClientToken, selectUserToken } from './selectors';
 import {
   getMaritalStatus,
   getNatureOfWork,
@@ -70,7 +70,7 @@ export function* getRequestToken() {
 }
 
 /**
- * Call to get passphrase
+ * Call to get a request passphrase for encryption
  * @return                 Returns the result from the api call
  */
 export function* getRequestPassphrase() {
@@ -111,7 +111,7 @@ export function* getRequestPassphrase() {
 }
 
 /**
- * Get a response key
+ * Get a response passphrase for decryption
  * @param {string}  id    request passphrase id
  * @return                Returns the result from the api call
  */
@@ -144,9 +144,8 @@ export function* getResponsePassphrase(id: string) {
 export function* getLoggedInUserProfile() {
   yield delay(500);
 
-  const token = yield select(selectClientToken);
-  const userProfile = yield select(selectUser);
-  const requestURL = `${process.env.REACT_APP_API_URL}/user/profile${userProfile.id}`;
+  const token = yield select(selectUserToken);
+  const requestURL = `${process.env.REACT_APP_API_URL}/user/profile`;
 
   const options = {
     method: 'GET',
@@ -231,4 +230,5 @@ export function* appSaga() {
   // It will be cancelled automatically on component unmount
   yield takeLatest(actions.getClientTokenLoading.type, getRequestToken);
   yield takeLatest(actions.getLoadReferences.type, getUserReferences);
+  yield takeLatest(actions.getUserProfile.type, getLoggedInUserProfile);
 }

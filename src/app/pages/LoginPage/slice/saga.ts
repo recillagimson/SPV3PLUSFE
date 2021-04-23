@@ -70,8 +70,8 @@ function* getLogin() {
       // write data in store state
       yield put(appActions.getUserToken(decryptData.user_token)); // write the new access token
       yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
-      yield put(appActions.getUserProfile(decryptData)); // write the profile, NOTE: might be changed based on result
       yield put(appActions.getClientTokenLoading()); // let's get a new client token so expiration will be closely same as user token
+      yield put(appActions.getUserProfile(decryptData)); // write the profile, NOTE: might be changed based on result
 
       // TODO: wait for UI to display, if password has expired and user need to update it
       //       for now, we will just send as true to redirect to dashboard page

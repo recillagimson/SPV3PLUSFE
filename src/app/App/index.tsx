@@ -53,6 +53,7 @@ import {
   selectIsAuthenticated,
   selectIsBlankPage,
 } from './slice/selectors';
+import { usePrevious } from 'app/components/Helpers/Hooks';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -66,6 +67,8 @@ export function App() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isSessionExpired = useSelector(selectSessionExpired);
   const isBlankPage = useSelector(selectIsBlankPage);
+
+  const prevAuth = usePrevious(isAuthenticated);
 
   React.useEffect(() => {
     const path: string | boolean = location ? location.pathname : '/dashboard';
@@ -82,10 +85,11 @@ export function App() {
     if (decrypt) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
-      dispatch(actions.getUserToken(decrypt));
+      dispatch(actions.getUserToken(decrypt.user_token));
 
       setTimeout(() => {
         dispatch(actions.getLoadReferences());
+        dispatch(actions.getUserProfile(decrypt));
       }, 500);
 
       history.push(path === '/' ? '/dashboard' : path);
@@ -93,6 +97,12 @@ export function App() {
       dispatch(actions.getClientTokenLoading());
     }
   }, []);
+
+  React.useEffect(() => {
+    if (isAuthenticated && !prevAuth) {
+      dispatch(actions.getLoadReferences());
+    }
+  }, [isAuthenticated]);
 
   const onClickSessionExpired = () => {
     const publicURL = process.env.PUBLIC_URL || '';

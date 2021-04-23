@@ -26,10 +26,6 @@ const Field = styled.div<FieldProps>`
       `
       align-items: center;
       justify-content: flex-start;
-
-      & .select-wrapper {
-        margin-right: 15px;
-      }
     `}
 
     & > label {

@@ -31,16 +31,16 @@ export function* getMaritalStatus() {
     const apirequest = yield call(request, requestURL, options);
 
     // returns the request result
-    if (apirequest && apirequest.id) {
+    if (apirequest && apirequest.data) {
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
-        apirequest.id,
+        apirequest.data.id,
       );
 
       // decrypt payload data
       // function returns the parsed string
-      let decryptData = spdCrypto.decrypt(
-        apirequest.payload,
+      let decryptData = yield spdCrypto.decrypt(
+        apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
 
@@ -68,16 +68,16 @@ export function* getNatureOfWork() {
     const apirequest = yield call(request, requestURL, options);
 
     // returns the request result
-    if (apirequest && apirequest.id) {
+    if (apirequest && apirequest.data) {
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
-        apirequest.id,
+        apirequest.data.id,
       );
 
       // decrypt payload data
       // function returns the parsed string
-      let decryptData = spdCrypto.decrypt(
-        apirequest.payload,
+      let decryptData = yield spdCrypto.decrypt(
+        apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
 
@@ -105,16 +105,16 @@ export function* getNationalities() {
     const apirequest = yield call(request, requestURL, options);
 
     // returns the request result
-    if (apirequest && apirequest.id) {
+    if (apirequest && apirequest.data) {
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
-        apirequest.id,
+        apirequest.data.id,
       );
 
       // decrypt payload data
       // function returns the parsed string
-      let decryptData = spdCrypto.decrypt(
-        apirequest.payload,
+      let decryptData = yield spdCrypto.decrypt(
+        apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
 
@@ -142,16 +142,16 @@ export function* getCountries() {
     const apirequest = yield call(request, requestURL, options);
 
     // returns the request result
-    if (apirequest && apirequest.id) {
+    if (apirequest && apirequest.data) {
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
-        apirequest.id,
+        apirequest.data.id,
       );
 
       // decrypt payload data
       // function returns the parsed string
-      let decryptData = spdCrypto.decrypt(
-        apirequest.payload,
+      let decryptData = yield spdCrypto.decrypt(
+        apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
 
@@ -179,16 +179,16 @@ export function* getSignUpHost() {
     const apirequest = yield call(request, requestURL, options);
 
     // returns the request result
-    if (apirequest && apirequest.id) {
+    if (apirequest && apirequest.data) {
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
-        apirequest.id,
+        apirequest.data.id,
       );
 
       // decrypt payload data
       // function returns the parsed string
-      let decryptData = spdCrypto.decrypt(
-        apirequest.payload,
+      let decryptData = yield spdCrypto.decrypt(
+        apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
 
@@ -216,16 +216,16 @@ export function* getCurrencies() {
     const apirequest = yield call(request, requestURL, options);
 
     // returns the request result
-    if (apirequest && apirequest.id) {
+    if (apirequest && apirequest.data) {
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
-        apirequest.id,
+        apirequest.data.id,
       );
 
       // decrypt payload data
       // function returns the parsed string
-      let decryptData = spdCrypto.decrypt(
-        apirequest.payload,
+      let decryptData = yield spdCrypto.decrypt(
+        apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
 
@@ -253,16 +253,16 @@ export function* getSourceOfFunds() {
     const apirequest = yield call(request, requestURL, options);
 
     // returns the request result
-    if (apirequest && apirequest.id) {
+    if (apirequest && apirequest.data) {
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
-        apirequest.id,
+        apirequest.data.id,
       );
 
       // decrypt payload data
       // function returns the parsed string
-      let decryptData = spdCrypto.decrypt(
-        apirequest.payload,
+      let decryptData = yield spdCrypto.decrypt(
+        apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
 
