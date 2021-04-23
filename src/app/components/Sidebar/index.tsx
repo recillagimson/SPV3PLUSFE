@@ -93,7 +93,7 @@ export default function Sidebar() {
           </svg>
           Home
         </NavButton>
-        <NavButton as={NavLink} to="/">
+        <NavButton as={NavLink} to="/transaction-history">
           <svg
             width="31"
             height="26"
