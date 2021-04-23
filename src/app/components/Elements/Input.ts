@@ -10,6 +10,8 @@ import FormElementStyle from './FormElementsStyle';
 
 const Input = styled.input<{ hidespinner?: boolean }>`
   ${FormElementStyle} // basic css style for all form elements
+  width: 100%;
+  display: block;
 
   // this will set to hide the spinner if input type is number
   // hidespinner should be declare in the <Input /> tag

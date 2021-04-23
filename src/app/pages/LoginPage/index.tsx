@@ -90,6 +90,7 @@ export function LoginPage() {
     if (error && Object.keys(error).length > 0) {
       if (error.code && error.code === 422) {
         if (error.errors && error.errors.error_code) {
+          error.errors.error_code.find(i => i === 101);
           apiError = error.errors.error_code.map((i: any) => {
             if (i === 101 || i === 103) {
               return isEmail
@@ -305,6 +306,7 @@ export function LoginPage() {
                   })
                 }
                 placeholder="Email or Mobile No."
+                className={email.error ? 'error' : undefined}
               />
               {email.error && <ErrorMsg formError>{email.msg}</ErrorMsg>}
             </Field>
@@ -325,6 +327,7 @@ export function LoginPage() {
                       msg: '',
                     })
                   }
+                  className={password.error ? 'error' : undefined}
                 />
                 <IconButton
                   type="button"

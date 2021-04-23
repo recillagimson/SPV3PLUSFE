@@ -106,7 +106,7 @@ const Wrapper = styled.section`
     padding: 100px 0 0;
 
     .form-container {
-      max-width: 510px;
+      max-width: 540px;
     }
   `}
 `;

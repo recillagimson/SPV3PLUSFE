@@ -18,8 +18,8 @@ export interface RootState {
   global?: GlobalState;
   login?: LoginState;
   register?: RegisterState;
-  forgotPassword: ForgotPasswordState;
-  verifyOTP: VerifyOTPState;
+  forgotPassword?: ForgotPasswordState;
+  verifyOTP?: VerifyOTPState;
   updatePassword?: UpdatePasswordState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }
