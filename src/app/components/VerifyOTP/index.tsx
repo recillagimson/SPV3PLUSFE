@@ -2,7 +2,6 @@
 /**
  * This will verify OTP code
  * NOTE: this will only render the input fields and submit button
- * @prop {string}     codeType      Code type ie: password_recovery or others specified in the BE API
  * @prop {boolean}    isEmail       If OTP code came from email or via sms
  * @prop {string}     viaValue      Email or mobile number of the requestor
  * @prop {function}   onSuccess     callback when code is verified
@@ -59,15 +58,13 @@ const Wrapper = styled.div`
 `;
 
 type Props = {
-  codeType?: string;
   isEmail: boolean;
   viaValue: string;
   onSuccess: () => void;
   isPin?: boolean;
-  verifyType: 'password' | 'account';
+  verifyType: 'password' | 'account'; // add more verification type here, based on BE api endpoints
 };
 export default function VerifyOTPComponent({
-  codeType,
   isEmail,
   viaValue,
   onSuccess,

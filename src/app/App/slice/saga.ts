@@ -185,15 +185,7 @@ export function* getLoggedInUserProfile() {
  */
 export function* getUserReferences() {
   yield delay(500);
-  let refs = {
-    maritalStatus: '',
-    natureOfWork: '',
-    nationalities: '',
-    countries: '',
-    signUpHost: '',
-    currency: '',
-    sourceOfFunds: '',
-  };
+  let refs = {};
 
   const maritalStatus = yield call(getMaritalStatus);
   if (maritalStatus) refs['maritalStatus'] = maritalStatus;
