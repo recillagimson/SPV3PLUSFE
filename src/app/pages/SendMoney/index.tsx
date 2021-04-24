@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Redirect } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -36,7 +38,43 @@ import {
   regExIsGonnaBeEmail,
 } from 'app/components/Helpers';
 
+/** slice */
+import { useContainerSaga } from './slice';
+import { selectLoading, selectError, selectData } from './slice/selectors';
+
 export function SendMoney() {
+  const { actions } = useContainerSaga();
+  const dispatch = useDispatch();
+  const loading = useSelector(selectLoading);
+  const error: any = useSelector(selectError);
+  const success = useSelector(selectData);
+
+  // api related state
+  const [isError, setIsError] = React.useState(false);
+  const [apiErrorMsg, setApiErrorMsg] = React.useState('');
+
+  React.useEffect(() => {
+    // set error message based on error code from api
+
+    if (error && Object.keys(error).length > 0) {
+      if (error.code && error.code === 422) {
+        if (error.errors && error.errors.error_code) {
+          error.errors.error_code.forEach((i: any) => {
+            if (i === 103) {
+              setApiErrorMsg('Account does not exists.');
+            }
+            if (i === 301) {
+              setApiErrorMsg('Not allowed to send to your own account.');
+            }
+            if (i === 402) {
+              setApiErrorMsg('Insufficient Balance.');
+            }
+          });
+        }
+      }
+    }
+  }, [error]);
+
   const [email, setEmail] = React.useState({
     value: '',
     error: false,
@@ -46,7 +84,7 @@ export function SendMoney() {
   const [message, setMessage] = React.useState({ value: '', error: false });
   const [pin, setPin] = React.useState({ value: '', error: false });
 
-  const [isVerification, setIsVerification] = React.useState(false);
+  // const [isVerification, setIsVerification] = React.useState(false);
   const [isReview, setIsReview] = React.useState(false);
 
   const [isEmail, setIsEmail] = React.useState(false);
@@ -123,14 +161,15 @@ export function SendMoney() {
     }
 
     if (!error) {
-      setIsVerification(true);
+      setIsReview(true);
+      // setIsVerification(true);
     }
   };
 
   const onSendMoney = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
 
-    setIsSuccess(true);
+    // setIsSuccess(true);
 
     const data = {
       email: isEmail ? email.value : undefined,
@@ -138,20 +177,21 @@ export function SendMoney() {
       amount: parseFloat(amount.value),
       message: message.value,
     };
-    console.log(data);
+
+    // dispatch payload to saga
+    dispatch(actions.getFetchLoading(data));
     // enable code below to integrate api
-    // dispatch(actions.getFetchLoading(data));
   };
 
   // if validation passed, show the reenter pin
-  const onPinNext = () => {
-    if (pin.value !== '' && pin.value.length === 4) {
-      setIsVerification(false);
-      setIsReview(true);
-    } else {
-      setPin({ ...pin, error: true });
-    }
-  };
+  // const onPinNext = () => {
+  //   if (pin.value !== '' && pin.value.length === 4) {
+  //     setIsVerification(false);
+  //     setIsReview(true);
+  //   } else {
+  //     setPin({ ...pin, error: true });
+  //   }
+  // };
 
   // Replace the first 7 digit of mobile number in the review send money
   let replaceFirst7 = (mobile: string) => {
@@ -159,19 +199,32 @@ export function SendMoney() {
   };
 
   // Add spoce every 4 digit
-  let format = (value: string) => {
-    return value.toString().replace(/\d{4}(?=.)/g, '$& ');
-  };
+  // let format = (value: string) => {
+  //   return value.toString().replace(/\d{4}(?=.)/g, '$& ');
+  // };
 
   // Close the success dialog by click 'OK'
   const onCloseSuccessDialog = () => {
-    setIsSuccess(false);
-    setIsReview(false);
-    setEmail({ value: '', error: false, msg: '' });
-    setAmount({ value: '', error: false });
-    setPin({ value: '', error: false });
-    setMessage({ value: '', error: false });
+    dispatch(actions.getFetchReset());
+    // setIsSuccess(false);
+    // setIsReview(false);
+    // setEmail({ value: '', error: false, msg: '' });
+    // setAmount({ value: '', error: false });
+    // setPin({ value: '', error: false });
+    // setMessage({ value: '', error: false });
   };
+
+  React.useEffect(() => {
+    return () => {
+      dispatch(actions.getFetchReset()); // reset store state on unmount
+    };
+  }, []);
+
+  // React.useEffect(() => {
+  //   if (success) {
+  //     dispatch(actions.getFetchReset());
+  //   }
+  // }, [success]);
 
   const action = (
     <>
@@ -183,7 +236,7 @@ export function SendMoney() {
           size="large"
           variant="contained"
         >
-          SEND
+          Next
         </Button>
       </Flex>
     </>
@@ -196,18 +249,21 @@ export function SendMoney() {
       </Helmet>
 
       <Wrapper>
+        {loading && <Loading position="absolute" />}
         <Card
-          title={
-            isVerification
-              ? 'PIN Code'
-              : isReview
-              ? 'Review Send Money'
-              : 'Send Money'
-          }
-          footer={!isVerification && !isReview ? action : undefined}
+          // title={
+          //   isVerification
+          //     ? 'PIN Code'
+          //     : isReview
+          //     ? 'Review Send Money'
+          //     : 'Send Money'
+          // }
+          title={isReview ? 'Review Send Money' : 'Send Money'}
+          // footer={!isVerification && !isReview ? action : undefined}
+          footer={!isReview ? action : undefined}
           size="medium"
         >
-          {!isVerification && !isReview && (
+          {!isReview && (
             <>
               <Field>
                 <Label>Send to</Label>
@@ -262,7 +318,7 @@ export function SendMoney() {
             </>
           )}
 
-          {isVerification && (
+          {/* {isVerification && (
             <div className="verification">
               <Grid container justify="center">
                 <Grid item md={8}>
@@ -295,7 +351,7 @@ export function SendMoney() {
                 </Grid>
               </Grid>
             </div>
-          )}
+          )} */}
 
           {isReview && (
             <>
@@ -306,8 +362,8 @@ export function SendMoney() {
                       image="https://source.unsplash.com/random/120x120"
                       size="medium"
                     />
-                    <p className="email">heywassup@gmail.com</p>
-                    <p className="number">{replaceFirst7(email.value)}</p>
+                    <p className="email">Name of Receiver</p>
+                    <p className="number">{email.value}</p>
 
                     <br />
                     <Grid container>
@@ -315,7 +371,10 @@ export function SendMoney() {
                         <span className="name">Amount</span>
                       </Grid>
                       <Grid item xs={6} className="item">
-                        <span className="value"> PHP {amount.value}.00</span>
+                        <span className="value">
+                          {' '}
+                          PHP {parseInt(amount.value)}.00
+                        </span>
                       </Grid>
                       {/* <Grid item xs={6} className="item">
                         <span className="name">Service Fee</span>
@@ -324,16 +383,20 @@ export function SendMoney() {
                         <span className="value"> PHP 0.00</span>
                       </Grid> */}
                       <Grid item xs={6} className="item">
-                        <span className="name">Purpose</span>
+                        <span className="name">Message</span>
                       </Grid>
                       <Grid item xs={6} className="item">
-                        <span className="value"> Fund Transfer</span>
+                        <span className="value">
+                          {message.value ? message.value : '...'}
+                        </span>
                       </Grid>
                     </Grid>
                     <br />
                     <br />
                     <p>Total amount plus service fee</p>
-                    <H3 className="total-amount">PHP {amount.value}.00</H3>
+                    <H3 className="total-amount">
+                      PHP {parseInt(amount.value)}.00
+                    </H3>
                     <br />
                     <Button
                       type="submit"
@@ -348,11 +411,33 @@ export function SendMoney() {
                     </Button>
                   </Grid>
                 </Grid>
+                {apiErrorMsg !== '' ? apiErrorMsg : ''}
               </div>
             </>
           )}
 
-          <Dialog show={isSuccess} size="small">
+          {apiErrorMsg && (
+            <>
+              <Dialog show={success} size="small">
+                <div className="text-center">
+                  <CircleIndicator size="medium" color="primary">
+                    <FontAwesomeIcon icon="check" />
+                  </CircleIndicator>
+                  <H3 margin="15px 0 10px">Success</H3>
+
+                  <Button
+                    fullWidth
+                    onClick={onCloseSuccessDialog}
+                    variant="outlined"
+                    color="secondary"
+                  >
+                    Ok
+                  </Button>
+                </div>
+              </Dialog>
+            </>
+          )}
+          <Dialog show={success} size="small">
             <div className="text-center">
               <CircleIndicator size="medium" color="primary">
                 <FontAwesomeIcon icon="check" />

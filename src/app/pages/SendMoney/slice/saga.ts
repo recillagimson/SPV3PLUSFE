@@ -18,7 +18,7 @@ function* getSendMoney() {
   const token = yield select(selectUserToken);
   const payload = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/send/money`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/send/money`;
 
   let encryptPayload: string = '';
 
@@ -43,11 +43,10 @@ function* getSendMoney() {
 
   try {
     const apirequest = yield call(request, requestURL, options);
-    if (apirequest) {
+    if (apirequest && apirequest.data) {
       yield put(actions.getFetchSuccess(true));
     }
   } catch (err) {
-    // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
