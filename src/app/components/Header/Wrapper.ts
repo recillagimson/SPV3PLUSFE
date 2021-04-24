@@ -34,6 +34,9 @@ const Wrapper = styled.header<Props>`
   .menu-buttons {
     flex: 1;
     text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
   }
 
   .btn-toggle {

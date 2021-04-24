@@ -21,8 +21,6 @@ export default function Sidebar() {
   const history = useHistory();
   // const dispatch = useDispatch();
 
-  const [show, setShow] = React.useState(false);
-
   const gotoProfile = () => {
     history.push('/profile');
   };
@@ -43,17 +41,11 @@ export default function Sidebar() {
   };
 
   return (
-    <Wrapper className={show ? 'show' : undefined}>
+    <Wrapper id="sidebarNavigation">
       <img src="./img/SPLogo.png" alt="SquidPay" className="sp-logo" />
-      <IconButton
-        className="btn-trigger"
-        onClick={() => setShow(prev => !prev)}
-      >
-        <FontAwesomeIcon icon="times" />
-      </IconButton>
       <div className="user-info">
         <Avatar
-          image="https://source.unsplash.com/random/120x120"
+          // image="https://source.unsplash.com/random/120x120"
           size="medium"
         />
         <div className="user-short-details">

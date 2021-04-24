@@ -6,6 +6,7 @@ import { LoginState } from 'app/pages/LoginPage/slice/types';
 import { RegisterState } from 'app/pages/RegisterPage/slice/types';
 import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
 import { SendMoneyState } from 'app/pages/SendMoney/slice/types';
+import { ProfileState } from 'app/pages/ProfilePage/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -23,5 +24,6 @@ export interface RootState {
   verifyOTP?: VerifyOTPState;
   updatePassword?: UpdatePasswordState;
   sendMoney?: SendMoneyState;
+  profile?: ProfileState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

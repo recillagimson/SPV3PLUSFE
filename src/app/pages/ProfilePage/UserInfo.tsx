@@ -21,10 +21,11 @@ const Wrapper = styled.div`
   padding: 40px 25px;
 
   p {
-    margin: 0 0 0;
+    margin: 0 0 2px;
   }
 
   small {
+    margin-bottom: 5px;
     display: block;
 
     strong {

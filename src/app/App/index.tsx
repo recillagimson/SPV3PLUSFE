@@ -90,7 +90,6 @@ export function App() {
       dispatch(actions.getUserToken(decrypt.user_token));
 
       setTimeout(() => {
-        dispatch(actions.getLoadReferences());
         dispatch(actions.getUserProfile(decrypt));
       }, 500);
 

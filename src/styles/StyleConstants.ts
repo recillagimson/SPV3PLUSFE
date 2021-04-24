@@ -29,7 +29,7 @@ export const StyleConstants = Object.freeze({
     },
     mainTextColor: '#38434D',
   },
-  BODY_COLOR: '#D9E6F2',
+  BODY_COLOR: '#F0F0F0',
   DEFAULT: '#ECEAE0',
   WHITE: '#fff',
   GOLD: '#E0AC3B',

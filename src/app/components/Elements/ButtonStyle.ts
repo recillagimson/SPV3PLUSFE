@@ -173,6 +173,7 @@ const ButtonStyle = css<Props>`
   transition: all 0.2s ease-in-out;
   border-radius: ${StyleConstants.BUTTON_RADIUS};
   width: ${p => (p.fullWidth ? '100%' : 'auto')};
+  margin: ${p => (p.fullWidth ? '0 0' : '0 5px')};
   display: inline-block;
 
   ${p =>

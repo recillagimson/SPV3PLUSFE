@@ -11,11 +11,11 @@ import UserInfo from './UserInfo';
 import UserInfoList from './UserDetails';
 import ProfileForm from './ProfileForm';
 
-/** selectors, slice */
-import { selectReferences } from 'app/App/slice/selectors';
-
 export function UserProfilePage() {
-  const refs = useSelector(selectReferences);
+  const [showProfile, setShowProfile] = React.useState(false);
+  const [showUpdateProfile, setShowUpdateProfile] = React.useState(true);
+  const [showUpdateEmail, setShowUpdateEmail] = React.useState(false);
+  const [showUpdateMobile, setShowUpdateMobile] = React.useState(false);
 
   return (
     <ProtectedContent>
@@ -23,14 +23,28 @@ export function UserProfilePage() {
         <title>Profile</title>
       </Helmet>
 
-      {/* <Box title="User Profile" titleBorder>
-        <div style={{ padding: '20px 25px' }}>
-          <UserInfo profile onEdit={() => alert('edit')} />
-          <UserInfoList />
-        </div>
-      </Box> */}
-
-      <ProfileForm />
+      {showProfile && (
+        <Box title="User Profile" titleBorder>
+          <div style={{ padding: '20px 25px' }}>
+            <UserInfo
+              profile
+              onEdit={() => {
+                setShowProfile(prev => !prev);
+                setShowUpdateProfile(prev => !prev);
+              }}
+            />
+            <UserInfoList />
+          </div>
+        </Box>
+      )}
+      {showUpdateProfile && (
+        <ProfileForm
+          onCancel={() => {
+            setShowUpdateProfile(prev => !prev);
+            setShowProfile(prev => !prev);
+          }}
+        />
+      )}
     </ProtectedContent>
   );
 }

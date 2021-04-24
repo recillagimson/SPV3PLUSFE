@@ -92,7 +92,7 @@ export function LoginPage() {
         if (error.errors && error.errors.error_code) {
           error.errors.error_code.find(i => i === 101);
           apiError = error.errors.error_code.map((i: any) => {
-            if (i === 101 || i === 103) {
+            if (i === 101 || i === 103 || i === 113) {
               return isEmail
                 ? 'Email and password is invalid. Please try again.'
                 : 'Mobile number and password is invalid. Please try again.';
