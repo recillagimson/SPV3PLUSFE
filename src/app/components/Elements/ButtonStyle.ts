@@ -198,6 +198,10 @@ const ButtonStyle = css<Props>`
   ${p => p.variant === 'contained' && contained};
   ${p => p.variant === 'outlined' && outlined};
   ${p => (!p.variant || p.variant === 'default') && defaultstyle};
+
+  .svg-inline--fa {
+    margin: 0 3px;
+  }
 `;
 
 export default ButtonStyle;

@@ -37,7 +37,10 @@ import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
+import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
 import { SendToBank } from 'app/pages/SendToBank/Loadable';
+
+import pageRoutes from './Routes';
 
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
@@ -53,6 +56,7 @@ import {
   selectIsAuthenticated,
   selectIsBlankPage,
 } from './slice/selectors';
+import { usePrevious } from 'app/components/Helpers/Hooks';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -67,10 +71,13 @@ export function App() {
   const isSessionExpired = useSelector(selectSessionExpired);
   const isBlankPage = useSelector(selectIsBlankPage);
 
+  const prevAuth = usePrevious(isAuthenticated);
+
   React.useEffect(() => {
     const path: string | boolean = location ? location.pathname : '/dashboard';
     const phrase = getCookie('spv_uat_hmc');
     const sessionCookie = getCookie('spv_uat');
+    const clientCookie = getCookie('spv_cat') || '';
 
     let decrypt: any = false;
 
@@ -80,12 +87,25 @@ export function App() {
 
     if (decrypt) {
       dispatch(actions.getIsAuthenticated(true));
-      dispatch(actions.getClientTokenSuccess(decrypt));
+      dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
+      dispatch(actions.getUserToken(decrypt.user_token));
+
+      setTimeout(() => {
+        dispatch(actions.getLoadReferences());
+        dispatch(actions.getUserProfile(decrypt));
+      }, 500);
+
       history.push(path === '/' ? '/dashboard' : path);
     } else {
       dispatch(actions.getClientTokenLoading());
     }
   }, []);
+
+  React.useEffect(() => {
+    if (isAuthenticated && !prevAuth) {
+      dispatch(actions.getLoadReferences());
+    }
+  }, [isAuthenticated]);
 
   const onClickSessionExpired = () => {
     const publicURL = process.env.PUBLIC_URL || '';
@@ -116,6 +136,33 @@ export function App() {
         {!isBlankPage && isAuthenticated && <Sidebar />}
         <Content className={isAuthenticated ? 'authenticated' : undefined}>
           <Switch>
+            {/* this will be a sample pageRoutes mapping
+                should be enable once we figure the tiering, and app feature enable/disable
+            {pageRoutes.map(i => {
+              if (i.enabled) {
+                if (i.secured) {
+                  return (
+                    <PrivateRoute
+                      key={i.path}
+                      path={i.path}
+                      exact={i.exact}
+                      component={i.component}
+                    />
+                  );
+                }
+
+                return (
+                  <Route
+                    key={i.path}
+                    exact={i.exact}
+                    path={i.path}
+                    component={i.component}
+                  />
+                );
+              }
+
+              return null;
+            })} */}
             <Route exact path="/" component={LoginPage} />
             <Route exact path="/register" component={RegisterPage} />
             <Route
@@ -137,10 +184,10 @@ export function App() {
             />
             <PrivateRoute
               exact
-              path="/send-to-bank"
-              component={SendToBank}
+              path="/help-center"
+              component={HelpCenterPage}
             />
-
+            <PrivateRoute exact path="/send-to-bank" component={SendToBank} />
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}

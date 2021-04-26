@@ -35,6 +35,7 @@ export default function Sidebar() {
     deleteCookie('spv_uat_hmc');
     deleteCookie('spv_uat');
     deleteCookie('spv_expire');
+    deleteCookie('spv_cat');
 
     const publicURL = process.env.PUBLIC_URL || '';
 
@@ -129,7 +130,7 @@ export default function Sidebar() {
           </svg>
           Account Verification
         </NavButton>
-        <NavButton as={NavLink} to="/">
+        <NavButton as={NavLink} to="/quick-guide">
           <svg
             width="16"
             height="26"
