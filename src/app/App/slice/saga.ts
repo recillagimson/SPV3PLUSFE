@@ -222,5 +222,5 @@ export function* appSaga() {
   // It will be cancelled automatically on component unmount
   yield takeLatest(actions.getClientTokenLoading.type, getRequestToken);
   yield takeLatest(actions.getLoadReferences.type, getUserReferences);
-  yield takeLatest(actions.getUserProfile.type, getLoggedInUserProfile);
+  yield takeLatest(actions.getLoadUserProfile.type, getLoggedInUserProfile);
 }

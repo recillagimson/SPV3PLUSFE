@@ -51,7 +51,7 @@ export function LoginPage() {
   const resendError: any = useSelector(selectResendCodeError);
   const resendSuccess = useSelector(selectResendCodeData);
 
-  // api related state
+  // api related error
   const [isError, setIsError] = React.useState(false);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
 

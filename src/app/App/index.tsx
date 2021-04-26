@@ -13,6 +13,7 @@ import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import Main from 'app/components/Layouts/Main';
@@ -21,6 +22,10 @@ import Header from 'app/components/Header';
 import Footer from 'app/components/Footer';
 import Sidebar from 'app/components/Sidebar';
 import Dialog from 'app/components/Dialog';
+import H3 from 'app/components/Elements/H3';
+import Button from 'app/components/Elements/Button';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
+
 import { getCookie } from 'app/components/Helpers';
 
 import { GlobalStyle } from 'styles/global-styles';
@@ -89,12 +94,17 @@ export function App() {
       dispatch(actions.getUserToken(decrypt.user_token));
 
       setTimeout(() => {
-        dispatch(actions.getUserProfile(decrypt));
+        dispatch(actions.getLoadUserProfile());
+        dispatch(actions.getLoadReferences());
       }, 500);
 
       history.push(path === '/' ? '/dashboard' : path);
     } else {
       dispatch(actions.getClientTokenLoading());
+
+      setTimeout(() => {
+        dispatch(actions.getLoadReferences());
+      }, 1000);
     }
   }, []);
 
@@ -185,13 +195,25 @@ export function App() {
           {!isBlankPage && <Footer />}
         </Content>
       </Main>
-      <Dialog
-        show={isSessionExpired}
-        onClick={onClickSessionExpired}
-        okText="OK"
-        message="Your session has expired, please login again to continue."
-        title="SESSION EXPIRED"
-      />
+      <Dialog show={isSessionExpired} size="small">
+        <div className="text-center">
+          <CircleIndicator size="medium" color="primary">
+            <FontAwesomeIcon icon="stopwatch" />
+          </CircleIndicator>
+          <p style={{ margin: '15px 0 10px' }}>
+            <strong>Oops, Your session has expired.</strong>
+          </p>
+          <p>You have been automatically logged out due to inactivity.</p>
+          <Button
+            fullWidth
+            onClick={onClickSessionExpired}
+            variant="contained"
+            color="primary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
       <GlobalStyle />
     </>
   );

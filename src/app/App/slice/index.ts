@@ -44,6 +44,7 @@ const slice = createSlice({
       state.data = false;
       state.token = '';
     },
+    getLoadUserProfile() {},
     getUserProfile(state, action: PayloadAction<object>) {
       state.user = action.payload;
     },
