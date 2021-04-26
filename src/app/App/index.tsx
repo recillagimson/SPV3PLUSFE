@@ -37,6 +37,7 @@ import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
+import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
 
 import pageRoutes from './Routes';
 
@@ -185,7 +186,11 @@ export function App() {
               path="/transaction-history"
               component={TransactionHistoryPage}
             />
-
+            <PrivateRoute
+              exact
+              path="/help-center"
+              component={HelpCenterPage}
+            />
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}

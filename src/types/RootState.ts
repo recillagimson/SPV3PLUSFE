@@ -24,5 +24,6 @@ export interface RootState {
   updatePassword?: UpdatePasswordState;
   notifications?: NotificationsState;
 
+  helpCenter?: any;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }
