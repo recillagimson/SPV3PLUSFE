@@ -211,7 +211,7 @@ export default function Sidebar() {
           </svg>
           Privacy
         </NavButton>
-        <NavButton as={NavLink} to="/">
+        <NavButton as={NavLink} to="/send-to-bank">
           <svg
             width="16"
             height="25"

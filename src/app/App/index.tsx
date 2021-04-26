@@ -37,6 +37,7 @@ import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
+import { SendToBank } from 'app/pages/SendToBank/Loadable';
 
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
@@ -133,6 +134,11 @@ export function App() {
               exact
               path="/transaction-history"
               component={TransactionHistoryPage}
+            />
+            <PrivateRoute
+              exact
+              path="/send-to-bank"
+              component={SendToBank}
             />
 
             <Route component={NotFoundPage} />
