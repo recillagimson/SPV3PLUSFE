@@ -23,5 +23,6 @@ export interface RootState {
   verifyOTP?: VerifyOTPState;
   updatePassword?: UpdatePasswordState;
   profile?: ProfileState;
+  helpCenter?: any;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }
