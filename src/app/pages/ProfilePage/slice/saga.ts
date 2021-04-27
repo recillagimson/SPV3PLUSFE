@@ -4,7 +4,7 @@ import { request } from 'utils/request';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
-import { selectClientToken, selectUserToken } from 'app/App/slice/selectors';
+import { selectUserToken } from 'app/App/slice/selectors';
 import {
   getRequestPassphrase,
   getResponsePassphrase,
@@ -58,7 +58,7 @@ function* getUpdateProfile() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-
+      console.log(decryptData);
       yield put(actions.getFetchSuccess(decryptData));
     }
   } catch (err) {

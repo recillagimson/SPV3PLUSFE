@@ -22,7 +22,6 @@ import Header from 'app/components/Header';
 import Footer from 'app/components/Footer';
 import Sidebar from 'app/components/Sidebar';
 import Dialog from 'app/components/Dialog';
-import H3 from 'app/components/Elements/H3';
 import Button from 'app/components/Elements/Button';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 
@@ -43,8 +42,11 @@ import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
 import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
+import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 
-import pageRoutes from './Routes';
+import { Page500 } from 'app/components/500/Loadable';
+
+// import pageRoutes from './Routes';
 
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
@@ -60,7 +62,6 @@ import {
   selectIsAuthenticated,
   selectIsBlankPage,
 } from './slice/selectors';
-import { usePrevious } from 'app/components/Helpers/Hooks';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -75,24 +76,27 @@ export function App() {
   const isSessionExpired = useSelector(selectSessionExpired);
   const isBlankPage = useSelector(selectIsBlankPage);
 
-  const prevAuth = usePrevious(isAuthenticated);
-
   React.useEffect(() => {
     const path: string | boolean = location ? location.pathname : '/dashboard';
-    const phrase = getCookie('spv_uat_hmc');
-    const sessionCookie = getCookie('spv_uat');
-    const clientCookie = getCookie('spv_cat') || '';
+    const phrase = getCookie('spv_uat_hmc'); // retrieve the passphrase use for encrypting
+    const sessionCookie = getCookie('spv_uat'); // user token
+    const clientCookie = getCookie('spv_cat') || ''; // client token
+    const userCookie = getCookie('spv_uat_u'); // login email/mobile
 
     let decrypt: any = false;
+    let username: string = '';
 
+    // decrypted the encrypted cookies
     if (phrase && sessionCookie) {
       decrypt = spdCrypto.decrypt(sessionCookie, phrase);
+      username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
     if (decrypt) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
+      dispatch(actions.getSaveLoginName(username));
 
       setTimeout(() => {
         dispatch(actions.getLoadUserProfile());
@@ -105,15 +109,9 @@ export function App() {
 
       setTimeout(() => {
         dispatch(actions.getLoadReferences());
-      }, 1000);
+      }, 2000);
     }
   }, []);
-
-  React.useEffect(() => {
-    if (isAuthenticated && !prevAuth) {
-      dispatch(actions.getLoadReferences());
-    }
-  }, [isAuthenticated]);
 
   const onClickSessionExpired = () => {
     const publicURL = process.env.PUBLIC_URL || '';
@@ -179,6 +177,7 @@ export function App() {
               component={CardMemberAgreementPage}
             />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
+            <Route path="/500" component={Page500} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/scanqr" component={ScanQR} />
@@ -195,6 +194,7 @@ export function App() {
               path="/help-center"
               component={HelpCenterPage}
             />
+            <PrivateRoute exact path="/settings" component={SettingsPage} />
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}

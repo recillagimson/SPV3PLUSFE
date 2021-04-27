@@ -2,7 +2,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from 'utils/@reduxjs/toolkit';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
-import { ClientTokenState } from 'types/Default';
+import { TokenState, UserProfileState } from 'types/Default';
 import { GlobalState } from './types';
 import { appSaga } from './saga';
 
@@ -11,6 +11,7 @@ export const initialState: GlobalState = {
   error: false,
   data: false,
   request: false,
+  login: '',
   user: false,
   userToken: '',
   isAuthenticated: false,
@@ -29,12 +30,12 @@ const slice = createSlice({
       state.error = false;
       state.data = false;
     },
-    getClientTokenSuccess(state, action: PayloadAction<ClientTokenState>) {
+    getClientTokenSuccess(state, action: PayloadAction<TokenState>) {
       state.loading = false;
       state.request = false;
       state.token = action.payload;
     },
-    getClientTokenError(state, action: PayloadAction<ClientTokenState>) {
+    getClientTokenError(state, action: PayloadAction<TokenState>) {
       state.error = action.payload;
       state.loading = false;
     },
@@ -44,11 +45,14 @@ const slice = createSlice({
       state.data = false;
       state.token = '';
     },
-    getLoadUserProfile() {},
-    getUserProfile(state, action: PayloadAction<object>) {
+    getLoadUserProfile() {}, // an action only to dispatch retrieving of user profile
+    getUserProfile(state, action: PayloadAction<UserProfileState>) {
       state.user = action.payload;
     },
-    getUserToken(state, action: PayloadAction<ClientTokenState>) {
+    getSaveLoginName(state, action: PayloadAction<string>) {
+      state.login = action.payload;
+    },
+    getUserToken(state, action: PayloadAction<TokenState>) {
       state.userToken = action.payload;
     },
     getIsAuthenticated(state, action: PayloadAction<boolean>) {

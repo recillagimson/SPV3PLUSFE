@@ -35,8 +35,10 @@ import { selectLoading, selectError, selectData } from './slice/selectors';
 
 export default function UserProfileForm({
   onCancel,
+  onSuccess,
 }: {
   onCancel: () => void;
+  onSuccess: () => void;
 }) {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
@@ -110,10 +112,12 @@ export default function UserProfileForm({
   //work info
   const [natureOfWork, setNatureOfWork] = React.useState({
     value: '',
+    encoded: '',
     error: false,
   });
   const [sourceOfFunds, setSourceOfFunds] = React.useState({
     value: '',
+    encoded: '',
     error: false,
   });
 
@@ -124,9 +128,6 @@ export default function UserProfileForm({
 
   React.useEffect(() => {
     loopYear(1950);
-    if (profile && Object.keys(profile).length > 0) {
-      writeProfileDetails(profile);
-    }
   }, []);
 
   React.useEffect(() => {
@@ -137,7 +138,16 @@ export default function UserProfileForm({
     if (refs && Object.keys(refs).length > 0) {
       setIsLoading(false);
     }
-  }, [refs]);
+
+    if (
+      profile &&
+      Object.keys(profile).length > 0 &&
+      refs &&
+      Object.keys(refs).length > 0
+    ) {
+      writeProfileDetails(profile);
+    }
+  }, [refs, profile]);
 
   React.useEffect(() => {
     if (error && Object.keys(error).length > 0) {
@@ -186,7 +196,8 @@ export default function UserProfileForm({
 
   React.useEffect(() => {
     if (success && Object.keys(success).length > 0) {
-      writeProfileDetails(success);
+      dispatch(appActions.getLoadUserProfile());
+      setIsSuccess(true);
     }
   }, [success]);
 
@@ -224,7 +235,7 @@ export default function UserProfileForm({
     setNationality({ value: nI !== -1 ? nI : '', error: false });
 
     const cI = refs.countries.findIndex(j => j.id === p.country_id);
-    setNationality({ value: nI !== -1 ? nI : '', error: false });
+    setCountry({ value: nI !== -1 ? nI : '', error: false });
 
     setHouseNo({ value: p.house_no_street, error: false });
     setProvince({ value: p.provice_state, error: false });
@@ -232,10 +243,18 @@ export default function UserProfileForm({
     setPostal({ value: p.postal_code, error: false });
 
     const nwI = refs.natureOfWork.findIndex(j => j.id === p.nature_of_work_id);
-    setNatureOfWork({ value: nwI !== -1 ? nwI : '', error: false });
+    setNatureOfWork({
+      value: nwI !== -1 ? nwI : '',
+      encoded: p.encoded_nature_of_work || '',
+      error: false,
+    });
 
     const sI = refs.sourceOfFunds.findIndex(j => j.id === p.source_of_fund_id);
-    setSourceOfFunds({ value: sI !== -1 ? sI : '', error: false });
+    setSourceOfFunds({
+      value: sI !== -1 ? sI : '',
+      encoded: p.encoded_source_of_fund || '',
+      error: false,
+    });
   };
 
   // validate fields before reviewing
@@ -263,6 +282,26 @@ export default function UserProfileForm({
     ) {
       hasError = true;
       setBirthDate({ ...birthDate, error: true });
+    }
+
+    if (
+      natureOfWork.value !== '' &&
+      refs.natureOfWork[parseInt(natureOfWork.value)].id ===
+        '0ed96f01-9131-11eb-b44f-1c1b0d14e211' &&
+      natureOfWork.encoded === ''
+    ) {
+      hasError = true;
+      setNatureOfWork({ ...natureOfWork, error: true });
+    }
+
+    if (
+      sourceOfFunds.value !== '' &&
+      refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
+        '0ed96f01-9131-11eb-b44f-1c1b0d14e211' &&
+      sourceOfFunds.encoded === ''
+    ) {
+      hasError = true;
+      setSourceOfFunds({ ...sourceOfFunds, error: true });
     }
 
     if (!hasError) {
@@ -307,18 +346,12 @@ export default function UserProfileForm({
         natureOfWork.value !== ''
           ? refs.natureOfWork[parseInt(natureOfWork.value)].id
           : undefined,
-      encoded_nature_of_work:
-        natureOfWork.value !== ''
-          ? refs.natureOfWork[parseInt(natureOfWork.value)].description
-          : undefined,
+      encoded_nature_of_work: natureOfWork.encoded,
       source_of_fund_id:
         sourceOfFunds.value !== ''
           ? refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id
           : undefined,
-      encoded_source_of_fund:
-        sourceOfFunds.value !== ''
-          ? refs.sourceOfFunds[parseInt(sourceOfFunds.value)].description
-          : undefined,
+      encoded_source_of_fund: sourceOfFunds.encoded,
       mother_maidenname: 'Test Mothers Name',
       currency_id: '0ed21e2c-9131-11eb-b44f-1c1b0d14e211',
       signup_host_id: '38e9a8f5-91b8-11eb-8d33-1c1b0d14e211',
@@ -333,7 +366,13 @@ export default function UserProfileForm({
     dispatch(actions.getFetchReset());
   };
 
-  const onCloseSuccessDialog = () => {};
+  const onCloseSuccessDialog = () => {
+    setIsSuccess(false);
+    setShowConfirm(prev => !prev);
+    setShowForm(prev => !prev);
+    dispatch(actions.getFetchReset());
+    onSuccess();
+  };
 
   // loop days for select option dropdown
   const days = Array.from(new Array(31), (v, i) => (
@@ -620,51 +659,109 @@ export default function UserProfileForm({
           <Box title="Work Info" withPadding titleBorder>
             <Field flex>
               <Label>Nature of Work</Label>
-              <Select
-                fullWidth
-                value={natureOfWork.value}
-                onChange={e =>
-                  setNatureOfWork({
-                    value: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={natureOfWork.error ? 'error' : undefined}
-              >
-                <option value="" disabled>
-                  Select nature of work
-                </option>
-                {hasRefs &&
-                  refs.natureOfWork.map((o, i) => (
-                    <option key={o.id} value={i}>
-                      {o.description}
-                    </option>
-                  ))}
-              </Select>
+              <div style={{ flexGrow: 1 }}>
+                <Select
+                  fullWidth
+                  value={natureOfWork.value}
+                  onChange={e =>
+                    setNatureOfWork({
+                      value: e.currentTarget.value,
+                      encoded: '',
+                      error: false,
+                    })
+                  }
+                  className={natureOfWork.error ? 'error' : undefined}
+                >
+                  <option value="" disabled>
+                    Select nature of work
+                  </option>
+                  {hasRefs &&
+                    refs.natureOfWork.map((o, i) => (
+                      <option key={o.id} value={i}>
+                        {o.description}
+                      </option>
+                    ))}
+                </Select>
+                {natureOfWork.value !== '' &&
+                  refs.natureOfWork[parseInt(natureOfWork.value)].id ===
+                    '0ed96f01-9131-11eb-b44f-1c1b0d14e211' && (
+                    <>
+                      <Label style={{ marginTop: '5px' }}>Others</Label>
+                      <Input
+                        value={natureOfWork.encoded}
+                        onChange={e =>
+                          setNatureOfWork({
+                            ...natureOfWork,
+                            encoded: e.currentTarget.value,
+                            error: false,
+                          })
+                        }
+                        className={natureOfWork.error ? 'error' : undefined}
+                        placeholder="Please specify"
+                      />
+                    </>
+                  )}
+                {natureOfWork.error && (
+                  <ErrorMsg formError>
+                    {natureOfWork.value === ''
+                      ? 'Please select your nature of work'
+                      : 'Please fill out the others field.'}
+                  </ErrorMsg>
+                )}
+              </div>
             </Field>
             <Field flex>
               <Label>Source of Funds</Label>
-              <Select
-                fullWidth
-                value={sourceOfFunds.value}
-                onChange={e =>
-                  setSourceOfFunds({
-                    value: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={sourceOfFunds.error ? 'error' : undefined}
-              >
-                <option value="" disabled>
-                  Select source of funds
-                </option>
-                {hasRefs &&
-                  refs.sourceOfFunds.map((o, i) => (
-                    <option key={o.id} value={i}>
-                      {o.description}
-                    </option>
-                  ))}
-              </Select>
+              <div style={{ flexGrow: 1 }}>
+                <Select
+                  fullWidth
+                  value={sourceOfFunds.value}
+                  onChange={e =>
+                    setSourceOfFunds({
+                      value: e.currentTarget.value,
+                      encoded: '',
+                      error: false,
+                    })
+                  }
+                  className={sourceOfFunds.error ? 'error' : undefined}
+                >
+                  <option value="" disabled>
+                    Select source of funds
+                  </option>
+                  {hasRefs &&
+                    refs.sourceOfFunds.map((o, i) => (
+                      <option key={o.id} value={i}>
+                        {o.description}
+                      </option>
+                    ))}
+                </Select>
+                {sourceOfFunds.value !== '' &&
+                  refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
+                    '0ed801a1-9131-11eb-b44f-1c1b0d14e211' && (
+                    <>
+                      <Label style={{ marginTop: '5px' }}>Others</Label>
+                      <Input
+                        value={sourceOfFunds.encoded}
+                        onChange={e =>
+                          setSourceOfFunds({
+                            ...sourceOfFunds,
+                            encoded: e.currentTarget.value,
+                            error: false,
+                          })
+                        }
+                        className={sourceOfFunds.error ? 'error' : undefined}
+                        placeholder="Please specify"
+                      />
+                    </>
+                  )}
+                {sourceOfFunds.error && (
+                  <ErrorMsg formError>
+                    {sourceOfFunds.value === ''
+                      ? 'Please select your source of funds'
+                      : 'Please fill out the others field.'}
+                  </ErrorMsg>
+                )}
+              </div>
             </Field>
           </Box>
           <Flex alignItems="center" justifyContent="flex-end">
@@ -821,8 +918,10 @@ export default function UserProfileForm({
                 <ListItemText
                   label="Nature of Work"
                   primary={
-                    refs.natureOfWork[parseInt(natureOfWork.value, 10)]
-                      .description
+                    natureOfWork.encoded !== ''
+                      ? natureOfWork.encoded
+                      : refs.natureOfWork[parseInt(natureOfWork.value, 10)]
+                          .description
                   }
                   style={{
                     flexGrow: 1,
@@ -833,8 +932,10 @@ export default function UserProfileForm({
                 <ListItemText
                   label="Source of Funds"
                   primary={
-                    refs.sourceOfFunds[parseInt(sourceOfFunds.value, 10)]
-                      .description
+                    sourceOfFunds.encoded !== ''
+                      ? sourceOfFunds.encoded
+                      : refs.sourceOfFunds[parseInt(sourceOfFunds.value, 10)]
+                          .description
                   }
                   style={{
                     flexGrow: 1,
@@ -888,15 +989,13 @@ export default function UserProfileForm({
       </Dialog>
 
       {/* Show success */}
-      <Dialog show={Boolean(success)} size="small">
+      <Dialog show={isSuccess} size="small">
         <div className="text-center">
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
-          <H3 margin="15px 0 10px">Update Success</H3>
-          <p>
-            You have successfully updated your profile. Click Ok to continue
-          </p>
+          <H3 margin="15px 0 10px">Successfully updated!</H3>
+          <p>You have successfully updated your account information.</p>
           <Button
             fullWidth
             onClick={onCloseSuccessDialog}

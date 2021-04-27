@@ -8,7 +8,7 @@ import Wrapper from './Wrapper';
 export default function FooterComponent() {
   return (
     <Wrapper className="site-footer">
-      <p>&copy; SquidPay {new Date().getFullYear()}</p>
+      <p>&copy; {new Date().getFullYear()} SquidPay Technology Inc.</p>
     </Wrapper>
   );
 }

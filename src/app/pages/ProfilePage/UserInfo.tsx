@@ -9,12 +9,12 @@
  */
 import * as React from 'react';
 import styled from 'styled-components/macro';
+import { StyleConstants } from 'styles/StyleConstants';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Avatar from 'app/components/Elements/Avatar';
 import H2 from 'app/components/Elements/H2';
-import { StyleConstants } from 'styles/StyleConstants';
 import Button from 'app/components/Elements/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Wrapper = styled.div`
   text-align: center;
@@ -39,20 +39,25 @@ const Wrapper = styled.div`
 `;
 
 type UserInfoProps = {
+  login?: string;
   profile?: any;
   onEdit: () => void;
 };
 
-export default function UserInfoComponent({ profile, onEdit }: UserInfoProps) {
-  if (!profile) {
-    return null;
-  }
-
+export default function UserInfoComponent({
+  login,
+  profile,
+  onEdit,
+}: UserInfoProps) {
   return (
     <Wrapper>
       <Avatar size="large" />
-      <H2>Juan Dela Cruz</H2>
-      <p>09752321517</p>
+      <H2>
+        {profile
+          ? `${profile.first_name} ${profile.middle_name} ${profile.last_name}`
+          : '-'}
+      </H2>
+      <p>{login}</p>
       <small>
         Status: <strong>Gold Member</strong>
       </small>

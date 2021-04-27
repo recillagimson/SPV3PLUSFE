@@ -7,14 +7,15 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
 
-  &.authenticated {
+  #appMain:not(.not-found) &.authenticated {
     background-color: ${StyleConstants.BODY_COLOR};
     padding: 30px 0 0;
   }
 
   ${media.medium`
-    &.authenticated {
+    #appMain:not(.not-found) &.authenticated {
       margin-left: ${StyleConstants.SIDEBAR_WIDTH};
+      min-height: calc(100vh - 65px);
     }
   `}
 `;

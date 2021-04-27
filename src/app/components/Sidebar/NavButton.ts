@@ -26,8 +26,8 @@ const NavButton = styled.button<{ icon?: string; fullWidth?: boolean }>`
   font-size: 1rem;
 
   svg {
-    width: 36px;
-    max-height: 24px;
+    width: 38px;
+    max-height: 38px;
     margin-right: 10px;
     transition: all 0.2s ease;
   }

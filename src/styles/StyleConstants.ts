@@ -1,7 +1,8 @@
 export const StyleConstants = Object.freeze({
   // sizes
   SIDEBAR_WIDTH: '310px',
-  BORDER_RADIUS: '5px',
+  BORDER_RADIUS: '8px',
+  DIALOG_BORDER_RADIUS: '12px',
   BUTTON_RADIUS: '150px',
   MAX_WIDTH: '1170px',
   PROTECTED_CONTENT_MAX_WIDTH: '950px',
