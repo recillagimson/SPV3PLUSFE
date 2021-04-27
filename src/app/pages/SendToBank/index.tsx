@@ -14,6 +14,7 @@ import Button from 'app/components/Elements/Button';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
+import H3 from 'app/components/Elements/H3';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 
 /** slice */
@@ -30,6 +31,7 @@ import {
 // Assets
 import InstapayLogo from 'app/components/Assets/instapay.svg';
 import PesonetLogo from 'app/components/Assets/pesonet.svg';
+import LockLogo from 'app/components/Assets/icon-lock.svg';
 
 // Helpers
 import { BANK_ICONS } from './helpers';
@@ -103,7 +105,11 @@ export function SendToBank() {
       case 2:
         return (
           <S.Wrapper>
-            <img src={InstapayLogo} alt="Instapay" />
+            <S.ContentImage
+              src={InstapayLogo}
+              alt="Instapay"
+              margin="0 0 20px"
+            />
             <S.FormWrapper>
             <Field>
                 <Label>
@@ -178,6 +184,83 @@ export function SendToBank() {
             </S.FormWrapper>
           </S.Wrapper>
         );
+      case 3:
+        return (
+          <S.Wrapper display="flex" direction="column" alignment="center">
+            <S.ContentImage
+              src={InstapayLogo}
+              alt="Instapay"
+              margin="0 0 20px"
+            />
+            <S.ReviewContainer>
+              <S.ReviewListItem>
+                <p>Bank</p>
+                <p>BPI Family Bank</p>
+              </S.ReviewListItem>
+              <S.ReviewListItem>
+                <p>Account Number</p>
+                <p>3021654789652</p>
+              </S.ReviewListItem>
+              <S.ReviewListItem>
+                <p>Account Name</p>
+                <p>Juan Dela Cruz</p>
+              </S.ReviewListItem>
+              <S.ReviewListItem>
+                <p>Amount</p>
+                <p>PHP 4000.00</p>
+              </S.ReviewListItem>
+              <S.ReviewListItem>
+                <p>Purpose</p>
+                <p>Fund Transfer</p>
+              </S.ReviewListItem>
+              <S.ReviewListItem>
+                <p>Send Receipt To</p>
+                <p>None</p>
+              </S.ReviewListItem>
+              <S.ReviewListItem>
+                <p>Service Fee</p>
+                <p>PHP 150.00</p>
+              </S.ReviewListItem>
+              <S.ReviewListItem>
+                <p>Date</p>
+                <p>10 August 2020, 03:46 PM</p>
+              </S.ReviewListItem>
+              <S.ReviewTotal>
+                <p>Total amount plus service fee</p>
+                <p>PHP 4150.00</p>
+                <Button
+                  size="large"
+                  color="primary"
+                  variant="contained"
+                  onClick={() => setSteps(4)}
+                  fullWidth
+                >
+                  Transfer Fund
+                </Button>
+              </S.ReviewTotal>
+            </S.ReviewContainer>
+          </S.Wrapper>
+        );
+      case 4:
+        return (
+          <S.Wrapper display="flex" direction="column" alignment="center">
+            <S.ContentImage src={LockLogo} alt="Lock Logo" margin="0 0 20px" />
+            <H3>Enter 4-Digit one time PIN</H3>
+            <p>The one time pin code has been sent to your mobile number</p>
+            <Button
+              size="large"
+              color="primary"
+              variant="contained"
+              onClick={() => setSteps(4)}
+              fullWidth
+            >
+              Verify
+            </Button>
+            <p>
+              Need a new code? <span>Resend code</span>
+            </p>
+          </S.Wrapper>
+        );
       default:
         return <React.Fragment />;
     }
@@ -192,15 +275,15 @@ export function SendToBank() {
       case 2:
         return 'Bank Account';
       case 3:
-        return '4-Digit One Time PIN';
-      case 4:
         return 'Review Cash Out';
+      case 4:
+        return '4-Digit One Time PIN';
       case 5:
         return 'Temporary steps';
       default:
         return 'N/A';
     }
-  }
+  };
 
   return (
     <React.Fragment>
