@@ -132,7 +132,7 @@ export default function Sidebar() {
           </svg>
           Account Verification
         </NavButton>
-        <NavButton as={NavLink} to="/">
+        <NavButton as={NavLink} to="/quick-guide">
           <svg
             width="16"
             height="26"

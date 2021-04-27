@@ -25,5 +25,6 @@ export interface RootState {
   updatePassword?: UpdatePasswordState;
   sendMoney?: SendMoneyState;
   profile?: ProfileState;
+  helpCenter?: any;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }
