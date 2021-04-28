@@ -43,6 +43,7 @@ import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
 import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
+import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 
@@ -195,6 +196,11 @@ export function App() {
               component={HelpCenterPage}
             />
             <PrivateRoute exact path="/settings" component={SettingsPage} />
+            <PrivateRoute
+              exact
+              path="/settings/change-password"
+              component={SettingsChangePasswordPage}
+            />
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}

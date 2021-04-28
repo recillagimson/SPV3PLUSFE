@@ -25,7 +25,6 @@ const ListItem = styled.li<ListItemProps>`
   display: ${p => (p.flex ? 'flex' : 'block')};
 
   ${p => p.flex && flexStyles}
-  padding: 10px 0;
 `;
 
 export default ListItem;
