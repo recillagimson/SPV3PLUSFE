@@ -1,11 +1,14 @@
 import styled, { css } from 'styled-components';
 
+import { StyleConstants } from 'styles/StyleConstants';
+
 export const Wrapper = styled.div<{
   display?: string;
   alignment?: string;
   direction?: string;
   justify?: string;
   margin?: string;
+  width?: string;
 }>`
   margin: 20px;
 
@@ -32,6 +35,67 @@ export const Wrapper = styled.div<{
     css`
       flex-direction: ${direction};
     `}
+
+  ${({ margin }) =>
+    margin &&
+    css`
+      margin: ${margin};
+    `}
+
+  ${({ width }) =>
+    width &&
+    css`
+      width: ${width};
+    `}
+
+  .pin-input {
+    margin: 0 0 5px;
+
+    input {
+      border-radius: ${StyleConstants.BUTTON_RADIUS};
+      background-color: ${StyleConstants.GRAY_BG};
+      appearance: textfield;
+      border: 1px solid transparent;
+      margin: 2px 5px;
+      font-size: 1.25rem;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      outline: 0;
+
+      &:hover,
+      &:focus {
+        border-color: ${StyleConstants.GOLD};
+      }
+
+      &[data-valid='false'] {
+        background-color: transparent;
+        color: ${StyleConstants.BUTTONS.danger.main};
+        border-color: ${StyleConstants.BUTTONS.danger.main};
+      }
+    }
+  }
+
+  .pin-description {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    margin: 10px 0;
+  }
+
+  .resend-code {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    margin-top: 20px;
+
+    span {
+      color: ${StyleConstants.GOLD};
+      cursor: pointer;
+    }
+  }
 `;
 
 export const ContentImage = styled.img<{
@@ -50,11 +114,9 @@ export const CTAWrapper = styled.div`
   display: flex;
 `;
 
-export const SendCTA = styled.div<{
-  isBoolean?: boolean;
-}>`
-  background: #fff;
-  border: 1px solid #f3f4f9;
+export const SendCTA = styled.div`
+  background: ${StyleConstants.WHITE};
+  border: 1px solid ${StyleConstants.BORDER_COLOR};
   border-radius: 10px;
   box-sizing: border-box;
   cursor: pointer;
@@ -89,7 +151,7 @@ export const CTAListItem = styled.li`
 `;
 
 export const SendCTALogo = styled.div`
-  background: #e0ac3b;
+  background: ${StyleConstants.GOLD};
   border-radius: 0px 10px 10px 0px;
   padding: 30px;
 
@@ -98,7 +160,7 @@ export const SendCTALogo = styled.div`
   align-items: center;
 
   svg {
-    color: #fff;
+    color: ${StyleConstants.WHITE};
   }
 `;
 
@@ -139,27 +201,40 @@ export const FieldSubtext = styled.span`
 `;
 
 export const ReviewContainer = styled.div`
-  width: 380px;
-  margin: 0 auto;
+  margin: 20px auto;
+  width: 100%;
 `;
 
 export const ReviewTotal = styled.div`
   margin: 40px 0 0;
-  
+  width: 100%;
+
   p {
+    margin: 0;
+    text-align: center;
+  }
+
+  .total-description,
+  .service-fee {
     font-size: 14px;
     font-weight: 400;
     font-style: normal;
     line-height: 21px;
-    margin: 0;
-    text-align: center;
+  }
 
-    &:nth-child(2) {
-      font-size: 18px;
-      font-weight: 800;
-      line-height: 27px;
-      margin: 10px 0 40px;
-    }
+  .total-amount {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 27px;
+    margin: 10px 0;
+  }
+
+  .service-fee {
+    margin-bottom: 40px;
+  }
+
+  button {
+    margin: 40px 0 0;
   }
 `;
 
@@ -180,4 +255,37 @@ export const ReviewListItem = styled.div`
     line-height: 21px;
     margin: 0;
   }
+`;
+
+export const SuccessWrapper = styled.div`
+  background: #FFF9DD;
+  padding: 20px;
+  margin: 10px 0 20px;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  .success-message {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    margin-top: 20px;
+  }
+
+  .date {
+    font-size: 12px;
+    font-weight: 400;
+    font-style: normal;
+    line-height: 18px;
+    margin: 5px 0;
+  }
+`;
+
+export const ConfirmationMessage = styled.p`
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 21px;
+  margin: 10px 0 0;
 `;

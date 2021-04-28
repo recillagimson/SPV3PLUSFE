@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
+import ReactCodeInput from 'react-code-input';
+
 import { Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -16,6 +18,9 @@ import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
 import H3 from 'app/components/Elements/H3';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
+import Dialog from 'app/components/Dialog';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import Logo from 'app/components/Assets/Logo';
 
 /** slice */
 import { useContainerSaga } from './slice';
@@ -42,6 +47,7 @@ import { AnyARecord } from 'dns';
 
 export function SendToBank() {
   const [steps, setSteps] = React.useState(0);
+  const [isOpen, setOpen] = React.useState(false);
   // const { actions } = useContainerSaga();
   // const dispatch = useDispatch();
   // const loading = useSelector(selectLoading);
@@ -61,8 +67,60 @@ export function SendToBank() {
         'Transfers made before the 12:30 PM cut off are processed within the same banking day.',
         'Transactions after cut off or on holidays are processed the next banking day.',
       ],
-    }
+    },
   ];
+
+  const renderReviewContainer = (type?: string) => {
+    const isSuccessReview = type === 'successReview';
+
+    return (
+      <S.ReviewContainer>
+        <S.ReviewListItem>
+          <p>Bank</p>
+          <p>BPI Family Bank</p>
+        </S.ReviewListItem>
+        <S.ReviewListItem>
+          <p>Account Number</p>
+          <p>3021654789652</p>
+        </S.ReviewListItem>
+        <S.ReviewListItem>
+          <p>Account Name</p>
+          <p>Juan Dela Cruz</p>
+        </S.ReviewListItem>
+        <S.ReviewListItem>
+          <p>Amount</p>
+          <p>PHP 4000.00</p>
+        </S.ReviewListItem>
+        {!isSuccessReview && (
+          <S.ReviewListItem>
+            <p>Purpose</p>
+            <p>Fund Transfer</p>
+          </S.ReviewListItem>
+        )}
+        <S.ReviewListItem>
+          <p>Send Receipt To</p>
+          <p>None</p>
+        </S.ReviewListItem>
+        {isSuccessReview ? (
+          <S.ReviewListItem>
+          <p>Transaction Number</p>
+          <p>000001</p>
+        </S.ReviewListItem>
+        ) : (
+          <React.Fragment>
+            <S.ReviewListItem>
+              <p>Service Fee</p>
+              <p>PHP 150.00</p>
+            </S.ReviewListItem>
+            <S.ReviewListItem>
+              <p>Date</p>
+              <p>10 August 2020, 03:46 PM</p>
+            </S.ReviewListItem>
+          </React.Fragment>
+        )}
+      </S.ReviewContainer>
+    );
+  };
 
   const renderSteps = (step: number) => {
     switch (step) {
@@ -111,7 +169,7 @@ export function SendToBank() {
               margin="0 0 20px"
             />
             <S.FormWrapper>
-            <Field>
+              <Field>
                 <Label>
                   Enter Amount <i>*</i>
                 </Label>
@@ -174,10 +232,20 @@ export function SendToBank() {
                 />
               </Field>
               <S.FormFooter>
-                <Button size="medium" color="secondary" variant="outlined" onClick={() => setSteps(1)}>
+                <Button
+                  size="medium"
+                  color="secondary"
+                  variant="outlined"
+                  onClick={() => setSteps(1)}
+                >
                   Back
                 </Button>
-                <Button size="medium" color="primary" variant="contained" onClick={() => setSteps(3)}>
+                <Button
+                  size="medium"
+                  color="primary"
+                  variant="contained"
+                  onClick={() => setSteps(3)}
+                >
                   Next
                 </Button>
               </S.FormFooter>
@@ -186,77 +254,63 @@ export function SendToBank() {
         );
       case 3:
         return (
-          <S.Wrapper display="flex" direction="column" alignment="center">
-            <S.ContentImage
-              src={InstapayLogo}
-              alt="Instapay"
-              margin="0 0 20px"
-            />
-            <S.ReviewContainer>
-              <S.ReviewListItem>
-                <p>Bank</p>
-                <p>BPI Family Bank</p>
-              </S.ReviewListItem>
-              <S.ReviewListItem>
-                <p>Account Number</p>
-                <p>3021654789652</p>
-              </S.ReviewListItem>
-              <S.ReviewListItem>
-                <p>Account Name</p>
-                <p>Juan Dela Cruz</p>
-              </S.ReviewListItem>
-              <S.ReviewListItem>
-                <p>Amount</p>
-                <p>PHP 4000.00</p>
-              </S.ReviewListItem>
-              <S.ReviewListItem>
-                <p>Purpose</p>
-                <p>Fund Transfer</p>
-              </S.ReviewListItem>
-              <S.ReviewListItem>
-                <p>Send Receipt To</p>
-                <p>None</p>
-              </S.ReviewListItem>
-              <S.ReviewListItem>
-                <p>Service Fee</p>
-                <p>PHP 150.00</p>
-              </S.ReviewListItem>
-              <S.ReviewListItem>
-                <p>Date</p>
-                <p>10 August 2020, 03:46 PM</p>
-              </S.ReviewListItem>
-              <S.ReviewTotal>
-                <p>Total amount plus service fee</p>
-                <p>PHP 4150.00</p>
-                <Button
-                  size="large"
-                  color="primary"
-                  variant="contained"
-                  onClick={() => setSteps(4)}
-                  fullWidth
-                >
-                  Transfer Fund
-                </Button>
-              </S.ReviewTotal>
-            </S.ReviewContainer>
+          <S.Wrapper
+            display="flex"
+            direction="column"
+            alignment="center"
+            width="380px"
+            margin="20px auto"
+          >
+            <S.ContentImage src={InstapayLogo} alt="Instapay" />
+            {renderReviewContainer('totalReview')}
+            <S.ReviewTotal>
+              <p className="total-description">Total amount plus service fee</p>
+              <p className="total-amount">PHP 4150.00</p>
+              <Button
+                size="large"
+                color="primary"
+                variant="contained"
+                onClick={() => setSteps(4)}
+                fullWidth
+              >
+                Transfer Fund
+              </Button>
+            </S.ReviewTotal>
           </S.Wrapper>
         );
       case 4:
         return (
-          <S.Wrapper display="flex" direction="column" alignment="center">
+          <S.Wrapper
+            display="flex"
+            direction="column"
+            alignment="center"
+            width="400px"
+            margin="20px auto"
+          >
             <S.ContentImage src={LockLogo} alt="Lock Logo" margin="0 0 20px" />
             <H3>Enter 4-Digit one time PIN</H3>
-            <p>The one time pin code has been sent to your mobile number</p>
+            <p className="pin-description">
+              The one time pin code has been sent to your mobile number
+            </p>
+            <Field className="code" margin="40px 0 20px">
+              <ReactCodeInput
+                name="verify"
+                inputMode="numeric"
+                type="text"
+                fields={4}
+                className="pin-input"
+              />
+            </Field>
             <Button
               size="large"
               color="primary"
               variant="contained"
-              onClick={() => setSteps(4)}
+              onClick={() => setOpen(true)}
               fullWidth
             >
               Verify
             </Button>
-            <p>
+            <p className="resend-code">
               Need a new code? <span>Resend code</span>
             </p>
           </S.Wrapper>
@@ -291,6 +345,58 @@ export function SendToBank() {
       <Box title={renderTitle(steps)} titleBorder={true}>
         {renderSteps(steps)}
       </Box>
+      {/* Show success Dialog */}
+      <Dialog show={isOpen} size="small">
+        <Logo size="medium" />
+        <S.SuccessWrapper>
+          <CircleIndicator size="medium" color="primary">
+            <FontAwesomeIcon icon="check" />
+          </CircleIndicator>
+          <p className="success-message">Money Successful sent to</p>
+          {renderReviewContainer('successReview')}
+          <S.ReviewTotal>
+            <p className="total-description">Total amount plus service fee</p>
+            <p className="total-amount">PHP 4150.00</p>
+            <p className="service-fee">Service Fee: PHP 150.00</p>
+          </S.ReviewTotal>
+          <Logo size="small" />
+          <p className="date">04 March 2021, 3:26 PM</p>
+        </S.SuccessWrapper>
+        <div className="text-center">
+          <Button
+            size="medium"
+            color="primary"
+            variant="contained"
+            onClick={() => setOpen(false)}
+            fullWidth
+          >
+            Close
+          </Button>
+          <S.ConfirmationMessage>
+            "You will receive a sms notification for your confirmed
+            transaction".
+          </S.ConfirmationMessage>
+        </div>
+      </Dialog>
+      {/* show error Dialog */}
+      <Dialog show={false} size="small">
+        <div className="text-center">
+          <CircleIndicator size="medium" color="danger">
+            <FontAwesomeIcon icon="times" />
+          </CircleIndicator>
+          <H3 margin="15px 0 10px">Oops! System Error</H3>
+          <p>Please try again later</p>
+          <Button
+            fullWidth
+            onClick={() => setOpen(false)}
+            variant="outlined"
+            color="secondary"
+            size="large"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
     </React.Fragment>
   );
 }
