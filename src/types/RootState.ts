@@ -6,6 +6,7 @@ import { LoginState } from 'app/pages/LoginPage/slice/types';
 import { RegisterState } from 'app/pages/RegisterPage/slice/types';
 import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
 import { ProfileState } from 'app/pages/ProfilePage/slice/types';
+import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -24,5 +25,6 @@ export interface RootState {
   updatePassword?: UpdatePasswordState;
   profile?: ProfileState;
   helpCenter?: any;
+  changePassword?: ChangePasswordState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

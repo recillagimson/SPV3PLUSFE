@@ -28,7 +28,7 @@ export function SettingsPage() {
             <ListItemText
               role="presentation"
               onClick={() => history.push('/settings/change-password')}
-              primary="Change Email Address"
+              primary="Change Password"
               style={{
                 flexGrow: 1,
               }}
@@ -39,7 +39,7 @@ export function SettingsPage() {
             <ListItemText
               role="presentation"
               onClick={() => {
-                alert('danger');
+                alert('Not yet available');
               }}
               primary="Pin Code"
               style={{

@@ -373,7 +373,7 @@ export function LoginPage() {
               onSuccess={onSuccessVerify}
               isEmail={isEmail}
               viaValue={email.value}
-              verifyType="account"
+              apiURL="/auth/verify/account"
             />
 
             <Field className="text-center f-small" margin="20px 0 10px">
@@ -409,7 +409,7 @@ export function LoginPage() {
 
       {/* Show login errors */}
       <Dialog show={isError} size="small">
-        <div className="text-center">
+        <div className="text-center" style={{ padding: '20px 30px' }}>
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="times" />
           </CircleIndicator>
@@ -420,6 +420,7 @@ export function LoginPage() {
             onClick={onCloseDialog}
             variant="outlined"
             color="secondary"
+            size="large"
           >
             Ok
           </Button>
@@ -427,7 +428,7 @@ export function LoginPage() {
       </Dialog>
 
       <Dialog show={resendSuccess} size="small">
-        <div className="text-center">
+        <div className="text-center" style={{ padding: '20px 30px' }}>
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
@@ -442,6 +443,7 @@ export function LoginPage() {
             onClick={onSuccessResendCode}
             variant="outlined"
             color="secondary"
+            size="large"
           >
             Ok
           </Button>
@@ -450,7 +452,7 @@ export function LoginPage() {
 
       {/* show resend code error */}
       <Dialog show={resendDialog} size="small">
-        <div className="text-center">
+        <div className="text-center" style={{ padding: '20px 30px' }}>
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="times" />
           </CircleIndicator>
@@ -464,6 +466,7 @@ export function LoginPage() {
             }}
             variant="outlined"
             color="secondary"
+            size="large"
           >
             Ok
           </Button>

@@ -37,6 +37,11 @@ const Wrapper = styled.div<{ small?: boolean; align?: string; icon?: boolean }>`
 
   &[role='presentation'] {
     cursor: pointer;
+    transition: color 0.2s ease-in;
+
+    &:hover {
+      color: ${StyleConstants.GOLD};
+    }
   }
 
   .svg-inline--fa {

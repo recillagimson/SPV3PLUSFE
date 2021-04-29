@@ -73,7 +73,7 @@ export default function DialogComponent({
   return (
     <CSSTransition
       in={show}
-      timeout={300}
+      timeout={500}
       classNames="dialog"
       nodeRef={nodeRef}
       mountOnEnter

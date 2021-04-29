@@ -46,6 +46,7 @@ const SidebarWrapper = styled.aside`
     .user-short-details {
       flex: 1;
       padding: 0 10px;
+      max-width: 175px;
     }
 
     .name,
@@ -56,6 +57,12 @@ const SidebarWrapper = styled.aside`
 
     .name {
       font-weight: 700;
+    }
+
+    .mobile {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
     .mobile,

@@ -717,7 +717,7 @@ export function RegisterPage() {
               onSuccess={onCodeVerified}
               isEmail={isEmail}
               viaValue={username.value}
-              verifyType="account"
+              apiURL="/auth/verify/account"
             />
 
             <Field className="text-center f-small" margin="20px 0 10px">
