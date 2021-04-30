@@ -5,10 +5,9 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import ButtonLink from 'app/components/Elements/ButtonLink';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconButton from 'app/components/Elements/IconButton';
-
+import { useHistory } from 'react-router-dom';
 import { Props } from './type';
 import Wrapper from './Wrapper';
 import Navigation from './Navigation';
@@ -27,6 +26,7 @@ export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
     setShow(prev => !prev);
   };
 
+  const history = useHistory();
   if (blankPage) {
     return null;
   }
@@ -66,11 +66,8 @@ export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
 
           {isLoggedIn && (
             <Navigation>
-              <IconButton
-                onClick={() => alert('notifications')}
-                color="default"
-              >
-                <FontAwesomeIcon icon="envelope" />
+              <IconButton onClick={() => history.push('/notifications')}>
+                <FontAwesomeIcon icon="bell" />
               </IconButton>
             </Navigation>
           )}

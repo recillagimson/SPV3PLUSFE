@@ -11,7 +11,6 @@ import Grid from 'app/components/Elements/Grid';
 import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
-
 import Balance from './Balance';
 
 export function DashboardPage() {
@@ -125,6 +124,7 @@ export function DashboardPage() {
           </div>
         </Box>
       </div>
+      <div></div>
       <Grid columns="1fr 1fr" gap="0 25px" alignItems="start">
         <Box
           title="Box UI with Button in Title"

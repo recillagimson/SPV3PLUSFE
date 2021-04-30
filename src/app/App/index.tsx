@@ -57,6 +57,7 @@ import {
   selectIsBlankPage,
 } from './slice/selectors';
 import { usePrevious } from 'app/components/Helpers/Hooks';
+import { Notifications } from 'app/pages/Notification';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -181,6 +182,10 @@ export function App() {
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} /> */}
             <PrivateRoute path="/profile" component={UserProfilePage} />
+            <PrivateRoute
+              path={['/notifications/:id', '/notifications']}
+              component={Notifications}
+            />
             <PrivateRoute
               exact
               path="/transaction-history"
