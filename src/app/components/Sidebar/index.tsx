@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import Dialog from 'app/components/Dialog';
 import Avatar from 'app/components/Elements/Avatar';
 import IconButton from 'app/components/Elements/IconButton';
-import { deleteCookie } from 'app/components/Helpers';
+import { doSignOut } from 'app/components/Helpers';
 
 import HomeIcon from 'app/components/Assets/Home';
 import QRCodeIcon from 'app/components/Assets/QRCode';
@@ -33,6 +33,7 @@ import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
 import { UserProfileState } from 'types/Default';
 import LogoutWrapper from './LogoutWrapper';
 import Loading from '../Loading';
+import Button from '../Elements/Button';
 
 export default function Sidebar() {
   const history = useHistory();
@@ -46,29 +47,42 @@ export default function Sidebar() {
     history.push('/profile');
   };
 
+  const gotoUpgradeTier = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    if (e && e.stopPropagation) e.stopPropagation(); // stop propagation of click into the parent element
+
+    history.push('/tier-upgrade');
+  };
+
   const onLogout = () => {
     setFakeLoading(true);
     // we might not need this next two lines, check the logout out scenario
     // delete if not needed anymore
     // dispatch(appActions.getTokenReset());
     // dispatch(appActions.getIsAuthenticated(false));
-    deleteCookie('spv_uat_hmc');
-    deleteCookie('spv_uat');
-    deleteCookie('spv_expire');
-    deleteCookie('spv_cat');
-    deleteCookie('spv_uat_u');
+    // deleteCookie('spv_uat_hmc');
+    // deleteCookie('spv_uat');
+    // deleteCookie('spv_expire');
+    // deleteCookie('spv_cat');
+    // deleteCookie('spv_uat_u');
 
-    setTimeout(() => {
-      const publicURL = process.env.PUBLIC_URL || '';
-      window.location.replace(`${publicURL}/`);
-    }, 1000);
+    // setTimeout(() => {
+    //   const publicURL = process.env.PUBLIC_URL || '';
+    //   window.location.replace(`${publicURL}/`);
+    // }, 1000);
+    doSignOut();
   };
 
   return (
     <>
       <Wrapper id="sidebarNavigation">
-        <img src="./img/SPLogo.png" alt="SquidPay" className="sp-logo" />
-        <div className="user-info">
+        <img
+          src={`${process.env.PUBLIC_URL}/img/SPLogo.png`}
+          alt="SquidPay"
+          className="sp-logo"
+        />
+        <div className="user-info" role="presentation" onClick={gotoProfile}>
           <Avatar
             // image="https://source.unsplash.com/random/120x120"
             size="medium"
@@ -81,7 +95,15 @@ export default function Sidebar() {
             </p>
             <p className="mobile">{loginName}</p>
             <p className="status">
-              Status: <strong>Gold Member</strong>
+              <strong>Gold Member</strong>
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                onClick={gotoUpgradeTier}
+              >
+                Upgrade
+              </Button>
             </p>
           </div>
           <IconButton onClick={gotoProfile}>

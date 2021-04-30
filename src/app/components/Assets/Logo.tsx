@@ -9,6 +9,7 @@ import styled from 'styled-components/macro';
 type LogoProps = {
   isInline?: boolean;
   size?: 'small' | 'medium' | 'large';
+  margin?: string;
 };
 
 const Wrapper = styled.span<LogoProps>`
@@ -16,6 +17,7 @@ const Wrapper = styled.span<LogoProps>`
   padding: 5px 15px;
   width: ${p => (p.isInline ? 'auto' : '100%')};
   text-align: center;
+  margin: ${p => (p.margin ? p.margin : '0 0')};
 
   img {
     ${p => p.size === 'small' && 'width: 150px'};
@@ -26,8 +28,15 @@ const Wrapper = styled.span<LogoProps>`
 
 export default function Logo(props: LogoProps) {
   return (
-    <Wrapper size={props.size || 'small'} isInline={props.isInline}>
-      <img src="./img/SPLogo.png" alt="SquidPay logo" />
+    <Wrapper
+      size={props.size || 'small'}
+      isInline={props.isInline}
+      margin={props.margin || undefined}
+    >
+      <img
+        src={`${process.env.PUBLIC_URL || ''}/img/SPLogo.png`}
+        alt="SquidPay logo"
+      />
     </Wrapper>
   );
 }

@@ -14,9 +14,9 @@ import Label from 'app/components/Elements/Label';
 import Input from 'app/components/Elements/Input';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Note from 'app/components/Elements/Note';
-import Flex from 'app/components/Elements/Flex';
 import Button from 'app/components/Elements/Button';
 import A from 'app/components/Elements/A';
+import Logo from 'app/components/Assets/Logo';
 
 import H3 from 'app/components/Elements/H3';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
@@ -26,8 +26,14 @@ import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
 import IconButton from 'app/components/Elements/IconButton';
 
 import VerifyOTP from 'app/components/VerifyOTP';
+import {
+  doSignOut,
+  regExStrongPassword,
+  validateEmail,
+} from 'app/components/Helpers';
 
 /** slice, types */
+import { selectLoggedInName } from 'app/App/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
@@ -37,8 +43,6 @@ import {
   selectValidateError,
   selectValidateData,
 } from './slice/selectors';
-import { regExStrongPassword } from 'app/components/Helpers';
-import { selectLoggedInName } from 'app/App/slice/selectors';
 
 export function SettingsChangePasswordPage() {
   const history = useHistory();
@@ -54,6 +58,7 @@ export function SettingsChangePasswordPage() {
   const validateSuccess = useSelector(selectValidateData);
 
   // show different UI
+  const [fakeLoading, setFakeLoading] = React.useState(false);
   const [showForm, setShowForm] = React.useState(true);
   const [showVerify, setShowVerify] = React.useState(false);
   const [resendCode, setResendCode] = React.useState(false);
@@ -98,6 +103,7 @@ export function SettingsChangePasswordPage() {
 
       // reset the validate success
       dispatch(actions.getValidateReset());
+      setApiError(false);
     }
   }, [validateSuccess, validateError]);
 
@@ -224,12 +230,16 @@ export function SettingsChangePasswordPage() {
   };
 
   const onCloseSuccessDialog = () => {
-    setShowForm(true);
-    setShowVerify(false);
-    dispatch(actions.getFetchReset());
-    setCurrentPass({ value: '', error: false, show: false });
-    setNewPass({ value: '', error: false, show: false });
-    setConfirmPass({ value: '', error: false, show: false });
+    // setShowForm(true);
+    // setShowVerify(false);
+    // dispatch(actions.getFetchReset());
+    // dispatch(actions.getValidateReset());
+
+    // setCurrentPass({ value: '', error: false, show: false });
+    // setNewPass({ value: '', error: false, show: false });
+    // setConfirmPass({ value: '', error: false, show: false });
+    setFakeLoading(true);
+    doSignOut();
   };
 
   const onCloseResendDialog = () => {
@@ -424,7 +434,7 @@ export function SettingsChangePasswordPage() {
             <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
             <p className="f-small">
               The one time pin code has been sent to{' '}
-              <strong>{loginName}</strong>
+              {validateEmail(loginName) ? 'email' : 'mobile number'}
             </p>
 
             <VerifyOTP
@@ -441,24 +451,21 @@ export function SettingsChangePasswordPage() {
           </div>
         </Box>
       )}
-
-      <Dialog show={success} size="small">
+      {/* Resend Code success */}
+      <Dialog show={showResendSuccess} size="small">
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>
-          <img
-            src="/img/SPLogo.png"
-            alt="SquidPay"
-            style={{ width: '50%', display: 'block', margin: '0 auto 35px' }}
-          />
+          <Logo size="small" margin="0 0 30px" />
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
-          <H3 margin="15px 0 20px">
-            Great! You’ve successfully updated your password
-          </H3>
+          <p style={{ margin: '15px 0 20px' }}>
+            The one time pin code has been re-sent to{' '}
+            {validateEmail(loginName) ? 'email' : 'mobile number'}
+          </p>
 
           <Button
             fullWidth
-            onClick={onCloseSuccessDialog}
+            onClick={onCloseResendDialog}
             variant="contained"
             color="primary"
             size="large"
@@ -468,24 +475,24 @@ export function SettingsChangePasswordPage() {
         </div>
       </Dialog>
 
-      <Dialog show={showResendSuccess} size="small">
+      {/* Password Update Success */}
+      <Dialog show={success} size="small">
+        {fakeLoading && <Loading position="absolute" />}
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>
-          <img
-            src="/img/SPLogo.png"
-            alt="SquidPay"
-            style={{ width: '50%', display: 'block', margin: '0 auto 35px' }}
-          />
+          <Logo size="small" margin="0 0 30px" />
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
-          <p style={{ margin: '15px 0 20px' }}>
-            The one time pin code has been re-sent to{' '}
-            <strong>{loginName}</strong>
+          <H3 margin="15px 0 20px">
+            Great! You’ve successfully updated your password
+          </H3>
+          <p className="f-small">
+            To continue you need to login again. Click Ok to logout.
           </p>
 
           <Button
             fullWidth
-            onClick={onCloseResendDialog}
+            onClick={onCloseSuccessDialog}
             variant="contained"
             color="primary"
             size="large"

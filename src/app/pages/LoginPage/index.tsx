@@ -105,7 +105,7 @@ export function LoginPage() {
               return 'You are attempting to login from an untrusted client. Please check your internet connection';
             }
             if (i === 105) {
-              return 'Too many failed login attempts. This device is temporarily blocked. Please try again later.';
+              return 'Your Account has been locked, Please contact Squidpay Support for assistance in unlocking your account.';
             }
             return undefined;
           });
