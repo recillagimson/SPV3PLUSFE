@@ -1,6 +1,6 @@
 {
-  "name": "rb-cra",
-  "version": "0.1.0",
+  "name": "spv3-vanilla",
+  "version": "3+",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.34",
