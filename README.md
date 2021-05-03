@@ -36,4 +36,4 @@ Start Coding!
 
 ### Release notes
 
-1. Login / Registration Modules
+1. Login / Registration / Forgot Password Modules
