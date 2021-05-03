@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -43,7 +43,6 @@ import {
   selectResendCodeData,
   selectResendCodeError,
 } from './slice/selectors';
-import { Link } from 'react-router-dom';
 
 export function RegisterPage() {
   const history = useHistory();
@@ -596,13 +595,21 @@ export function RegisterPage() {
                     checked={agree.value}
                   />
                   By creating an account, I agree to the{' '}
-                  <Link to="https://squidpay.ph/tac" target="_blank">
+                  <a
+                    href="https://squidpay.ph/tac"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     Terms and Condition
-                  </Link>{' '}
+                  </a>{' '}
                   and{' '}
-                  <Link to="https://squidpay.ph/privacypolicy" target="_blank">
+                  <a
+                    href="https://squidpay.ph/privacypolicy"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     Privacy Policy
-                  </Link>
+                  </a>
                 </span>
                 {agree.error && (
                   <ErrorMsg formError>

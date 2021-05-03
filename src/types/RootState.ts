@@ -7,6 +7,7 @@ import { RegisterState } from 'app/pages/RegisterPage/slice/types';
 import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
 import { ProfileState } from 'app/pages/ProfilePage/slice/types';
 import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice/types';
+import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -26,5 +27,6 @@ export interface RootState {
   profile?: ProfileState;
   helpCenter?: any;
   changePassword?: ChangePasswordState;
+  changePin?: ChangePinState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

@@ -50,7 +50,7 @@ export function SettingsChangePasswordPage() {
   const { actions } = useContainerSaga();
   const loginName = useSelector(selectLoggedInName);
   const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
+  // const error = useSelector(selectError);
   const success = useSelector(selectData);
 
   const validateLoading = useSelector(selectValidateLoading);
@@ -61,7 +61,7 @@ export function SettingsChangePasswordPage() {
   const [fakeLoading, setFakeLoading] = React.useState(false);
   const [showForm, setShowForm] = React.useState(true);
   const [showVerify, setShowVerify] = React.useState(false);
-  const [resendCode, setResendCode] = React.useState(false);
+  // const [resendCode, setResendCode] = React.useState(false);
   const [showResendSuccess, setShowResendSuccess] = React.useState(false);
 
   const [currentPass, setCurrentPass] = React.useState({
@@ -417,6 +417,10 @@ export function SettingsChangePasswordPage() {
               {Boolean(passError) && <ErrorMsg formError>{passError}</ErrorMsg>}
             </div>
           </Field>
+          <Field padding="20px 0 0">
+            Please note that you will be logged out automatically after you
+            change your password
+          </Field>
         </Box>
       )}
 
@@ -480,14 +484,12 @@ export function SettingsChangePasswordPage() {
         {fakeLoading && <Loading position="absolute" />}
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>
           <Logo size="small" margin="0 0 30px" />
-          <CircleIndicator size="medium" color="primary">
+          <CircleIndicator size="large" color="primary">
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
-          <H3 margin="15px 0 20px">
-            Great! You’ve successfully updated your password
-          </H3>
-          <p className="f-small">
-            To continue you need to login again. Click Ok to logout.
+          <H3 margin="15px 0 20px">Password successfully updated!</H3>
+          <p style={{ margin: '0 0 20px' }}>
+            You may now login using your new password
           </p>
 
           <Button
@@ -497,7 +499,7 @@ export function SettingsChangePasswordPage() {
             color="primary"
             size="large"
           >
-            Close
+            OK
           </Button>
         </div>
       </Dialog>

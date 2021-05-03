@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-
+import { useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
@@ -27,6 +27,8 @@ import ButtonFlexWrapper from './ButtonFlex';
 import DashboardButton from './Button';
 
 export function DashboardPage() {
+  const history = useHistory();
+
   return (
     <ProtectedContent>
       <Helmet>
@@ -56,13 +58,17 @@ export function DashboardPage() {
         <Box
           title="Recent Transaction"
           titleAction={
-            <IconButton onClick={() => alert('clicked')}>
+            <IconButton onClick={() => history.push('/transaction-history')}>
               <FontAwesomeIcon icon="ellipsis-h" />
             </IconButton>
           }
           footerBorder
           footer={
-            <Button color="secondary" size="medium">
+            <Button
+              color="secondary"
+              size="medium"
+              onClick={() => history.push('/transaction-history')}
+            >
               View Transaction History
             </Button>
           }
@@ -110,15 +116,15 @@ export function DashboardPage() {
       </Grid>
 
       <ButtonFlexWrapper>
-        <DashboardButton>
+        <DashboardButton onClick={() => history.push('/add-money')}>
           <AddMoney />
           Add Money
         </DashboardButton>
-        {/* <DashboardButton>
+        <DashboardButton onClick={() => history.push('/sendmoney')}>
           <SendMoney />
           Send Money
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => history.push('/onlinebank')}>
           <SendToBank />
           Send To Bank
         </DashboardButton>
@@ -141,9 +147,9 @@ export function DashboardPage() {
         <DashboardButton>
           <Others />
           Others
-        </DashboardButton> */}
+        </DashboardButton>
       </ButtonFlexWrapper>
-      <div>
+      {/* <div>
         <Box
           title="Sample Container for Box UI"
           titleBorder
@@ -212,7 +218,7 @@ export function DashboardPage() {
             <p>this element are child elements only, no title and footer</p>
           </div>
         </Box>
-      </Grid>
+      </Grid> */}
     </ProtectedContent>
   );
 }

@@ -28,8 +28,8 @@ export const sizes = {
 export const media = (Object.keys(sizes) as Array<keyof typeof sizes>).reduce(
   (acc, label) => {
     acc[label] = (first: any, ...interpolations: any[]) => css`
-      @media screen and (min-width: ${sizes[label]}px) {
-        ${css(first, ...interpolations)};
+      @media (min-width: ${sizes[label]}px) {
+        ${css(first, ...interpolations)}
       }
     `;
 

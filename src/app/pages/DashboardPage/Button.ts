@@ -3,7 +3,6 @@
  * NOTE: if this will show on other pages, move this to app/components/Elements
  */
 import styled from 'styled-components/macro';
-import { media } from 'styles/media';
 import { StyleConstants } from 'styles/StyleConstants';
 
 const DashboardButton = styled.button`
@@ -19,8 +18,6 @@ const DashboardButton = styled.button`
   font-size: 0.9rem;
   color: inherit;
   display: block;
-  width: 48%;
-  margin-bottom: 15px;
 
   svg {
     height: 64px;
@@ -33,14 +30,6 @@ const DashboardButton = styled.button`
   }
   &:hover {
     background-color: ${StyleConstants.GRAY_BG};
-  }
-
-  ${media.small} {
-    width: 31%;
-  }
-
-  ${media.medium} {
-    width: 23%;
   }
 `;
 

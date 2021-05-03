@@ -115,15 +115,18 @@ export default function Sidebar() {
             <HomeIcon />
             Home
           </NavButton>
-          <NavButton as={NavLink} to="/transaction-history">
+          {/* <NavButton as={NavLink} to="/dashboard"> */}
+          <NavButton onClick={() => alert('For Development')}>
             <QRCodeIcon />
             User QR Code
           </NavButton>
-          <NavButton as={NavLink} to="/dashboard">
+          {/* <NavButton as={NavLink} to="/dashboard"> */}
+          <NavButton onClick={() => alert('For Development')}>
             <AccountIcon />
             Account Verification
           </NavButton>
-          <NavButton as={NavLink} to="/dashboard">
+          {/* <NavButton as={NavLink} to="/dashboard"> */}
+          <NavButton onClick={() => alert('For Development')}>
             <PromosIcon />
             Promos
           </NavButton>
@@ -131,15 +134,18 @@ export default function Sidebar() {
             <AccountSecurityIcon />
             Account Security
           </NavButton>
-          <NavButton as={NavLink} to="/dashboard">
+          {/* <NavButton as={NavLink} to="/dashboard"> */}
+          <NavButton onClick={() => alert('For Development')}>
             <MerchantInquiryIcon />
             Merchant Inquiry
           </NavButton>
-          <NavButton as={NavLink} to="/dashboard">
+          {/* <NavButton as={NavLink} to="/dashboard"> */}
+          <NavButton onClick={() => alert('For Development')}>
             <HelpCenterIcon />
             Help Centre
           </NavButton>
-          <NavButton as={NavLink} to="/dashboard">
+          {/* <NavButton as={NavLink} to="/dashboard"> */}
+          <NavButton onClick={() => alert('For Development')}>
             <ContactUsIcon />
             Contact Us
           </NavButton>
