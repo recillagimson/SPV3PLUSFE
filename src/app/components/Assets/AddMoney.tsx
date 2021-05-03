@@ -41,7 +41,7 @@ export default function AddMoney() {
       <path
         d="M6.31445 31.5143H16.6481"
         stroke="white"
-        stroke-width="1.5701"
+        strokeWidth="1.5701"
         strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -49,7 +49,7 @@ export default function AddMoney() {
       <path
         d="M6.31445 39.5101H12.1431"
         stroke="white"
-        stroke-width="1.5701"
+        strokeWidth="1.5701"
         strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -61,7 +61,7 @@ export default function AddMoney() {
       <path
         d="M12.1455 51.8298H25.3818"
         stroke="#F8EBAA"
-        stroke-width="1.5701"
+        strokeWidth="1.5701"
         strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"

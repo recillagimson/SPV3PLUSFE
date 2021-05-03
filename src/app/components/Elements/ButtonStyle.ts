@@ -176,6 +176,10 @@ const ButtonStyle = css<Props>`
   margin: ${p => (p.fullWidth ? '0 0' : '0 5px')};
   display: inline-block;
 
+  &:focus {
+    box-shadow: 0 0 2px 2px ${StyleConstants.FOCUS_COLOR};
+  }
+
   ${p =>
     p.size === 'small' &&
     `

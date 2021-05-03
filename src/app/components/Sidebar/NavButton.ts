@@ -24,12 +24,17 @@ const NavButton = styled.button<{ icon?: string; fullWidth?: boolean }>`
   cursor: pointer;
   width: ${p => (p.fullWidth ? '100%' : 'auto')};
   font-size: 1rem;
+  outline: 0;
 
   svg {
     width: 38px;
     max-height: 38px;
     margin-right: 10px;
     transition: all 0.2s ease;
+  }
+
+  &:focus {
+    box-shadow: 0 0 2px 2px ${StyleConstants.FOCUS_COLOR};
   }
 
   &:hover {

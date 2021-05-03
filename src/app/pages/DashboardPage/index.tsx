@@ -12,7 +12,19 @@ import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
 
+/** svg icons */
+import AddMoney from 'app/components/Assets/AddMoney';
+import SendMoney from 'app/components/Assets/SendMoney';
+import SendToBank from 'app/components/Assets/SendToBank';
+import PayBills from 'app/components/Assets/PayBills';
+import BuyLoad from 'app/components/Assets/BuyLoad';
+import QRCode from 'app/components/Assets/QRCode';
+import QuickGuide from 'app/components/Assets/QuickGuide';
+import Others from 'app/components/Assets/Others';
+
 import Balance from './Balance';
+import ButtonFlexWrapper from './ButtonFlex';
+import DashboardButton from './Button';
 
 export function DashboardPage() {
   return (
@@ -96,6 +108,41 @@ export function DashboardPage() {
           </List>
         </Box>
       </Grid>
+
+      <ButtonFlexWrapper>
+        <DashboardButton>
+          <AddMoney />
+          Add Money
+        </DashboardButton>
+        {/* <DashboardButton>
+          <SendMoney />
+          Send Money
+        </DashboardButton>
+        <DashboardButton>
+          <SendToBank />
+          Send To Bank
+        </DashboardButton>
+        <DashboardButton>
+          <PayBills />
+          Pay Bills
+        </DashboardButton>
+        <DashboardButton>
+          <BuyLoad />
+          Buy Load
+        </DashboardButton>
+        <DashboardButton>
+          <QRCode />
+          QR Code
+        </DashboardButton>
+        <DashboardButton>
+          <QuickGuide />
+          SquidPay Quick Guide
+        </DashboardButton>
+        <DashboardButton>
+          <Others />
+          Others
+        </DashboardButton> */}
+      </ButtonFlexWrapper>
       <div>
         <Box
           title="Sample Container for Box UI"

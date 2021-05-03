@@ -21,7 +21,7 @@ export default function SendMoney() {
       <path
         d="M46.541 24.4629C46.541 25.6266 46.541 26.7904 46.541 27.9541"
         stroke="white"
-        stroke-width="2.0728"
+        strokeWidth="2.0728"
         strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -29,7 +29,7 @@ export default function SendMoney() {
       <path
         d="M14.7627 29.7448C14.7627 30.9667 14.7627 32.1741 14.7627 33.396"
         stroke="white"
-        stroke-width="2.1699"
+        strokeWidth="2.1699"
         strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -53,7 +53,7 @@ export default function SendMoney() {
       <path
         d="M57.1035 37.6308H60.2747"
         stroke="#E0AC33"
-        stroke-width="1.1423"
+        strokeWidth="1.1423"
         strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -61,7 +61,7 @@ export default function SendMoney() {
       <path
         d="M56.7842 40.0314H63.4772"
         stroke="#E0AC33"
-        stroke-width="1.1423"
+        strokeWidth="1.1423"
         strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -81,7 +81,7 @@ export default function SendMoney() {
       <path
         d="M42.0029 29.6283C42.0029 30.792 42.0029 31.9557 42.0029 33.1194"
         stroke="white"
-        stroke-width="2.0728"
+        strokeWidth="2.0728"
         strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -89,7 +89,7 @@ export default function SendMoney() {
       <path
         d="M10.2246 34.9243C10.2246 36.1463 10.2246 37.3537 10.2246 38.5756"
         stroke="white"
-        stroke-width="2.1699"
+        strokeWidth="2.1699"
         strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"

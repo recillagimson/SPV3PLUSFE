@@ -6,7 +6,7 @@
  * @prop {string}   value         the value of the PIN
  */
 import * as React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import ReactCodeInput from 'react-code-input';
 
 import { StyleConstants } from 'styles/StyleConstants';

@@ -2,7 +2,7 @@
  * A style for showing a helper text or note
  * see Settings->ChangePassword page
  */
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 const Note = styled.span`
   display: block;
