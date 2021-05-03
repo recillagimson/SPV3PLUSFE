@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 import Button from 'app/components/Elements/Button';
@@ -12,8 +11,11 @@ import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
 import Balance from './Balance';
+import { useHistory } from 'react-router-dom';
 
 export function DashboardPage() {
+  const history = useHistory();
+
   return (
     <ProtectedContent>
       <Helmet>
@@ -25,7 +27,11 @@ export function DashboardPage() {
           title="Squid Balance"
           footerBorder
           footer={
-            <Button color="secondary" size="medium">
+            <Button
+              color="secondary"
+              size="medium"
+              onClick={() => history.push('/addmoney')}
+            >
               Add Money
             </Button>
           }

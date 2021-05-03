@@ -57,6 +57,8 @@ import {
 } from './slice/selectors';
 import { usePrevious } from 'app/components/Helpers/Hooks';
 import { Notifications } from 'app/pages/Notification';
+import { AddMoney } from 'app/pages/AddMoney';
+import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -180,6 +182,12 @@ export function App() {
             <PrivateRoute
               path={['/notifications/:id', '/notifications']}
               component={Notifications}
+            />
+            <PrivateRoute exact path="/addmoney" component={AddMoney} />
+            <PrivateRoute
+              exact
+              path="/addmoney/dragonpay"
+              component={Dragonpay}
             />
             <PrivateRoute
               exact

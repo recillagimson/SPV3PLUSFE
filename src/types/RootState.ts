@@ -6,6 +6,7 @@ import { LoginState } from 'app/pages/LoginPage/slice/types';
 import { RegisterState } from 'app/pages/RegisterPage/slice/types';
 import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
 import { NotificationsState } from 'app/pages/Notification/slice/types';
+import { AddMoneyDragonpayState } from 'app/pages/AddMoney/Dragonpay/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -23,6 +24,7 @@ export interface RootState {
   verifyOTP?: VerifyOTPState;
   updatePassword?: UpdatePasswordState;
   notifications?: NotificationsState;
+  addMoneyDragonpay: AddMoneyDragonpayState;
 
   helpCenter?: any;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly

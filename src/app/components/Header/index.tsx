@@ -56,7 +56,7 @@ export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
           {isLoggedIn && (
             <Navigation>
               <IconButton onClick={() => history.push('/notifications')}>
-                <FontAwesomeIcon icon="bell" />
+                <FontAwesomeIcon icon="envelope" />
               </IconButton>
             </Navigation>
           )}
