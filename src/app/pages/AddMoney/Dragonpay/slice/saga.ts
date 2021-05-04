@@ -34,7 +34,7 @@ function* addMoney() {
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'text/plain',
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token.access_token}`,
     },
     body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
@@ -53,6 +53,8 @@ function* addMoney() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
+
+      console.log({ decryptData });
 
       yield put(actions.getFetchSuccess(decryptData));
       return;
