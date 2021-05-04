@@ -3,18 +3,18 @@
  * this will have a fixed position on the page
  */
 import styled from 'styled-components/macro';
-import { media } from 'styles/media';
 import { StyleConstants } from 'styles/StyleConstants';
 
 const sizes = {
-  small: '350px',
+  xsmall: '320px',
+  small: '400px',
   medium: '640px',
   large: '960px',
   xlarge: '80%',
 };
 
 type DialogWrapperProps = {
-  size?: 'small' | 'medium' | 'large' | 'xlarge' | undefined;
+  size?: 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | undefined;
 };
 
 const Wrapper = styled.div<DialogWrapperProps>`
@@ -34,17 +34,17 @@ const Wrapper = styled.div<DialogWrapperProps>`
   .dialog-child {
     position: relative;
     z-index: 2;
-    width: 100%;
+    width: ${p => (p.size ? sizes[p.size] : '100%')};
     max-width: 95%;
     display: flex;
     flex-direction: column;
     background-color: #fff;
     border: 1px solid ${StyleConstants.BORDER_COLOR};
-    border-radius: ${StyleConstants.BORDER_RADIUS};
+    border-radius: ${StyleConstants.DIALOG_BORDER_RADIUS};
 
     .dialog-content {
       flex: 1;
-      padding: 20px;
+      /* padding: 20px; */
     }
   }
 
@@ -87,12 +87,6 @@ const Wrapper = styled.div<DialogWrapperProps>`
       transition: opacity 300ms, transform 300ms;
     }
   }
-
-  ${media.medium`
-    .dialog-child {
-      max-width: ${p => (p.size ? sizes[p.size] : '90%')};
-    }
-  `}
 `;
 
 export default Wrapper;

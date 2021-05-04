@@ -5,8 +5,8 @@
  * @prop {boolean}    isEmail       If OTP code came from email or via sms
  * @prop {string}     viaValue      Email or mobile number of the requestor
  * @prop {function}   onSuccess     callback when code is verified
- * @prop {string}     verifyType    select one for verifying code 'password' | 'account' | undefined
- *                                  NOTE: add more in the selection if we will have more url for verification
+ * @prop {string}     apiURL        pass the API endpoint ie: /auth/verify/password
+ *                                  NOTE: do not include the /api in the endpoint
  */
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -57,19 +57,22 @@ const Wrapper = styled.div`
   }
 `;
 
-type Props = {
-  isEmail: boolean;
-  viaValue: string;
+type VerifyOTPComponentProps = {
+  /** If we are passing as email or mobile number */
+  isEmail?: boolean;
+  /** If this prop is defined, email or mobile will be pass on the request payload, this should be use with isEmail props */
+  viaValue?: string;
+  /** Function callback when OTP is verified, parent should handle this callback */
   onSuccess: () => void;
-  isPin?: boolean;
-  verifyType: 'password' | 'account'; // add more verification type here, based on BE api endpoints
+  /** Pass the BE API endpoint */
+  apiURL: string;
 };
 export default function VerifyOTPComponent({
   isEmail,
   viaValue,
   onSuccess,
-  verifyType,
-}: Props) {
+  apiURL,
+}: VerifyOTPComponentProps) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
@@ -115,11 +118,11 @@ export default function VerifyOTPComponent({
 
     if (!error) {
       const data = {
-        url: verifyType,
+        url: apiURL,
         body: {
           // code_type: codeType ? codeType : 'password_recovery',
-          mobile_number: !isEmail ? viaValue : undefined,
-          email: isEmail ? viaValue : undefined,
+          mobile_number: viaValue && !isEmail ? viaValue : undefined,
+          email: viaValue && isEmail ? viaValue : undefined,
           code: code.value,
         },
       };

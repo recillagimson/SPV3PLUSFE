@@ -22,7 +22,7 @@ const slice = createSlice({
       state.data = false;
       state.request = action.payload;
     },
-    getFetchSuccess(state, action: PayloadAction<boolean>) {
+    getFetchSuccess(state, action: PayloadAction<object>) {
       state.loading = false;
       state.request = false;
       state.data = action.payload;

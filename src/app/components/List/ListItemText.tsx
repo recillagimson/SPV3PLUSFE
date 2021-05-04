@@ -14,6 +14,7 @@ import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
 import Label from 'app/components/Elements/Label';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface TypographyProps extends React.HTMLAttributes<any> {
   label?: string;
@@ -23,11 +24,32 @@ interface TypographyProps extends React.HTMLAttributes<any> {
   small?: boolean;
   align?: 'left' | 'right' | 'center';
   bold?: boolean;
+  icon?: boolean; // Show Arrow Icon
 }
 
-const Wrapper = styled.div<{ small?: boolean; align?: string }>`
+const Wrapper = styled.div<{ small?: boolean; align?: string; icon?: boolean }>`
   font-size: ${p => (p.small ? '0.8rem' : '1rem')};
   text-align: ${p => (p.align ? p.align : 'left')};
+  position: relative;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-right: ${p => (p.icon ? '35px' : '0')};
+
+  &[role='presentation'] {
+    cursor: pointer;
+    transition: color 0.2s ease-in;
+
+    &:hover {
+      color: ${StyleConstants.GOLD};
+    }
+  }
+
+  .svg-inline--fa {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 
   small {
     max-width: ${p => (p.small ? '100px' : '120px')};
@@ -63,16 +85,23 @@ export default function TypographyComponent({
   small,
   align,
   bold,
+  icon,
   ...rest
 }: TypographyProps) {
   return (
-    <Wrapper small={small || undefined} align={align || undefined} {...rest}>
+    <Wrapper
+      small={small || undefined}
+      align={align || undefined}
+      icon={icon || undefined}
+      {...rest}
+    >
       {Boolean(label) && <Label>{label}</Label>}
       {Boolean(primary) && (
         <Primary bold={bold || undefined}>{primary}</Primary>
       )}
       {Boolean(caption) && <Caption>{caption}</Caption>}
       {Boolean(secondary) && <Secondary>{secondary}</Secondary>}
+      {icon && <FontAwesomeIcon icon="chevron-right" />}
     </Wrapper>
   );
 }

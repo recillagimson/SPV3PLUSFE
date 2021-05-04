@@ -19,7 +19,7 @@ function* getVerifyCode() {
   const token = yield select(selectClientToken);
   const payload = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/auth/verify/${payload.url}`;
+  const requestURL = `${process.env.REACT_APP_API_URL}${payload.url}`;
 
   let encryptPayload: string = '';
 

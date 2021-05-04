@@ -11,6 +11,11 @@ export const selectUser = createSelector(
   subState => subState.user,
 );
 
+export const selectLoggedInName = createSelector(
+  [selectDomain],
+  subState => subState.login,
+);
+
 export const selectData = createSelector(
   [selectDomain],
   subState => subState.data,

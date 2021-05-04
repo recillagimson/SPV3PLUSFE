@@ -13,6 +13,7 @@ import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import Main from 'app/components/Layouts/Main';
@@ -21,6 +22,9 @@ import Header from 'app/components/Header';
 import Footer from 'app/components/Footer';
 import Sidebar from 'app/components/Sidebar';
 import Dialog from 'app/components/Dialog';
+import Button from 'app/components/Elements/Button';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
+
 import { getCookie } from 'app/components/Helpers';
 
 import { GlobalStyle } from 'styles/global-styles';
@@ -38,8 +42,12 @@ import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
 import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
+import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
+import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
 
-import pageRoutes from './Routes';
+import { Page500 } from 'app/components/500/Loadable';
+
+// import pageRoutes from './Routes';
 
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
@@ -72,40 +80,42 @@ export function App() {
   const isSessionExpired = useSelector(selectSessionExpired);
   const isBlankPage = useSelector(selectIsBlankPage);
 
-  const prevAuth = usePrevious(isAuthenticated);
-
   React.useEffect(() => {
     const path: string | boolean = location ? location.pathname : '/dashboard';
-    const phrase = getCookie('spv_uat_hmc');
-    const sessionCookie = getCookie('spv_uat');
-    const clientCookie = getCookie('spv_cat') || '';
+    const phrase = getCookie('spv_uat_hmc'); // retrieve the passphrase use for encrypting
+    const sessionCookie = getCookie('spv_uat'); // user token
+    const clientCookie = getCookie('spv_cat') || ''; // client token
+    const userCookie = getCookie('spv_uat_u'); // login email/mobile
 
     let decrypt: any = false;
+    let username: string = '';
 
+    // decrypted the encrypted cookies
     if (phrase && sessionCookie) {
       decrypt = spdCrypto.decrypt(sessionCookie, phrase);
+      username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
     if (decrypt) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
+      dispatch(actions.getSaveLoginName(username));
 
       setTimeout(() => {
-        dispatch(actions.getUserProfile(decrypt));
+        dispatch(actions.getLoadUserProfile());
+        dispatch(actions.getLoadReferences());
       }, 500);
 
       history.push(path === '/' ? '/dashboard' : path);
     } else {
       dispatch(actions.getClientTokenLoading());
+
+      setTimeout(() => {
+        dispatch(actions.getLoadReferences());
+      }, 2000);
     }
   }, []);
-
-  React.useEffect(() => {
-    if (isAuthenticated && !prevAuth) {
-      dispatch(actions.getLoadReferences());
-    }
-  }, [isAuthenticated]);
 
   const onClickSessionExpired = () => {
     const publicURL = process.env.PUBLIC_URL || '';
@@ -171,6 +181,7 @@ export function App() {
               component={CardMemberAgreementPage}
             />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
+            <Route path="/500" component={Page500} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <Route path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/scanqr" component={ScanQR} />
@@ -196,18 +207,36 @@ export function App() {
               path="/help-center"
               component={HelpCenterPage}
             />
+            <PrivateRoute exact path="/settings" component={SettingsPage} />
+            <PrivateRoute
+              exact
+              path="/settings/change-password"
+              component={SettingsChangePasswordPage}
+            />
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}
         </Content>
       </Main>
-      <Dialog
-        show={isSessionExpired}
-        onClick={onClickSessionExpired}
-        okText="OK"
-        message="Your session has expired, please login again to continue."
-        title="SESSION EXPIRED"
-      />
+      <Dialog show={isSessionExpired} size="small">
+        <div className="text-center">
+          <CircleIndicator size="medium" color="primary">
+            <FontAwesomeIcon icon="stopwatch" />
+          </CircleIndicator>
+          <p style={{ margin: '15px 0 10px' }}>
+            <strong>Oops, Your session has expired.</strong>
+          </p>
+          <p>You have been automatically logged out due to inactivity.</p>
+          <Button
+            fullWidth
+            onClick={onClickSessionExpired}
+            variant="contained"
+            color="primary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
       <GlobalStyle />
     </>
   );

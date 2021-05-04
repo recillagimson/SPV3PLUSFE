@@ -46,15 +46,8 @@ function* getUpdatePassword() {
     // Call our request helper (see 'utils/request')
     const apirequest = yield call(request, requestURL, options);
 
-    if (apirequest) {
+    if (apirequest && apirequest.data) {
       yield put(actions.getFetchSuccess(true));
-    } else {
-      yield put(
-        actions.getFetchError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
     }
   } catch (err) {
     // special case, check the 422 for invalid data (account already exists)

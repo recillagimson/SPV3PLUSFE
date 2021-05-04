@@ -5,14 +5,20 @@ import * as React from 'react';
 
 export default function AddMoney() {
   return (
-    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <mask id="path-1-inside-1" fill="white">
+    <svg
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <mask id="add-money-inside-1" fill="white">
         <path d="M59 47.6591V58.3918C59 60.3912 57.3838 62 55.3751 62H4.62502C2.61626 62 1 60.3912 1 58.3918V24.6082C1 22.6088 2.61626 21 4.62502 21H55.3751C57.3838 21 59 22.6088 59 24.6082V35.3408" />
       </mask>
       <path
         d="M58 47.6591V58.3918H60V47.6591H58ZM58 58.3918C58 59.8346 56.8359 61 55.3751 61V63C57.9317 63 60 60.9479 60 58.3918H58ZM55.3751 61H4.62502V63H55.3751V61ZM4.62502 61C3.16415 61 2 59.8346 2 58.3918H0C0 60.9479 2.06837 63 4.62502 63V61ZM2 58.3918V24.6082H0V58.3918H2ZM2 24.6082C2 23.1654 3.16415 22 4.62502 22V20C2.06837 20 0 22.0521 0 24.6082H2ZM4.62502 22H55.3751V20H4.62502V22ZM55.3751 22C56.8359 22 58 23.1654 58 24.6082H60C60 22.0521 57.9317 20 55.3751 20V22ZM58 24.6082V35.3408H60V24.6082H58Z"
         fill="#38434D"
-        mask="url(#path-1-inside-1)"
+        mask="url(#add-money-inside-1)"
       />
       <path
         d="M53.873 36.2365V27.1658H6.47754V57.8379H53.873V48.7672"
@@ -22,31 +28,31 @@ export default function AddMoney() {
         d="M61.1654 47.2653H51.6677C48.5102 47.2653 45.9443 44.687 45.9443 41.5C45.9443 38.313 48.5102 35.7347 51.6677 35.7347H61.1654C61.8887 35.7347 62.4999 36.3301 62.4999 37.0816V45.9357C62.48 46.6767 61.8809 47.2653 61.1654 47.2653Z"
         fill="#F8EBAA"
         stroke="#38434D"
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
       />
       <path
         d="M30.8918 1.89591C31.4162 1.36803 32.2356 1.36803 32.76 1.89591L51.884 21.1487H11.7678L30.8918 1.89591Z"
         fill="#F9ECAA"
         stroke="#38434D"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M6.31445 31.5143H16.6481"
         stroke="white"
-        stroke-width="1.5701"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5701"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M6.31445 39.5101H12.1431"
         stroke="white"
-        stroke-width="1.5701"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5701"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M51.3895 43.2066C52.3258 43.2066 53.0848 42.4424 53.0848 41.4999C53.0848 40.5573 52.3258 39.7933 51.3895 39.7933C50.4533 39.7933 49.6943 40.5573 49.6943 41.4999C49.6943 42.4424 50.4533 43.2066 51.3895 43.2066Z"
@@ -55,10 +61,10 @@ export default function AddMoney() {
       <path
         d="M12.1455 51.8298H25.3818"
         stroke="#F8EBAA"
-        stroke-width="1.5701"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5701"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M29.1155 15.2973L24.7521 19.804L23.2441 18.3243L34.3901 6.81224L38.6076 10.9508C39.859 12.1788 40.5268 13.4611 40.611 14.7978C40.7004 16.1396 40.2322 17.3402 39.2064 18.3997C38.1245 19.5172 36.9419 20.0374 35.6586 19.9602C34.3857 19.8829 33.1026 19.2097 31.8094 17.9407L29.1155 15.2973ZM30.3174 14.0559L33.0269 16.7148C33.8333 17.506 34.6348 17.9225 35.4316 17.9643C36.2335 18.0008 36.984 17.658 37.6832 16.9358C38.3467 16.2506 38.6628 15.4918 38.6315 14.6593C38.6002 13.8268 38.2179 13.0354 37.4845 12.2848L34.6885 9.5412L30.3174 14.0559Z"
