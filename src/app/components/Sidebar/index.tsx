@@ -21,6 +21,7 @@ export default function Sidebar() {
   const history = useHistory();
   // const dispatch = useDispatch();
 
+  const [show, setShow] = React.useState(true);
   const gotoProfile = () => {
     history.push('/profile');
   };

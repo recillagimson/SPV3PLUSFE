@@ -40,40 +40,37 @@ import {
 
 /** slice */
 import { useContainerSaga } from './slice';
-import { selectLoading, selectError, selectData } from './slice/selectors';
+import {
+  selectLoading,
+  selectError,
+  selectData,
+  selectValidateData,
+  selectValidateError,
+  selectValidateLoading,
+} from './slice/selectors';
 
 export function SendMoney() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
+
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
-  const success = useSelector(selectData);
+  const success: any = useSelector(selectData);
+
+  const validateError: any = useSelector(selectValidateError);
+  const validateSuccess: any = useSelector(selectValidateData);
+  const validateLoading = useSelector(selectValidateLoading);
+
+  console.log(success);
+  const [validateApiMsg, setValidateApiMsg] = React.useState({
+    msg: '',
+    code: '',
+    error: false,
+  });
 
   // api related state
-  const [isError, setIsError] = React.useState(false);
-  const [apiErrorMsg, setApiErrorMsg] = React.useState('');
-
-  React.useEffect(() => {
-    // set error message based on error code from api
-
-    if (error && Object.keys(error).length > 0) {
-      if (error.code && error.code === 422) {
-        if (error.errors && error.errors.error_code) {
-          error.errors.error_code.forEach((i: any) => {
-            if (i === 103) {
-              setApiErrorMsg('Account does not exists.');
-            }
-            if (i === 301) {
-              setApiErrorMsg('Not allowed to send to your own account.');
-            }
-            if (i === 402) {
-              setApiErrorMsg('Insufficient Balance.');
-            }
-          });
-        }
-      }
-    }
-  }, [error]);
+  // const [isError, setIsError] = React.useState(false);
+  // const [apiErrorMsg, setApiErrorMsg] = React.useState('');
 
   const [email, setEmail] = React.useState({
     value: '',
@@ -82,9 +79,9 @@ export function SendMoney() {
   });
   const [amount, setAmount] = React.useState({ value: '', error: false });
   const [message, setMessage] = React.useState({ value: '', error: false });
-  const [pin, setPin] = React.useState({ value: '', error: false });
+  const [otp, setOTP] = React.useState({ value: '', error: false });
 
-  // const [isVerification, setIsVerification] = React.useState(false);
+  const [isVerification, setIsVerification] = React.useState(false);
   const [isReview, setIsReview] = React.useState(false);
 
   const [isEmail, setIsEmail] = React.useState(false);
@@ -94,6 +91,7 @@ export function SendMoney() {
     if (e && e.preventDefault) e.preventDefault();
 
     let error = false;
+    let anEmail = false;
 
     // first check if field is not empty
     if (email.value === '') {
@@ -142,7 +140,7 @@ export function SendMoney() {
 
     // if we pass the validation above, set if we are going to pass an email or mobile
     if (email.value !== '' && validateEmail(email.value)) {
-      // anEmail = true;
+      anEmail = true;
       setIsEmail(true);
     } else if (email.value !== '' && regExMobile.test(email.value)) {
       setIsEmail(false);
@@ -161,7 +159,16 @@ export function SendMoney() {
     }
 
     if (!error) {
-      setIsReview(true);
+      const data = {
+        email: anEmail ? email.value : undefined,
+        mobile_number: !anEmail ? email.value : undefined,
+        amount: parseFloat(amount.value),
+        message: message.value,
+      };
+
+      // console.log(data);
+      // dispatch payload to saga
+      dispatch(actions.getValidateLoading(data));
       // setIsVerification(true);
     }
   };
@@ -169,14 +176,14 @@ export function SendMoney() {
   const onSendMoney = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
 
-    // setIsSuccess(true);
-
     const data = {
       email: isEmail ? email.value : undefined,
       mobile_number: !isEmail ? email.value : undefined,
       amount: parseFloat(amount.value),
       message: message.value,
     };
+
+    // console.log(data);
 
     // dispatch payload to saga
     dispatch(actions.getFetchLoading(data));
@@ -214,17 +221,75 @@ export function SendMoney() {
     // setMessage({ value: '', error: false });
   };
 
-  React.useEffect(() => {
-    return () => {
-      dispatch(actions.getFetchReset()); // reset store state on unmount
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   return () => {
+  //     dispatch(actions.getFetchReset()); // reset store state on unmount
+  //   };
+  // }, []);
 
   // React.useEffect(() => {
   //   if (success) {
   //     dispatch(actions.getFetchReset());
   //   }
   // }, [success]);
+
+  // console.log(validateSuccess);
+
+  React.useEffect(() => {
+    return () => {
+      dispatch(actions.getValidateReset()); // reset validate object
+    };
+  }, [actions, dispatch]);
+
+  React.useEffect(() => {
+    // set error message based on error code from api
+
+    if (validateError && Object.keys(validateError).length > 0) {
+      if (validateError.code && validateError.code === 422) {
+        if (validateError.errors && validateError.errors.error_code) {
+          validateError.errors.error_code.forEach((i: any) => {
+            if (i === 103) {
+              setValidateApiMsg({
+                msg: 'Recipient does not have a Squidpay account',
+                code: '103',
+                error: true,
+              });
+            }
+            if (i === 301) {
+              setValidateApiMsg({
+                msg: 'Not allowed to send to your own account.',
+                code: '301',
+                error: true,
+              });
+            }
+            if (i === 402) {
+              setValidateApiMsg({
+                msg: 'You do not have enough balance',
+                code: '402',
+                error: true,
+              });
+            }
+            if (i === 404) {
+              setValidateApiMsg({
+                msg: 'Oops! User not found',
+                code: '404',
+                error: true,
+              });
+            }
+          });
+        }
+      }
+    }
+
+    if (validateSuccess) {
+      setIsReview(true);
+    }
+
+    if (success) {
+      setIsReview(false);
+      setIsVerification(true);
+    }
+  }, [validateError, validateSuccess, error, success]);
 
   const action = (
     <>
@@ -249,21 +314,20 @@ export function SendMoney() {
       </Helmet>
 
       <Wrapper>
-        {loading && <Loading position="absolute" />}
+        {validateLoading && <Loading position="absolute" />}
         <Card
-          // title={
-          //   isVerification
-          //     ? 'PIN Code'
-          //     : isReview
-          //     ? 'Review Send Money'
-          //     : 'Send Money'
-          // }
-          title={isReview ? 'Review Send Money' : 'Send Money'}
-          // footer={!isVerification && !isReview ? action : undefined}
-          footer={!isReview ? action : undefined}
+          title={
+            isReview
+              ? 'Review Send Money'
+              : isVerification
+              ? 'OTP Code'
+              : 'Send Money'
+          }
+          footer={!isVerification && !isReview ? action : undefined}
+          // footer={!isReview ? action : undefined}
           size="medium"
         >
-          {!isReview && (
+          {!isReview && !isVerification && (
             <>
               <Field>
                 <Label>Send to</Label>
@@ -279,8 +343,28 @@ export function SendMoney() {
                       msg: '',
                     })
                   }
+                  error={
+                    validateApiMsg.code === '103' ||
+                    validateApiMsg.code === '301' ||
+                    validateApiMsg.code === '404'
+                      ? true
+                      : undefined
+                  }
                 />
                 {email.error && <ErrorMsg formError>* {email.msg}</ErrorMsg>}
+
+                {/* API Error Message */}
+                {validateApiMsg.code === '103' && !email.error && (
+                  <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                )}
+
+                {validateApiMsg.code === '301' && !email.error && (
+                  <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                )}
+
+                {validateApiMsg.code === '404' && !email.error && (
+                  <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                )}
               </Field>
               <Field>
                 <Label>Amount</Label>
@@ -293,14 +377,20 @@ export function SendMoney() {
                   onChange={e =>
                     setAmount({ value: e.currentTarget.value, error: false })
                   }
+                  error={validateApiMsg.code === '402' ? true : undefined}
                 />
                 {amount.error && (
                   <ErrorMsg formError>* Invalid Amount</ErrorMsg>
                 )}
-                <small>
+
+                {/* API Error Message */}
+                {validateApiMsg.code === '402' && !amount.error && (
+                  <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                )}
+                {/* <small>
                   Your daily limit is 20,000 PHP and monthly limit is 100,000
                   PHP
-                </small>
+                </small> */}
               </Field>
 
               <Field>
@@ -318,7 +408,7 @@ export function SendMoney() {
             </>
           )}
 
-          {/* {isVerification && (
+          {isVerification && (
             <div className="verification">
               <Grid container justify="center">
                 <Grid item md={8}>
@@ -326,17 +416,17 @@ export function SendMoney() {
                     <Field>
                       <PinInput
                         length={4}
-                        onChange={p => setPin({ value: p, error: false })}
-                        value={pin.value}
-                        isValid={!pin.error}
+                        onChange={p => setOTP({ value: p, error: false })}
+                        value={otp.value}
+                        isValid={!otp.error}
                       />
                     </Field>
                   </Flex>
                   <p className="text-center">Please enter your pin code</p>
-                  {pin.error && <ErrorMsg formError>* Error</ErrorMsg>}
+                  {otp.error && <ErrorMsg formError>* Error</ErrorMsg>}
                   <Button
                     type="button"
-                    onClick={onPinNext}
+                    // onClick={onPinNext}
                     color="primary"
                     fullWidth
                     size="large"
@@ -351,7 +441,7 @@ export function SendMoney() {
                 </Grid>
               </Grid>
             </div>
-          )} */}
+          )}
 
           {isReview && (
             <>
@@ -362,7 +452,7 @@ export function SendMoney() {
                       image="https://source.unsplash.com/random/120x120"
                       size="medium"
                     />
-                    <p className="email">Name of Receiver</p>
+                    <p className="email">{validateSuccess.first_name}</p>
                     <p className="number">{email.value}</p>
 
                     <br />
@@ -393,7 +483,7 @@ export function SendMoney() {
                     </Grid>
                     <br />
                     <br />
-                    <p>Total amount plus service fee</p>
+                    <p>Total amount</p>
                     <H3 className="total-amount">
                       PHP {parseInt(amount.value)}.00
                     </H3>
@@ -411,12 +501,12 @@ export function SendMoney() {
                     </Button>
                   </Grid>
                 </Grid>
-                {apiErrorMsg !== '' ? apiErrorMsg : ''}
+                {/* {apiErrorMsg !== '' ? apiErrorMsg : ''} */}
               </div>
             </>
           )}
 
-          {apiErrorMsg && (
+          {/* {apiErrorMsg && (
             <>
               <Dialog show={success} size="small">
                 <div className="text-center">
@@ -436,8 +526,8 @@ export function SendMoney() {
                 </div>
               </Dialog>
             </>
-          )}
-          <Dialog show={success} size="small">
+          )} */}
+          {/* <Dialog show={success} size="small">
             <div className="text-center">
               <CircleIndicator size="medium" color="primary">
                 <FontAwesomeIcon icon="check" />
@@ -453,7 +543,7 @@ export function SendMoney() {
                 Ok
               </Button>
             </div>
-          </Dialog>
+          </Dialog> */}
         </Card>
       </Wrapper>
     </>
