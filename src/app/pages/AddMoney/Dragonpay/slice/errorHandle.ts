@@ -8,7 +8,6 @@ export function errorHandler(err: any): ErrorState {
 
   try {
     if (err && err.response && err.response.status) {
-      console.log('STATUS!!!', err.response.status);
       switch (err.response.status) {
         case 401:
           error.error = 401;

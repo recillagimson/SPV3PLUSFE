@@ -61,7 +61,6 @@ function* addMoney() {
     }
   } catch (err) {
     const errMessage = errorHandler(err);
-
     yield put(actions.getFetchError(errMessage));
   }
 }

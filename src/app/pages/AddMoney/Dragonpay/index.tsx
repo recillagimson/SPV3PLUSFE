@@ -8,6 +8,7 @@ import Loading from 'app/components/Loading';
 import { StyleConstants } from 'styles/StyleConstants';
 import { useSelector, useDispatch } from 'react-redux';
 import { useContainerSaga } from './slice';
+import { useHistory } from 'react-router-dom';
 import {
   selectLoading,
   selectAddMoneyDragonpay,
@@ -15,6 +16,7 @@ import {
 } from './slice/selectors';
 
 export function Dragonpay() {
+  const history = useHistory();
   const inputEl: any = React.useRef(null);
   const [showModal, setShowModal] = React.useState({
     status: '',
@@ -26,7 +28,7 @@ export function Dragonpay() {
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
-  const adddMoneyDragonpay = useSelector(selectAddMoneyDragonpay);
+  const addMoneyDragonpay = useSelector(selectAddMoneyDragonpay);
 
   function handlerSubmitMoney() {
     if (inputEl) {
@@ -42,6 +44,10 @@ export function Dragonpay() {
   function handlerCloseModal() {
     dispatch(actions.getFetchReset());
     setShowModal({ status: '', show: false });
+    if (addMoneyDragonpay && addMoneyDragonpay.Url) {
+      // console.log({ url: addMoneyDragonpay.Url });
+      window.location.assign(addMoneyDragonpay.Url);
+    }
   }
 
   React.useEffect(() => {
@@ -50,19 +56,23 @@ export function Dragonpay() {
       Object.keys(error).length !== 0 &&
       Object.values(error).length !== 0
     ) {
+      console.log(error);
       setShowModal({
         status: 'failed',
         show: true,
       });
     }
 
-    if (adddMoneyDragonpay) {
+    if (addMoneyDragonpay) {
       setShowModal({
         status: 'success',
         show: true,
       });
+      if (inputEl) {
+        inputEl.current.value = '';
+      }
     }
-  }, [error, adddMoneyDragonpay]);
+  }, [error, addMoneyDragonpay]);
 
   React.useEffect(() => {
     return () => {
@@ -93,52 +103,62 @@ export function Dragonpay() {
         <div
           style={{
             padding: '25px',
+            position: 'relative',
           }}
         >
-          {loading ? (
-            <Loading />
-          ) : (
-            <>
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <img
-                  src="/banks/dragonpay.png"
-                  alt="dragonpay"
-                  width="auto"
-                  height="auto"
-                  style={{ margin: 'auto' }}
-                />
-              </div>
-              <div>
-                <label htmlFor="amount">Amount</label>
-                <Input
-                  ref={inputEl}
-                  id="amount"
-                  placeholder="PHP 0.00"
-                  type="number"
-                  hidespinner={true}
-                  onChange={() => setErrorMessage('')}
-                  style={{
-                    borderColor:
-                      errorMessage && `${StyleConstants.BUTTONS.danger.main}`,
-                  }}
-                />
-                {errorMessage.length ? (
-                  <span
-                    style={{
-                      fontSize: '12px',
-                      color: `${StyleConstants.BUTTONS.danger.main}`,
-                    }}
-                  >
-                    {errorMessage}
-                  </span>
-                ) : (
-                  <span style={{ fontSize: '12px', fontWeight: 'lighter' }}>
-                    Available Balance PHP xxx.xx
-                  </span>
-                )}
-              </div>
-            </>
+          {loading && (
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: '300px',
+                width: '100%',
+                background: 'white',
+              }}
+            >
+              <Loading />
+            </div>
           )}
+
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <img
+              src="/banks/dragonpay.png"
+              alt="dragonpay"
+              width="auto"
+              height="auto"
+              style={{ margin: 'auto' }}
+            />
+          </div>
+          <div>
+            <label htmlFor="amount">Amount</label>
+            <Input
+              ref={inputEl}
+              id="amount"
+              placeholder="PHP 0.00"
+              type="number"
+              hidespinner={true}
+              onChange={() => setErrorMessage('')}
+              style={{
+                borderColor:
+                  errorMessage && `${StyleConstants.BUTTONS.danger.main}`,
+              }}
+            />
+            {errorMessage.length ? (
+              <span
+                style={{
+                  fontSize: '12px',
+                  color: `${StyleConstants.BUTTONS.danger.main}`,
+                }}
+              >
+                {errorMessage}
+              </span>
+            ) : (
+              <span style={{ fontSize: '12px', fontWeight: 'lighter' }}>
+                Available Balance PHP xxx.xx
+              </span>
+            )}
+          </div>
         </div>
         {showModal.show && (
           <AddMoneyModal

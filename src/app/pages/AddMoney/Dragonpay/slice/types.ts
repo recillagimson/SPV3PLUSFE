@@ -7,7 +7,7 @@ export interface AddMoneyDragonpayState {
   loading: boolean;
   error?: object;
   amount: number | null;
-  addMoneyDragonpay: object | null;
+  addMoneyDragonpay: any;
 }
 
 export type ContainerState = AddMoneyDragonpayState;
