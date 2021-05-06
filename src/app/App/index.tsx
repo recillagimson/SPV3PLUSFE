@@ -44,6 +44,7 @@ import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadabl
 import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
+import { Notifications } from 'app/pages/Notification';
 
 import { Page500 } from 'app/components/500/Loadable';
 
@@ -185,6 +186,10 @@ export function App() {
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
             <PrivateRoute path="/profile" component={UserProfilePage} />
+            <PrivateRoute
+              path={['/notifications/:id', '/notifications']}
+              component={Notifications}
+            />
             <PrivateRoute
               exact
               path="/transaction-history"

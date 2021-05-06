@@ -5,16 +5,16 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import ButtonLink from 'app/components/Elements/ButtonLink';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconButton from 'app/components/Elements/IconButton';
-
+import { useHistory } from 'react-router-dom';
 import { Props } from './type';
 import Wrapper from './Wrapper';
 import Navigation from './Navigation';
 import MenuToggle from './MenuToggle';
 
 export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
+  const history = useHistory();
   const [show, setShow] = React.useState(false);
 
   const onToggleMenu = () => {
@@ -66,11 +66,8 @@ export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
 
           {isLoggedIn && (
             <Navigation>
-              <IconButton
-                onClick={() => alert('notifications')}
-                color="default"
-              >
-                <FontAwesomeIcon icon="envelope" />
+              <IconButton onClick={() => history.push('/notifications')}>
+                <FontAwesomeIcon icon="bell" />
               </IconButton>
             </Navigation>
           )}

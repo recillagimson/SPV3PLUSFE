@@ -178,6 +178,7 @@ export function DashboardPage() {
           </div>
         </Box>
       </div>
+      <div></div>
       <Grid columns="1fr 1fr" gap="0 25px" alignItems="start">
         <Box
           title="Box UI with Button in Title"

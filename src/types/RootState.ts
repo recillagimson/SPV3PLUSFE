@@ -8,6 +8,7 @@ import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
 import { ProfileState } from 'app/pages/ProfilePage/slice/types';
 import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice/types';
 import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
+import { NotificationsState } from 'app/pages/Notification/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -25,6 +26,8 @@ export interface RootState {
   verifyOTP?: VerifyOTPState;
   updatePassword?: UpdatePasswordState;
   profile?: ProfileState;
+  notifications?: NotificationsState;
+
   helpCenter?: any;
   changePassword?: ChangePasswordState;
   changePin?: ChangePinState;
