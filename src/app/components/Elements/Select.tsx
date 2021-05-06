@@ -7,6 +7,7 @@ import styled from 'styled-components/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import FormElementStyle from './FormElementsStyle';
+import { StyleConstants } from 'styles/StyleConstants';
 
 const Wrapper = styled.div<{ full?: boolean }>`
   width: ${p => (p.full ? '100%' : 'auto')};
@@ -30,7 +31,10 @@ const Wrapper = styled.div<{ full?: boolean }>`
     position: relative;
     z-index: 2;
     width: 100%;
-    color: inherit;
+  }
+
+  select:disabled + .arrow {
+    z-index: 3;
   }
 
   // remove the arrow of select for lower version of ie
@@ -39,7 +43,7 @@ const Wrapper = styled.div<{ full?: boolean }>`
   }
 `;
 
-interface SelectComponentProps extends React.HTMLAttributes<any> {
+interface SelectComponentProps extends React.SelectHTMLAttributes<any> {
   fullWidth?: boolean;
   children: React.ReactNodeArray | React.ReactNode;
   value: any;

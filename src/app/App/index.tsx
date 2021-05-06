@@ -25,7 +25,7 @@ import Dialog from 'app/components/Dialog';
 import Button from 'app/components/Elements/Button';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 
-import { getCookie } from 'app/components/Helpers';
+import { doSignOut, getCookie } from 'app/components/Helpers';
 
 import { GlobalStyle } from 'styles/global-styles';
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
@@ -101,9 +101,9 @@ export function App() {
       dispatch(actions.getSaveLoginName(username));
 
       setTimeout(() => {
-        dispatch(actions.getLoadUserProfile());
         dispatch(actions.getLoadReferences());
-      }, 500);
+        dispatch(actions.getLoadUserProfile());
+      }, 800);
 
       history.push(path === '/' ? '/dashboard' : path);
     } else {
@@ -116,9 +116,10 @@ export function App() {
   }, []);
 
   const onClickSessionExpired = () => {
-    const publicURL = process.env.PUBLIC_URL || '';
+    // const publicURL = process.env.PUBLIC_URL || '';
 
-    window.location.replace(`${publicURL}/`);
+    // window.location.replace(`${publicURL}/`);
+    doSignOut();
     dispatch(actions.getIsAuthenticated(false));
     dispatch(actions.getIsSessionExpired(false));
   };
@@ -212,7 +213,7 @@ export function App() {
         </Content>
       </Main>
       <Dialog show={isSessionExpired} size="small">
-        <div className="text-center">
+        <div className="text-center" style={{ padding: '25px' }}>
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="stopwatch" />
           </CircleIndicator>

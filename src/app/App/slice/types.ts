@@ -14,4 +14,5 @@ export interface GlobalState {
   isSessionExpired: boolean;
   isBlankPage: boolean;
   references: {};
+  tier: {} | boolean;
 }

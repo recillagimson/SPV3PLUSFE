@@ -96,17 +96,17 @@ export default function Sidebar() {
             <p className="mobile">{loginName}</p>
             <p className="status">
               <strong>Gold Member</strong>
-              <Button
-                variant="contained"
-                color="secondary"
-                size="small"
-                onClick={gotoUpgradeTier}
-              >
-                Upgrade
-              </Button>
             </p>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              onClick={gotoUpgradeTier}
+            >
+              Upgrade
+            </Button>
           </div>
-          <IconButton onClick={gotoProfile}>
+          <IconButton onClick={gotoProfile} className="btn-arrow">
             <FontAwesomeIcon icon="angle-right" />
           </IconButton>
         </div>

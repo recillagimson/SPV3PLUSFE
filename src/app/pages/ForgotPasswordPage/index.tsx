@@ -39,6 +39,7 @@ export function ForgotPasswordPage() {
 
   const [isError, setIsError] = React.useState(false);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
+  const [title, setTitle] = React.useState('Forgot Password?');
   const [subTitle, setSubTitle] = React.useState(
     'We got you! Let us know which contact detail should we use to reset your password',
   );
@@ -61,7 +62,9 @@ export function ForgotPasswordPage() {
 
   React.useEffect(() => {
     // if we have successfully requested a code, show verify
+    // this success is a verify success
     if (success) {
+      setTitle('Enter 4-Digit recovery code');
       setSubTitle(
         `The recovery code has been sent to your ${
           isEmail ? 'email address' : 'mobile number'
@@ -77,13 +80,11 @@ export function ForgotPasswordPage() {
   React.useEffect(() => {
     let apiError: string | undefined;
     if (error && Object.keys(error).length > 0) {
+      const err = error.errors ? error.errors : false;
+      console.log(err);
       if (error.code && error.code === 422) {
-        if (
-          error.errors &&
-          error.errors.error_code &&
-          error.errors.error_code.length > 0
-        ) {
-          apiError = error.errors.error_code.map(i => {
+        if (err && err.error_code && err.error_code.length > 0) {
+          apiError = err.error_code.map(i => {
             if (i === 101 || i === 103) {
               return `The ${
                 isEmail ? 'email' : 'mobile number'
@@ -107,6 +108,7 @@ export function ForgotPasswordPage() {
             return undefined;
           });
         }
+
         setApiErrorMsg(apiError || '');
         setIsError(true);
       }
@@ -145,12 +147,15 @@ export function ForgotPasswordPage() {
   const onSuccessVerify = () => {
     setShowVerify(false);
     setShowUpdate(true);
+    setSubTitle('Enter your new password');
+    setTitle('Reset Password');
   };
 
   const onSuccessUpdate = () => {
     setShowUpdate(false);
     setShowSuccess(true);
     setIsEmail(false);
+    setTitle('Password reset successful');
     setSubTitle(
       "All set! You've successfully reset your password. Please try logging in again.",
     );
@@ -254,12 +259,8 @@ export function ForgotPasswordPage() {
           </CircleIndicator>
         </div>
 
-        <H1 className="text-center" margin="20px 0 0">
-          {showVerify
-            ? 'Enter 4-Digit recovery code'
-            : showSuccess
-            ? 'Password reset successful'
-            : 'Forgot Password?'}
+        <H1 className="text-center" margin="20px 0 8px">
+          {title}
         </H1>
         <p className="text-center">{subTitle}</p>
         {showChoose && (

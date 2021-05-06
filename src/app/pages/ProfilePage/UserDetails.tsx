@@ -11,7 +11,7 @@ import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
 import IconButton from 'app/components/Elements/IconButton';
 
-export default function UserInfoList({ profile, refs }) {
+export default function UserDetailsList({ profile, refs }) {
   let country = '-';
   // let nationality = '-';
   let natureOfWork = '-';

@@ -22,7 +22,7 @@ const NavButton = styled.button<{ icon?: string; fullWidth?: boolean }>`
   text-decoration: none;
   transition: all 0.2s ease;
   cursor: pointer;
-  width: ${p => (p.fullWidth ? '100%' : 'auto')};
+  width: 100%;
   font-size: 1rem;
   outline: 0;
 
@@ -33,12 +33,13 @@ const NavButton = styled.button<{ icon?: string; fullWidth?: boolean }>`
     transition: all 0.2s ease;
   }
 
-  &:focus {
+  &:focus-visible {
     box-shadow: 0 0 2px 2px ${StyleConstants.FOCUS_COLOR};
   }
 
   &:hover {
     color: ${StyleConstants.LINK_TEXT_GOLD_HOVER};
+    text-decoration: none;
 
     svg {
       opacity: 0.8;
