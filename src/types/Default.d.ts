@@ -15,7 +15,7 @@ export interface ApiErrorState {
     status?: string | number;
     statusText?: string;
   };
-  error?: boolean;
+  error?: any;
   message?: string;
 }
 

@@ -6,7 +6,18 @@ import styled from 'styled-components/macro';
 import { media } from 'styles/media';
 import { StyleConstants } from 'styles/StyleConstants';
 
-const Wrapper = styled.div`
+const sizes = {
+  small: '350px',
+  medium: '640px',
+  large: '960px',
+  xlarge: '80%',
+};
+
+type DialogWrapperProps = {
+  size?: 'small' | 'medium' | 'large' | 'xlarge' | undefined;
+};
+
+const Wrapper = styled.div<DialogWrapperProps>`
   position: fixed;
   top: 0;
   left: 0;
@@ -24,7 +35,7 @@ const Wrapper = styled.div`
     position: relative;
     z-index: 2;
     width: 100%;
-    max-width: 90%;
+    max-width: 95%;
     display: flex;
     flex-direction: column;
     background-color: #fff;
@@ -33,7 +44,7 @@ const Wrapper = styled.div`
 
     .dialog-content {
       flex: 1;
-      padding: 15px;
+      padding: 20px;
     }
   }
 
@@ -79,7 +90,7 @@ const Wrapper = styled.div`
 
   ${media.medium`
     .dialog-child {
-      max-width: 40%;
+      max-width: ${p => (p.size ? sizes[p.size] : '90%')};
     }
   `}
 `;

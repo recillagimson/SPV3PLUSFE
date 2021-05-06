@@ -25,13 +25,34 @@ const Wrapper = styled.header<Props>`
   }
 
   .logo {
-    width: 150px;
+    width: 120px;
     align-self: flex-start;
+    position: relative;
+    z-index: 5;
+  }
+
+  .menu-buttons {
+    flex: 1;
+    text-align: right;
+  }
+
+  .btn-toggle {
+    display: inline-flex;
+    position: relative;
+    z-index: 5;
   }
 
   ${media.medium`
     .wrapped {
-      max-width: ${p => (!p.isLoggedIn ? StyleConstants.MAX_WIDTH : 'auto')};
+      max-width: ${p => (!p.isLoggedIn ? StyleConstants.MAX_WIDTH : 'none')};
+    }
+
+    .logo {
+      width: 150px;
+    }
+
+    .btn-toggle {
+      display: none;
     }
   `}
 `;

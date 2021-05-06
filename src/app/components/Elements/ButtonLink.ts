@@ -8,6 +8,11 @@ import ButtonStyle from './ButtonStyle';
 
 const ButtonLink = styled(Link)`
   ${ButtonStyle}
+
+  &:hover {
+    text-decoration: none;
+    color: inherit;
+  }
 `;
 
 export default ButtonLink;

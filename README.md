@@ -28,3 +28,12 @@ Start Coding!
 3. Components should be placed under `app/component` folder
 4. API integration steps, if container/component will have API integration, create a `slice` directory inside the container/component folder, refer to `app/pages/Login` for sample `slice` (API) integration
 5. If some helper utilities will be made, put it under `utils` folder (ie: faLibrary, etc...)
+6. Font used is Museo Sans, for regular text, font weight is `300`, for bold, font weight is `700`;
+
+### To Dos
+
+1. Route might be changed to accommodate services on each tier
+
+### Release notes
+
+1. Login / Registration / Forgot Password Modules

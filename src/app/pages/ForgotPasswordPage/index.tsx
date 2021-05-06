@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Loading from 'app/components/Loading';
 import H1 from 'app/components/Elements/H1';
+import H3 from 'app/components/Elements/H3';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
@@ -16,6 +17,7 @@ import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Flex from 'app/components/Elements/Flex';
+import Dialog from 'app/components/Dialog';
 
 import Wrapper from 'app/components/Layouts/AuthWrapper';
 
@@ -35,6 +37,8 @@ export function ForgotPasswordPage() {
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
 
+  const [isError, setIsError] = React.useState(false);
+  const [apiErrorMsg, setApiErrorMsg] = React.useState('');
   const [subTitle, setSubTitle] = React.useState(
     'We got you! Let us know which contact detail should we use to reset your password',
   );
@@ -69,6 +73,56 @@ export function ForgotPasswordPage() {
       dispatch(actions.getFetchReset());
     }
   }, [success]);
+
+  React.useEffect(() => {
+    let apiError: string | undefined;
+    if (error && Object.keys(error).length > 0) {
+      if (error.code && error.code === 422) {
+        if (
+          error.errors &&
+          error.errors.error_code &&
+          error.errors.error_code.length > 0
+        ) {
+          apiError = error.errors.error_code.map(i => {
+            if (i === 101 || i === 103) {
+              return `The ${
+                isEmail ? 'email' : 'mobile number'
+              } you have entered doesn't exists in our records. Please try again.`;
+            }
+            if (i === 102) {
+              return `Your account is not yet verified. Please check your ${
+                isEmail ? 'email' : 'mobile number'
+              } for verification process.`;
+            }
+            if (i === 107) {
+              return `You cannot change your password yet as it hasn't reach it's 1 day minimum age.`;
+            }
+            if (i === 104) {
+              return 'You are attempting to login from an untrusted client. Please check your internet connection.';
+            }
+            if (i === 105) {
+              return 'Too many failed login attempts. This device is temporarily blocked. Please try again later.';
+            }
+
+            return undefined;
+          });
+        }
+        setApiErrorMsg(apiError || '');
+        setIsError(true);
+      }
+
+      if (error.code && error.code !== 422) {
+        apiError = error.response.statusText;
+        setApiErrorMsg(apiError || '');
+        setIsError(true);
+      }
+      if (!error.response && (!error.code || error.code !== 422)) {
+        apiError = 'Uh-oh! Invalid Code';
+        setApiErrorMsg(apiError || '');
+        setIsError(true);
+      }
+    }
+  }, [error]);
 
   const onClickViaSms = () => {
     setShowChoose(false);
@@ -108,6 +162,7 @@ export function ForgotPasswordPage() {
 
     let error = false;
 
+    // validate as email
     if (isEmail) {
       if (email.value === '') {
         error = true;
@@ -120,8 +175,13 @@ export function ForgotPasswordPage() {
       }
     }
 
+    // validate as mobile number
     if (!isEmail) {
-      // validate as mobile number
+      if (mobile.value === '') {
+        error = true;
+        setMobile({ ...mobile, error: true });
+      }
+
       if (mobile.value !== '' && !/^0(9)/.test(mobile.value)) {
         error = true;
         setMobile({ ...mobile, error: true });
@@ -142,7 +202,7 @@ export function ForgotPasswordPage() {
         mobile_number: !isEmail ? mobile.value : undefined,
         email: isEmail ? email.value : undefined,
       };
-      console.log(data);
+
       // enable code below to integrate api
       dispatch(actions.getFetchLoading(data));
     }
@@ -150,21 +210,28 @@ export function ForgotPasswordPage() {
 
   const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     // send the previous entered information if this is the approach for this
-    // if (e && e.preventDefault) e.preventDefault();
-    // const data = {
-    //   mobile_number: !isEmail ? mobile.value : undefined,
-    //   email: isEmail ? email.value : undefined,
-    // };
-    // dispatch(actions.getFetchLoading(data));
+    if (e && e.preventDefault) e.preventDefault();
+
+    const data = {
+      mobile_number: !isEmail ? mobile.value : undefined,
+      email: isEmail ? email.value : undefined,
+    };
+    dispatch(actions.getFetchLoading(data));
 
     // redirect user to choosing via sms or email code sending
-    setShowChoose(true);
-    setShowVerify(false);
-    setShowEmail(false);
-    setShowMobile(false);
-    setIsEmail(false);
-    setEmail({ value: '', error: false });
-    setMobile({ value: '', error: false });
+    // setShowChoose(true);
+    // setShowVerify(false);
+    // setShowEmail(false);
+    // setShowMobile(false);
+    // setIsEmail(false);
+    // setEmail({ value: '', error: false });
+    // setMobile({ value: '', error: false });
+  };
+
+  const onCloseDialog = () => {
+    setIsError(false);
+    setApiErrorMsg('');
+    dispatch(actions.getFetchReset());
   };
 
   const gotoLogin = () => {
@@ -240,18 +307,12 @@ export function ForgotPasswordPage() {
               />
               {mobile.error && (
                 <ErrorMsg formError>
-                  * Please enter your mobile (ie: 09xxxxxxxxx)
+                  Oops, please enter your mobile number (09 + 9 digit) ie:
+                  09xxxxxxxxx
                 </ErrorMsg>
               )}
             </Field>
-            {error && Object.keys(error).length > 0 && (
-              <ErrorMsg formError>
-                *{' '}
-                {error.code && error.code === 422
-                  ? error.errors.account.join(' ')
-                  : error.message}
-              </ErrorMsg>
-            )}
+
             <Button
               type="submit"
               onClick={onSubmit}
@@ -275,21 +336,15 @@ export function ForgotPasswordPage() {
                   setEmail({ value: e.currentTarget.value, error: false })
                 }
                 placeholder="Email address"
+                className={email.error ? 'error' : undefined}
               />
               {email.error && (
                 <ErrorMsg formError>
-                  * Please enter your email address and in valid format
+                  Oops, please enter your email and in valid format ie:
+                  email@example.com
                 </ErrorMsg>
               )}
             </Field>
-            {error && Object.keys(error).length > 0 && (
-              <ErrorMsg formError>
-                *{' '}
-                {error.code && error.code === 422
-                  ? error.errors.account.join(' ')
-                  : error.message}
-              </ErrorMsg>
-            )}
             <Button
               type="submit"
               onClick={onSubmit}
@@ -305,10 +360,10 @@ export function ForgotPasswordPage() {
         {showVerify && (
           <div className="content">
             <VerifyOTP
-              mount={showVerify}
               onSuccess={onSuccessVerify}
               isEmail={isEmail}
               viaValue={isEmail ? email.value : mobile.value}
+              verifyType="password"
             />
 
             <Field className="text-center" margin="20px 0 10px">
@@ -322,7 +377,6 @@ export function ForgotPasswordPage() {
         {showUpdate && (
           <div className="content">
             <UpdatePassword
-              mount={showUpdate}
               onSuccess={onSuccessUpdate}
               isEmail={isEmail}
               viaValue={isEmail ? email.value : mobile.value}
@@ -344,6 +398,24 @@ export function ForgotPasswordPage() {
           </div>
         )}
       </div>
+
+      <Dialog show={isError} size="small">
+        <div className="text-center">
+          <CircleIndicator size="medium" color="danger">
+            <FontAwesomeIcon icon="times" />
+          </CircleIndicator>
+          <H3 margin="15px 0 10px">Forgot Password Error</H3>
+          <p>{apiErrorMsg}</p>
+          <Button
+            fullWidth
+            onClick={onCloseDialog}
+            variant="outlined"
+            color="secondary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
     </Wrapper>
   );
 }

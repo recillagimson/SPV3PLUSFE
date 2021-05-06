@@ -36,12 +36,27 @@ export const selectIsAuthenticated = createSelector(
   subState => subState.isAuthenticated,
 );
 
-export const selectToken = createSelector(
+export const selectClientToken = createSelector(
   [selectDomain],
   subState => subState.token,
+);
+
+export const selectUserToken = createSelector(
+  [selectDomain],
+  subState => subState.userToken,
 );
 
 export const selectSessionExpired = createSelector(
   [selectDomain],
   subState => subState.isSessionExpired,
+);
+
+export const selectIsBlankPage = createSelector(
+  [selectDomain],
+  subState => subState.isBlankPage,
+);
+
+export const selectReferences = createSelector(
+  [selectDomain],
+  subState => subState.references,
 );

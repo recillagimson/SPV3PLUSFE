@@ -27,14 +27,12 @@ import { selectData, selectLoading, selectError } from './slice/selectors';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type Props = {
-  mount: boolean;
   viaValue: string;
   isEmail: boolean;
   onSuccess: () => void;
 };
 
 export default function UpdatePasswordComponent({
-  mount,
   viaValue,
   isEmail,
   onSuccess,
@@ -47,6 +45,9 @@ export default function UpdatePasswordComponent({
 
   const [showPass, setShowPass] = React.useState(false);
   const [showConfirmPass, setShowConfirmPass] = React.useState(false);
+
+  const [isError, setIsError] = React.useState(false);
+  const [apiErrorMsg, setApiErrorMsg] = React.useState('');
 
   const [newPass, setNewPass] = React.useState({ value: '', error: false });
   const [confirmPass, setConfirmPass] = React.useState({
@@ -68,10 +69,55 @@ export default function UpdatePasswordComponent({
     }
   }, [success]);
 
-  // before we load all the codes below, check if we are going to be mounted first
-  if (!mount) {
-    return null;
-  }
+  React.useEffect(() => {
+    let apiError: string | undefined;
+    if (error && Object.keys(error).length > 0) {
+      if (error.code && error.code === 422) {
+        if (
+          error.errors &&
+          error.errors.error_code &&
+          error.errors.error_code.length > 0
+        ) {
+          apiError = error.errors.error_code.map(i => {
+            if (i === 101 || i === 103) {
+              return `The ${
+                isEmail ? 'email' : 'mobile number'
+              } you have entered doesn't exists in our records. Please try again.`;
+            }
+            if (i === 102) {
+              return `Your account is not yet verified. Please check your ${
+                isEmail ? 'email' : 'mobile number'
+              } for verification process.`;
+            }
+            if (i === 107) {
+              return `You cannot change your password yet at it hasn't reach it's 1 day minimum age.`;
+            }
+            if (i === 108) {
+              return `We encountered an error in processing your data. Please try again.`;
+            }
+            if (i === 106) {
+              return 'Password has already been used.';
+            }
+
+            return undefined;
+          });
+        }
+        setApiErrorMsg(apiError || '');
+        setIsError(true);
+      }
+
+      if (error.code && error.code !== 422) {
+        apiError = error.response.statusText;
+        setApiErrorMsg(apiError || '');
+        setIsError(true);
+      }
+      if (!error.response && (!error.code || error.code !== 422)) {
+        apiError = 'Uh-oh! Invalid Code';
+        setApiErrorMsg(apiError || '');
+        setIsError(true);
+      }
+    }
+  }, [error]);
 
   const onChangeNewPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewPass({
@@ -134,7 +180,7 @@ export default function UpdatePasswordComponent({
       if (!regExStrongPassword.test(newPass.value)) {
         error = true;
         setPassError(
-          'Your password is too short and weak. A minimum of 12 characters and with a least one uppercase and lowercase alphabet, numeric and special character is needed',
+          'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
         );
       }
     }
@@ -166,13 +212,18 @@ export default function UpdatePasswordComponent({
             onChange={onChangeNewPassword}
             placeholder="Password"
             required
+            className={newPass.error ? 'error' : undefined}
           />
-          <IconButton onClick={() => setShowPass(prev => !prev)}>
+          <IconButton
+            type="button"
+            onClick={() => setShowPass(prev => !prev)}
+            tabIndex={-1}
+          >
             <FontAwesomeIcon icon={showPass ? 'eye-slash' : 'eye'} />
           </IconButton>
         </InputIconWrapper>
         {newPass.error && (
-          <ErrorMsg formError>* Please enter your new password</ErrorMsg>
+          <ErrorMsg formError>Please enter your new password</ErrorMsg>
         )}
       </Field>
       <Field>
@@ -187,26 +238,23 @@ export default function UpdatePasswordComponent({
             onChange={onChangeConfirmPassword}
             placeholder="Password"
             required
+            className={confirmPass.error ? 'error' : undefined}
           />
-          <IconButton onClick={() => setShowConfirmPass(prev => !prev)}>
+          <IconButton
+            type="button"
+            onClick={() => setShowConfirmPass(prev => !prev)}
+            tabIndex={-1}
+          >
             <FontAwesomeIcon icon={showConfirmPass ? 'eye-slash' : 'eye'} />
           </IconButton>
         </InputIconWrapper>
         {confirmPass.error && (
-          <ErrorMsg formError>* Please confirm your new password.</ErrorMsg>
+          <ErrorMsg formError>Please confirm your new password.</ErrorMsg>
         )}
       </Field>
       <Field>
-        {Boolean(passError) && <ErrorMsg formError>* {passError}</ErrorMsg>}
-
-        {error && Object.keys(error).length > 0 && (
-          <ErrorMsg formError>
-            *{' '}
-            {error.code && error.code === 422
-              ? error.errors.account.join(' ')
-              : error.message}
-          </ErrorMsg>
-        )}
+        {Boolean(passError) && <ErrorMsg formError>{passError}</ErrorMsg>}
+        {isError && <ErrorMsg formError>{apiErrorMsg}</ErrorMsg>}
       </Field>
       <Button
         type="submit"

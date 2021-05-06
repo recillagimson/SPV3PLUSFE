@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /**
  * Render a private routes
  *
@@ -10,7 +11,7 @@ import { selectIsAuthenticated } from './slice/selectors';
 
 export default function PrivateRoute({ component: Component, ...rest }) {
   // check if user is logged in
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  let isAuthenticated = useSelector(selectIsAuthenticated);
 
   // return the proper path
   // if user is logged in, render the page else redirect to "/"

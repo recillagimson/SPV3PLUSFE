@@ -12,40 +12,56 @@ export const initialState: GlobalState = {
   data: false,
   request: false,
   user: false,
+  userToken: '',
   isAuthenticated: false,
   token: '',
   isSessionExpired: false,
+  isBlankPage: false,
+  references: {},
 };
 
 const slice = createSlice({
   name: 'global',
   initialState,
   reducers: {
-    getTokenLoading(state, action: PayloadAction) {
+    getClientTokenLoading(state, action: PayloadAction) {
       state.loading = true;
       state.error = false;
       state.data = false;
     },
-    getTokenSuccess(state, action: PayloadAction<ClientTokenState>) {
+    getClientTokenSuccess(state, action: PayloadAction<ClientTokenState>) {
       state.loading = false;
       state.request = false;
       state.token = action.payload;
     },
-    getTokenError(state, action: PayloadAction<ClientTokenState>) {
+    getClientTokenError(state, action: PayloadAction<ClientTokenState>) {
       state.error = action.payload;
       state.loading = false;
     },
-    getTokenReset(state, action: PayloadAction) {
+    getClientTokenReset(state, action: PayloadAction) {
       state.loading = false;
       state.error = false;
       state.data = false;
       state.token = '';
+    },
+    getUserProfile(state, action: PayloadAction<object>) {
+      state.user = action.payload;
+    },
+    getUserToken(state, action: PayloadAction<ClientTokenState>) {
+      state.userToken = action.payload;
     },
     getIsAuthenticated(state, action: PayloadAction<boolean>) {
       state.isAuthenticated = action.payload;
     },
     getIsSessionExpired(state, action: PayloadAction<boolean>) {
       state.isSessionExpired = action.payload;
+    },
+    getIsBlankPage(state, action: PayloadAction<boolean>) {
+      state.isBlankPage = action.payload;
+    },
+    getLoadReferences() {}, // an action only to dispatch retrieving of references
+    getReferences(state, action: PayloadAction<object>) {
+      state.references = action.payload;
     },
   },
 });

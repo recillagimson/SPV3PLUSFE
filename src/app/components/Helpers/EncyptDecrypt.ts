@@ -1,6 +1,7 @@
 import CryptoJS from 'crypto-js';
 
-const encDec = {
+// Encryption/Decryption formatter
+const formatter = {
   stringify: function (cipherParams: {
     iv: string;
     salt: string;
@@ -25,4 +26,35 @@ const encDec = {
   },
 };
 
-export default encDec;
+const spdCrypto = {
+  /**
+   * Encrypt Data
+   * @param {string} payload    pass a json.stringify payload to encrypt
+   * @param {string} phrase     pass a passphrase retrieved from the API to be use in encryption
+   * @returns                   will return an encrypted string
+   */
+  encrypt: (payload: string, phrase: string) =>
+    CryptoJS.AES.encrypt(payload, phrase, {
+      format: formatter,
+    }).toString(),
+  /**
+   * decrypt Data
+   * @param {string} payload    pass a stringified payload to decrypt
+   * @param {string} phrase     pass a passphrase retrieved from the API to be use in decryption
+   * @returns                   will return the decrypted parsed data or null if there is an error in decrypting data
+   */
+  decrypt: (payload: string, phrase: string) => {
+    // decrypt data
+    const dd = CryptoJS.AES.decrypt(payload, phrase, {
+      format: formatter,
+    }).toString(CryptoJS.enc.Utf8);
+
+    if (dd) {
+      // return a parsed data
+      return JSON.parse(dd);
+    }
+    return null;
+  },
+};
+
+export default spdCrypto;

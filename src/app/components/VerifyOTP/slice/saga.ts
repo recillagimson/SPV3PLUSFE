@@ -1,11 +1,10 @@
 import { delay, call, put, select, takeLatest } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
-import CryptoJS from 'crypto-js';
-import encDec from 'app/components/Helpers/EncyptDecrypt';
+import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
-import { selectToken } from 'app/App/slice/selectors';
+import { selectClientToken } from 'app/App/slice/selectors';
 import { getRequestPassphrase } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
@@ -17,21 +16,20 @@ import { selectRequest } from './selectors';
 function* getVerifyCode() {
   yield delay(500);
 
-  const token = yield select(selectToken);
+  const token = yield select(selectClientToken);
   const payload = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/api/auth/verify`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/auth/verify/${payload.url}`;
 
   let encryptPayload: string = '';
 
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
 
   if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
-    encryptPayload = CryptoJS.AES.encrypt(
-      JSON.stringify(payload),
+    encryptPayload = spdCrypto.encrypt(
+      JSON.stringify(payload.body),
       requestPhrase.passPhrase,
-      { format: encDec },
-    ).toString();
+    );
   }
 
   const options = {
@@ -46,15 +44,8 @@ function* getVerifyCode() {
 
   try {
     const apirequest = yield call(request, requestURL, options);
-    if (apirequest && apirequest.status && apirequest.status === 'success') {
+    if (apirequest && apirequest.data) {
       yield put(actions.getFetchSuccess(true));
-    } else {
-      yield put(
-        actions.getFetchError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
     }
   } catch (err) {
     // special case, check the 422 for invalid data (account already exists)
