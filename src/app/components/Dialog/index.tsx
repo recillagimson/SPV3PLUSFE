@@ -20,7 +20,7 @@ import Title from './Title';
 import Actions from './Action';
 
 type Props = {
-  size?: 'small' | 'medium' | 'large' | 'xlarge' | undefined;
+  size?: 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | undefined;
   show: boolean;
   title?: string;
   message?: string;
@@ -73,7 +73,7 @@ export default function DialogComponent({
   return (
     <CSSTransition
       in={show}
-      timeout={300}
+      timeout={500}
       classNames="dialog"
       nodeRef={nodeRef}
       mountOnEnter

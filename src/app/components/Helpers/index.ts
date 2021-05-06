@@ -99,3 +99,21 @@ export function getCookie(name: string) {
 export function deleteCookie(name: string) {
   setCookie(name, '', -1);
 }
+
+/**
+ * Logout Function
+ * NOTE: it was defined here, so that we will only modify one function for all necessary deletion whether in cookies or other storage
+ */
+export function doSignOut() {
+  deleteCookie('spv_uat_hmc');
+  deleteCookie('spv_uat');
+  deleteCookie('spv_expire');
+  deleteCookie('spv_cat');
+  deleteCookie('spv_uat_u');
+
+  // set a delay, in the component where this will be called, set a loading indicator to delay the logout
+  setTimeout(() => {
+    const publicURL = process.env.PUBLIC_URL || '';
+    window.location.replace(`${publicURL}/`);
+  }, 800);
+}

@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro';
+import { media } from 'styles/media';
 
 export type GridProps = {
   columns?: string;
@@ -18,12 +19,17 @@ export type GridProps = {
  */
 const Grid = styled.div<GridProps>`
   display: grid;
-  grid-template-columns: ${p => (p.columns ? p.columns : '100%')};
-  grid-template-rows: ${p => (p.rows ? p.rows : 'auto')};
+  grid-template-columns: 100%;
+  grid-template-rows: auto;
   grid-gap: ${p => (p.gap ? p.gap : '0 0')};
   align-items: ${p => (p.alignItems ? p.alignItems : 'stretch')};
   justify-items: ${p => (p.justifyItems ? p.justifyItems : 'stretch')};
   margin: ${p => (p.margin ? p.margin : '0 0')};
+
+  ${media.medium`
+    grid-template-columns: ${p => (p.columns ? p.columns : '100%')};
+    grid-template-rows: ${p => (p.rows ? p.rows : 'auto')};
+  `}
 `;
 
 export default Grid;

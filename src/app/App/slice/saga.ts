@@ -5,7 +5,7 @@ import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { getCookie, setCookie } from 'app/components/Helpers';
 
-import { ClientTokenState, PassphraseState } from 'types/Default';
+import { TokenState, PassphraseState } from 'types/Default';
 import { appActions as actions } from '.';
 import { selectClientToken, selectUserToken } from './selectors';
 import {
@@ -42,11 +42,7 @@ export function* getRequestToken() {
   };
 
   try {
-    const apirequest: ClientTokenState = yield call(
-      request,
-      requestURL,
-      options,
-    );
+    const apirequest: TokenState = yield call(request, requestURL, options);
 
     if (apirequest && apirequest.expires_in) {
       const now = new Date();
@@ -174,9 +170,10 @@ export function* getLoggedInUserProfile() {
       );
 
       yield put(actions.getUserProfile(decryptData));
+      return true;
     }
   } catch (err) {
-    return err;
+    return false;
   }
 }
 
@@ -185,15 +182,7 @@ export function* getLoggedInUserProfile() {
  */
 export function* getUserReferences() {
   yield delay(500);
-  let refs = {
-    maritalStatus: '',
-    natureOfWork: '',
-    nationalities: '',
-    countries: '',
-    signUpHost: '',
-    currency: '',
-    sourceOfFunds: '',
-  };
+  let refs = {};
 
   const maritalStatus = yield call(getMaritalStatus);
   if (maritalStatus) refs['maritalStatus'] = maritalStatus;
@@ -230,5 +219,5 @@ export function* appSaga() {
   // It will be cancelled automatically on component unmount
   yield takeLatest(actions.getClientTokenLoading.type, getRequestToken);
   yield takeLatest(actions.getLoadReferences.type, getUserReferences);
-  yield takeLatest(actions.getUserProfile.type, getLoggedInUserProfile);
+  yield takeLatest(actions.getLoadUserProfile.type, getLoggedInUserProfile);
 }

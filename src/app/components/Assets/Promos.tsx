@@ -5,7 +5,13 @@ import * as React from 'react';
 
 export default function Promos() {
   return (
-    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="38"
+      height="38"
+      viewBox="0 0 38 38"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M8 13.5H15.7273H25.1031C25.244 13.5 25.3783 13.5594 25.4731 13.6637L30.0185 18.6637C30.1919 18.8544 30.1919 19.1456 30.0185 19.3363L25.4731 24.3363C25.3783 24.4406 25.244 24.5 25.1031 24.5H8C7.72386 24.5 7.5 24.2761 7.5 24V14C7.5 13.7239 7.72386 13.5 8 13.5Z"
         fill="#E0AC39"
