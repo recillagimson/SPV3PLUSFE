@@ -16,6 +16,12 @@ export const initialState: ContainerState = {
     data: false,
     request: false,
   },
+  generateCode: {
+    loading: false,
+    error: {},
+    data: false,
+    request: false,
+  },
 };
 
 const slice = createSlice({
@@ -65,6 +71,28 @@ const slice = createSlice({
       state.validate.error = {};
       state.validate.data = false;
       state.validate.request = false;
+    },
+    getGenerateLoading(state, action: PayloadAction<object>) {
+      state.generateCode.loading = true;
+      state.generateCode.error = {};
+      state.generateCode.data = false;
+      state.generateCode.request = action.payload;
+    },
+    getGenerateSuccess(state, action: PayloadAction<boolean>) {
+      state.generateCode.loading = false;
+      state.generateCode.request = false;
+      state.generateCode.data = action.payload;
+    },
+    getGenerateError(state, action: PayloadAction<ErrorState>) {
+      state.generateCode.loading = false;
+      state.generateCode.request = false;
+      state.generateCode.error = action.payload;
+    },
+    getGenerateReset(state) {
+      state.generateCode.loading = false;
+      state.generateCode.error = {};
+      state.generateCode.data = false;
+      state.generateCode.request = false;
     },
   },
 });

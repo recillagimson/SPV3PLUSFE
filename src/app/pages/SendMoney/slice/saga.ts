@@ -11,7 +11,11 @@ import {
 } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
-import { selectRequest, selectValidateRequest } from './selectors';
+import {
+  selectRequest,
+  selectValidateRequest,
+  selectGenerateRequest,
+} from './selectors';
 
 function* validateSendMoney() {
   yield delay(500);
@@ -155,6 +159,77 @@ function* getSendMoney() {
   }
 }
 
+function* generateCode() {
+  yield delay(500);
+  const token = yield select(selectUserToken);
+  const payload = yield select(selectGenerateRequest);
+
+  const requestURL = `${process.env.REACT_APP_API_URL}/auth/generate/otp`;
+
+  console.log(payload);
+
+  let encryptPayload: string = '';
+
+  let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
+
+  if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
+    encryptPayload = spdCrypto.encrypt(
+      JSON.stringify(payload),
+      requestPhrase.passPhrase,
+    );
+  }
+
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token.access_token}`,
+    },
+    body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
+  };
+
+  try {
+    const apirequest = yield call(request, requestURL, options);
+
+    if (apirequest) {
+      // request decryption passphrase
+      let decryptPhrase: PassphraseState = yield call(
+        getResponsePassphrase,
+        apirequest.data.id,
+      );
+
+      // decrypt payload data
+      let decryptData = spdCrypto.decrypt(
+        apirequest.data.payload,
+        decryptPhrase.passPhrase,
+      );
+
+      if (decryptData) {
+        yield put(actions.getGenerateSuccess(true));
+      }
+    } else {
+      yield put(
+        actions.getValidateError({
+          error: true,
+          message: 'An error has occured.',
+        }),
+      );
+    }
+  } catch (err) {
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.getGenerateError(newError));
+    } else {
+      yield put(actions.getGenerateError(err));
+    }
+  }
+}
+
 /**
  * Root saga manages watcher lifecycle
  */
@@ -165,4 +240,5 @@ export function* containerSaga() {
   // It will be cancelled automatically on component unmount
   yield takeLatest(actions.getValidateLoading.type, validateSendMoney);
   yield takeLatest(actions.getFetchLoading.type, getSendMoney);
+  yield takeLatest(actions.getGenerateLoading.type, generateCode);
 }

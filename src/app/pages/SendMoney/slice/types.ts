@@ -14,6 +14,12 @@ export interface SendMoneyState {
     data: object | boolean;
     request: object | boolean;
   };
+  generateCode: {
+    loading: boolean;
+    error?: object;
+    data: object | boolean;
+    request: object | boolean;
+  };
 }
 
 export type ContainerState = SendMoneyState;

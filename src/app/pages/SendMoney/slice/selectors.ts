@@ -46,3 +46,24 @@ export const selectValidateRequest = createSelector(
   [selectDomain],
   subState => subState.validate.request,
 );
+
+// Generate OTP Code
+export const selectGenerateData = createSelector(
+  [selectDomain],
+  subState => subState.generateCode.data,
+);
+
+export const selectGenerateLoading = createSelector(
+  [selectDomain],
+  subState => subState.generateCode.loading,
+);
+
+export const selectGenerateError = createSelector(
+  [selectDomain],
+  subState => subState.generateCode.error,
+);
+
+export const selectGenerateRequest = createSelector(
+  [selectDomain],
+  subState => subState.generateCode.request,
+);
