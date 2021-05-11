@@ -65,3 +65,8 @@ export const selectReferences = createSelector(
   [selectDomain],
   subState => subState.references,
 );
+
+export const selectUserTier = createSelector(
+  [selectDomain],
+  subState => subState.tier,
+);

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import Loading from 'app/components/Loading';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 
@@ -26,6 +27,19 @@ export function UserProfilePage() {
   const [showUpdateProfile, setShowUpdateProfile] = React.useState(false);
   const [showUpdateEmail, setShowUpdateEmail] = React.useState(false);
   const [showUpdateMobile, setShowUpdateMobile] = React.useState(false);
+
+  if (!profile || (refs && Object.keys(refs).length === 0)) {
+    return (
+      <ProtectedContent>
+        <Helmet>
+          <title>Profile</title>
+        </Helmet>
+        <Box title="User Profile" titleBorder withPadding>
+          <Loading />
+        </Box>
+      </ProtectedContent>
+    );
+  }
 
   return (
     <ProtectedContent>

@@ -10,6 +10,7 @@ import { ProfileState } from 'app/pages/ProfilePage/slice/types';
 import { NotificationsState } from 'app/pages/Notification/slice/types';
 import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice/types';
 import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
+import { DashboardState } from 'app/pages/DashboardPage/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -29,8 +30,10 @@ export interface RootState {
   sendMoney?: SendMoneyState;
   profile?: ProfileState;
   notifications?: NotificationsState;
+
   helpCenter?: any;
   changePassword?: ChangePasswordState;
   changePin?: ChangePinState;
+  dashboard?: DashboardState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

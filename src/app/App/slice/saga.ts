@@ -170,9 +170,10 @@ export function* getLoggedInUserProfile() {
       );
 
       yield put(actions.getUserProfile(decryptData));
+      return true;
     }
   } catch (err) {
-    return err;
+    return false;
   }
 }
 

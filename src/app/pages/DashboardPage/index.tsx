@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
@@ -26,21 +28,45 @@ import Balance from './Balance';
 import ButtonFlexWrapper from './ButtonFlex';
 import DashboardButton from './Button';
 
+/** selectors */
+import { useContainerSaga } from './slice';
+import { selectLoading, selectError, selectData } from './slice/selectors';
+import Loading from 'app/components/Loading';
+
 export function DashboardPage() {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const { actions } = useContainerSaga();
+  const loading = useSelector(selectLoading);
+  const error: any = useSelector(selectError);
+  const dashData: any = useSelector(selectData);
+
+  React.useEffect(() => {
+    dispatch(actions.getFetchLoading());
+  }, [actions, dispatch]);
+
+  let balanceInfo = '';
+  if (dashData && dashData.balance_info) {
+    balanceInfo = dashData.balance_info.available_balance;
+  }
 
   return (
     <ProtectedContent>
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
+      {loading && <Loading position="absolute" />}
 
       <Grid columns="35% 1fr" gap="30px">
         <Box
           title="Squid Balance"
           footerBorder
           footer={
-            <Button color="secondary" size="medium">
+            <Button
+              color="secondary"
+              size="medium"
+              onClick={() => history.push('/addmoney')}
+            >
               Add Money
             </Button>
           }
@@ -48,8 +74,12 @@ export function DashboardPage() {
         >
           <Balance>
             <span className="currency">PHP</span>
-            <span className="amount">10,000.00</span>
-            <IconButton size="small" color="primary">
+            <span className="amount">{balanceInfo}</span>
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => history.push('/addmoney')}
+            >
               <FontAwesomeIcon icon="plus" />
             </IconButton>
           </Balance>

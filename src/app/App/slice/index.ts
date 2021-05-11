@@ -19,6 +19,7 @@ export const initialState: GlobalState = {
   isSessionExpired: false,
   isBlankPage: false,
   references: {},
+  tier: false,
 };
 
 const slice = createSlice({
@@ -67,6 +68,9 @@ const slice = createSlice({
     getLoadReferences() {}, // an action only to dispatch retrieving of references
     getReferences(state, action: PayloadAction<object>) {
       state.references = action.payload;
+    },
+    getSaveTier(state, action: PayloadAction<object>) {
+      state.tier = action.payload;
     },
   },
 });

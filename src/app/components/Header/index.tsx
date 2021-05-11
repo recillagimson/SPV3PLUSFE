@@ -14,6 +14,7 @@ import Navigation from './Navigation';
 import MenuToggle from './MenuToggle';
 
 export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
+  const history = useHistory();
   const [show, setShow] = React.useState(false);
 
   const onToggleMenu = () => {
@@ -26,7 +27,6 @@ export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
     setShow(prev => !prev);
   };
 
-  const history = useHistory();
   if (blankPage) {
     return null;
   }
@@ -34,9 +34,7 @@ export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
   return (
     <Wrapper isLoggedIn={isLoggedIn} className={show ? 'show' : undefined}>
       <div className="wrapped">
-        {!isLoggedIn && (
-          <img src="./img/SPLogo.png" alt="SquidPay" className="logo" />
-        )}
+        <img src="./img/SPLogo.png" alt="SquidPay" className="logo" />
 
         <div className="menu-buttons">
           {!isLoggedIn && (

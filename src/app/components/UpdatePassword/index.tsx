@@ -102,6 +102,28 @@ export default function UpdatePasswordComponent({
             return undefined;
           });
         }
+
+        if (error.errors && !error.errors.error_code) {
+          apiError = '';
+          if (error.errors.password && error.errors.password.length > 0) {
+            apiError += error.errors.password.join('\n');
+          }
+          if (
+            error.errors.password_confirmation &&
+            error.errors.password_confirmation.length > 0
+          ) {
+            apiError += error.errors.password_confirmation.join('\n');
+          }
+          if (error.errors.email && error.errors.email.length > 0) {
+            apiError += error.errors.email.join('\n');
+          }
+          if (
+            error.errors.mobile_number &&
+            error.errors.mobile_number.length > 0
+          ) {
+            apiError += error.errors.mobile_number.join('\n');
+          }
+        }
         setApiErrorMsg(apiError || '');
         setIsError(true);
       }
@@ -139,6 +161,10 @@ export default function UpdatePasswordComponent({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     if (e && e.preventDefault) e.preventDefault();
+    // reset the error message from API
+    setApiErrorMsg('');
+    setIsError(false);
+
     let error = false;
 
     if (newPass.value === '') {
@@ -161,6 +187,15 @@ export default function UpdatePasswordComponent({
       setNewPass({ ...newPass, error: true });
     }
 
+    if (
+      (newPass.value !== '' || confirmPass.value !== '') &&
+      (newPass.value.length > 16 || confirmPass.value.length > 16)
+    ) {
+      error = true;
+      setPassError(
+        'Your password has exceeded the maximum limit of 16 characters. Please enter again your new password.',
+      );
+    }
     if (
       newPass.value !== '' &&
       confirmPass.value !== '' &&

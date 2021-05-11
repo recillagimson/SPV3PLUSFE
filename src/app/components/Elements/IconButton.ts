@@ -44,7 +44,7 @@ const IconButton = styled.button<IconButtonProps>`
   color: ${p => (p.color ? colors[p.color].text : colors['default'].text)};
   opacity: 0.7;
 
-  &:focus {
+  &:focus-visible {
     box-shadow: 0 0 2px 2px ${StyleConstants.FOCUS_COLOR};
   }
   &:hover {

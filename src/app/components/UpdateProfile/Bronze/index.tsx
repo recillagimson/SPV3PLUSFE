@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /**
- * User Profile Form
- *
+ * Update User Profile to Bronze
+ * NOTE: this will be used in forcing the user to update their profile first to continue using the app
+ *       system need to get their basic information
  */
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -28,10 +29,11 @@ import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import { validateEmail, validatePhone } from 'app/components/Helpers';
 
 /** selectors */
-import { useContainerSaga } from './slice';
+import { useComponentSaga } from './slice';
 import { selectReferences, selectUser } from 'app/App/slice/selectors';
 import { appActions } from 'app/App/slice';
 import { selectLoading, selectError, selectData } from './slice/selectors';
+import H5 from 'app/components/Elements/H5';
 
 export default function UserProfileForm({
   onCancel,
@@ -40,7 +42,7 @@ export default function UserProfileForm({
   onCancel: () => void;
   onSuccess: () => void;
 }) {
-  const { actions } = useContainerSaga();
+  const { actions } = useComponentSaga();
   const dispatch = useDispatch();
   const refs: any = useSelector(selectReferences);
 
@@ -392,7 +394,7 @@ export default function UserProfileForm({
       {loading && <Loading position="fixed" />}
       {showForm && (
         <>
-          <Box title="Basic Info" withPadding titleBorder>
+          <form>
             <Field flex>
               <Label>First Name</Label>
               <Input
@@ -598,9 +600,8 @@ export default function UserProfileForm({
                 placeholder="Occupation"
               />
             </Field>
-          </Box>
 
-          <Box title="Address" withPadding titleBorder>
+            <H5>Current Address</H5>
             <Field flex>
               <Label>House no. / Street</Label>
               <Input
@@ -666,318 +667,27 @@ export default function UserProfileForm({
                 placeholder="Postal Code"
               />
             </Field>
-          </Box>
 
-          <Box title="Work Info" withPadding titleBorder>
-            <Field flex>
-              <Label>Nature of Work</Label>
-              <div style={{ flexGrow: 1 }}>
-                <Select
-                  fullWidth
-                  value={natureOfWork.value}
-                  onChange={e =>
-                    setNatureOfWork({
-                      value: e.currentTarget.value,
-                      encoded: '',
-                      error: false,
-                    })
-                  }
-                  className={natureOfWork.error ? 'error' : undefined}
-                >
-                  <option value="" disabled>
-                    Select nature of work
-                  </option>
-                  {hasRefs &&
-                    refs.natureOfWork.map((o, i) => (
-                      <option key={o.id} value={i}>
-                        {o.description}
-                      </option>
-                    ))}
-                </Select>
-                {natureOfWork.value !== '' &&
-                  refs.natureOfWork[parseInt(natureOfWork.value)].id ===
-                    '0ed96f01-9131-11eb-b44f-1c1b0d14e211' && (
-                    <>
-                      <Label style={{ marginTop: '5px' }}>Others</Label>
-                      <Input
-                        value={natureOfWork.encoded}
-                        onChange={e =>
-                          setNatureOfWork({
-                            ...natureOfWork,
-                            encoded: e.currentTarget.value,
-                            error: false,
-                          })
-                        }
-                        className={natureOfWork.error ? 'error' : undefined}
-                        placeholder="Please specify"
-                      />
-                    </>
-                  )}
-                {natureOfWork.error && (
-                  <ErrorMsg formError>
-                    {natureOfWork.value === ''
-                      ? 'Please select your nature of work'
-                      : 'Please fill out the others field.'}
-                  </ErrorMsg>
-                )}
-              </div>
-            </Field>
-            <Field flex>
-              <Label>Source of Funds</Label>
-              <div style={{ flexGrow: 1 }}>
-                <Select
-                  fullWidth
-                  value={sourceOfFunds.value}
-                  onChange={e =>
-                    setSourceOfFunds({
-                      value: e.currentTarget.value,
-                      encoded: '',
-                      error: false,
-                    })
-                  }
-                  className={sourceOfFunds.error ? 'error' : undefined}
-                >
-                  <option value="" disabled>
-                    Select source of funds
-                  </option>
-                  {hasRefs &&
-                    refs.sourceOfFunds.map((o, i) => (
-                      <option key={o.id} value={i}>
-                        {o.description}
-                      </option>
-                    ))}
-                </Select>
-                {sourceOfFunds.value !== '' &&
-                  refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
-                    '0ed801a1-9131-11eb-b44f-1c1b0d14e211' && (
-                    <>
-                      <Label style={{ marginTop: '5px' }}>Others</Label>
-                      <Input
-                        value={sourceOfFunds.encoded}
-                        onChange={e =>
-                          setSourceOfFunds({
-                            ...sourceOfFunds,
-                            encoded: e.currentTarget.value,
-                            error: false,
-                          })
-                        }
-                        className={sourceOfFunds.error ? 'error' : undefined}
-                        placeholder="Please specify"
-                      />
-                    </>
-                  )}
-                {sourceOfFunds.error && (
-                  <ErrorMsg formError>
-                    {sourceOfFunds.value === ''
-                      ? 'Please select your source of funds'
-                      : 'Please fill out the others field.'}
-                  </ErrorMsg>
-                )}
-              </div>
-            </Field>
-          </Box>
-          <Flex alignItems="center" justifyContent="flex-end">
-            <Button
-              type="button"
-              variant="outlined"
-              color="secondary"
-              size="large"
-              onClick={onCancel}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={onValidateFields}
-            >
-              Next
-            </Button>
-          </Flex>
-        </>
-      )}
-
-      {showConfirm && (
-        <>
-          <Box title="Review Information" withPadding titleBorder>
-            <List divider>
-              <ListItem flex>
-                <ListItemText
-                  label="First Name"
-                  primary={firstName.value}
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Middle Name"
-                  primary={middleName.value}
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Last Name"
-                  primary={lastName.value}
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Birthdate"
-                  primary={`${birthDate.month}/${birthDate.day}/${birthDate.year}`}
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Place of Birth"
-                  primary={placeOfBirth.value}
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Marital Status"
-                  primary={
-                    refs.maritalStatus[parseInt(marital.value, 10)].description
-                  }
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Nationality"
-                  primary={
-                    refs.nationalities[parseInt(nationality.value, 10)]
-                      .description
-                  }
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Occupation"
-                  primary={occupation.value}
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Country"
-                  primary={
-                    refs.countries[parseInt(country.value, 10)].description
-                  }
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="House No / Street"
-                  primary={houseNo.value}
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Province / State"
-                  primary={province.value}
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="City"
-                  primary={city.value}
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Postal Code"
-                  primary={postal.value}
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Nature of Work"
-                  primary={
-                    natureOfWork.encoded !== ''
-                      ? natureOfWork.encoded
-                      : refs.natureOfWork[parseInt(natureOfWork.value, 10)]
-                          .description
-                  }
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-              <ListItem flex>
-                <ListItemText
-                  label="Source of Funds"
-                  primary={
-                    sourceOfFunds.encoded !== ''
-                      ? sourceOfFunds.encoded
-                      : refs.sourceOfFunds[parseInt(sourceOfFunds.value, 10)]
-                          .description
-                  }
-                  style={{
-                    flexGrow: 1,
-                  }}
-                />
-              </ListItem>
-            </List>
-          </Box>
-          <Flex alignItems="center" justifyContent="flex-end">
-            <Button
-              type="button"
-              variant="outlined"
-              color="secondary"
-              size="large"
-              onClick={() => {
-                setShowConfirm(prev => !prev);
-                setShowForm(prev => !prev);
-              }}
-            >
-              Back
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              onClick={onSubmit}
-            >
-              Update
-            </Button>
-          </Flex>
+            <Flex alignItems="center" justifyContent="flex-end">
+              <Button
+                type="button"
+                variant="outlined"
+                color="secondary"
+                size="large"
+                onClick={onCancel}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={onValidateFields}
+              >
+                Update
+              </Button>
+            </Flex>
+          </form>
         </>
       )}
 

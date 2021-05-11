@@ -37,7 +37,7 @@ import { selectLoggedInName } from 'app/App/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
-  selectError,
+  // selectError,
   selectData,
   selectValidateLoading,
   selectValidateError,

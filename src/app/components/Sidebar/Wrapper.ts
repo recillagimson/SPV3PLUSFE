@@ -12,7 +12,7 @@ const SidebarWrapper = styled.aside`
   background-color: ${StyleConstants.WHITE};
   box-shadow: 0px 12px 15px rgba(140, 152, 164, 0.05);
   z-index: 1000;
-  padding: 30px 10px;
+  padding: 30px 10px 15px;
   display: flex;
   flex-direction: column;
   transition: transform 0.3s ease;
@@ -40,11 +40,15 @@ const SidebarWrapper = styled.aside`
 
   .user-info {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     padding: 55px 0;
 
     &[role='presentation'] {
       cursor: pointer;
+    }
+
+    button {
+      margin: 0;
     }
 
     .user-short-details {
@@ -75,23 +79,24 @@ const SidebarWrapper = styled.aside`
     }
 
     .status {
+      margin-bottom: 3px;
       strong {
         color: ${StyleConstants.GOLD};
         font-weight: 500;
-      }
-
-      button {
-        display: inline-block;
-        margin: 0 0 0 5px;
       }
     }
 
     .svg-inline--fa {
       font-size: 1.5rem;
     }
+
+    .btn-arrow {
+      margin-top: 10px;
+    }
   }
 
   ${media.medium`
+    padding-bottom: 20px;
     transform: translateX(0);
 
     .btn-trigger {

@@ -42,7 +42,7 @@ const Wrapper = styled.div`
       }
 
       &:hover,
-      &:focus {
+      &:focus-visible {
         border-color: ${StyleConstants.GOLD};
       }
 

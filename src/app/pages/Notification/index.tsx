@@ -89,12 +89,13 @@ export function Notifications() {
                 />
               </IconButton>
             ) : (
-              <IconButton>
-                <FontAwesomeIcon
-                  icon="ellipsis-v"
-                  onClick={() => alert('Notification click')}
-                />
-              </IconButton>
+              <></>
+              // <IconButton>
+              //   <FontAwesomeIcon
+              //     icon="ellipsis-v"
+              //     onClick={() => alert('Notification click')}
+              //   />
+              // </IconButton>
             )}
           </>
         }

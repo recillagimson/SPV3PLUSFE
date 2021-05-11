@@ -25,7 +25,7 @@ const DashboardButton = styled.button`
     margin: 0 auto 2px;
   }
 
-  &:focus {
+  &:focus-visible {
     box-shadow: 0 0 2px 2px ${StyleConstants.FOCUS_COLOR};
   }
   &:hover {
