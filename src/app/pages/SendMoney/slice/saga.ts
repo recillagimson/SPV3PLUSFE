@@ -166,8 +166,6 @@ function* generateCode() {
 
   const requestURL = `${process.env.REACT_APP_API_URL}/auth/generate/otp`;
 
-  console.log(payload);
-
   let encryptPayload: string = '';
 
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);

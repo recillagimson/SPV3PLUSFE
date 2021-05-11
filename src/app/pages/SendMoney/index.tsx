@@ -9,6 +9,7 @@ import Loading from 'app/components/Loading';
 import H1 from 'app/components/Elements/H1';
 import H2 from 'app/components/Elements/H2';
 import H3 from 'app/components/Elements/H3';
+import H5 from 'app/components/Elements/H5';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
@@ -26,6 +27,8 @@ import IconButton from 'app/components/Elements/IconButton';
 import PinInput from 'app/components/Elements/PinInput';
 import Card from 'app/components/Elements/Card/Card';
 import VerifyOTP from 'app/components/VerifyOTP';
+
+import Receipt from 'app/components/Receipt';
 
 // From this folder
 import Wrapper from './Wrapper';
@@ -68,7 +71,6 @@ export function SendMoney() {
   // const generateError: any = useSelector(selectGenerateError);
   const generateSuccess: any = useSelector(selectGenerateData);
   const generateLoading = useSelector(selectGenerateLoading);
-  console.log(generateSuccess);
 
   // console.log(success);
   const [validateApiMsg, setValidateApiMsg] = React.useState({
@@ -88,7 +90,6 @@ export function SendMoney() {
   });
   const [amount, setAmount] = React.useState({ value: '', error: false });
   const [message, setMessage] = React.useState({ value: '', error: false });
-  const [otp, setOTP] = React.useState({ value: '', error: false });
 
   const [isVerification, setIsVerification] = React.useState(false);
   const [isReview, setIsReview] = React.useState(false);
@@ -183,25 +184,13 @@ export function SendMoney() {
   };
 
   const onSendMoney = () => {
-    // const data = {
-    //   email: isEmail ? email.value : undefined,
-    //   mobile_number: !isEmail ? email.value : undefined,
-    //   amount: parseFloat(amount.value),
-    //   message: message.value,
-    // };
-
     const otp_type = 'send_money';
     const generateOTP = {
       otp_type: otp_type,
     };
 
-    // console.log(generateOTP);
-    // console.log(validateSuccess);
-
-    dispatch(actions.getGenerateLoading(generateOTP));
-
     // dispatch payload to saga
-    // dispatch(actions.getFetchLoading(data));
+    dispatch(actions.getGenerateLoading(generateOTP));
     // enable code below to integrate api
   };
 
@@ -214,17 +203,16 @@ export function SendMoney() {
     };
 
     // dispatch payload to saga
-    console.log(data);
     dispatch(actions.getFetchLoading(data));
     // enable code below to integrate api
   };
 
   const onCodeVerified = () => {
-    setIsReview(false);
-    setIsVerification(false);
-    setIsSuccess(true);
     finalSend();
   };
+
+  // setIsReview(false);
+  //   setIsVerification(false);
 
   // clicking the success dialog
   // const onClickSuccess = () => {
@@ -249,13 +237,12 @@ export function SendMoney() {
   const onCloseSuccessDialog = () => {
     setIsVerification(false);
     setIsSuccess(false);
-
-    // setIsSuccess(false);
-    // setIsReview(false);
-    // setEmail({ value: '', error: false, msg: '' });
-    // setAmount({ value: '', error: false });
-    // setPin({ value: '', error: false });
-    // setMessage({ value: '', error: false });
+    setEmail({ value: '', error: false, msg: '' });
+    setAmount({ value: '', error: false });
+    setMessage({ value: '', error: false });
+    dispatch(actions.getFetchReset());
+    dispatch(actions.getGenerateReset());
+    dispatch(actions.getValidateReset());
   };
 
   // React.useEffect(() => {
@@ -263,14 +250,6 @@ export function SendMoney() {
   //     dispatch(actions.getFetchReset()); // reset store state on unmount
   //   };
   // }, []);
-
-  // React.useEffect(() => {
-  //   if (success) {
-  //     dispatch(actions.getFetchReset());
-  //   }
-  // }, [success]);
-
-  // console.log(validateSuccess);
 
   React.useEffect(() => {
     return () => {
@@ -332,10 +311,7 @@ export function SendMoney() {
     }
 
     if (success) {
-      setIsVerification(false);
-      dispatch(actions.getFetchReset());
-      dispatch(actions.getGenerateReset());
-      dispatch(actions.getValidateReset());
+      setIsSuccess(true);
     }
   }, [validateError, validateSuccess, generateSuccess, error, success]);
 
@@ -364,6 +340,8 @@ export function SendMoney() {
       <Wrapper>
         {validateLoading && <Loading position="absolute" />}
         {generateLoading && <Loading position="absolute" />}
+        {loading && <Loading position="absolute" />}
+
         <Card
           title={
             isReview
@@ -463,6 +441,12 @@ export function SendMoney() {
                 <Grid item md={8}>
                   <Flex justifyContent="center">
                     <Field>
+                      <div className="text-center">
+                        <CircleIndicator size="medium">
+                          <FontAwesomeIcon icon="lock" />
+                        </CircleIndicator>
+                        <H5 margin="10px 0">Enter OTP Code</H5>
+                      </div>
                       {/* <PinInput
                         length={4}
                         onChange={p => setOTP({ value: p, error: false })}
@@ -520,12 +504,6 @@ export function SendMoney() {
                           PHP {parseInt(amount.value)}.00
                         </span>
                       </Grid>
-                      {/* <Grid item xs={6} className="item">
-                        <span className="name">Service Fee</span>
-                      </Grid>
-                      <Grid item xs={6} className="item">
-                        <span className="value"> PHP 0.00</span>
-                      </Grid> */}
                       <Grid item xs={6} className="item">
                         <span className="name">Message</span>
                       </Grid>
@@ -555,7 +533,6 @@ export function SendMoney() {
                     </Button>
                   </Grid>
                 </Grid>
-                {/* {apiErrorMsg !== '' ? apiErrorMsg : ''} */}
               </div>
             </>
           )}
@@ -600,74 +577,45 @@ export function SendMoney() {
           </Dialog> */}
 
           <Dialog show={isSuccess} size="small">
-            <div className="dialog-container">
-              <div className="logo-container">
-                <img src="./img/SPLogo.png" alt="SquidPay" className="logo" />
-              </div>
-              <div className="bg-lightgold">
-                <section className="text-center">
-                  <CircleIndicator size="medium" color="primary">
-                    <FontAwesomeIcon icon="check" />
-                  </CircleIndicator>
-                  <p className="message">Load purchase successful!</p>
-                </section>
-                <section className="details">
-                  <Grid container>
-                    <Grid item xs={6}>
-                      <span className="description">Name</span>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <span className="value">Juan Dela Cruz</span>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <span className="description">Email address</span>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <span className="value">This is email</span>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <span className="description">Message </span>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <span className="value">Description</span>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <span className="description">Transaction Number</span>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <span className="value">0000001</span>
-                    </Grid>
-                  </Grid>
-                </section>
-                <section className="total">
-                  <span>Total amount</span>
-                  <p>PHP 100.00</p>
-                  <span>Service Fee: PHP 0.00</span>
-                </section>
-                <div className="logo-container">
-                  <img
-                    src="./img/SPLogo.png"
-                    alt="SquidPay"
-                    style={{ width: '50%', margin: 'auto', display: 'block' }}
-                  />
-                </div>
-                {success && <div>Success</div>}
-                <section className="date">
-                  <span>04 March, 2021, 3:26 PM</span>
-                </section>
-              </div>
-              <Button
-                fullWidth
-                onClick={onCloseSuccessDialog}
-                variant="contained"
-                color="primary"
-              >
-                Ok
-              </Button>
-              <span className="note">
-                You will receive a notification to confirm your transaction
-              </span>
-            </div>
+            <Receipt
+              title="Load purchase successful!"
+              total={success.total_amount}
+              onClick={onCloseSuccessDialog}
+              date={success.transaction_date}
+            >
+              <Grid container>
+                <Grid item xs={6}>
+                  <span className="description">Name</span>
+                </Grid>
+                <Grid item xs={6}>
+                  <span className="value">
+                    {success.first_name} {success.last_name}
+                  </span>
+                </Grid>
+                <Grid item xs={6}>
+                  <span className="description">
+                    {isEmail ? 'Email address' : 'Mobile number'}
+                  </span>
+                </Grid>
+                <Grid item xs={6}>
+                  <span className="value">
+                    {isEmail ? success.email : success.mobile_number}
+                  </span>
+                </Grid>
+                <Grid item xs={6}>
+                  <span className="description">Message </span>
+                </Grid>
+                <Grid item xs={6}>
+                  <span className="value">{success.message}</span>
+                </Grid>
+                <Grid item xs={6}>
+                  <span className="description">Transaction Number</span>
+                </Grid>
+                <Grid item xs={6}>
+                  <span className="value">{success.reference_number}</span>
+                </Grid>
+              </Grid>
+            </Receipt>
           </Dialog>
         </Card>
       </Wrapper>
