@@ -2,6 +2,8 @@ import styled from 'styled-components/macro';
 
 interface Props {
   position?: string;
+  big?: boolean;
+  invert?: boolean;
 }
 
 const Wrapper = styled.div<Props>`
@@ -14,18 +16,18 @@ const Wrapper = styled.div<Props>`
   padding: 20px;
 
   ${p =>
-    p.position &&
+    p.position !== 'relative' &&
     `
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255,255,255,.5);
-    z-index: 50;
+    background-color: ${p.invert ? 'rgba(0,0,0,.2)' : 'rgba(255,255,255,.4)'};
+    z-index: 2000;
   `}
 
   img {
-    width: 300px;
+    width: ${p => (p.big ? '200px' : '120px')};
   }
 `;
 

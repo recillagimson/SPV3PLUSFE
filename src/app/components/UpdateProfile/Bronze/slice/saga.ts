@@ -13,6 +13,7 @@ import {
 import { containerActions as actions } from '.';
 import { selectRequest } from './selectors';
 import { appActions } from 'app/App/slice';
+import { deleteCookie } from 'app/components/Helpers';
 
 /**
  * Update Profile
@@ -59,6 +60,8 @@ function* getUpdateProfile() {
         decryptPhrase.passPhrase,
       );
       console.log(decryptData);
+
+      deleteCookie('spv_uat_f'); // the force update cookie
       yield put(actions.getFetchSuccess(decryptData));
     }
   } catch (err) {

@@ -6,7 +6,7 @@ export type ErrorState = ApiErrorState;
 export interface LoginState {
   loading: boolean;
   error?: object;
-  data: boolean;
+  data: {} | boolean;
   request: object | boolean;
   resendCode: {
     loading: boolean;

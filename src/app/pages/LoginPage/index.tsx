@@ -45,7 +45,7 @@ export function LoginPage() {
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
-  const success = useSelector(selectData);
+  const success: any = useSelector(selectData);
 
   const resendLoading = useSelector(selectResendCodeLoading);
   const resendError: any = useSelector(selectResendCodeError);
@@ -260,8 +260,8 @@ export function LoginPage() {
     dispatch(actions.getResendCodeReset());
   };
 
-  if (success) {
-    return <Redirect to="/dashboard" />;
+  if (success && Object.keys(success).length > 0) {
+    return <Redirect to={success.redirect} />;
   }
 
   let resendErrorMsg =
@@ -282,8 +282,8 @@ export function LoginPage() {
     <Wrapper>
       <Helmet title="Login" />
       <div className="form-container">
-        {loading && <Loading position="absolute" />}
-        {resendLoading && <Loading position="absolute" />}
+        {loading && <Loading position="fixed" />}
+        {resendLoading && <Loading position="fixed" />}
         {/* <H1 margin="0 0 5px">We're glad you're back!</H1>
         <Label>Login to manage your account.</Label> */}
         <Logo size="medium" />

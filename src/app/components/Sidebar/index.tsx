@@ -120,11 +120,10 @@ export default function Sidebar() {
             <QRCodeIcon />
             User QR Code
           </NavButton>
-          {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton onClick={() => alert('For Development')}>
+          {/* <NavButton as={NavLink} to="/dashboard">
             <AccountIcon />
             Account Verification
-          </NavButton>
+          </NavButton> */}
           {/* <NavButton as={NavLink} to="/dashboard"> */}
           <NavButton onClick={() => alert('For Development')}>
             <PromosIcon />

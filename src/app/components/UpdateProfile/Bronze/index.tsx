@@ -16,15 +16,12 @@ import Select from 'app/components/Elements/Select';
 import Button from 'app/components/Elements/Button';
 import Label from 'app/components/Elements/Label';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
-import Box from 'app/components/Box';
 import Flex from 'app/components/Elements/Flex';
-import List from 'app/components/List';
-import ListItem from 'app/components/List/ListItem';
-import ListItemText from 'app/components/List/ListItemText';
 
 import H3 from 'app/components/Elements/H3';
 import Dialog from 'app/components/Dialog';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import ParentalConsent from 'app/components/ParentalConsent';
 
 import { validateEmail, validatePhone } from 'app/components/Helpers';
 
@@ -73,22 +70,12 @@ export default function UserProfileForm({
     day: '',
     error: false,
   });
-  const [placeOfBirth, setPlaceOfBirth] = React.useState({
-    value: '',
-    error: false,
-  });
-  const [marital, setMarital] = React.useState({
-    value: '',
-    error: false,
-  });
+
   const [nationality, setNationality] = React.useState({
     value: '',
     error: false,
   });
-  const [occupation, setOccupation] = React.useState({
-    value: '',
-    error: false,
-  });
+
   // address
   const [houseNo, setHouseNo] = React.useState({
     value: '',
@@ -111,15 +98,17 @@ export default function UserProfileForm({
     error: false,
   });
 
-  //work info
-  const [natureOfWork, setNatureOfWork] = React.useState({
+  const [showGuardianFields, setShowGuardianFields] = React.useState(false);
+  const [guardianName, setGuardianName] = React.useState({
     value: '',
-    encoded: '',
     error: false,
   });
-  const [sourceOfFunds, setSourceOfFunds] = React.useState({
+  const [guardianMobile, setGuardianMobile] = React.useState({
     value: '',
-    encoded: '',
+    error: false,
+  });
+  const [consent, setConsent] = React.useState({
+    value: false,
     error: false,
   });
 
@@ -133,6 +122,21 @@ export default function UserProfileForm({
   }, []);
 
   React.useEffect(() => {
+    if (
+      birthDate.year !== '' &&
+      birthDate.month !== '' &&
+      birthDate.day !== ''
+    ) {
+      const currentYear = new Date().getFullYear();
+      if (currentYear - parseInt(birthDate.year, 10) < 18) {
+        setShowGuardianFields(true);
+      } else {
+        setShowGuardianFields(false);
+      }
+    }
+  }, [birthDate]);
+
+  React.useEffect(() => {
     if (refs && Object.keys(refs).length === 0) {
       dispatch(appActions.getLoadReferences());
     }
@@ -140,16 +144,7 @@ export default function UserProfileForm({
     if (refs && Object.keys(refs).length > 0) {
       setIsLoading(false);
     }
-
-    if (
-      profile &&
-      Object.keys(profile).length > 0 &&
-      refs &&
-      Object.keys(refs).length > 0
-    ) {
-      writeProfileDetails(profile);
-    }
-  }, [refs, profile]);
+  }, [refs]);
 
   React.useEffect(() => {
     if (error && Object.keys(error).length > 0) {
@@ -206,7 +201,7 @@ export default function UserProfileForm({
   // function for looping year
   const loopYear = (yyyy: number) => {
     const yearArray: number[] = [];
-    let currentYear = new Date().getFullYear();
+    let currentYear = new Date().getFullYear() - 15;
     let startYear = yyyy || 1960;
 
     while (startYear <= currentYear) {
@@ -215,66 +210,35 @@ export default function UserProfileForm({
     setYears(yearArray);
   };
 
-  const writeProfileDetails = (p: any) => {
-    setFirstName({ value: p.first_name, error: false });
-    setMiddleName({ value: p.middle_name, error: false });
-    setLastName({ value: p.last_name, error: false });
-    setOccupation({ value: p.occupation, error: false });
-
-    const bdate = p.birth_date.split('-');
+  const onChangeBirthDate = e => {
+    const name = e.currentTarget.name;
     setBirthDate({
-      year: bdate[0],
-      month: bdate[1],
-      day: bdate[2],
-      error: false,
-    });
-    setPlaceOfBirth({ value: p.place_of_birth, error: false });
-
-    const msI = refs.maritalStatus.findIndex(j => j.id === p.marital_status_id);
-    setMarital({ value: msI !== -1 ? msI : '', error: false });
-
-    const nI = refs.nationalities.findIndex(j => j.id === p.nationality_id);
-    setNationality({ value: nI !== -1 ? nI : '', error: false });
-
-    const cI = refs.countries.findIndex(j => j.id === p.country_id);
-    setCountry({ value: nI !== -1 ? nI : '', error: false });
-
-    setHouseNo({ value: p.house_no_street, error: false });
-    setProvince({ value: p.provice_state, error: false });
-    setCity({ value: p.city, error: false });
-    setPostal({ value: p.postal_code, error: false });
-
-    const nwI = refs.natureOfWork.findIndex(j => j.id === p.nature_of_work_id);
-    setNatureOfWork({
-      value: nwI !== -1 ? nwI : '',
-      encoded: p.encoded_nature_of_work || '',
-      error: false,
-    });
-
-    const sI = refs.sourceOfFunds.findIndex(j => j.id === p.source_of_fund_id);
-    setSourceOfFunds({
-      value: sI !== -1 ? sI : '',
-      encoded: p.encoded_source_of_fund || '',
+      ...birthDate,
+      [name]: e.currentTarget.value,
       error: false,
     });
   };
 
   // validate fields before reviewing
-  const onValidateFields = () => {
+  const onValidateFields = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    if (e && e.preventDefault) e.preventDefault();
+
     let hasError = false;
 
-    // if (mobile.value === '') {
-    //   hasError = true;
-    //   setMobile({ ...mobile, error: true });
-    // }
-    if (mobile.value !== '' && !validatePhone(mobile.value)) {
+    if (firstName.value === '') {
       hasError = true;
-      setMobile({ ...mobile, error: true });
+      setFirstName({ ...firstName, error: true });
+    }
+    if (lastName.value === '') {
+      hasError = true;
+      setLastName({ ...lastName, error: true });
     }
 
-    if (email.value !== '' && !validateEmail(email.value)) {
+    if (middleName.value === '') {
       hasError = true;
-      setEmail({ ...email, error: true });
+      setMiddleName({ ...middleName, error: true });
     }
 
     if (
@@ -286,24 +250,45 @@ export default function UserProfileForm({
       setBirthDate({ ...birthDate, error: true });
     }
 
-    if (
-      natureOfWork.value !== '' &&
-      refs.natureOfWork[parseInt(natureOfWork.value)].id ===
-        '0ed96f01-9131-11eb-b44f-1c1b0d14e211' &&
-      natureOfWork.encoded === ''
-    ) {
+    if (nationality.value === '') {
       hasError = true;
-      setNatureOfWork({ ...natureOfWork, error: true });
+      setNationality({ ...nationality, error: true });
     }
 
-    if (
-      sourceOfFunds.value !== '' &&
-      refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
-        '0ed96f01-9131-11eb-b44f-1c1b0d14e211' &&
-      sourceOfFunds.encoded === ''
-    ) {
+    if (houseNo.value === '') {
       hasError = true;
-      setSourceOfFunds({ ...sourceOfFunds, error: true });
+      setHouseNo({ ...city, error: true });
+    }
+
+    if (city.value === '') {
+      hasError = true;
+      setCity({ ...city, error: true });
+    }
+
+    if (province.value === '') {
+      hasError = true;
+      setProvince({ ...province, error: true });
+    }
+
+    if (country.value === '') {
+      hasError = true;
+      setCountry({ ...country, error: true });
+    }
+
+    if (postal.value === '') {
+      hasError = true;
+      setPostal({ ...postal, error: true });
+    }
+
+    if (showGuardianFields) {
+      if (guardianName.value === '') {
+        hasError = true;
+        setGuardianName({ ...guardianName, error: true });
+      }
+      if (guardianMobile.value === '') {
+        hasError = true;
+        setGuardianMobile({ ...guardianMobile, error: true });
+      }
     }
 
     if (!hasError) {
@@ -321,20 +306,10 @@ export default function UserProfileForm({
       middle_name: middleName.value,
       // "name_extension": "jr",
       birth_date: `${birthDate.year}-${birthDate.month}-${birthDate.day}`,
-      place_of_birth: placeOfBirth.value,
-      marital_status_id:
-        marital.value !== ''
-          ? refs.maritalStatus[parseInt(marital.value)].id
-          : undefined,
       nationality_id:
         nationality.value !== ''
           ? refs.nationalities[parseInt(nationality.value)].id
           : undefined,
-      encoded_nationality:
-        nationality.value !== ''
-          ? refs.nationalities[parseInt(nationality.value)].description
-          : undefined,
-      occupation: occupation.value,
       house_no_street: houseNo.value,
       city: city.value,
       provice_state: province.value,
@@ -344,19 +319,16 @@ export default function UserProfileForm({
           ? refs.countries[parseInt(country.value)].id
           : undefined,
       postal_code: postal.value,
-      nature_of_work_id:
-        natureOfWork.value !== ''
-          ? refs.natureOfWork[parseInt(natureOfWork.value)].id
-          : undefined,
-      encoded_nature_of_work: natureOfWork.encoded,
-      source_of_fund_id:
-        sourceOfFunds.value !== ''
-          ? refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id
-          : undefined,
-      encoded_source_of_fund: sourceOfFunds.encoded,
-      mother_maidenname: 'Test Mothers Name',
-      currency_id: '0ed21e2c-9131-11eb-b44f-1c1b0d14e211',
-      signup_host_id: '38e9a8f5-91b8-11eb-8d33-1c1b0d14e211',
+
+      guardian_name: showGuardianFields ? guardianName.value : undefined,
+      guardian_mobile_number: showGuardianFields
+        ? guardianMobile.value
+        : undefined,
+      is_accept_parental_consent: showGuardianFields
+        ? consent.value
+          ? 1
+          : 0
+        : undefined,
     };
     dispatch(actions.getFetchLoading(data));
   };
@@ -390,282 +362,295 @@ export default function UserProfileForm({
 
   return (
     <>
-      {isLoading && <Loading position="fixed" />}
-      {loading && <Loading position="fixed" />}
+      {isLoading && <Loading position="absolute" />}
+      {loading && <Loading position="absolute" />}
       {showForm && (
         <>
           <form>
             <Field flex>
               <Label>First Name</Label>
-              <Input
-                value={firstName.value}
-                onChange={e =>
-                  setFirstName({ value: e.currentTarget.value, error: false })
-                }
-                className={firstName.error ? 'error' : undefined}
-                placeholder="First Name"
-                disabled
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={firstName.value}
+                  onChange={e =>
+                    setFirstName({ value: e.currentTarget.value, error: false })
+                  }
+                  className={firstName.error ? 'error' : undefined}
+                  placeholder="First Name"
+                />
+                {firstName.error && (
+                  <ErrorMsg formError>First Name is required.</ErrorMsg>
+                )}
+              </div>
             </Field>
             <Field flex>
               <Label>Middle Name</Label>
-              <Input
-                value={middleName.value}
-                onChange={e =>
-                  setMiddleName({ value: e.currentTarget.value, error: false })
-                }
-                className={middleName.error ? 'error' : undefined}
-                placeholder="Middle Name"
-                disabled
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={middleName.value}
+                  onChange={e =>
+                    setMiddleName({
+                      value: e.currentTarget.value,
+                      error: false,
+                    })
+                  }
+                  className={middleName.error ? 'error' : undefined}
+                  placeholder="Middle Name"
+                />
+                {middleName.error && (
+                  <ErrorMsg formError>Middle Name is required.</ErrorMsg>
+                )}
+              </div>
             </Field>
             <Field flex>
               <Label>Last Name</Label>
-              <Input
-                value={lastName.value}
-                onChange={e =>
-                  setLastName({ value: e.currentTarget.value, error: false })
-                }
-                className={lastName.error ? 'error' : undefined}
-                placeholder="Last Name"
-                disabled
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={lastName.value}
+                  onChange={e =>
+                    setLastName({ value: e.currentTarget.value, error: false })
+                  }
+                  className={lastName.error ? 'error' : undefined}
+                  placeholder="Last Name"
+                />
+                {lastName.error && (
+                  <ErrorMsg formError>Last Name is required.</ErrorMsg>
+                )}
+              </div>
             </Field>
             <Field flex>
               <Label>Nationality</Label>
-              <Select
-                fullWidth
-                value={nationality.value}
-                onChange={e =>
-                  setNationality({
-                    value: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={nationality.error ? 'error' : undefined}
-                disabled
-              >
-                <option value="" disabled>
-                  Select nationality
-                </option>
-                {hasRefs &&
-                  refs.nationalities.map((o, i) => (
-                    <option key={o.id} value={i}>
-                      {o.description}
-                    </option>
-                  ))}
-              </Select>
-            </Field>
-            <Field flex>
-              <Label>Date of Birth</Label>
-              <Input
-                value={`${birthDate.month}/${birthDate.day}/${birthDate.year}`}
-                disabled
-              />
-            </Field>
-            <Field flex>
-              <Label>Mobile Number</Label>
-              <Input
-                value={mobile.value}
-                onChange={e =>
-                  setMobile({ value: e.currentTarget.value, error: false })
-                }
-                className={mobile.error ? 'error' : undefined}
-                placeholder="Mobile Number"
-              />
-            </Field>
-            <Field flex>
-              <Label>Email Address</Label>
-              <Input
-                value={email.value}
-                onChange={e =>
-                  setEmail({ value: e.currentTarget.value, error: false })
-                }
-                className={email.error ? 'error' : undefined}
-                placeholder="Email Address"
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Select
+                  fullWidth
+                  value={nationality.value}
+                  onChange={e =>
+                    setNationality({
+                      value: e.currentTarget.value,
+                      error: false,
+                    })
+                  }
+                  className={nationality.error ? 'error' : undefined}
+                >
+                  <option value="" disabled>
+                    Select nationality
+                  </option>
+                  {hasRefs &&
+                    refs.nationalities.map((o, i) => (
+                      <option key={o.id} value={i}>
+                        {o.description}
+                      </option>
+                    ))}
+                </Select>
+                {nationality.error && (
+                  <ErrorMsg formError>Nationality is required.</ErrorMsg>
+                )}
+              </div>
             </Field>
             <Field flex>
               <Label>Birthdate</Label>
-              <Select
-                value={birthDate.month}
-                onChange={e =>
-                  setBirthDate({
-                    ...birthDate,
-                    month: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={birthDate.error ? 'error' : undefined}
-              >
-                <option value="" disabled>
-                  mm
-                </option>
-                <option value="01">Jan</option>
-                <option value="02">Feb</option>
-                <option value="03">Mar</option>
-                <option value="04">Apr</option>
-                <option value="05">May</option>
-                <option value="06">Jun</option>
-                <option value="07">Jul</option>
-                <option value="08">Aug</option>
-                <option value="09">Sept</option>
-                <option value="10">Oct</option>
-                <option value="11">Nov</option>
-                <option value="12">Dec</option>
-              </Select>
-              <Select
-                value={birthDate.day}
-                onChange={e =>
-                  setBirthDate({
-                    ...birthDate,
-                    day: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-              >
-                <option value="" disabled>
-                  dd
-                </option>
-                {days}
-              </Select>
-              <Select
-                value={birthDate.year}
-                onChange={e =>
-                  setBirthDate({
-                    ...birthDate,
-                    year: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-              >
-                <option value="">yyyy</option>
-                {years.map(i => (
-                  <option key={i} value={i < 9 ? `0${i}` : i}>
-                    {i < 9 ? `0${i}` : i}
+              <div style={{ flexGrow: 1 }}>
+                <Select
+                  name="month"
+                  value={birthDate.month}
+                  onChange={onChangeBirthDate}
+                  className={birthDate.error ? 'error' : undefined}
+                >
+                  <option value="" disabled>
+                    mm
                   </option>
-                ))}
-              </Select>
-            </Field>
-            <Field flex>
-              <Label>Place of Birth</Label>
-              <Input
-                value={placeOfBirth.value}
-                onChange={e =>
-                  setPlaceOfBirth({
-                    value: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={placeOfBirth.error ? 'error' : undefined}
-                placeholder="Place of Birth"
-              />
-            </Field>
-            <Field flex>
-              <Label>Marital</Label>
-              <Select
-                fullWidth
-                value={marital.value}
-                onChange={e =>
-                  setMarital({
-                    value: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={marital.error ? 'error' : undefined}
-              >
-                <option value="" disabled>
-                  Select marital status
-                </option>
-                {hasRefs &&
-                  refs.maritalStatus.map((o, i) => (
-                    <option key={o.id} value={i}>
-                      {o.description}
+                  <option value="01">Jan</option>
+                  <option value="02">Feb</option>
+                  <option value="03">Mar</option>
+                  <option value="04">Apr</option>
+                  <option value="05">May</option>
+                  <option value="06">Jun</option>
+                  <option value="07">Jul</option>
+                  <option value="08">Aug</option>
+                  <option value="09">Sept</option>
+                  <option value="10">Oct</option>
+                  <option value="11">Nov</option>
+                  <option value="12">Dec</option>
+                </Select>
+                <Select
+                  name="day"
+                  value={birthDate.day}
+                  onChange={onChangeBirthDate}
+                  className={birthDate.error ? 'error' : undefined}
+                >
+                  <option value="" disabled>
+                    dd
+                  </option>
+                  {days}
+                </Select>
+                <Select
+                  name="year"
+                  value={birthDate.year}
+                  onChange={onChangeBirthDate}
+                  className={birthDate.error ? 'error' : undefined}
+                >
+                  <option value="">yyyy</option>
+                  {years.map(i => (
+                    <option key={i} value={i < 9 ? `0${i}` : i}>
+                      {i < 9 ? `0${i}` : i}
                     </option>
                   ))}
-              </Select>
+                </Select>
+                {birthDate.error && (
+                  <ErrorMsg formError>Date of Birth is required</ErrorMsg>
+                )}
+              </div>
             </Field>
 
             <Field flex>
-              <Label>Occupation</Label>
-              <Input
-                value={occupation.value}
-                onChange={e =>
-                  setOccupation({
-                    value: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={occupation.error ? 'error' : undefined}
-                placeholder="Occupation"
-              />
+              <Label>Country</Label>
+              <div style={{ flexGrow: 1 }}>
+                <Select
+                  fullWidth
+                  value={country.value}
+                  onChange={e =>
+                    setCountry({ value: e.currentTarget.value, error: false })
+                  }
+                  className={country.error ? 'error' : undefined}
+                >
+                  <option value="" disabled>
+                    Select countries
+                  </option>
+                  {hasRefs &&
+                    refs.countries.map((o, i) => (
+                      <option key={o.id} value={i}>
+                        {o.description}
+                      </option>
+                    ))}
+                </Select>
+                {country.error && (
+                  <ErrorMsg formError>Country is required.</ErrorMsg>
+                )}
+              </div>
             </Field>
+
+            {showGuardianFields && (
+              <>
+                <H5>Guardian Consent</H5>
+                <Field flex>
+                  <Label>Guardian's Name</Label>
+                  <Input
+                    value={guardianName.value}
+                    onChange={e =>
+                      setGuardianName({
+                        value: e.currentTarget.value,
+                        error: false,
+                      })
+                    }
+                    className={guardianName.error ? 'error' : undefined}
+                    placeholder="Guardian Name"
+                  />
+                </Field>
+                <Field flex>
+                  <Label>Guardian's Mobile Number</Label>
+                  <Input
+                    value={guardianMobile.value}
+                    onChange={e =>
+                      setGuardianMobile({
+                        value: e.currentTarget.value,
+                        error: false,
+                      })
+                    }
+                    className={guardianName.error ? 'error' : undefined}
+                    placeholder="Guardian Mobile Number (09 + 9 digits)"
+                  />
+                </Field>
+                <Field className="agreement" margin="5px 0 20px">
+                  <span>
+                    <label>
+                      <input
+                        type="checkbox"
+                        value={consent.value ? 'yes' : 'no'}
+                        onChange={() =>
+                          setConsent({ value: !consent.value, error: false })
+                        }
+                        checked={consent.value}
+                      />
+                      I read and accept{' '}
+                      <a href="/" target="_blank">
+                        parental consent
+                      </a>
+                    </label>
+                  </span>
+                  {consent.error && (
+                    <ErrorMsg formError>
+                      You must agree to parental consent before continuing.
+                    </ErrorMsg>
+                  )}
+                </Field>
+              </>
+            )}
 
             <H5>Current Address</H5>
             <Field flex>
               <Label>House no. / Street</Label>
-              <Input
-                value={houseNo.value}
-                onChange={e =>
-                  setHouseNo({ value: e.currentTarget.value, error: false })
-                }
-                className={houseNo.error ? 'error' : undefined}
-                placeholder="House no. / Street"
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={houseNo.value}
+                  onChange={e =>
+                    setHouseNo({ value: e.currentTarget.value, error: false })
+                  }
+                  className={houseNo.error ? 'error' : undefined}
+                  placeholder="House no. / Street"
+                />
+                {houseNo.error && (
+                  <ErrorMsg formError>
+                    The House Number and Street Address is required
+                  </ErrorMsg>
+                )}
+              </div>
             </Field>
             <Field flex>
               <Label>City / Municipality</Label>
-              <Input
-                value={city.value}
-                onChange={e =>
-                  setCity({ value: e.currentTarget.value, error: false })
-                }
-                className={city.error ? 'error' : undefined}
-                placeholder="City / Municipality"
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={city.value}
+                  onChange={e =>
+                    setCity({ value: e.currentTarget.value, error: false })
+                  }
+                  className={city.error ? 'error' : undefined}
+                  placeholder="City / Municipality"
+                />
+                {city.error && <ErrorMsg formError>City is required</ErrorMsg>}
+              </div>
             </Field>
             <Field flex>
               <Label>Province / State</Label>
-              <Input
-                value={province.value}
-                onChange={e =>
-                  setProvince({ value: e.currentTarget.value, error: false })
-                }
-                className={province.error ? 'error' : undefined}
-                placeholder="Province / State"
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={province.value}
+                  onChange={e =>
+                    setProvince({ value: e.currentTarget.value, error: false })
+                  }
+                  className={province.error ? 'error' : undefined}
+                  placeholder="Province / State"
+                />
+                {province.error && (
+                  <ErrorMsg formError>Province / State is required</ErrorMsg>
+                )}
+              </div>
             </Field>
-            <Field flex>
-              <Label>Country</Label>
-              <Select
-                fullWidth
-                value={country.value}
-                onChange={e =>
-                  setCountry({ value: e.currentTarget.value, error: false })
-                }
-                className={country.error ? 'error' : undefined}
-              >
-                <option value="" disabled>
-                  Select countries
-                </option>
-                {hasRefs &&
-                  refs.countries.map((o, i) => (
-                    <option key={o.id} value={i}>
-                      {o.description}
-                    </option>
-                  ))}
-              </Select>
-            </Field>
+
             <Field flex>
               <Label>Postal Code</Label>
-              <Input
-                value={postal.value}
-                onChange={e =>
-                  setPostal({ value: e.currentTarget.value, error: false })
-                }
-                className={postal.error ? 'error' : undefined}
-                placeholder="Postal Code"
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={postal.value}
+                  onChange={e =>
+                    setPostal({ value: e.currentTarget.value, error: false })
+                  }
+                  className={postal.error ? 'error' : undefined}
+                  placeholder="Postal Code"
+                />
+                {postal.error && (
+                  <ErrorMsg formError>Postal Code is required</ErrorMsg>
+                )}
+              </div>
             </Field>
 
             <Flex alignItems="center" justifyContent="flex-end">
@@ -690,6 +675,8 @@ export default function UserProfileForm({
           </form>
         </>
       )}
+
+      <ParentalConsent open={false} onAgree={() => {}} onCancel={() => {}} />
 
       {/* Show api error */}
       <Dialog show={isError} size="small">

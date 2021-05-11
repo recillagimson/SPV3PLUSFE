@@ -9,6 +9,7 @@ import { selectClientToken } from 'app/App/slice/selectors';
 import {
   getRequestPassphrase,
   getResponsePassphrase,
+  getLoggedInUserProfile,
 } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
@@ -80,13 +81,23 @@ function* getLogin() {
         ),
       );
       yield put(appActions.getUserToken(decryptData.user_token)); // write the new access token
-      yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
       yield put(appActions.getClientTokenLoading()); // let's get a new client token so expiration will be closely same as user token
-      yield put(appActions.getLoadUserProfile()); // write the profile, NOTE: might be changed based on result
 
-      // TODO: wait for UI to display, if password has expired and user need to update it
-      //       for now, we will just send as true to redirect to dashboard page
-      yield put(actions.getFetchSuccess(true));
+      const hasProfile = yield call(getLoggedInUserProfile); // retrieve the profile, NOTE: might be changed based on result
+
+      console.log(hasProfile);
+      if (!hasProfile) {
+        setCookie('spv_uat_f', encryptUsername);
+        yield put(
+          actions.getFetchSuccess({ redirect: '/register/update-profile' }),
+        );
+      } else {
+        // TODO: wait for UI to display, if password has expired and user need to update it
+        //       for now, we will just send as true to redirect to dashboard page
+        yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
+        yield put(actions.getFetchSuccess({ redirect: '/dashboard' }));
+      }
+
       return;
     }
   } catch (err) {

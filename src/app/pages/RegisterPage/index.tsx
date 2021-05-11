@@ -429,8 +429,8 @@ export function RegisterPage() {
     <Wrapper>
       <Helmet title="Register" />
       <div className="form-container">
-        {loading && <Loading position="absolute" />}
-        {isLoading && <Loading position="absolute" />}
+        {loading && <Loading position="fixed" />}
+        {isLoading && <Loading position="fixed" />}
         {showChoose && (
           <div className="text-center" style={{ padding: '0 40px' }}>
             <H3>Create your Account</H3>

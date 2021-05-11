@@ -6,7 +6,7 @@ const Wrapper = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 10px;
+  padding: 130px 10px 0;
   min-height: calc(100vh - 60px);
   position: relative;
 
