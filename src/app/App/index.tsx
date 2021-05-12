@@ -56,9 +56,10 @@ import { Page500 } from 'app/components/500/Loadable';
 import PrivateRoute from './PrivateRoute';
 
 // Importing the Bootstrap CSS
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 /** selectors, slice */
+import { containerActions as dashboardAction } from 'app/pages/DashboardPage/slice';
 import { useAppSaga } from './slice';
 import {
   selectSessionExpired,
@@ -106,6 +107,7 @@ export function App() {
       setTimeout(() => {
         dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
+        dispatch(dashboardAction.getFetchLoading());
       }, 1000);
 
       history.push(path === '/' ? '/dashboard' : path);

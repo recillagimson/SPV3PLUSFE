@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import H3 from 'app/components/Elements/H3';
 
 import Wrapper from 'app/components/Layouts/AuthWrapper';
+import Box from 'app/components/Box';
 import UpdateProfile from 'app/components/UpdateProfile/Bronze';
 import Note from 'app/components/Elements/Note';
 
@@ -20,6 +21,7 @@ import { deleteCookie, doSignOut } from 'app/components/Helpers';
 export function UpdateProfileVerificationPage() {
   const history = useHistory();
   const dispatch = useDispatch();
+  const [confirm, setConfirm] = React.useState(false);
 
   const onCancelUpdate = () => {
     deleteCookie('spv_uat_f');
@@ -28,23 +30,29 @@ export function UpdateProfileVerificationPage() {
   };
 
   const onSuccessUpdate = () => {
-    alert('success');
     deleteCookie('spv_uat_f');
     dispatch(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
     history.push('/dashboard');
   };
 
   return (
-    <Wrapper>
-      <Helmet title="Update Profile" />
-      <div>
-        <H3>Update Profile</H3>
-        <Note>
+    <Wrapper bg>
+      <Helmet title="User Info" />
+      <Box
+        title={confirm ? 'Review User Info' : 'User Info'}
+        titleBorder
+        withPadding
+      >
+        {/* <Note>
           You need to update your basic profile information to continue using
           our services.
-        </Note>
-        <UpdateProfile onSuccess={onSuccessUpdate} onCancel={onCancelUpdate} />
-      </div>
+        </Note> */}
+        <UpdateProfile
+          onSuccess={onSuccessUpdate}
+          onCancel={onCancelUpdate}
+          onConfirm={c => setConfirm(c)}
+        />
+      </Box>
     </Wrapper>
   );
 }

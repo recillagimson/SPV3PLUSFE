@@ -3,6 +3,10 @@
  * Update User Profile to Bronze
  * NOTE: this will be used in forcing the user to update their profile first to continue using the app
  *       system need to get their basic information
+ *
+ * @prop  {function}  onCancel        Callback when user cancelled the update
+ * @prop  {function}  onSuccess       Callback when user successfully updated the profile
+ * @prop  {function}  onConfirm       Callback when user is reviewing info will return a true parameter in function
  */
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,11 +22,15 @@ import Label from 'app/components/Elements/Label';
 import Checkbox from 'app/components/Elements/Checkbox';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Flex from 'app/components/Elements/Flex';
+import Logo from 'app/components/Assets/Logo';
 
 import H3 from 'app/components/Elements/H3';
 import Dialog from 'app/components/Dialog';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import ParentalConsent from 'app/components/ParentalConsent';
+import List from 'app/components/List';
+import ListItem from 'app/components/List/ListItem';
+import ListItemText from 'app/components/List/ListItemText';
 
 import { validateEmail, validatePhone } from 'app/components/Helpers';
 
@@ -36,9 +44,11 @@ import H5 from 'app/components/Elements/H5';
 export default function UserProfileForm({
   onCancel,
   onSuccess,
+  onConfirm,
 }: {
   onCancel: () => void;
   onSuccess: () => void;
+  onConfirm: (c: boolean) => void;
 }) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
@@ -153,28 +163,70 @@ export default function UserProfileForm({
       let apiError: string | undefined;
       if (error && Object.keys(error).length > 0) {
         if (error.code && error.code === 422) {
-          if (error.errors && error.errors.error_code) {
-            error.errors.error_code.find(i => i === 101);
-            apiError = error.errors.error_code.map((i: any) => {
-              // if (i === 101 || i === 103 || i === 113) {
-              //   return isEmail
-              //     ? 'Email and password is invalid. Please try again.'
-              //     : 'Mobile number and password is invalid. Please try again.';
-              // }
-              if (i === 102) {
-                return 'Your login account is not yet verified. Click OK to Verify your Account.';
-              }
-              if (i === 104) {
-                return 'You are attempting to login from an untrusted client. Please check your internet connection';
-              }
-              if (i === 105) {
-                return 'Too many failed login attempts. This device is temporarily blocked. Please try again later.';
-              }
-              if (i === 151) {
-                return 'There was a problem with the data you are sending. Please try again.';
-              }
-              return undefined;
-            });
+          if (error.errors) {
+            if (error.errors.last_name && error.errors.last_name.length > 0) {
+              apiError += error.errors.last_name.join('\n');
+            }
+            if (error.errors.first_name && error.errors.first_name.length > 0) {
+              apiError += error.errors.first_name.join('\n');
+            }
+            if (error.errors.birth_date && error.errors.birth_date.length > 0) {
+              apiError += error.errors.birth_date.join('\n');
+            }
+            if (
+              error.errors.middle_name &&
+              error.errors.middle_name.length > 0
+            ) {
+              apiError += error.errors.middle_name.join('\n');
+            }
+            if (
+              error.errors.nationality_id &&
+              error.errors.nationality_id.length > 0
+            ) {
+              apiError += error.errors.nationality_id.join('\n');
+            }
+            if (error.errors.country_id && error.errors.country_id.length > 0) {
+              apiError += error.errors.country_id.join('\n');
+            }
+            if (
+              error.errors.house_no_street &&
+              error.errors.house_no_street.length > 0
+            ) {
+              apiError += error.errors.house_no_street.join('\n');
+            }
+            if (error.errors.city && error.errors.city.length > 0) {
+              apiError += error.errors.city.join('\n');
+            }
+            if (
+              error.errors.province_state &&
+              error.errors.province_state.length > 0
+            ) {
+              apiError += error.errors.province_state.join('\n');
+            }
+            if (
+              error.errors.postal_code &&
+              error.errors.postal_code.length > 0
+            ) {
+              apiError += error.errors.postal_code.join('\n');
+            }
+            if (
+              error.errors.guardian_name &&
+              error.errors.guardian_name.length > 0
+            ) {
+              apiError += error.errors.guardian_name.join('\n');
+            }
+            if (
+              error.errors.guardian_mobile_number &&
+              error.errors.guardian_mobile_number.length > 0
+            ) {
+              apiError += error.errors.guardian_mobile_number.join('\n');
+            }
+            if (
+              error.errors.is_accept_parental_consent &&
+              error.errors.is_accept_parental_consent.length > 0
+            ) {
+              apiError += error.errors.is_accept_parental_consent.join('\n');
+            }
           }
           setApiErrorMsg(apiError || '');
           setIsError(true);
@@ -219,6 +271,7 @@ export default function UserProfileForm({
       [name]: e.currentTarget.value,
       error: false,
     });
+    setConsent({ value: false, error: false });
   };
 
   // validate fields before reviewing
@@ -291,12 +344,23 @@ export default function UserProfileForm({
         hasError = true;
         setGuardianMobile({ ...guardianMobile, error: true });
       }
+      if (!consent.value) {
+        hasError = true;
+        setConsent({ ...consent, error: true });
+      }
     }
 
     if (!hasError) {
       setShowForm(prev => !prev);
       setShowConfirm(prev => !prev);
+      onConfirm(true);
     }
+  };
+
+  const onBackToForm = () => {
+    setShowForm(prev => !prev);
+    setShowConfirm(prev => !prev);
+    onConfirm(false);
   };
 
   const onSubmit = () => {
@@ -314,8 +378,7 @@ export default function UserProfileForm({
           : undefined,
       house_no_street: houseNo.value,
       city: city.value,
-      provice_state: province.value,
-      municipality: city.value,
+      province_state: province.value,
       country_id:
         country.value !== ''
           ? refs.countries[parseInt(country.value)].id
@@ -328,8 +391,6 @@ export default function UserProfileForm({
         : undefined,
       is_accept_parental_consent: showGuardianFields
         ? consent.value
-          ? 1
-          : 0
         : undefined,
     };
     dispatch(actions.getFetchLoading(data));
@@ -450,7 +511,7 @@ export default function UserProfileForm({
               </div>
             </Field>
             <Field flex>
-              <Label>Birthdate</Label>
+              <Label>Date of Birth</Label>
               <div style={{ flexGrow: 1 }}>
                 <Select
                   name="month"
@@ -491,7 +552,9 @@ export default function UserProfileForm({
                   onChange={onChangeBirthDate}
                   className={birthDate.error ? 'error' : undefined}
                 >
-                  <option value="">yyyy</option>
+                  <option value="" disabled>
+                    yyyy
+                  </option>
                   {years.map(i => (
                     <option key={i} value={i < 9 ? `0${i}` : i}>
                       {i < 9 ? `0${i}` : i}
@@ -516,7 +579,7 @@ export default function UserProfileForm({
                   className={country.error ? 'error' : undefined}
                 >
                   <option value="" disabled>
-                    Select countries
+                    Select country
                   </option>
                   {hasRefs &&
                     refs.countries.map((o, i) => (
@@ -593,7 +656,7 @@ export default function UserProfileForm({
 
             <H5>Current Address</H5>
             <Field flex>
-              <Label>House no. / Street</Label>
+              <Label>House Number and Street Address</Label>
               <div style={{ flexGrow: 1 }}>
                 <Input
                   value={houseNo.value}
@@ -601,7 +664,7 @@ export default function UserProfileForm({
                     setHouseNo({ value: e.currentTarget.value, error: false })
                   }
                   className={houseNo.error ? 'error' : undefined}
-                  placeholder="House no. / Street"
+                  placeholder="House Number and Street Address"
                 />
                 {houseNo.error && (
                   <ErrorMsg formError>
@@ -674,10 +737,166 @@ export default function UserProfileForm({
                 size="large"
                 onClick={onValidateFields}
               >
-                Update
+                Next
               </Button>
             </Flex>
           </form>
+        </>
+      )}
+
+      {showConfirm && (
+        <>
+          <List divider>
+            <ListItem flex>
+              <ListItemText
+                label="First Name"
+                primary={firstName.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Middle Name"
+                primary={middleName.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Last Name"
+                primary={lastName.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Nationality"
+                primary={
+                  refs.nationalities[parseInt(nationality.value, 10)]
+                    .description
+                }
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Date of Birth"
+                primary={`${birthDate.month}/${birthDate.day}/${birthDate.year}`}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            {showGuardianFields && (
+              <>
+                <ListItem flex>
+                  <ListItemText
+                    label="Guardian's Name"
+                    primary={guardianName.value}
+                    style={{
+                      flexGrow: 1,
+                    }}
+                  />
+                </ListItem>
+                <ListItem flex>
+                  <ListItemText
+                    label="Guardian's Mobile Number"
+                    primary={guardianMobile.value}
+                    style={{
+                      flexGrow: 1,
+                    }}
+                  />
+                </ListItem>
+                <ListItem flex>
+                  <ListItemText
+                    label="Parent/Guardian Consent"
+                    primary={consent.value ? 'Yes' : 'No'}
+                    style={{
+                      flexGrow: 1,
+                    }}
+                  />
+                </ListItem>
+              </>
+            )}
+            <ListItem flex>
+              <ListItemText
+                label="Country"
+                primary={
+                  refs.countries[parseInt(country.value, 10)].description
+                }
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Current Address"
+                primary={houseNo.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Province / State"
+                primary={province.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="City"
+                primary={city.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Postal Code"
+                primary={postal.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+          </List>
+          <Flex
+            alignItems="center"
+            justifyContent="flex-end"
+            style={{ marginTop: '20px' }}
+          >
+            <Button
+              type="button"
+              variant="outlined"
+              color="secondary"
+              size="large"
+              onClick={onBackToForm}
+            >
+              Back
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={onSubmit}
+            >
+              Confirm
+            </Button>
+          </Flex>
         </>
       )}
 
@@ -714,7 +933,8 @@ export default function UserProfileForm({
 
       {/* Show success */}
       <Dialog show={isSuccess} size="small">
-        <div className="text-center">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <Logo size="small" margin="0 0 30px" />
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
@@ -723,10 +943,10 @@ export default function UserProfileForm({
           <Button
             fullWidth
             onClick={onCloseSuccessDialog}
-            variant="outlined"
-            color="secondary"
+            variant="contained"
+            color="primary"
           >
-            Ok
+            Close
           </Button>
         </div>
       </Dialog>

@@ -33,7 +33,7 @@ const Wrapper = styled.div<{ children?: any; pad?: boolean }>`
   `}
 
   ${media.large`
-    max-width: 1000px;
+    max-width: 950px;
   `}
 `;
 

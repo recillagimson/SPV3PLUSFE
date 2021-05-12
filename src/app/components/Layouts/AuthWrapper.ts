@@ -1,14 +1,16 @@
 import styled from 'styled-components/macro';
 
 import { media } from 'styles/media';
+import { StyleConstants } from 'styles/StyleConstants';
 
-const Wrapper = styled.section`
+const Wrapper = styled.section<{ bg?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 130px 10px 0;
+  padding: 130px 10px 10px;
   min-height: calc(100vh - 60px);
   position: relative;
+  background-color: ${p => (p.bg ? StyleConstants.BODY_COLOR : 'transparent')};
 
   .form-container {
     border-radius: 20px;

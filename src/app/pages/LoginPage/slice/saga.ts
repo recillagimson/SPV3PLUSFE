@@ -83,23 +83,23 @@ function* getLogin() {
       yield put(appActions.getUserToken(decryptData.user_token)); // write the new access token
       yield put(appActions.getClientTokenLoading()); // let's get a new client token so expiration will be closely same as user token
       // disable three lines below
-      yield put(appActions.getLoadUserProfile());
-      yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
-      yield put(actions.getFetchSuccess({ redirect: '/dashboard' }));
+      // yield put(appActions.getLoadUserProfile());
+      // yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
+      // yield put(actions.getFetchSuccess({ redirect: '/dashboard' }));
 
-      // const hasProfile = yield call(getLoggedInUserProfile); // retrieve the profile, NOTE: might be changed based on result
+      const hasProfile = yield call(getLoggedInUserProfile); // retrieve the profile, NOTE: might be changed based on result
 
-      // if (!hasProfile) {
-      //   setCookie('spv_uat_f', encryptUsername);
-      //   yield put(
-      //     actions.getFetchSuccess({ redirect: '/register/update-profile' }),
-      //   );
-      // } else {
-      //   // TODO: wait for UI to display, if password has expired and user need to update it
-      //   //       for now, we will just send as true to redirect to dashboard page
-      //   yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
-      //   yield put(actions.getFetchSuccess({ redirect: '/dashboard' }));
-      // }
+      if (!hasProfile) {
+        setCookie('spv_uat_f', encryptUsername);
+        yield put(
+          actions.getFetchSuccess({ redirect: '/register/update-profile' }),
+        );
+      } else {
+        // TODO: wait for UI to display, if password has expired and user need to update it
+        //       for now, we will just send as true to redirect to dashboard page
+        yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
+        yield put(actions.getFetchSuccess({ redirect: '/dashboard' }));
+      }
 
       return;
     }

@@ -22,6 +22,7 @@ import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
 
 import H3 from 'app/components/Elements/H3';
+import H5 from 'app/components/Elements/H5';
 import Dialog from 'app/components/Dialog';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 
@@ -318,7 +319,7 @@ export default function UserProfileForm({
       first_name: firstName.value,
       middle_name: middleName.value,
       // "name_extension": "jr",
-      birth_date: `${birthDate.year}-${birthDate.month}-${birthDate.day}`,
+      birth_date: `${birthDate.month}/${birthDate.day}/${birthDate.year}`,
       place_of_birth: placeOfBirth.value,
       marital_status_id:
         marital.value !== ''
@@ -441,7 +442,6 @@ export default function UserProfileForm({
                   })
                 }
                 className={nationality.error ? 'error' : undefined}
-                disabled
               >
                 <option value="" disabled>
                   Select nationality
@@ -461,7 +461,7 @@ export default function UserProfileForm({
                 disabled
               />
             </Field>
-            <Field flex>
+            {/* <Field flex>
               <Label>Mobile Number</Label>
               <Input
                 value={mobile.value}
@@ -544,7 +544,7 @@ export default function UserProfileForm({
                   </option>
                 ))}
               </Select>
-            </Field>
+            </Field> */}
             <Field flex>
               <Label>Place of Birth</Label>
               <Input
@@ -560,7 +560,7 @@ export default function UserProfileForm({
               />
             </Field>
             <Field flex>
-              <Label>Marital</Label>
+              <Label>Marital Status</Label>
               <Select
                 fullWidth
                 value={marital.value}
@@ -584,23 +584,7 @@ export default function UserProfileForm({
               </Select>
             </Field>
 
-            <Field flex>
-              <Label>Occupation</Label>
-              <Input
-                value={occupation.value}
-                onChange={e =>
-                  setOccupation({
-                    value: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={occupation.error ? 'error' : undefined}
-                placeholder="Occupation"
-              />
-            </Field>
-          </Box>
-
-          <Box title="Address" withPadding titleBorder>
+            <H5>Current Address</H5>
             <Field flex>
               <Label>House no. / Street</Label>
               <Input
@@ -664,6 +648,20 @@ export default function UserProfileForm({
                 }
                 className={postal.error ? 'error' : undefined}
                 placeholder="Postal Code"
+              />
+            </Field>
+
+            <H5>Contact Info</H5>
+            <Field flex>
+              <Label>Home Phone/Mobile Number</Label>
+              <Input
+                value={mobile.value}
+                onChange={e =>
+                  setMobile({ value: e.currentTarget.value, error: false })
+                }
+                className={mobile.error ? 'error' : undefined}
+                placeholder="Home Phone/Mobile Number"
+                disabled
               />
             </Field>
           </Box>
@@ -774,6 +772,20 @@ export default function UserProfileForm({
                   </ErrorMsg>
                 )}
               </div>
+            </Field>
+            <Field flex>
+              <Label>Occupation</Label>
+              <Input
+                value={occupation.value}
+                onChange={e =>
+                  setOccupation({
+                    value: e.currentTarget.value,
+                    error: false,
+                  })
+                }
+                className={occupation.error ? 'error' : undefined}
+                placeholder="Occupation"
+              />
             </Field>
           </Box>
           <Flex alignItems="center" justifyContent="flex-end">

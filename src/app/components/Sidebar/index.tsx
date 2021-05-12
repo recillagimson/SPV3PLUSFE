@@ -28,9 +28,10 @@ import Navigation from './Navigation';
 import NavButton from './NavButton';
 
 /** selectors, actions */
+import { UserProfileState } from 'types/Default';
 // import { appActions } from 'app/App/slice';
 import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
-import { UserProfileState } from 'types/Default';
+import { selectData as selectDashboardData } from 'app/pages/DashboardPage/slice/selectors';
 import LogoutWrapper from './LogoutWrapper';
 import Loading from '../Loading';
 import Button from '../Elements/Button';
@@ -39,6 +40,7 @@ export default function Sidebar() {
   const history = useHistory();
   const profile: boolean | UserProfileState = useSelector(selectUser);
   const loginName: string = useSelector(selectLoggedInName);
+  const dashData: any = useSelector(selectDashboardData);
 
   const [isLogout, setIsLogout] = React.useState(false);
   const [fakeLoading, setFakeLoading] = React.useState(false);
@@ -95,7 +97,11 @@ export default function Sidebar() {
             </p>
             <p className="mobile">{loginName}</p>
             <p className="status">
-              <strong>Gold Member</strong>
+              <strong>
+                {dashData && dashData.tier
+                  ? `${dashData.tier.tier_class} Member`
+                  : ''}
+              </strong>
             </p>
             <Button
               variant="contained"

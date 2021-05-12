@@ -22,7 +22,7 @@ function* getUpdateProfile() {
   yield delay(500);
   const token = yield select(selectUserToken);
   const payload = yield select(selectRequest);
-
+  console.log(payload);
   const requestURL = `${process.env.REACT_APP_API_URL}/user/profile/tobronze`;
 
   let encryptPayload: string = '';
@@ -75,6 +75,7 @@ function* getUpdateProfile() {
       yield put(actions.getFetchError(newError));
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getFetchReset());
     } else {
       yield put(actions.getFetchError(err));
     }
