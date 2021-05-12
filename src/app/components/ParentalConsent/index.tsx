@@ -43,10 +43,20 @@ export default function ParentalConsent({
           bound by all of its terms and conditions.
         </p>
         <Flex justifyContent="space-between">
-          <Button size="medium" color="danger" variant="outlined">
+          <Button
+            size="medium"
+            color="danger"
+            variant="outlined"
+            onClick={onCancel}
+          >
             Disagree
           </Button>
-          <Button size="medium" color="primary" variant="contained">
+          <Button
+            size="medium"
+            color="primary"
+            variant="contained"
+            onClick={onAgree}
+          >
             Agree
           </Button>
         </Flex>

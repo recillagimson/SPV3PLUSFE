@@ -64,10 +64,6 @@ const Wrapper = styled.section`
       cursor: pointer;
     }
 
-    span {
-      width: calc(100% - 25px);
-    }
-
     a {
       text-decoration: underline;
       color: inherit;

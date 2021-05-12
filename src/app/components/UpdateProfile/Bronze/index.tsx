@@ -15,6 +15,7 @@ import Input from 'app/components/Elements/Input';
 import Select from 'app/components/Elements/Select';
 import Button from 'app/components/Elements/Button';
 import Label from 'app/components/Elements/Label';
+import Checkbox from 'app/components/Elements/Checkbox';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Flex from 'app/components/Elements/Flex';
 
@@ -111,6 +112,7 @@ export default function UserProfileForm({
     value: false,
     error: false,
   });
+  const [showConsent, setShowConsent] = React.useState(false);
 
   // api related messages
   const [isError, setIsError] = React.useState(false);
@@ -548,40 +550,43 @@ export default function UserProfileForm({
                 </Field>
                 <Field flex>
                   <Label>Guardian's Mobile Number</Label>
-                  <Input
-                    value={guardianMobile.value}
-                    onChange={e =>
-                      setGuardianMobile({
-                        value: e.currentTarget.value,
-                        error: false,
-                      })
-                    }
-                    className={guardianName.error ? 'error' : undefined}
-                    placeholder="Guardian Mobile Number (09 + 9 digits)"
-                  />
-                </Field>
-                <Field className="agreement" margin="5px 0 20px">
-                  <span>
-                    <label>
-                      <input
-                        type="checkbox"
-                        value={consent.value ? 'yes' : 'no'}
-                        onChange={() =>
-                          setConsent({ value: !consent.value, error: false })
-                        }
+                  <div style={{ flexGrow: 1 }}>
+                    <Input
+                      value={guardianMobile.value}
+                      onChange={e =>
+                        setGuardianMobile({
+                          value: e.currentTarget.value,
+                          error: false,
+                        })
+                      }
+                      className={guardianName.error ? 'error' : undefined}
+                      placeholder="Guardian Mobile Number (09 + 9 digits)"
+                    />
+                    <div className="agreement" style={{ marginTop: '7px' }}>
+                      <Checkbox
                         checked={consent.value}
+                        name="parentalConsent"
+                        onChange={() => {}}
                       />
-                      I read and accept{' '}
-                      <a href="/" target="_blank">
-                        parental consent
-                      </a>
-                    </label>
-                  </span>
-                  {consent.error && (
-                    <ErrorMsg formError>
-                      You must agree to parental consent before continuing.
-                    </ErrorMsg>
-                  )}
+                      <span>
+                        I read and accept{' '}
+                        <a
+                          href="/"
+                          onClick={e => {
+                            if (e && e.preventDefault) e.preventDefault();
+                            setShowConsent(true);
+                          }}
+                        >
+                          parental consent
+                        </a>
+                      </span>
+                      {consent.error && (
+                        <ErrorMsg formError>
+                          You must agree to parental consent before continuing.
+                        </ErrorMsg>
+                      )}
+                    </div>
+                  </div>
                 </Field>
               </>
             )}
@@ -676,7 +681,17 @@ export default function UserProfileForm({
         </>
       )}
 
-      <ParentalConsent open={false} onAgree={() => {}} onCancel={() => {}} />
+      <ParentalConsent
+        open={showConsent}
+        onAgree={() => {
+          setShowConsent(false);
+          setConsent({ value: true, error: false });
+        }}
+        onCancel={() => {
+          setShowConsent(false);
+          setConsent({ value: false, error: false });
+        }}
+      />
 
       {/* Show api error */}
       <Dialog show={isError} size="small">

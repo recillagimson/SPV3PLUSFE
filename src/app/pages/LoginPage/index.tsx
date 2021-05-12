@@ -110,9 +110,26 @@ export function LoginPage() {
             return undefined;
           });
         }
+        if (error.errors && !error.errors.error_code) {
+          if (error.errors.password && error.errors.password.length > 0) {
+            apiError += error.errors.password.join('\n');
+          }
+
+          if (error.errors.email && error.errors.email.length > 0) {
+            apiError += error.errors.email.join('\n');
+          }
+          if (
+            error.errors.mobile_number &&
+            error.errors.mobile_number.length > 0
+          ) {
+            apiError += error.errors.mobile_number.join('\n');
+          }
+        }
+
         setApiErrorMsg(apiError || '');
         setIsError(true);
       }
+
       if (error.code && error.code !== 422) {
         apiError = error.response.statusText;
         setApiErrorMsg(apiError || '');

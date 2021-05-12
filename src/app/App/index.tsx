@@ -102,10 +102,11 @@ export function App() {
       dispatch(actions.getUserToken(decrypt.user_token));
       dispatch(actions.getSaveLoginName(username));
 
+      // delay the retrieval of references and user profile
       setTimeout(() => {
         dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
-      }, 800);
+      }, 1000);
 
       history.push(path === '/' ? '/dashboard' : path);
     } else if (forceUpdate) {

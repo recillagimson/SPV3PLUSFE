@@ -27,6 +27,8 @@ import {
   faCaretUp,
   faPen,
   faStopwatch,
+  faSquare,
+  faCheckSquare,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -52,4 +54,6 @@ library.add(
   faCaretUp,
   faPen,
   faStopwatch,
+  faSquare,
+  faCheckSquare,
 );
