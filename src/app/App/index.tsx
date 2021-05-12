@@ -56,6 +56,7 @@ import { Page500 } from 'app/components/500/Loadable';
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
 import PrivateRoute from './PrivateRoute';
+// import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 
 // Importing the Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -67,6 +68,7 @@ import {
   selectIsAuthenticated,
   selectIsBlankPage,
 } from './slice/selectors';
+import { usePrevious } from 'app/components/Helpers/Hooks';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -185,10 +187,15 @@ export function App() {
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
             <Route path="/500" component={Page500} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
-            <PrivateRoute path="/sendmoney" component={SendMoney} />
+            <Route path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/scanqr" component={ScanQR} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
+            <Route component={NotFoundPage} />
+            {/* <PrivateRoute path="/sendmoney" component={SendMoney} />
+            <PrivateRoute path="/scanqr" component={ScanQR} />
+            <PrivateRoute path="/onlinebank" component={OnlineBank} />
+            <PrivateRoute path="/buyload" component={BuyLoad} /> */}
             <PrivateRoute path="/profile" component={UserProfilePage} />
             <PrivateRoute
               path={['/notifications/:id', '/notifications']}
