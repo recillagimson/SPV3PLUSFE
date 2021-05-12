@@ -1,19 +1,12 @@
 import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
-import { css } from 'styled-components/macro';
-
-const valueDescription = css`
-  font-size: 13px;
-  display: block;
-  margin: 5px 0px;
-  font-weight: 500;
-`;
 
 const Wrapper = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 60px);
+  margin: 0 0 50px;
+  /* min-height: calc(100vh - 60px); */
 
   small {
     display: block;
@@ -58,6 +51,26 @@ const Wrapper = styled.section`
   /* For verification */
   .verification {
     padding: 50px 0px;
+  }
+
+  /* Resend OTP Button */
+  .link {
+    color: inherit;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+    border: 0;
+    outline: 0;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+
+    &:hover {
+      opacity: 0.9;
+      text-decoration: none;
+    }
   }
 `;
 

@@ -35,32 +35,34 @@ export default function ReceiptComponent({
           <img src="./img/SPLogo.png" alt="SquidPay" className="logo" />
         </div>
         <div className="bg-lightgold">
-          <section className="text-center">
-            <CircleIndicator size="medium" color="primary">
-              <FontAwesomeIcon icon="check" />
-            </CircleIndicator>
-            <p className="message">{title}</p>
-          </section>
-          <section className="details">
-            {React.Children.toArray(children)}
-          </section>
-          <section className="total">
-            <span>Total amount</span>
-            <p>PHP {total}</p>
-            <span>Service Fee: PHP 0.00</span>
-          </section>
-          <div className="logo-container">
-            <img
-              src="./img/SPLogo.png"
-              alt="SquidPay"
-              style={{ width: '50%', margin: 'auto', display: 'block' }}
-            />
+          <div style={{ padding: '0px 10px' }}>
+            <section className="text-center">
+              <CircleIndicator size="large" color="primary">
+                <FontAwesomeIcon icon="check" />
+              </CircleIndicator>
+              <p className="message">{title}</p>
+            </section>
+            <section className="details">
+              {React.Children.toArray(children)}
+            </section>
+            <section className="total">
+              <span>Total amount</span>
+              <p>PHP {total}</p>
+              <span>Service Fee: PHP 0.00</span>
+            </section>
+            <div className="logo-container">
+              <img
+                src="./img/SPLogo.png"
+                alt="SquidPay"
+                style={{ width: '50%', margin: 'auto', display: 'block' }}
+              />
+            </div>
+            <section className="date">
+              <span>{date}</span>
+            </section>
           </div>
-
-          <section className="date">
-            <span>{date}</span>
-          </section>
         </div>
+        <br />
         <Button fullWidth onClick={onClick} variant="contained" color="primary">
           Ok
         </Button>

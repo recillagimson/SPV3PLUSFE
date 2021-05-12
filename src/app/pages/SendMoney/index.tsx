@@ -22,7 +22,7 @@ import Flex from 'app/components/Elements/Flex';
 import Textarea from 'app/components/Elements/Textarea';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Ratio from 'app/components/Elements/Ratio';
-import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
+import InputTextWrapper from 'app/components/Elements/InputTextWrapper';
 import IconButton from 'app/components/Elements/IconButton';
 import PinInput from 'app/components/Elements/PinInput';
 import Card from 'app/components/Elements/Card/Card';
@@ -93,6 +93,7 @@ export function SendMoney() {
 
   const [isVerification, setIsVerification] = React.useState(false);
   const [isReview, setIsReview] = React.useState(false);
+  const [resendOTPCode, setResendOTPCode] = React.useState(false);
 
   const [isEmail, setIsEmail] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
@@ -183,14 +184,26 @@ export function SendMoney() {
     }
   };
 
-  const onSendMoney = () => {
+  const generateOTP = () => {
     const otp_type = 'send_money';
-    const generateOTP = {
+    const getOTP = {
       otp_type: otp_type,
     };
 
     // dispatch payload to saga
-    dispatch(actions.getGenerateLoading(generateOTP));
+    dispatch(actions.getGenerateLoading(getOTP));
+    // enable code below to integrate api
+  };
+
+  const resendOTP = () => {
+    setResendOTPCode(true);
+    const otp_type = 'send_money';
+    const getOTP = {
+      otp_type: otp_type,
+    };
+
+    // dispatch payload to saga
+    dispatch(actions.getGenerateLoading(getOTP));
     // enable code below to integrate api
   };
 
@@ -240,6 +253,7 @@ export function SendMoney() {
     setEmail({ value: '', error: false, msg: '' });
     setAmount({ value: '', error: false });
     setMessage({ value: '', error: false });
+    setValidateApiMsg({ msg: '', code: '', error: false });
     dispatch(actions.getFetchReset());
     dispatch(actions.getGenerateReset());
     dispatch(actions.getValidateReset());
@@ -306,8 +320,9 @@ export function SendMoney() {
 
     // Generate OTP Success
     if (generateSuccess) {
-      setIsVerification(true);
+      setResendOTPCode(false);
       setIsReview(false);
+      setIsVerification(true);
     }
 
     if (success) {
@@ -317,7 +332,14 @@ export function SendMoney() {
 
   const action = (
     <>
-      <Flex justifyContent="flex-end">
+      <Flex justifyContent="space-between" alignItems="center">
+        <div>
+          <span style={{ color: '#A9B1B8' }}>
+            {!isVerification && !isReview
+              ? 'Please make sure that the information entered is correct.'
+              : undefined}
+          </span>
+        </div>
         <Button
           type="submit"
           onClick={onSubmit}
@@ -347,7 +369,7 @@ export function SendMoney() {
             isReview
               ? 'Review Send Money'
               : isVerification
-              ? 'OTP Code'
+              ? '4-Digit One Time PIN'
               : 'Send Money'
           }
           footer={!isVerification && !isReview ? action : undefined}
@@ -395,29 +417,32 @@ export function SendMoney() {
               </Field>
               <Field>
                 <Label>Amount</Label>
-                <Input
-                  type="number"
-                  min="1"
-                  placeholder="0.00"
-                  value={amount.value}
-                  autoComplete="off"
-                  onChange={e =>
-                    setAmount({ value: e.currentTarget.value, error: false })
-                  }
-                  error={validateApiMsg.code === '402' ? true : undefined}
-                />
-                {amount.error && (
-                  <ErrorMsg formError>* Invalid Amount</ErrorMsg>
-                )}
+                <InputTextWrapper>
+                  <Input
+                    type="number"
+                    min="1"
+                    placeholder="0.00"
+                    value={amount.value}
+                    autoComplete="off"
+                    onChange={e =>
+                      setAmount({ value: e.currentTarget.value, error: false })
+                    }
+                    error={validateApiMsg.code === '402' ? true : undefined}
+                  />
+                  {amount.error && (
+                    <ErrorMsg formError>* Invalid Amount</ErrorMsg>
+                  )}
 
-                {/* API Error Message */}
-                {validateApiMsg.code === '402' && !amount.error && (
-                  <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
-                )}
-                {/* <small>
+                  {/* API Error Message */}
+                  {validateApiMsg.code === '402' && !amount.error && (
+                    <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                  )}
+                  {/* <small>
                   Your daily limit is 20,000 PHP and monthly limit is 100,000
                   PHP
                 </small> */}
+                  <span>PHP</span>
+                </InputTextWrapper>
               </Field>
 
               <Field>
@@ -442,10 +467,17 @@ export function SendMoney() {
                   <Flex justifyContent="center">
                     <Field>
                       <div className="text-center">
-                        <CircleIndicator size="medium">
+                        <CircleIndicator size="large">
                           <FontAwesomeIcon icon="lock" />
                         </CircleIndicator>
-                        <H5 margin="10px 0">Enter OTP Code</H5>
+                        <H1 className="text-center" margin="20px 0 8px">
+                          Enter 4-Digit one time PIN
+                        </H1>
+
+                        <p>
+                          The one time pin code has been sent to your mobile
+                          number
+                        </p>
                       </div>
                       {/* <PinInput
                         length={4}
@@ -458,6 +490,13 @@ export function SendMoney() {
                         apiURL="/auth/verify/otp"
                         otpType="send_money"
                       />
+
+                      <Field className="text-center" margin="20px 0 10px">
+                        Need a new code?{' '}
+                        <button className="link" onClick={resendOTP}>
+                          <span style={{ color: '#E0AC3B' }}>Resend Code</span>
+                        </button>
+                      </Field>
                     </Field>
                   </Flex>
                   {/* <p className="text-center">Please enter your pin code</p>
@@ -481,7 +520,7 @@ export function SendMoney() {
             </div>
           )}
 
-          {isReview && (
+          {isReview && !resendOTPCode && (
             <>
               <div className="review-send-money">
                 <Grid container justify="center" spacing={3}>
@@ -522,7 +561,7 @@ export function SendMoney() {
                     <br />
                     <Button
                       type="submit"
-                      onClick={onSendMoney}
+                      onClick={generateOTP}
                       color="primary"
                       size="large"
                       variant="contained"
@@ -578,7 +617,7 @@ export function SendMoney() {
 
           <Dialog show={isSuccess} size="small">
             <Receipt
-              title="Load purchase successful!"
+              title="Money successfully sent to"
               total={success.total_amount}
               onClick={onCloseSuccessDialog}
               date={success.transaction_date}
