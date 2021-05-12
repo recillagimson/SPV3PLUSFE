@@ -6,7 +6,7 @@ const Wrapper = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 100px 10px 0;
+  padding: 0 10px;
   min-height: calc(100vh - 60px);
   position: relative;
 
@@ -103,8 +103,6 @@ const Wrapper = styled.section`
   }
 
   ${media.medium`
-    padding: 100px 0 0;
-
     .form-container {
       max-width: 540px;
     }

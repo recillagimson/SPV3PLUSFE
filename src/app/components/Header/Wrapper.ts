@@ -31,9 +31,16 @@ const Wrapper = styled.header<Props>`
     z-index: 5;
   }
 
+  .spdin & .logo {
+    width: 100px;
+  }
+
   .menu-buttons {
     flex: 1;
     text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
   }
 
   .btn-toggle {
@@ -49,6 +56,10 @@ const Wrapper = styled.header<Props>`
 
     .logo {
       width: 150px;
+    }
+
+    .spdin & .logo {
+      display: none;
     }
 
     .btn-toggle {
