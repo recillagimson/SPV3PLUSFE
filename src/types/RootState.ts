@@ -5,6 +5,11 @@ import { GlobalState } from 'app/App/slice/types';
 import { LoginState } from 'app/pages/LoginPage/slice/types';
 import { RegisterState } from 'app/pages/RegisterPage/slice/types';
 import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
+import { ProfileState } from 'app/pages/ProfilePage/slice/types';
+import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice/types';
+import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
+import { NotificationsState } from 'app/pages/Notification/slice/types';
+import { DashboardState } from 'app/pages/DashboardPage/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -21,6 +26,13 @@ export interface RootState {
   forgotPassword?: ForgotPasswordState;
   verifyOTP?: VerifyOTPState;
   updatePassword?: UpdatePasswordState;
+  profile?: ProfileState;
+  notifications?: NotificationsState;
+
   helpCenter?: any;
+  changePassword?: ChangePasswordState;
+  changePin?: ChangePinState;
+  dashboard?: DashboardState;
+  sendToBank?: any;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

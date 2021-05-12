@@ -1,10 +1,12 @@
 export const StyleConstants = Object.freeze({
   // sizes
-  SIDEBAR_WIDTH: '310px',
-  BORDER_RADIUS: '5px',
+  SIDEBAR_WIDTH: '305px',
+  BORDER_RADIUS: '8px',
+  DIALOG_BORDER_RADIUS: '12px',
   BUTTON_RADIUS: '150px',
   MAX_WIDTH: '1170px',
-  PROTECTED_CONTENT_MAX_WIDTH: '950px',
+  PROTECTED_CONTENT_MAX_WIDTH: '850px',
+
   // colors
   BUTTONS: {
     primary: {
@@ -29,13 +31,14 @@ export const StyleConstants = Object.freeze({
     },
     mainTextColor: '#38434D',
   },
-  BODY_COLOR: '#D9E6F2',
+  BODY_COLOR: '#F0F0F0',
   DEFAULT: '#ECEAE0',
   WHITE: '#fff',
   GOLD: '#E0AC3B',
   BLACK: '#000000',
   GRAY_BG: '#DBDBDB',
   GRAY_TEXT: '#C4C4C4',
+  LIGHT_GRAY_BG: '#F0F0F0',
   LABEL_TEXT: '#526372',
   MAIN_TEXT: '#526372',
   TITLE: '#343A40',
@@ -43,6 +46,7 @@ export const StyleConstants = Object.freeze({
   LINK_TEXT_GOLD_HOVER: '#D7C481',
   BLACK_TRANSPARENT_BG: 'rgba(0, 0, 0, 0.25)',
   WHITE_TRANSPARENT_BG: 'rgba(255, 255, 255, 0.5)',
+  FOCUS_COLOR: '#5090ef',
   BORDER_COLOR: '#CED4DA',
   LIGHT_BORDER_COLOR: '#E7EAF3',
   BOX_SHADOW: '0px 12px 15px rgba(140, 152, 164, 0.05)',

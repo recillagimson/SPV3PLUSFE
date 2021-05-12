@@ -3,17 +3,11 @@ import { ApiErrorState } from 'types/Default';
 /* --- STATE --- */
 export type ErrorState = ApiErrorState;
 
-export interface LoginState {
+export interface SendToBankHistoryState {
   loading: boolean;
   error?: object;
-  data: boolean;
-  request: object | boolean;
-  resendCode: {
-    loading: boolean;
-    error?: object;
-    data: boolean;
-    request: object | boolean;
-  };
+  data: [];
+  bankTransactionType?: string;
 }
 
-export type ContainerState = LoginState;
+export type ContainerState = SendToBankHistoryState;

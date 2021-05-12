@@ -6,6 +6,7 @@ import { StyleConstants } from 'styles/StyleConstants';
 
 const InputIconWrapper = styled.div`
   position: relative;
+  flex-grow: 1;
 
   input {
     padding-right: 45px;

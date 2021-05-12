@@ -4,9 +4,9 @@ import { RootState } from 'types';
 import { initialState } from '.';
 
 // First select the relevant part from the state
-const selectDomain = (state: RootState) => state.login || initialState;
+const selectDomain = (state: RootState) => state.sendToBank || initialState;
 
-export const selectData = createSelector(
+export const selectPesonetData = createSelector(
   [selectDomain],
   subState => subState.data,
 );
@@ -21,27 +21,7 @@ export const selectError = createSelector(
   subState => subState.error,
 );
 
-export const selectRequest = createSelector(
+export const selectBankTransactionType = createSelector(
   [selectDomain],
-  subState => subState.request,
-);
-
-export const selectResendCodeData = createSelector(
-  [selectDomain],
-  subState => subState.resendCode.data,
-);
-
-export const selectResendCodeLoading = createSelector(
-  [selectDomain],
-  subState => subState.resendCode.loading,
-);
-
-export const selectResendCodeError = createSelector(
-  [selectDomain],
-  subState => subState.resendCode.error,
-);
-
-export const selectResendCodeRequest = createSelector(
-  [selectDomain],
-  subState => subState.resendCode.request,
+  subState => subState.bankTransactionType,
 );

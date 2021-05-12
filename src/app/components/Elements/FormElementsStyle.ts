@@ -15,12 +15,18 @@ const FormElementStyle = css<{ error?: boolean }>`
   outline: none;
   font-size: inherit;
 
-  &:hover {
+  &:hover:not(:disabled) {
     border-color: ${StyleConstants.BUTTONS.neutral.dark};
   }
 
-  &:focus {
+  &:focus-visible:not(:disabled) {
     border-color: ${StyleConstants.GOLD};
+  }
+
+  &:disabled {
+    background-color: ${StyleConstants.LIGHT_GRAY_BG};
+    color: ${StyleConstants.MAIN_TEXT};
+    opacity: 1;
   }
 
   ${p =>

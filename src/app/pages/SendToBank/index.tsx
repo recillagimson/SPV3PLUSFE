@@ -27,10 +27,7 @@ import { useContainerSaga } from './slice';
 import {
   selectLoading,
   selectError,
-  selectData,
-  selectResendCodeLoading,
-  selectResendCodeError,
-  selectResendCodeData,
+  selectPesonetData,
 } from './slice/selectors';
 
 // Assets
@@ -48,21 +45,28 @@ import { AnyARecord } from 'dns';
 export function SendToBank() {
   const [steps, setSteps] = React.useState(0);
   const [isOpen, setOpen] = React.useState(false);
-  // const { actions } = useContainerSaga();
-  // const dispatch = useDispatch();
-  // const loading = useSelector(selectLoading);
+  const { actions } = useContainerSaga();
+  const dispatch = useDispatch();
+  const loading = useSelector(selectLoading);
   // const error: any = useSelector(selectError);
-  // const success = useSelector(selectData);
+  const banks = useSelector(selectPesonetData);
+
+  const selectBankTransactionType = (type: string) => {
+    dispatch(actions.getPesonetBanksLoading(type));
+    setSteps(steps + 1);
+  };
 
   const CTA_ITEMS = [
     {
-      header: 'Receive Instantly Free',
-      icon: PesonetLogo,
-      items: ['Select partner banks', 'STransaction limit is PHP 50,000'],
-    },
-    {
+      id: 'instapay',
       header: 'Receive Instantly Free',
       icon: InstapayLogo,
+      items: ['Select partner banks', 'Transaction limit is PHP 50,000'],
+    },
+    {
+      id: 'pesonet',
+      header: 'Receive by end of the day for FREE',
+      icon: PesonetLogo,
       items: [
         'Transfers made before the 12:30 PM cut off are processed within the same banking day.',
         'Transactions after cut off or on holidays are processed the next banking day.',
@@ -122,15 +126,20 @@ export function SendToBank() {
     );
   };
 
+  console.log('banks', banks);
+  console.log('loading', loading);
   const renderSteps = (step: number) => {
     switch (step) {
       case 0:
         return (
           <S.Wrapper>
-            <p>To bank account</p>
+            <p>To Bank account</p>
             <S.CTAWrapper>
               {CTA_ITEMS.map((cta, i) => (
-                <S.SendCTA key={i} onClick={(e: any) => setSteps(1)}>
+                <S.SendCTA
+                  key={i}
+                  onClick={() => selectBankTransactionType(cta.id)}
+                >
                   <S.SendCTAContent>
                     <p>{cta.header}</p>
                     <img src={cta.icon} alt="Instapay" />

@@ -15,22 +15,26 @@ const MOCK_DATA = [
   {
     id: '1',
     name: 'How do I change my pin?',
-    description: 'Lorem Ipsum dolor amet. Bacon Lorem Ipsum dolor amet imis mea',
+    description:
+      'Lorem Ipsum dolor amet. Bacon Lorem Ipsum dolor amet imis mea',
   },
   {
     id: '2',
     name: 'How do I set up my recovery account?',
-    description: 'Lorem Ipsum dolor amet. Bacon Lorem Ipsum dolor amet imis mea',
+    description:
+      'Lorem Ipsum dolor amet. Bacon Lorem Ipsum dolor amet imis mea',
   },
   {
     id: '3',
     name: 'What should I do if I forgot my pin code?',
-    description: 'Lorem Ipsum dolor amet. Bacon Lorem Ipsum dolor amet imis mea',
+    description:
+      'Lorem Ipsum dolor amet. Bacon Lorem Ipsum dolor amet imis mea',
   },
   {
     id: '4',
     name: 'How do I cash in via ATM?',
-    description: 'Lorem Ipsum dolor amet. Bacon Lorem Ipsum dolor amet imis mea',
+    description:
+      'Lorem Ipsum dolor amet. Bacon Lorem Ipsum dolor amet imis mea',
   },
 ];
 
@@ -47,7 +51,7 @@ export function HelpCenterPage() {
   const hasActiveTab = !!Object.keys(tab).length;
 
   React.useEffect(() => {
-    dispatch(actions.getFetchLoading()); 
+    dispatch(actions.getFetchLoading());
   }, [actions, dispatch]);
 
   const onSearchList = (e: React.ChangeEvent<HTMLInputElement>) => {

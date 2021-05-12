@@ -11,7 +11,26 @@ import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
 import IconButton from 'app/components/Elements/IconButton';
 
-export default function UserInfoList() {
+export default function UserDetailsList({ profile, refs }) {
+  let country = '-';
+  // let nationality = '-';
+  let natureOfWork = '-';
+  let sourceOfFunds = '-';
+  if (profile && refs && Object.keys(refs).length > 0) {
+    country = refs.countries.findIndex(j => j.id === profile.country_id);
+    // nationality = refs.nationalities.findIndex(
+    //   j => j.id === profile.nationality_id,
+    // );
+    natureOfWork =
+      profile.encoded_nature_of_work !== ''
+        ? profile.encoded_nature_of_work
+        : refs.natureOfWork.findIndex(j => j.id === profile.nature_of_work_id);
+    sourceOfFunds =
+      profile.encoded_source_of_fund !== ''
+        ? profile.encoded_source_of_fund
+        : refs.sourceOfFunds.findIndex(j => j.id === profile.source_of_fund_id);
+  }
+
   return (
     <List divider>
       <ListItem flex>
@@ -50,7 +69,7 @@ export default function UserInfoList() {
       <ListItem flex>
         <ListItemText
           label="Birthdate"
-          primary="02/17/1995"
+          primary={profile ? profile.birth_date : '-'}
           style={{
             flexGrow: 1,
           }}
@@ -59,7 +78,7 @@ export default function UserInfoList() {
       <ListItem flex>
         <ListItemText
           label="Birthplace"
-          primary="East Avenue Medical Center"
+          primary={profile ? profile.place_of_birth : '-'}
           style={{
             flexGrow: 1,
           }}
@@ -68,7 +87,7 @@ export default function UserInfoList() {
       <ListItem flex>
         <ListItemText
           label="Country"
-          primary="Philippines"
+          primary={profile ? refs.countries[country].description : '-'}
           style={{
             flexGrow: 1,
           }}
@@ -77,7 +96,9 @@ export default function UserInfoList() {
       <ListItem flex>
         <ListItemText
           label="Address"
-          primary="11 De Castro Avenue, De Castro Subdivision, Sta. Lucia 1600"
+          primary={
+            profile ? `${profile.house_no_street} ${profile.municipality}` : '-'
+          }
           style={{
             flexGrow: 1,
           }}
@@ -86,7 +107,7 @@ export default function UserInfoList() {
       <ListItem flex>
         <ListItemText
           label="Province / State"
-          primary="Bohol"
+          primary={profile ? profile.provice_state : '-'}
           style={{
             flexGrow: 1,
           }}
@@ -95,7 +116,7 @@ export default function UserInfoList() {
       <ListItem flex>
         <ListItemText
           label="City"
-          primary="Quezon City"
+          primary={profile ? profile.city : '-'}
           style={{
             flexGrow: 1,
           }}
@@ -104,7 +125,7 @@ export default function UserInfoList() {
       <ListItem flex>
         <ListItemText
           label="Postal Code"
-          primary="1101"
+          primary={profile ? profile.postal_code : '-'}
           style={{
             flexGrow: 1,
           }}
@@ -113,7 +134,7 @@ export default function UserInfoList() {
       <ListItem flex>
         <ListItemText
           label="Source of Funds"
-          primary="Work"
+          primary={profile ? sourceOfFunds : '-'}
           style={{
             flexGrow: 1,
           }}
@@ -122,7 +143,7 @@ export default function UserInfoList() {
       <ListItem flex>
         <ListItemText
           label="Nature of Work"
-          primary="Office"
+          primary={profile ? natureOfWork : '-'}
           style={{
             flexGrow: 1,
           }}
