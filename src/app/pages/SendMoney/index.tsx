@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Redirect } from 'react-router-dom';
+import { DateTime } from 'luxon';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -330,6 +331,9 @@ export function SendMoney() {
     }
   }, [validateError, validateSuccess, generateSuccess, error, success]);
 
+  const date = DateTime.fromISO(success.transaction_date);
+  const humanReadable = date.toLocaleString(DateTime.DATETIME_MED);
+
   const action = (
     <>
       <Flex justifyContent="space-between" alignItems="center">
@@ -620,7 +624,7 @@ export function SendMoney() {
               title="Money successfully sent to"
               total={success.total_amount}
               onClick={onCloseSuccessDialog}
-              date={success.transaction_date}
+              date={humanReadable}
             >
               <Grid container>
                 <Grid item xs={6}>
