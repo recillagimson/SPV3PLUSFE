@@ -49,5 +49,7 @@ export const StyleConstants = Object.freeze({
   FOCUS_COLOR: '#5090ef',
   BORDER_COLOR: '#CED4DA',
   LIGHT_BORDER_COLOR: '#E7EAF3',
+  NEGATIVE: '#FF645E',
+  POSITIVE: '#28A745',
   BOX_SHADOW: '0px 12px 15px rgba(140, 152, 164, 0.05)',
 });

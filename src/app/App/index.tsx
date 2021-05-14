@@ -40,7 +40,10 @@ import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
-import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
+import {
+  TransactionHistoryPage,
+  TransactionHistoryDetailsPage,
+} from 'app/pages/TransactionHistoryPage/Loadable';
 import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
@@ -202,6 +205,11 @@ export function App() {
               exact
               path="/transaction-history"
               component={TransactionHistoryPage}
+            />
+            <PrivateRoute
+              exact
+              path="/transaction-history/:id"
+              component={TransactionHistoryDetailsPage}
             />
             <PrivateRoute
               exact
