@@ -24,7 +24,7 @@ const ModalBody = styled.div`
 `;
 
 export default function AddMoneyModal(props) {
-  const { success, onClick } = props;
+  const { success, urlLink, onClick } = props;
   return (
     <ModalBody>
       <div
@@ -40,27 +40,7 @@ export default function AddMoneyModal(props) {
       >
         {success === 'success' ? (
           <>
-            <img
-              src="/img/SPLogo.png"
-              alt="SquidPay"
-              className="sp-logo"
-              width="150px"
-              style={{ marginBottom: '25px' }}
-            />
-            <svg
-              width="112"
-              height="112"
-              viewBox="0 0 112 112"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="56" cy="56" r="32" fill="#E0AC39" />
-              <path
-                d="M52.1094 64.625C52.5781 65.0938 53.375 65.0938 53.8438 64.625L67.625 50.8438C68.0938 50.375 68.0938 49.5781 67.625 49.1094L65.9375 47.4219C65.4688 46.9531 64.7188 46.9531 64.25 47.4219L53 58.6719L47.7031 53.4219C47.2344 52.9531 46.4844 52.9531 46.0156 53.4219L44.3281 55.1094C43.8594 55.5781 43.8594 56.375 44.3281 56.8438L52.1094 64.625Z"
-                fill="white"
-              />
-            </svg>
-            <H3>Transaction successful</H3>
+            <iframe src={urlLink} width="540" height="450"></iframe>
             <Button
               size="large"
               color="primary"
@@ -72,6 +52,38 @@ export default function AddMoneyModal(props) {
             </Button>
           </>
         ) : (
+          // <>
+          //   <img
+          //     src="/img/SPLogo.png"
+          //     alt="SquidPay"
+          //     className="sp-logo"
+          //     width="150px"
+          //     style={{ marginBottom: '25px' }}
+          //   />
+          //   <svg
+          //     width="112"
+          //     height="112"
+          //     viewBox="0 0 112 112"
+          //     fill="none"
+          //     xmlns="http://www.w3.org/2000/svg"
+          //   >
+          //     <circle cx="56" cy="56" r="32" fill="#E0AC39" />
+          //     <path
+          //       d="M52.1094 64.625C52.5781 65.0938 53.375 65.0938 53.8438 64.625L67.625 50.8438C68.0938 50.375 68.0938 49.5781 67.625 49.1094L65.9375 47.4219C65.4688 46.9531 64.7188 46.9531 64.25 47.4219L53 58.6719L47.7031 53.4219C47.2344 52.9531 46.4844 52.9531 46.0156 53.4219L44.3281 55.1094C43.8594 55.5781 43.8594 56.375 44.3281 56.8438L52.1094 64.625Z"
+          //       fill="white"
+          //     />
+          //   </svg>
+          //   <H3>Transaction successful</H3>
+          //   <Button
+          //     size="large"
+          //     color="primary"
+          //     variant="contained"
+          //     style={{ width: '380px', marginTop: '25px' }}
+          //     onClick={onClick}
+          //   >
+          //     Close
+          //   </Button>
+          // </>
           <>
             <svg
               width="112"

@@ -8,7 +8,6 @@ import Loading from 'app/components/Loading';
 import { StyleConstants } from 'styles/StyleConstants';
 import { useSelector, useDispatch } from 'react-redux';
 import { useContainerSaga } from './slice';
-import { useHistory } from 'react-router-dom';
 import {
   selectLoading,
   selectAddMoneyDragonpay,
@@ -16,11 +15,11 @@ import {
 } from './slice/selectors';
 
 export function Dragonpay() {
-  const history = useHistory();
   const inputEl: any = React.useRef(null);
   const [showModal, setShowModal] = React.useState({
     status: '',
     show: false,
+    url: '',
   });
   const [errorMessage, setErrorMessage] = React.useState('');
 
@@ -43,10 +42,10 @@ export function Dragonpay() {
 
   function handlerCloseModal() {
     dispatch(actions.getFetchReset());
-    setShowModal({ status: '', show: false });
+    setShowModal({ status: '', show: false, url: '' });
     if (addMoneyDragonpay && addMoneyDragonpay.Url) {
-      // console.log({ url: addMoneyDragonpay.Url });
-      window.location.assign(addMoneyDragonpay.Url);
+      console.log(addMoneyDragonpay);
+      // window.location.assign(addMoneyDragonpay.Url);
     }
   }
 
@@ -60,6 +59,7 @@ export function Dragonpay() {
       setShowModal({
         status: 'failed',
         show: true,
+        url: '',
       });
     }
 
@@ -67,6 +67,7 @@ export function Dragonpay() {
       setShowModal({
         status: 'success',
         show: true,
+        url: addMoneyDragonpay.Url,
       });
       if (inputEl) {
         inputEl.current.value = '';
@@ -163,6 +164,7 @@ export function Dragonpay() {
         {showModal.show && (
           <AddMoneyModal
             success={showModal.status}
+            urlLink={showModal.url}
             onClick={handlerCloseModal}
           />
         )}

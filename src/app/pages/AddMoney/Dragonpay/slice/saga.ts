@@ -43,6 +43,8 @@ function* addMoney() {
   try {
     const apirequest = yield call(request, requestURL, options);
 
+    console.log({ apirequest });
+
     if (apirequest && apirequest.data) {
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
@@ -60,6 +62,7 @@ function* addMoney() {
       return;
     }
   } catch (err) {
+    console.log({ err });
     const errMessage = errorHandler(err);
     yield put(actions.getFetchError(errMessage));
   }
