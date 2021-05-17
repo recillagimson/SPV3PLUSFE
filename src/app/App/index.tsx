@@ -203,11 +203,6 @@ export function App() {
             <PrivateRoute path="/scanqr" component={ScanQR} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
-            <Route component={NotFoundPage} />
-            {/* <PrivateRoute path="/sendmoney" component={SendMoney} />
-            <PrivateRoute path="/scanqr" component={ScanQR} />
-            <PrivateRoute path="/onlinebank" component={OnlineBank} />
-            <PrivateRoute path="/buyload" component={BuyLoad} /> */}
             <PrivateRoute path="/profile" component={UserProfilePage} />
             <PrivateRoute
               path={['/notifications/:id', '/notifications']}
@@ -234,6 +229,7 @@ export function App() {
               path="/settings/change-password"
               component={SettingsChangePasswordPage}
             />
+            {/* Not found page should be the last entry for this <Switch /> container */}
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}
