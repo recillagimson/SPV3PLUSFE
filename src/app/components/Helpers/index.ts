@@ -9,7 +9,10 @@ export const regExMobile = /^0(9)\d{9}$/; // number must start with 0 followed b
 
 // password strength regex
 export const regExPassword = /.{12,}$/; // password should be 12 or more characters
-export const regExStrongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&_])(?=.{12,})/; // eslint-disable-line no-useless-escape
+// export const regExStrongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&_])(?=.{12,})/; // eslint-disable-line no-useless-escape
+export const regExStrongPassword = new RegExp(
+  '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{12,})',
+);
 export const regExMediumPassword = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{8,})/;
 export const regExWeakPassword = /.{2,}$/;
 
@@ -98,4 +101,22 @@ export function getCookie(name: string) {
  */
 export function deleteCookie(name: string) {
   setCookie(name, '', -1);
+}
+
+/**
+ * Logout Function
+ * NOTE: it was defined here, so that we will only modify one function for all necessary deletion whether in cookies or other storage
+ */
+export function doSignOut() {
+  deleteCookie('spv_uat_hmc');
+  deleteCookie('spv_uat');
+  deleteCookie('spv_expire');
+  deleteCookie('spv_cat');
+  deleteCookie('spv_uat_u');
+
+  // set a delay, in the component where this will be called, set a loading indicator to delay the logout
+  setTimeout(() => {
+    const publicURL = process.env.PUBLIC_URL || '';
+    window.location.replace(`${publicURL}/`);
+  }, 800);
 }

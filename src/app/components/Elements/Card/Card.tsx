@@ -22,9 +22,9 @@ export default function CardComponent({
 }: Props) {
   return (
     <Wrapper size={size}>
-      {title && <div className="card-title">{title}</div>}
-      <div className="card-body">{React.Children.toArray(children)}</div>
-      {footer && <div className="card-footer">{footer}</div>}
+      {title && <div className="title">{title}</div>}
+      <div className="body">{React.Children.toArray(children)}</div>
+      {footer && <div className="footer">{footer}</div>}
     </Wrapper>
   );
 }

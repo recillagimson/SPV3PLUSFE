@@ -1,16 +1,18 @@
-import { ClientTokenState } from 'types/Default';
+import { TokenState, UserProfileState } from 'types/Default';
 
 /* --- STATE --- */
 export interface GlobalState {
   loading: boolean;
-  error?: Object | boolean;
-  data: Object | boolean;
-  request: Object | boolean;
-  user: Object | boolean;
-  userToken: ClientTokenState | string;
+  error?: {} | boolean;
+  data: {} | boolean;
+  request: {} | boolean;
+  login: string;
+  user: UserProfileState | boolean;
+  userToken: TokenState | string;
   isAuthenticated: boolean;
-  token: ClientTokenState | string;
+  token: TokenState | string;
   isSessionExpired: boolean;
   isBlankPage: boolean;
   references: {};
+  tier: {} | boolean;
 }

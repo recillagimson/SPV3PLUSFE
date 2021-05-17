@@ -8,14 +8,28 @@ import ButtonLink from 'app/components/Elements/ButtonLink';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconButton from 'app/components/Elements/IconButton';
 import { useHistory } from 'react-router-dom';
+
+import Logo from 'app/components/Assets/Logo';
+
 import { Props } from './type';
 import Wrapper from './Wrapper';
 import Navigation from './Navigation';
 import MenuToggle from './MenuToggle';
 
 export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
-  const [show, setShow] = React.useState(false);
   const history = useHistory();
+  const [show, setShow] = React.useState(false);
+
+  const onToggleMenu = () => {
+    if (isLoggedIn) {
+      const sidebar = document.querySelector('#sidebarNavigation');
+
+      sidebar?.classList.toggle('show');
+      return;
+    }
+    setShow(prev => !prev);
+  };
+
   if (blankPage) {
     return null;
   }
@@ -23,13 +37,11 @@ export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
   return (
     <Wrapper isLoggedIn={isLoggedIn} className={show ? 'show' : undefined}>
       <div className="wrapped">
-        {!isLoggedIn && (
-          <img src="./img/SPLogo.png" alt="SquidPay" className="logo" />
-        )}
+        <Logo />
 
         <div className="menu-buttons">
           {!isLoggedIn && (
-            <Navigation>
+            <Navigation className="mainNav">
               <ButtonLink as={NavLink} size="medium" to="/" color="secondary">
                 User
               </ButtonLink>
@@ -61,7 +73,7 @@ export default function HeaderComponent({ isLoggedIn, blankPage }: Props) {
             </Navigation>
           )}
 
-          <MenuToggle onClick={() => setShow(prev => !prev)} />
+          <MenuToggle onClick={onToggleMenu} />
         </div>
       </div>
     </Wrapper>

@@ -23,15 +23,36 @@ const Button = styled.button`
     background-color: ${StyleConstants.BUTTONS.mainTextColor};
     width: 100%;
     margin: 2px 0;
+    transition: transform 0.2s ease-in;
   }
 
   span:last-child {
     width: 60%;
   }
+
+  &.active {
+    span:first-child {
+      transform: rotate(45deg);
+      transform-origin: 6px 3px;
+    }
+    span:last-child {
+      width: 100%;
+      transform: rotate(-45deg);
+      transform-origin: 5px -1px;
+    }
+  }
 `;
 export default function MenuToggleButton({ onClick }: { onClick: () => void }) {
+  const [toggle, setToggle] = React.useState(false);
+  const onClickButton = () => {
+    setToggle(prev => !prev);
+    onClick();
+  };
   return (
-    <Button onClick={onClick} className="btn-toggle">
+    <Button
+      onClick={onClickButton}
+      className={toggle ? 'btn-toggle active' : 'btn-toggle'}
+    >
       <span />
       <span />
     </Button>

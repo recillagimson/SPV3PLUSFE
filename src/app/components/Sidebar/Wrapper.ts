@@ -12,7 +12,7 @@ const SidebarWrapper = styled.aside`
   background-color: ${StyleConstants.WHITE};
   box-shadow: 0px 12px 15px rgba(140, 152, 164, 0.05);
   z-index: 1000;
-  padding: 30px 15px;
+  padding: 30px 10px 15px;
   display: flex;
   flex-direction: column;
   transition: transform 0.3s ease;
@@ -40,12 +40,21 @@ const SidebarWrapper = styled.aside`
 
   .user-info {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     padding: 55px 0;
+
+    &[role='presentation'] {
+      cursor: pointer;
+    }
+
+    button {
+      margin: 0;
+    }
 
     .user-short-details {
       flex: 1;
-      padding: 0 10px;
+      padding: 0 0 0 10px;
+      max-width: 66%;
     }
 
     .name,
@@ -58,23 +67,36 @@ const SidebarWrapper = styled.aside`
       font-weight: 700;
     }
 
+    .mobile {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
     .mobile,
     .status {
       font-size: 0.875em;
     }
 
     .status {
+      margin-bottom: 3px;
       strong {
         color: ${StyleConstants.GOLD};
+        font-weight: 500;
       }
     }
 
     .svg-inline--fa {
       font-size: 1.5rem;
     }
+
+    .btn-arrow {
+      margin-top: 10px;
+    }
   }
 
   ${media.medium`
+    padding-bottom: 20px;
     transform: translateX(0);
 
     .btn-trigger {

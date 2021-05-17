@@ -12,7 +12,7 @@ export const lazyLoad = <
 >(
   importFunc: () => T,
   selectorFunc?: (s: Unpromisify<T>) => U,
-  opts: Opts = { fallback: <Loading position="fixed" /> },
+  opts: Opts = { fallback: <Loading position="fixed" big /> },
 ) => {
   let lazyFactory: () => Promise<{ default: U }> = importFunc;
 

@@ -21,6 +21,8 @@ const Avatar = styled.span<Props>`
   display: inline-block;
   vertical-align: middle;
   border-radius: 200px;
+  min-width: ${p => (p.size ? sizes[p.size] : '80px')};
+  min-height: ${p => (p.size ? sizes[p.size] : '80px')};
   width: ${p => (p.size ? sizes[p.size] : '80px')};
   height: ${p => (p.size ? sizes[p.size] : '80px')};
   background-image: ${p =>

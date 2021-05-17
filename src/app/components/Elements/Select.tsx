@@ -7,11 +7,11 @@ import styled from 'styled-components/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import FormElementStyle from './FormElementsStyle';
+import { StyleConstants } from 'styles/StyleConstants';
 
 const Wrapper = styled.div<{ full?: boolean }>`
-  ${FormElementStyle} // basic css style for all form elements
-  width: ${p =>
-    p.full ? '100%' : 'auto'};
+  width: ${p => (p.full ? '100%' : 'auto')};
+  display: ${p => (p.full ? 'block' : 'inline-block')};
   margin-right: ${p => (!p.full ? '15px' : '0')};
   padding: 0;
   position: relative;
@@ -25,14 +25,17 @@ const Wrapper = styled.div<{ full?: boolean }>`
   }
 
   select {
+    ${FormElementStyle} // basic css style for all form elements
     padding: 13px 25px 13px 13px;
     background-color: transparent;
     appearance: none;
     position: relative;
     z-index: 2;
     width: 100%;
-    border: 0;
-    outline: 0;
+  }
+
+  select:disabled + .arrow {
+    z-index: 3;
   }
 
   // remove the arrow of select for lower version of ie
@@ -41,7 +44,7 @@ const Wrapper = styled.div<{ full?: boolean }>`
   }
 `;
 
-interface SelectComponentProps extends React.HTMLAttributes<any> {
+interface SelectComponentProps extends React.SelectHTMLAttributes<any> {
   fullWidth?: boolean;
   children: React.ReactNodeArray | React.ReactNode;
   value: any;
@@ -57,7 +60,9 @@ export default function SelectComponent({
 }: SelectComponentProps) {
   return (
     <Wrapper className="select-wrapper" full={fullWidth}>
-      <select {...rest}>{children}</select>
+      <select {...rest} value={value} onChange={onChange} tabIndex={0}>
+        {children}
+      </select>
       <FontAwesomeIcon className="arrow" icon="caret-down" />
     </Wrapper>
   );

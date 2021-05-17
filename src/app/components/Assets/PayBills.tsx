@@ -22,9 +22,9 @@ export default function PayBills() {
         d="M49.1463 11.4365C54.5197 16.8099 54.5196 25.5218 49.1462 30.8952C43.7728 36.2686 35.0609 36.2687 29.6875 30.8953C24.3141 25.5219 24.3141 16.8099 29.6875 11.4365C35.0609 6.0631 43.7729 6.06312 49.1463 11.4365Z"
         fill="#F9ECAA"
         stroke="#38434D"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M37.5999 21.5402V26.6088H35.8926V13.6615H40.6678C42.0847 13.6615 43.1932 14.0231 43.9936 14.7464C44.7998 15.4696 45.2029 16.427 45.2029 17.6186C45.2029 18.8754 44.8087 19.8447 44.0202 20.5264C43.2377 21.2023 42.1143 21.5402 40.65 21.5402H37.5999ZM37.5999 20.1441H40.6678C41.5807 20.1441 42.2803 19.9306 42.7664 19.5038C43.2525 19.071 43.4956 18.4486 43.4956 17.6364C43.4956 16.8657 43.2525 16.2492 42.7664 15.7868C42.2803 15.3244 41.6134 15.0843 40.7656 15.0665H37.5999V20.1441Z"
@@ -45,16 +45,16 @@ export default function PayBills() {
       <path
         d="M26.3993 32.6532H23.2754"
         stroke="#E0AC33"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M24.3809 30.0819H17.793"
         stroke="#E0AC33"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

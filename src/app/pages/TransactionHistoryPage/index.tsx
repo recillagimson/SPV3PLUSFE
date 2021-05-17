@@ -1,31 +1,84 @@
 import * as React from 'react';
+// import moment from 'moment';
 import { Helmet } from 'react-helmet-async';
+import { useSelector, useDispatch } from 'react-redux';
 
+// Components
 import Button from 'app/components/Elements/Button';
+import ComponentLoading from 'app/components/ComponentLoading';
 
+// Utils
+import { parseToNumber, numberWithCommas } from 'utils/common';
+
+/** slice */
+import { useContainerSaga } from './slice';
+import {
+  selectLoading,
+  selectError,
+  selectData,
+  selectTransactionHistoryDetailsData,
+} from './slice/selectors';
+import { transactionHistoryDefaultState } from './slice';
+
+// Constants
+import { TRANSACTION_TYPE } from 'constants/transactions';
+
+// Styles
 import * as S from './TransactionHistory.style';
 
-const MOCK_DATA = [
-  {
-    paymentType: "instapay",
-    amount: "PHP 1,000.00",
-    date: "August 10, 2020",
-    time: "03:46 PM",
-  },
-  {
-    paymentType: "instapay",
-    amount: "PHP 1,000.00",
-    date: "August 10, 2020",
-    time: "03:46 PM",
-  },
-  {
-    paymentType: "instapay",
-    amount: "PHP 1,000.00",
-    date: "August 10, 2020",
-    time: "03:46 PM",
-  },
-]
-export function TransactionHistoryPage() {
+// Assets
+import NoTransactionsLogo from 'app/components/Assets/no-transactions.svg';
+
+export function TransactionHistoryPage(props) {
+  const [transactionType, setTransactionType] = React.useState(
+    TRANSACTION_TYPE.ALL,
+  );
+  const [transactionDetails, setFileteredTransactionDetails] = React.useState([
+    transactionHistoryDefaultState,
+  ]);
+  const { actions } = useContainerSaga();
+  const dispatch = useDispatch();
+  const loading = useSelector(selectLoading);
+  const error: any = useSelector(selectError);
+  const success: any = useSelector(selectData);
+
+  React.useEffect(() => {
+    dispatch(actions.getFetchLoading());
+  }, [actions, dispatch]);
+
+  React.useEffect(() => {
+    setFileteredTransactionDetails(success);
+  }, [success]);
+
+  const handleViewTransactionDetails = (id: string) => {
+    props.history.push(`/transaction-history/${id}`);
+  };
+
+  const filteredTransactionDetails = (type: string) => {
+    setTransactionType(type);
+    if (type === TRANSACTION_TYPE.ALL) {
+      setFileteredTransactionDetails(success);
+    } else {
+      const data = success?.filter(
+        transaction => transaction.transaction_type === type,
+      );
+      setFileteredTransactionDetails(data);
+    }
+  };
+
+  const renderTransactionTypeTitle = () => {
+    switch (transactionType) {
+      case TRANSACTION_TYPE.ALL:
+        return 'All Transactions';
+      case TRANSACTION_TYPE.RECEIVED:
+        return 'Received';
+      case TRANSACTION_TYPE.SENT:
+        return 'Sent';
+      default:
+        return 'All Transactions';
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -38,47 +91,101 @@ export function TransactionHistoryPage() {
         <S.TransactionContent>
           <S.ButtonContainer>
             <Button
-              onClick={() => {}}
+              onClick={() => filteredTransactionDetails(TRANSACTION_TYPE.ALL)}
               color="secondary"
               size="medium"
-              variant="contained"
+              variant={
+                transactionType === TRANSACTION_TYPE.ALL
+                  ? 'contained'
+                  : 'outlined'
+              }
             >
               All
             </Button>
             <Button
-              onClick={() => {}}
+              onClick={() => filteredTransactionDetails(TRANSACTION_TYPE.SENT)}
               color="secondary"
               size="medium"
-              variant="outlined"
-            >
-              Received
-            </Button>
-            <Button
-              onClick={() => {}}
-              color="secondary"
-              size="medium"
-              variant="outlined"
+              variant={
+                transactionType === TRANSACTION_TYPE.SENT
+                  ? 'contained'
+                  : 'outlined'
+              }
             >
               Sent
             </Button>
+            <Button
+              onClick={() =>
+                filteredTransactionDetails(TRANSACTION_TYPE.RECEIVED)
+              }
+              color="secondary"
+              size="medium"
+              variant={
+                transactionType === TRANSACTION_TYPE.RECEIVED
+                  ? 'contained'
+                  : 'outlined'
+              }
+            >
+              Received
+            </Button>
           </S.ButtonContainer>
-          <S.TransactionTitle>Recent</S.TransactionTitle>
-          <S.TransactionList>
-            {MOCK_DATA.map((d, i) => (
-              <S.TransactionListItem>
-                <S.ListContainer>
-                  <S.ListTitle>Online Transfer</S.ListTitle>
-                  <S.ListDescription>Fund Transfer via</S.ListDescription>
-                  <S.ListDescription>{d.paymentType}</S.ListDescription>
-                </S.ListContainer>
-                <S.ListContainer>
-                  <S.ListTitle>{d.amount}</S.ListTitle>
-                  <S.ListDescription textAlign="right">{d.date}</S.ListDescription>
-                  <S.ListDescription textAlign="right">{d.time}</S.ListDescription>
-                </S.ListContainer>
-              </S.TransactionListItem>
-            ))}
-          </S.TransactionList>
+          <S.TransactionTitle>
+            {renderTransactionTypeTitle()}
+            <p>Recent transaction will reflect within 24 hours.</p>
+          </S.TransactionTitle>
+          <ComponentLoading isLoading={loading}>
+            {transactionDetails.length ? (
+              <S.TransactionList>
+                {transactionDetails.map((d, i) => {
+                  const isPostiveAmount =
+                    d.transaction_category.transaction_type === 'POSITIVE';
+                  const isNegativeAmount =
+                    d.transaction_category.transaction_type === 'NEGATIVE';
+
+                  return (
+                    <S.TransactionListItem key={i}>
+                      <S.ListContainer>
+                        <S.ListTitle>
+                          {d.transaction_category.title}
+                        </S.ListTitle>
+                        <S.ListDescription>
+                          {/* {moment(d.created_at).format('MMMM DD, YYYY')} */}
+                        </S.ListDescription>
+                        <S.ListDescription>
+                          {/* {moment(d.created_at).format('HH:mm A')} */}
+                        </S.ListDescription>
+                      </S.ListContainer>
+                      <S.ListContainer textAlign="right">
+                        <S.ListTitle
+                          isPositive={isPostiveAmount}
+                          isNegative={isNegativeAmount}
+                        >
+                          PHP{' '}
+                          {numberWithCommas(
+                            parseToNumber(d.signed_total_amount),
+                          )}
+                        </S.ListTitle>
+                        <Button
+                          onClick={() => handleViewTransactionDetails(d.id)}
+                          color="secondary"
+                          size="small"
+                          variant="outlined"
+                        >
+                          View Details
+                        </Button>
+                      </S.ListContainer>
+                    </S.TransactionListItem>
+                  );
+                })}
+              </S.TransactionList>
+            ) : (
+              <S.EmptyWrapper>
+                <img src={NoTransactionsLogo} alt="No transactions..." />
+                <h6>No Transactions</h6>
+                <p>You haven't made any transactions yet</p>
+              </S.EmptyWrapper>
+            )}
+          </ComponentLoading>
         </S.TransactionContent>
       </S.Wrapper>
     </>

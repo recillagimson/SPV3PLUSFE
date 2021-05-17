@@ -9,6 +9,7 @@ import { selectClientToken } from 'app/App/slice/selectors';
 import {
   getRequestPassphrase,
   getResponsePassphrase,
+  getLoggedInUserProfile,
 } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
@@ -66,16 +67,40 @@ function* getLogin() {
       setCookie('spv_expire', 'expiration', 0);
       setCookie('spv_uat', apirequest.data.payload, 0);
       setCookie('spv_uat_hmc', decryptPhrase.passPhrase, 0);
+      // encrypt email/mobile used for logging and store in cookie for session persist
+      const encryptUsername = yield spdCrypto.encrypt(
+        JSON.stringify(payload.email ? payload.email : payload.mobile),
+        decryptPhrase.passPhrase,
+      );
+      setCookie('spv_uat_u', encryptUsername);
 
       // write data in store state
+      yield put(
+        appActions.getSaveLoginName(
+          payload.email ? payload.email : payload.mobile,
+        ),
+      );
       yield put(appActions.getUserToken(decryptData.user_token)); // write the new access token
-      yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
       yield put(appActions.getClientTokenLoading()); // let's get a new client token so expiration will be closely same as user token
-      yield put(appActions.getUserProfile(decryptData)); // write the profile, NOTE: might be changed based on result
+      // disable three lines below
+      // yield put(appActions.getLoadUserProfile());
+      // yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
+      // yield put(actions.getFetchSuccess({ redirect: '/dashboard' }));
 
-      // TODO: wait for UI to display, if password has expired and user need to update it
-      //       for now, we will just send as true to redirect to dashboard page
-      yield put(actions.getFetchSuccess(true));
+      const hasProfile = yield call(getLoggedInUserProfile); // retrieve the profile, NOTE: might be changed based on result
+
+      if (!hasProfile) {
+        setCookie('spv_uat_f', encryptUsername);
+        yield put(
+          actions.getFetchSuccess({ redirect: '/register/update-profile' }),
+        );
+      } else {
+        // TODO: wait for UI to display, if password has expired and user need to update it
+        //       for now, we will just send as true to redirect to dashboard page
+        yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
+        yield put(actions.getFetchSuccess({ redirect: '/dashboard' }));
+      }
+
       return;
     }
   } catch (err) {

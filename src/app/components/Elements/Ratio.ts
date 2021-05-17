@@ -45,8 +45,13 @@ const Ratio = styled.div<Props>`
   }
 
   img {
+    width: 100%;
     object-fit: ${p => (p.fit ? p.fit : 'none')};
     border-radius: ${p => (p.radius ? p.radius : 'none')};
+  }
+
+  .circle {
+    border-radius: 50%;
   }
 `;
 

@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
@@ -10,17 +12,49 @@ import Grid from 'app/components/Elements/Grid';
 import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
+
+/** svg icons */
+import AddMoney from 'app/components/Assets/AddMoney';
+import SendMoney from 'app/components/Assets/SendMoney';
+import SendToBank from 'app/components/Assets/SendToBank';
+import PayBills from 'app/components/Assets/PayBills';
+import BuyLoad from 'app/components/Assets/BuyLoad';
+import QRCode from 'app/components/Assets/QRCode';
+import QuickGuide from 'app/components/Assets/QuickGuide';
+import Others from 'app/components/Assets/Others';
+
 import Balance from './Balance';
-import { useHistory } from 'react-router-dom';
+import ButtonFlexWrapper from './ButtonFlex';
+import DashboardButton from './Button';
+
+/** selectors */
+import { useContainerSaga } from './slice';
+import { selectLoading, selectError, selectData } from './slice/selectors';
+import Loading from 'app/components/Loading';
 
 export function DashboardPage() {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const { actions } = useContainerSaga();
+  const loading = useSelector(selectLoading);
+  const error: any = useSelector(selectError);
+  const dashData: any = useSelector(selectData);
+
+  React.useEffect(() => {
+    dispatch(actions.getFetchLoading());
+  }, [actions, dispatch]);
+
+  let balanceInfo = '0.00';
+  if (dashData && dashData.balance_info) {
+    balanceInfo = dashData.balance_info.available_balance;
+  }
 
   return (
     <ProtectedContent>
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
+      {loading && <Loading position="fixed" />}
 
       <Grid columns="35% 1fr" gap="30px">
         <Box
@@ -39,8 +73,12 @@ export function DashboardPage() {
         >
           <Balance>
             <span className="currency">PHP</span>
-            <span className="amount">10,000.00</span>
-            <IconButton size="small" color="primary">
+            <span className="amount">{balanceInfo}</span>
+            <IconButton
+              size="small"
+              color="primary"
+              onClick={() => history.push('/addmoney')}
+            >
               <FontAwesomeIcon icon="plus" />
             </IconButton>
           </Balance>
@@ -49,13 +87,17 @@ export function DashboardPage() {
         <Box
           title="Recent Transaction"
           titleAction={
-            <IconButton onClick={() => alert('clicked')}>
+            <IconButton onClick={() => history.push('/transaction-history')}>
               <FontAwesomeIcon icon="ellipsis-h" />
             </IconButton>
           }
           footerBorder
           footer={
-            <Button color="secondary" size="medium">
+            <Button
+              color="secondary"
+              size="medium"
+              onClick={() => history.push('/transaction-history')}
+            >
               View Transaction History
             </Button>
           }
@@ -101,7 +143,42 @@ export function DashboardPage() {
           </List>
         </Box>
       </Grid>
-      <div>
+
+      <ButtonFlexWrapper>
+        <DashboardButton onClick={() => history.push('/add-money')}>
+          <AddMoney />
+          Add Money
+        </DashboardButton>
+        <DashboardButton onClick={() => history.push('/sendmoney')}>
+          <SendMoney />
+          Send Money
+        </DashboardButton>
+        <DashboardButton onClick={() => history.push('/onlinebank')}>
+          <SendToBank />
+          Send To Bank
+        </DashboardButton>
+        <DashboardButton>
+          <PayBills />
+          Pay Bills
+        </DashboardButton>
+        <DashboardButton>
+          <BuyLoad />
+          Buy Load
+        </DashboardButton>
+        <DashboardButton>
+          <QRCode />
+          QR Code
+        </DashboardButton>
+        <DashboardButton>
+          <QuickGuide />
+          SquidPay Quick Guide
+        </DashboardButton>
+        <DashboardButton>
+          <Others />
+          Others
+        </DashboardButton>
+      </ButtonFlexWrapper>
+      {/* <div>
         <Box
           title="Sample Container for Box UI"
           titleBorder
@@ -171,7 +248,7 @@ export function DashboardPage() {
             <p>this element are child elements only, no title and footer</p>
           </div>
         </Box>
-      </Grid>
+      </Grid> */}
     </ProtectedContent>
   );
 }

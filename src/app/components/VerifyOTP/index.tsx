@@ -2,12 +2,12 @@
 /**
  * This will verify OTP code
  * NOTE: this will only render the input fields and submit button
- * @prop {string}     codeType      Code type ie: password_recovery or others specified in the BE API
  * @prop {boolean}    isEmail       If OTP code came from email or via sms
  * @prop {string}     viaValue      Email or mobile number of the requestor
  * @prop {function}   onSuccess     callback when code is verified
- * @prop {string}     verifyType    select one for verifying code 'password' | 'account' | undefined
- *                                  NOTE: add more in the selection if we will have more url for verification
+ * @prop {string}     apiURL        pass the API endpoint ie: /auth/verify/password
+ * @prop {string}     otpType       otp type ie: send_money
+ *                                  NOTE: do not include the /api in the endpoint
  */
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -45,7 +45,7 @@ const Wrapper = styled.div`
       outline: 0;
 
       &:hover,
-      &:focus {
+      &:focus-visible {
         border-color: ${StyleConstants.GOLD};
       }
 
@@ -58,21 +58,25 @@ const Wrapper = styled.div`
   }
 `;
 
-type Props = {
-  codeType?: string;
-  isEmail: boolean;
-  viaValue: string;
+type VerifyOTPComponentProps = {
+  /** If we are passing as email or mobile number */
+  isEmail?: boolean;
+  /** If this prop is defined, email or mobile will be pass on the request payload, this should be use with isEmail props */
+  viaValue?: string;
+  /** Function callback when OTP is verified, parent should handle this callback */
   onSuccess: () => void;
-  isPin?: boolean;
-  verifyType: 'password' | 'account';
+  /** Pass the BE API endpoint */
+  apiURL: string;
+  /** Where the OTP will be use */
+  otpType?: string;
 };
 export default function VerifyOTPComponent({
-  codeType,
   isEmail,
   viaValue,
   onSuccess,
-  verifyType,
-}: Props) {
+  apiURL,
+  otpType,
+}: VerifyOTPComponentProps) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
@@ -81,6 +85,7 @@ export default function VerifyOTPComponent({
 
   const [isCodeValid, setIsCodeValid] = React.useState(true); // set to true
   const [code, setCode] = React.useState({ value: '', error: false });
+  const [apiError, setApiError] = React.useState('');
 
   React.useEffect(
     () => () => {
@@ -92,6 +97,7 @@ export default function VerifyOTPComponent({
   React.useEffect(() => {
     if (error && Object.keys(error).length > 0) {
       setIsCodeValid(false);
+      apiErrorMessage(error);
     }
 
     if (success) {
@@ -99,6 +105,33 @@ export default function VerifyOTPComponent({
       dispatch(actions.getFetchReset());
     }
   }, [success, error]);
+
+  const apiErrorMessage = (err: any) => {
+    if (err.code && err.code === 422) {
+      if (err.errors.error_code && err.errors.error_code.length > 0) {
+        err.errors.error_code.map((i: number) => {
+          if (i === 103 || i === 105 || i === 107) {
+            setApiError(err.errors.payload);
+            return null;
+          }
+          if (i === 108 || i === 109) {
+            setApiError(err.errors.message);
+            return null;
+          }
+        });
+        return null;
+      }
+    }
+
+    if (!err.code && err.response && err.response.status !== 422) {
+      setApiError(err.response.statusText);
+      return;
+    }
+
+    if (!err.response && (!err.code || err.code !== 422)) {
+      setApiError(err.message);
+    }
+  };
 
   const onChangePin = (val: any) => {
     setCode({ value: val, error: false });
@@ -118,14 +151,16 @@ export default function VerifyOTPComponent({
 
     if (!error) {
       const data = {
-        url: verifyType,
+        url: apiURL,
         body: {
           // code_type: codeType ? codeType : 'password_recovery',
-          mobile_number: !isEmail ? viaValue : undefined,
-          email: isEmail ? viaValue : undefined,
+          mobile_number: viaValue && !isEmail ? viaValue : undefined,
+          email: viaValue && isEmail ? viaValue : undefined,
           code: code.value,
+          otp_type: otpType ? otpType : undefined,
         },
       };
+
       dispatch(actions.getFetchLoading(data));
     }
   };
@@ -144,14 +179,7 @@ export default function VerifyOTPComponent({
           isValid={isCodeValid}
         />
         {code.error && <ErrorMsg formError>Please input your code</ErrorMsg>}
-        {error && Object.keys(error).length > 0 && (
-          <ErrorMsg formError>
-            {' '}
-            {error.code && error.code === 422
-              ? 'Uh-oh! Invalid Code'
-              : error.message}
-          </ErrorMsg>
-        )}
+        {Boolean(apiError) && <ErrorMsg formError>{apiError}</ErrorMsg>}
       </Field>
 
       <Button
