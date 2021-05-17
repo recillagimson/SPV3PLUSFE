@@ -19,7 +19,7 @@ export const initialState: ComponentState = {
 };
 
 const slice = createSlice({
-  name: 'profileBronze',
+  name: 'profileSilver',
   initialState,
   reducers: {
     getFetchLoading(state, action: PayloadAction<object>) {

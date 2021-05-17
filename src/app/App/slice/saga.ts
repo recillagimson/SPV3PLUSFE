@@ -168,7 +168,7 @@ export function* getLoggedInUserProfile() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-
+      console.log(decryptData);
       yield put(actions.getUserProfile(decryptData));
       return true;
     }

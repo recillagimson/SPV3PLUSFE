@@ -30,6 +30,7 @@ const Wrapper = styled.div`
     display: block;
 
     strong {
+      font-size: 0.85rem;
       color: ${StyleConstants.GOLD};
     }
   }
@@ -68,11 +69,14 @@ export default function UserInfoComponent({
           color="secondary"
           variant="contained"
           size="small"
+          style={{
+            marginLeft: 5,
+          }}
         >
           Upgrade
         </Button>
       </small>
-      <Button onClick={onEdit} color="primary" variant="contained">
+      <Button onClick={onEdit} color="primary" variant="contained" size="large">
         <FontAwesomeIcon icon="pen" /> Edit Profile
       </Button>
     </Wrapper>

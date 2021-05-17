@@ -3,7 +3,7 @@ import { ApiErrorState } from 'types/Default';
 /* --- STATE --- */
 export type ErrorState = ApiErrorState;
 
-export interface ProfileBronzeState {
+export interface ProfileSilverState {
   loading: boolean;
   error?: {};
   data: {} | boolean;
@@ -16,4 +16,4 @@ export interface ProfileBronzeState {
   };
 }
 
-export type ComponentState = ProfileBronzeState;
+export type ComponentState = ProfileSilverState;

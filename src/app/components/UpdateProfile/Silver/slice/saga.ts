@@ -23,7 +23,7 @@ function* getUpdateProfile() {
   const token = yield select(selectUserToken);
   const payload = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/user/profile/tobronze`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/user/profile/tosilver`;
 
   let encryptPayload: string = '';
 

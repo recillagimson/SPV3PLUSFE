@@ -11,17 +11,21 @@ import { useSelector } from 'react-redux';
 import Dialog from 'app/components/Dialog';
 import Avatar from 'app/components/Elements/Avatar';
 import IconButton from 'app/components/Elements/IconButton';
-import { doSignOut } from 'app/components/Helpers';
+
+import Loading from 'app/components/Loading';
+import Button from 'app/components/Elements/Button';
 
 import HomeIcon from 'app/components/Assets/Home';
 import QRCodeIcon from 'app/components/Assets/QRCode';
-import AccountIcon from 'app/components/Assets/Account';
+// import AccountIcon from 'app/components/Assets/Account';
 import PromosIcon from 'app/components/Assets/Promos';
 import AccountSecurityIcon from 'app/components/Assets/AccountSecurity';
 import MerchantInquiryIcon from 'app/components/Assets/MerchantInquiry';
 import HelpCenterIcon from 'app/components/Assets/HelpCenter';
 import ContactUsIcon from 'app/components/Assets/ContactUs';
 import LogoutIcon from 'app/components/Assets/Logout';
+import { Tiers } from 'app/components/Helpers/Tiers';
+import { doSignOut } from 'app/components/Helpers';
 
 import Wrapper from './Wrapper';
 import Navigation from './Navigation';
@@ -31,21 +35,16 @@ import NavButton from './NavButton';
 import { UserProfileState } from 'types/Default';
 // import { appActions } from 'app/App/slice';
 import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
-import { selectData as selectDashboardData } from 'app/pages/DashboardPage/slice/selectors';
 import LogoutWrapper from './LogoutWrapper';
-import Loading from '../Loading';
-import Button from '../Elements/Button';
 
 export default function Sidebar() {
   const history = useHistory();
-  const profile: boolean | UserProfileState = useSelector(selectUser);
+  const profile: any = useSelector(selectUser);
   const loginName: string = useSelector(selectLoggedInName);
-  const dashData: any = useSelector(selectDashboardData);
 
   const [isLogout, setIsLogout] = React.useState(false);
   const [fakeLoading, setFakeLoading] = React.useState(false);
 
-  const [show, setShow] = React.useState(true);
   const gotoProfile = () => {
     history.push('/profile');
   };
@@ -77,6 +76,19 @@ export default function Sidebar() {
     doSignOut();
   };
 
+  let tierName = '';
+  if (
+    profile &&
+    profile.user_account &&
+    profile.user_account.tier_id &&
+    profile.user_account.tier_id !== ''
+  ) {
+    const tierIndex = Tiers.findIndex(
+      j => j.id === profile.user_account.tier_id,
+    );
+    tierName = tierIndex !== -1 ? Tiers[tierIndex].class : '';
+  }
+
   return (
     <>
       <Wrapper id="sidebarNavigation">
@@ -93,16 +105,12 @@ export default function Sidebar() {
           <div className="user-short-details">
             <p className="name">
               {typeof profile === 'object'
-                ? `${profile.first_name} ${profile.middle_name} ${profile.last_name}`
+                ? `${profile.first_name} ${profile.last_name}`
                 : ''}
             </p>
             <p className="mobile">{loginName}</p>
             <p className="status">
-              <strong>
-                {dashData && dashData.tier
-                  ? `${dashData.tier.tier_class} Member`
-                  : ''}
-              </strong>
+              <strong>{`${tierName} Member`}</strong>
             </p>
             <Button
               variant="contained"

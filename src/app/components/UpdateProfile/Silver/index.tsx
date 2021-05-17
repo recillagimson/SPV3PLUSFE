@@ -32,10 +32,7 @@ import ParentalConsent from 'app/components/ParentalConsent';
 import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
-
 import VerifyOTP from 'app/components/VerifyOTP';
-
-import { validateEmail, validatePhone } from 'app/components/Helpers';
 
 /** selectors */
 import {
@@ -91,15 +88,26 @@ export default function UserProfileForm({
     error: false,
   });
   const [lastName, setLastName] = React.useState({ value: '', error: false });
-  const [mobile, setMobile] = React.useState({ value: '', error: false });
-  const [email, setEmail] = React.useState({ value: '', error: false });
+  // const [mobile, setMobile] = React.useState({ value: '', error: false });
+  // const [email, setEmail] = React.useState({ value: '', error: false });
   const [birthDate, setBirthDate] = React.useState({
     year: '',
     month: '',
     day: '',
     error: false,
   });
-
+  const [placeOfBirth, setPlaceOfBirth] = React.useState({
+    value: '',
+    error: false,
+  });
+  const [mothersMaidenName, setMothersMaidenName] = React.useState({
+    value: '',
+    error: false,
+  });
+  const [marital, setMarital] = React.useState({
+    value: '',
+    error: false,
+  });
   const [nationality, setNationality] = React.useState({
     value: '',
     error: false,
@@ -141,6 +149,29 @@ export default function UserProfileForm({
     error: false,
   });
   const [showConsent, setShowConsent] = React.useState(false);
+
+  // contact info
+  const [contactNo, setContactNo] = React.useState({ value: '', error: false });
+
+  //work info
+  const [natureOfWork, setNatureOfWork] = React.useState({
+    value: '',
+    encoded: '',
+    error: false,
+  });
+  const [sourceOfFunds, setSourceOfFunds] = React.useState({
+    value: '',
+    encoded: '',
+    error: false,
+  });
+  const [occupation, setOccupation] = React.useState({
+    value: '',
+    error: false,
+  });
+  const [employer, setEmployer] = React.useState({
+    value: '',
+    error: false,
+  });
 
   // api related messages
   const [isError, setIsError] = React.useState(false);
@@ -202,7 +233,7 @@ export default function UserProfileForm({
   }, [success, otpSuccess]);
 
   const onApiError = (err: any) => {
-    let apiError: string | undefined;
+    let apiError: string | undefined = '';
 
     if (err.code && err.code === 422) {
       if (err.errors && err.errors.error_code) {
@@ -261,6 +292,9 @@ export default function UserProfileForm({
         ) {
           apiError += err.errors.is_accept_parental_consent.join('\n');
         }
+        if (err.errors.contact_no && err.errors.contact_no.length > 0) {
+          apiError += err.errors.contact_no.join('\n');
+        }
 
         // otp error
         if (err.errors.otp_type && err.errors.otp_type.length > 0) {
@@ -301,7 +335,7 @@ export default function UserProfileForm({
     setMiddleName({ value: prof.middle_name, error: false });
     setLastName({ value: prof.last_name, error: false });
     const nI = refs.nationalities.findIndex(j => j.id === prof.nationality_id);
-    setNationality({ value: nI, error: false });
+    setNationality({ value: nI !== -1 ? nI.toString() : '', error: false });
     const bdate = prof.birth_date.split('-');
     setBirthDate({
       year: bdate[0],
@@ -309,10 +343,26 @@ export default function UserProfileForm({
       day: bdate[2],
       error: false,
     });
+    setPlaceOfBirth({
+      value: prof.place_of_birth,
+      error: false,
+    });
+    setMothersMaidenName({
+      value: prof.mother_maidenname,
+      error: false,
+    });
+    const mI = refs.maritalStatus.findIndex(
+      j => j.id === prof.marital_status_id,
+    );
+    setMarital({ value: mI !== -1 ? mI.toString() : '', error: false });
+
     const cI = refs.countries.findIndex(j => j.id === prof.country_id);
-    setCountry({ value: cI, error: false });
-    setGuardianName({ value: prof.guardian_name, error: false });
-    setGuardianMobile({ value: prof.guardian_mobile_number, error: false });
+    setCountry({ value: cI !== -1 ? cI.toString() : '', error: false });
+    setGuardianName({ value: prof.guardian_name || '', error: false });
+    setGuardianMobile({
+      value: prof.guardian_mobile_number || '',
+      error: false,
+    });
     setConsent({
       value: Boolean(prof.is_accept_parental_consent),
       error: false,
@@ -321,6 +371,34 @@ export default function UserProfileForm({
     setCity({ value: prof.city, error: false });
     setProvince({ value: prof.province_state, error: false });
     setPostal({ value: prof.postal_code, error: false });
+
+    setContactNo({ value: prof.contact_no || '', error: false });
+
+    const nwI = refs.natureOfWork.findIndex(
+      j => j.id === prof.nature_of_work_id,
+    );
+    setNatureOfWork({
+      value: nwI !== -1 ? nwI.toString() : '',
+      encoded: prof.encoded_nature_of_work || '',
+      error: false,
+    });
+
+    const sI = refs.sourceOfFunds.findIndex(
+      j => j.id === prof.source_of_fund_id,
+    );
+    setSourceOfFunds({
+      value: sI !== -1 ? sI.toString() : '',
+      encoded: prof.encoded_source_of_fund || '',
+      error: false,
+    });
+    setOccupation({
+      value: prof.occupation || '',
+      error: false,
+    });
+    setEmployer({
+      value: prof.employer || '',
+      error: false,
+    });
   };
 
   const onChangeBirthDate = e => {
@@ -409,6 +487,26 @@ export default function UserProfileForm({
       }
     }
 
+    // others for nature of work and source of funds
+    if (
+      natureOfWork.value !== '' &&
+      refs.natureOfWork[parseInt(natureOfWork.value)].id ===
+        '0ed96f01-9131-11eb-b44f-1c1b0d14e211' &&
+      natureOfWork.encoded === ''
+    ) {
+      hasError = true;
+      setNatureOfWork({ ...natureOfWork, error: true });
+    }
+    if (
+      sourceOfFunds.value !== '' &&
+      refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
+        '0ed801a1-9131-11eb-b44f-1c1b0d14e211' &&
+      sourceOfFunds.encoded === ''
+    ) {
+      hasError = true;
+      setSourceOfFunds({ ...sourceOfFunds, error: true });
+    }
+
     if (!hasError) {
       setShowForm(prev => !prev);
       setShowConfirm(prev => !prev);
@@ -436,6 +534,12 @@ export default function UserProfileForm({
       middle_name: middleName.value,
       // "name_extension": "jr",
       birth_date: `${birthDate.year}-${birthDate.month}-${birthDate.day}`,
+      place_of_birth: placeOfBirth.value,
+      mother_maidenname: mothersMaidenName.value,
+      marital_status_id:
+        marital.value !== ''
+          ? refs.maritalStatus[parseInt(marital.value)].id
+          : undefined,
       nationality_id:
         nationality.value !== ''
           ? refs.nationalities[parseInt(nationality.value)].id
@@ -456,6 +560,20 @@ export default function UserProfileForm({
       is_accept_parental_consent: showGuardianFields
         ? consent.value
         : undefined,
+
+      contact_no: contactNo.value,
+      nature_of_work_id:
+        natureOfWork.value !== ''
+          ? refs.natureOfWork[parseInt(natureOfWork.value)].id
+          : undefined,
+      encoded_nature_of_work: natureOfWork.encoded,
+      source_of_fund_id:
+        sourceOfFunds.value !== ''
+          ? refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id
+          : undefined,
+      encoded_source_of_fund: sourceOfFunds.encoded,
+      occupation: occupation.value,
+      employer: employer.value,
     };
     dispatch(actions.getFetchLoading(data));
   };
@@ -491,6 +609,7 @@ export default function UserProfileForm({
   return (
     <>
       {isLoading && <Loading position="fixed" />}
+
       {showForm && (
         <Box title="User Info" titleBorder withPadding>
           <form>
@@ -643,7 +762,73 @@ export default function UserProfileForm({
                 )}
               </div>
             </Field>
-
+            <Field flex>
+              <Label>Place of Birth</Label>
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={placeOfBirth.value}
+                  onChange={e =>
+                    setPlaceOfBirth({
+                      value: e.currentTarget.value,
+                      error: false,
+                    })
+                  }
+                  className={placeOfBirth.error ? 'error' : undefined}
+                  placeholder="Place of birth"
+                />
+                {placeOfBirth.error && (
+                  <ErrorMsg formError>Last Name is required.</ErrorMsg>
+                )}
+              </div>
+            </Field>
+            <Field flex>
+              <Label>Mothers Maiden Name</Label>
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={mothersMaidenName.value}
+                  onChange={e =>
+                    setMothersMaidenName({
+                      value: e.currentTarget.value,
+                      error: false,
+                    })
+                  }
+                  className={mothersMaidenName.error ? 'error' : undefined}
+                  placeholder="Place of birth"
+                />
+                {mothersMaidenName.error && (
+                  <ErrorMsg formError>Mothers maiden name required.</ErrorMsg>
+                )}
+              </div>
+            </Field>
+            <Field flex>
+              <Label>Marital Status</Label>
+              <div style={{ flexGrow: 1 }}>
+                <Select
+                  fullWidth
+                  value={marital.value}
+                  onChange={e =>
+                    setMarital({
+                      value: e.currentTarget.value,
+                      error: false,
+                    })
+                  }
+                  className={marital.error ? 'error' : undefined}
+                >
+                  <option value="" disabled>
+                    Select marital status
+                  </option>
+                  {hasRefs &&
+                    refs.maritalStatus.map((o, i) => (
+                      <option key={o.id} value={i}>
+                        {o.description}
+                      </option>
+                    ))}
+                </Select>
+                {marital.error && (
+                  <ErrorMsg formError>Select marital status.</ErrorMsg>
+                )}
+              </div>
+            </Field>
             <Field flex>
               <Label>Country</Label>
               <div style={{ flexGrow: 1 }}>
@@ -798,6 +983,156 @@ export default function UserProfileForm({
               </div>
             </Field>
 
+            <H5>Contact Info</H5>
+            <Field flex>
+              <Label>Home Phone Number</Label>
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={contactNo.value}
+                  onChange={e =>
+                    setContactNo({ value: e.currentTarget.value, error: false })
+                  }
+                  className={contactNo.error ? 'error' : undefined}
+                  placeholder="Home phone number"
+                />
+                {contactNo.error && (
+                  <ErrorMsg formError>Enter your home phone number</ErrorMsg>
+                )}
+              </div>
+            </Field>
+
+            <H5>Work Info</H5>
+            <Field flex>
+              <Label>Nature of Work</Label>
+              <div style={{ flexGrow: 1 }}>
+                <Select
+                  fullWidth
+                  value={natureOfWork.value}
+                  onChange={e =>
+                    setNatureOfWork({
+                      value: e.currentTarget.value,
+                      encoded: '',
+                      error: false,
+                    })
+                  }
+                  className={natureOfWork.error ? 'error' : undefined}
+                >
+                  <option value="" disabled>
+                    Select nature of work
+                  </option>
+                  {hasRefs &&
+                    refs.natureOfWork.map((o, i) => (
+                      <option key={o.id} value={i}>
+                        {o.description}
+                      </option>
+                    ))}
+                </Select>
+                {natureOfWork.value !== '' &&
+                  refs.natureOfWork[parseInt(natureOfWork.value)].id ===
+                    '0ed96f01-9131-11eb-b44f-1c1b0d14e211' && (
+                    <Input
+                      value={natureOfWork.encoded}
+                      onChange={e =>
+                        setNatureOfWork({
+                          ...natureOfWork,
+                          encoded: e.currentTarget.value,
+                          error: false,
+                        })
+                      }
+                      className={natureOfWork.error ? 'error' : undefined}
+                      placeholder="Please specify"
+                      style={{ marginTop: 3 }}
+                    />
+                  )}
+                {natureOfWork.error && (
+                  <ErrorMsg formError>
+                    {natureOfWork.value === ''
+                      ? 'Please select your nature of work'
+                      : 'Please fill out the others field.'}
+                  </ErrorMsg>
+                )}
+              </div>
+            </Field>
+            <Field flex>
+              <Label>Source of Funds</Label>
+              <div style={{ flexGrow: 1 }}>
+                <Select
+                  fullWidth
+                  value={sourceOfFunds.value}
+                  onChange={e =>
+                    setSourceOfFunds({
+                      value: e.currentTarget.value,
+                      encoded: '',
+                      error: false,
+                    })
+                  }
+                  className={sourceOfFunds.error ? 'error' : undefined}
+                >
+                  <option value="" disabled>
+                    Select source of funds
+                  </option>
+                  {hasRefs &&
+                    refs.sourceOfFunds.map((o, i) => (
+                      <option key={o.id} value={i}>
+                        {o.description}
+                      </option>
+                    ))}
+                </Select>
+                {sourceOfFunds.value !== '' &&
+                  refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
+                    '0ed801a1-9131-11eb-b44f-1c1b0d14e211' && (
+                    <Input
+                      value={sourceOfFunds.encoded}
+                      onChange={e =>
+                        setSourceOfFunds({
+                          ...sourceOfFunds,
+                          encoded: e.currentTarget.value,
+                          error: false,
+                        })
+                      }
+                      className={sourceOfFunds.error ? 'error' : undefined}
+                      placeholder="Please specify"
+                      style={{ marginTop: 3 }}
+                    />
+                  )}
+                {sourceOfFunds.error && (
+                  <ErrorMsg formError>
+                    {sourceOfFunds.value === ''
+                      ? 'Please select your source of funds'
+                      : 'Please fill out the others field.'}
+                  </ErrorMsg>
+                )}
+              </div>
+            </Field>
+            <Field flex>
+              <Label>Occupation</Label>
+              <Input
+                value={occupation.value}
+                onChange={e =>
+                  setOccupation({
+                    value: e.currentTarget.value,
+                    error: false,
+                  })
+                }
+                className={occupation.error ? 'error' : undefined}
+                placeholder="Occupation"
+              />
+            </Field>
+            <Field flex>
+              <Label>Employer</Label>
+              <Input
+                value={employer.value}
+                onChange={e =>
+                  setEmployer({
+                    value: e.currentTarget.value,
+                    error: false,
+                  })
+                }
+                className={employer.error ? 'error' : undefined}
+                placeholder="Employer"
+              />
+            </Field>
+
             <Flex alignItems="center" justifyContent="flex-end">
               <Button
                 type="button"
@@ -873,6 +1208,47 @@ export default function UserProfileForm({
                 }}
               />
             </ListItem>
+
+            <ListItem flex>
+              <ListItemText
+                label="Place of Birth"
+                primary={placeOfBirth.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Mothers Maiden Name"
+                primary={mothersMaidenName.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Marital Status"
+                primary={
+                  refs.countries[parseInt(marital.value, 10)].description
+                }
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Country"
+                primary={
+                  refs.countries[parseInt(country.value, 10)].description
+                }
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
             {showGuardianFields && (
               <>
                 <ListItem flex>
@@ -904,17 +1280,7 @@ export default function UserProfileForm({
                 </ListItem>
               </>
             )}
-            <ListItem flex>
-              <ListItemText
-                label="Country"
-                primary={
-                  refs.countries[parseInt(country.value, 10)].description
-                }
-                style={{
-                  flexGrow: 1,
-                }}
-              />
-            </ListItem>
+
             <ListItem flex>
               <ListItemText
                 label="Current Address"
@@ -946,6 +1312,61 @@ export default function UserProfileForm({
               <ListItemText
                 label="Postal Code"
                 primary={postal.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Home Phone Number"
+                primary={contactNo.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Nature of Work"
+                primary={
+                  natureOfWork.encoded !== ''
+                    ? natureOfWork.encoded
+                    : refs.natureOfWork[parseInt(natureOfWork.value, 10)]
+                        .description
+                }
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Source of Funds"
+                primary={
+                  sourceOfFunds.encoded !== ''
+                    ? sourceOfFunds.encoded
+                    : refs.sourceOfFunds[parseInt(sourceOfFunds.value, 10)]
+                        .description
+                }
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Occupation"
+                primary={occupation.value}
+                style={{
+                  flexGrow: 1,
+                }}
+              />
+            </ListItem>
+            <ListItem flex>
+              <ListItemText
+                label="Employer"
+                primary={employer.value}
                 style={{
                   flexGrow: 1,
                 }}
