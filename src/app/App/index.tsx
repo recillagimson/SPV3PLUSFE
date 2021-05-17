@@ -48,6 +48,7 @@ import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
 import { Notifications } from 'app/pages/Notification';
+import { UpdateProfileVerificationPage } from 'app/pages/UpdateProfileVerificationPage/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 
@@ -59,9 +60,10 @@ import PrivateRoute from './PrivateRoute';
 // import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 
 // Importing the Bootstrap CSS
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 /** selectors, slice */
+import { containerActions as dashboardAction } from 'app/pages/DashboardPage/slice';
 import { useAppSaga } from './slice';
 import {
   selectSessionExpired,
@@ -89,6 +91,7 @@ export function App() {
     const sessionCookie = getCookie('spv_uat'); // user token
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
+    const forceUpdate = getCookie('spv_uat_f');
 
     let decrypt: any = false;
     let username: string = '';
@@ -99,18 +102,23 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (decrypt) {
+    if (!forceUpdate && decrypt) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
       dispatch(actions.getSaveLoginName(username));
 
+      // delay the retrieval of references and user profile
       setTimeout(() => {
         dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
-      }, 800);
+        dispatch(dashboardAction.getFetchLoading());
+      }, 1000);
 
       history.push(path === '/' ? '/dashboard' : path);
+    } else if (forceUpdate) {
+      dispatch(actions.getClientTokenLoading());
+      history.push('/register/update-profile');
     } else {
       dispatch(actions.getClientTokenLoading());
 
@@ -185,17 +193,16 @@ export function App() {
               component={CardMemberAgreementPage}
             />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
+            <Route
+              path="/register/update-profile"
+              component={UpdateProfileVerificationPage}
+            />
             <Route path="/500" component={Page500} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <Route path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/scanqr" component={ScanQR} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
-            <Route component={NotFoundPage} />
-            {/* <PrivateRoute path="/sendmoney" component={SendMoney} />
-            <PrivateRoute path="/scanqr" component={ScanQR} />
-            <PrivateRoute path="/onlinebank" component={OnlineBank} />
-            <PrivateRoute path="/buyload" component={BuyLoad} /> */}
             <PrivateRoute path="/profile" component={UserProfilePage} />
             <PrivateRoute
               path={['/notifications/:id', '/notifications']}
@@ -222,6 +229,7 @@ export function App() {
               path="/settings/change-password"
               component={SettingsChangePasswordPage}
             />
+            {/* Not found page should be the last entry for this <Switch /> container */}
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}

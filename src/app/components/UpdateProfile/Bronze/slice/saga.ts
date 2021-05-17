@@ -13,6 +13,7 @@ import {
 import { containerActions as actions } from '.';
 import { selectRequest } from './selectors';
 import { appActions } from 'app/App/slice';
+import { deleteCookie } from 'app/components/Helpers';
 
 /**
  * Update Profile
@@ -21,7 +22,7 @@ function* getUpdateProfile() {
   yield delay(500);
   const token = yield select(selectUserToken);
   const payload = yield select(selectRequest);
-
+  console.log(payload);
   const requestURL = `${process.env.REACT_APP_API_URL}/user/profile/tobronze`;
 
   let encryptPayload: string = '';
@@ -59,6 +60,8 @@ function* getUpdateProfile() {
         decryptPhrase.passPhrase,
       );
       console.log(decryptData);
+
+      deleteCookie('spv_uat_f'); // the force update cookie
       yield put(actions.getFetchSuccess(decryptData));
     }
   } catch (err) {
@@ -72,6 +75,7 @@ function* getUpdateProfile() {
       yield put(actions.getFetchError(newError));
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getFetchReset());
     } else {
       yield put(actions.getFetchError(err));
     }

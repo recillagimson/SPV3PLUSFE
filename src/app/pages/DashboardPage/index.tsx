@@ -45,7 +45,7 @@ export function DashboardPage() {
     dispatch(actions.getFetchLoading());
   }, [actions, dispatch]);
 
-  let balanceInfo = '';
+  let balanceInfo = '0.00';
   if (dashData && dashData.balance_info) {
     balanceInfo = dashData.balance_info.available_balance;
   }
@@ -55,7 +55,7 @@ export function DashboardPage() {
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
-      {loading && <Loading position="absolute" />}
+      {loading && <Loading position="fixed" />}
 
       <Grid columns="35% 1fr" gap="30px">
         <Box

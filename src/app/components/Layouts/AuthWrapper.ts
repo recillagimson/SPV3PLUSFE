@@ -1,14 +1,16 @@
 import styled from 'styled-components/macro';
 
 import { media } from 'styles/media';
+import { StyleConstants } from 'styles/StyleConstants';
 
-const Wrapper = styled.section`
+const Wrapper = styled.section<{ bg?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 10px;
+  padding: 130px 10px 10px;
   min-height: calc(100vh - 60px);
   position: relative;
+  background-color: ${p => (p.bg ? StyleConstants.BODY_COLOR : 'transparent')};
 
   .form-container {
     border-radius: 20px;
@@ -62,10 +64,6 @@ const Wrapper = styled.section`
 
     input[type='checkbox'] {
       cursor: pointer;
-    }
-
-    span {
-      width: calc(100% - 25px);
     }
 
     a {

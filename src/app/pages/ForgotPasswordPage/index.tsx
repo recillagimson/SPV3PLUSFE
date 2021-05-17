@@ -251,7 +251,7 @@ export function ForgotPasswordPage() {
     <Wrapper>
       <Helmet title="Forgot Password" />
       <div className="form-container">
-        {loading && <Loading position="absolute" />}
+        {loading && <Loading position="fixed" />}
 
         <div className="text-center">
           <CircleIndicator size="large">

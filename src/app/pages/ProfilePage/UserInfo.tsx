@@ -6,6 +6,7 @@
  *
  * @prop {object}     profile       Logged In User profile
  * @prop {function}   onEdit        callback to edit profile
+ * @prop {string}     tier          Current tier of user
  */
 import * as React from 'react';
 import styled from 'styled-components/macro';
@@ -41,6 +42,7 @@ const Wrapper = styled.div`
 type UserInfoProps = {
   login?: string;
   profile?: any;
+  tier: string;
   onEdit: () => void;
 };
 
@@ -48,6 +50,7 @@ export default function UserInfoComponent({
   login,
   profile,
   onEdit,
+  tier,
 }: UserInfoProps) {
   return (
     <Wrapper>
@@ -59,7 +62,15 @@ export default function UserInfoComponent({
       </H2>
       <p>{login}</p>
       <small>
-        Status: <strong>Gold Member</strong>
+        <strong>{Boolean(tier) ? tier : '-'}</strong>{' '}
+        <Button
+          onClick={onEdit}
+          color="secondary"
+          variant="contained"
+          size="small"
+        >
+          Upgrade
+        </Button>
       </small>
       <Button onClick={onEdit} color="primary" variant="contained">
         <FontAwesomeIcon icon="pen" /> Edit Profile

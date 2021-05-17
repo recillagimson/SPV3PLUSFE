@@ -85,6 +85,7 @@ export default function VerifyOTPComponent({
 
   const [isCodeValid, setIsCodeValid] = React.useState(true); // set to true
   const [code, setCode] = React.useState({ value: '', error: false });
+  const [apiError, setApiError] = React.useState('');
 
   React.useEffect(
     () => () => {
@@ -96,6 +97,7 @@ export default function VerifyOTPComponent({
   React.useEffect(() => {
     if (error && Object.keys(error).length > 0) {
       setIsCodeValid(false);
+      apiErrorMessage(error);
     }
 
     if (success) {
@@ -103,6 +105,33 @@ export default function VerifyOTPComponent({
       dispatch(actions.getFetchReset());
     }
   }, [success, error]);
+
+  const apiErrorMessage = (err: any) => {
+    if (err.code && err.code === 422) {
+      if (err.errors.error_code && err.errors.error_code.length > 0) {
+        err.errors.error_code.map((i: number) => {
+          if (i === 103 || i === 105 || i === 107) {
+            setApiError(err.errors.payload);
+            return null;
+          }
+          if (i === 108 || i === 109) {
+            setApiError(err.errors.message);
+            return null;
+          }
+        });
+        return null;
+      }
+    }
+
+    if (!err.code && err.response && err.response.status !== 422) {
+      setApiError(err.response.statusText);
+      return;
+    }
+
+    if (!err.response && (!err.code || err.code !== 422)) {
+      setApiError(err.message);
+    }
+  };
 
   const onChangePin = (val: any) => {
     setCode({ value: val, error: false });
@@ -150,14 +179,7 @@ export default function VerifyOTPComponent({
           isValid={isCodeValid}
         />
         {code.error && <ErrorMsg formError>Please input your code</ErrorMsg>}
-        {error && Object.keys(error).length > 0 && (
-          <ErrorMsg formError>
-            {' '}
-            {error.code && error.code === 422
-              ? 'Uh-oh! Invalid Code'
-              : error.message}
-          </ErrorMsg>
-        )}
+        {Boolean(apiError) && <ErrorMsg formError>{apiError}</ErrorMsg>}
       </Field>
 
       <Button

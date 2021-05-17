@@ -11,6 +11,7 @@ import { StyleConstants } from 'styles/StyleConstants';
 
 const Wrapper = styled.div<{ full?: boolean }>`
   width: ${p => (p.full ? '100%' : 'auto')};
+  display: ${p => (p.full ? 'block' : 'inline-block')};
   margin-right: ${p => (!p.full ? '15px' : '0')};
   padding: 0;
   position: relative;

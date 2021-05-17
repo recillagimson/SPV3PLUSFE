@@ -45,7 +45,7 @@ export function LoginPage() {
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
-  const success = useSelector(selectData);
+  const success: any = useSelector(selectData);
 
   const resendLoading = useSelector(selectResendCodeLoading);
   const resendError: any = useSelector(selectResendCodeError);
@@ -110,9 +110,26 @@ export function LoginPage() {
             return undefined;
           });
         }
+        if (error.errors && !error.errors.error_code) {
+          if (error.errors.password && error.errors.password.length > 0) {
+            apiError += error.errors.password.join('\n');
+          }
+
+          if (error.errors.email && error.errors.email.length > 0) {
+            apiError += error.errors.email.join('\n');
+          }
+          if (
+            error.errors.mobile_number &&
+            error.errors.mobile_number.length > 0
+          ) {
+            apiError += error.errors.mobile_number.join('\n');
+          }
+        }
+
         setApiErrorMsg(apiError || '');
         setIsError(true);
       }
+
       if (error.code && error.code !== 422) {
         apiError = error.response.statusText;
         setApiErrorMsg(apiError || '');
@@ -260,8 +277,8 @@ export function LoginPage() {
     dispatch(actions.getResendCodeReset());
   };
 
-  if (success) {
-    return <Redirect to="/dashboard" />;
+  if (success && Object.keys(success).length > 0) {
+    return <Redirect to={success.redirect} />;
   }
 
   let resendErrorMsg =
@@ -282,8 +299,8 @@ export function LoginPage() {
     <Wrapper>
       <Helmet title="Login" />
       <div className="form-container">
-        {loading && <Loading position="absolute" />}
-        {resendLoading && <Loading position="absolute" />}
+        {loading && <Loading position="fixed" />}
+        {resendLoading && <Loading position="fixed" />}
         {/* <H1 margin="0 0 5px">We're glad you're back!</H1>
         <Label>Login to manage your account.</Label> */}
         <Logo size="medium" />
