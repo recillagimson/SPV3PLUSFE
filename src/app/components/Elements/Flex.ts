@@ -9,7 +9,12 @@ import styled from 'styled-components/macro';
 
 export interface FlexProps {
   alignItems?: 'flex-start' | 'flex-end' | 'center' | 'stretch';
-  justifyContent?: 'flex-start' | 'flex-end' | 'center' | 'stretch';
+  justifyContent?:
+    | 'flex-start'
+    | 'flex-end'
+    | 'center'
+    | 'stretch'
+    | 'space-between';
   direction?: 'row' | 'column' | 'column-reverser' | 'row-reverse';
 }
 

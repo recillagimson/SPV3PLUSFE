@@ -12,20 +12,20 @@ const sizes = {
 const Wrapper = styled.div<Props>`
   width: ${p => (p.size ? sizes[p.size] : '100%')};
   border: 1px solid #fff;
-  border-radius: 3px;
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
-  .card-title {
+  background-color: white;
+  .title {
     font-weight: bold;
     padding: 20px 20px;
     border-bottom: 1px solid #eee;
   }
-  .card-body {
-    padding: 10px 20px;
+  .body {
+    padding: 20px 20px;
     flex: 1;
   }
-  .card-footer {
+  .footer {
     border-top: 1px solid #eee;
     padding: 15px 20px;
   }
