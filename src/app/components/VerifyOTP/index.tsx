@@ -6,6 +6,7 @@
  * @prop {string}     viaValue      Email or mobile number of the requestor
  * @prop {function}   onSuccess     callback when code is verified
  * @prop {string}     apiURL        pass the API endpoint ie: /auth/verify/password
+ * @prop {string}     otpType       otp type ie: send_money
  *                                  NOTE: do not include the /api in the endpoint
  */
 import * as React from 'react';
@@ -66,12 +67,15 @@ type VerifyOTPComponentProps = {
   onSuccess: () => void;
   /** Pass the BE API endpoint */
   apiURL: string;
+  /** Where the OTP will be use */
+  otpType?: string;
 };
 export default function VerifyOTPComponent({
   isEmail,
   viaValue,
   onSuccess,
   apiURL,
+  otpType,
 }: VerifyOTPComponentProps) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
@@ -153,8 +157,10 @@ export default function VerifyOTPComponent({
           mobile_number: viaValue && !isEmail ? viaValue : undefined,
           email: viaValue && isEmail ? viaValue : undefined,
           code: code.value,
+          otp_type: otpType ? otpType : undefined,
         },
       };
+
       dispatch(actions.getFetchLoading(data));
     }
   };

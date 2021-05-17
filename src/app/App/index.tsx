@@ -40,7 +40,10 @@ import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
-import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
+import {
+  TransactionHistoryPage,
+  TransactionHistoryDetailsPage,
+} from 'app/pages/TransactionHistoryPage/Loadable';
 import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
@@ -54,6 +57,7 @@ import { Page500 } from 'app/components/500/Loadable';
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
 import PrivateRoute from './PrivateRoute';
+// import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 
 // Importing the Bootstrap CSS
 // import 'bootstrap/dist/css/bootstrap.min.css';
@@ -66,6 +70,7 @@ import {
   selectIsAuthenticated,
   selectIsBlankPage,
 } from './slice/selectors';
+import { usePrevious } from 'app/components/Helpers/Hooks';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -194,10 +199,15 @@ export function App() {
             />
             <Route path="/500" component={Page500} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
-            <PrivateRoute path="/sendmoney" component={SendMoney} />
+            <Route path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/scanqr" component={ScanQR} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
+            <Route component={NotFoundPage} />
+            {/* <PrivateRoute path="/sendmoney" component={SendMoney} />
+            <PrivateRoute path="/scanqr" component={ScanQR} />
+            <PrivateRoute path="/onlinebank" component={OnlineBank} />
+            <PrivateRoute path="/buyload" component={BuyLoad} /> */}
             <PrivateRoute path="/profile" component={UserProfilePage} />
             <PrivateRoute
               path={['/notifications/:id', '/notifications']}
@@ -207,6 +217,11 @@ export function App() {
               exact
               path="/transaction-history"
               component={TransactionHistoryPage}
+            />
+            <PrivateRoute
+              exact
+              path="/transaction-history/:id"
+              component={TransactionHistoryDetailsPage}
             />
             <PrivateRoute
               exact

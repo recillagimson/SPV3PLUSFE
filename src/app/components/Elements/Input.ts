@@ -8,7 +8,7 @@
 import styled from 'styled-components/macro';
 import FormElementStyle from './FormElementsStyle';
 
-const Input = styled.input<{ hidespinner?: boolean }>`
+const Input = styled.input<{ hidespinner?: boolean; error?: boolean }>`
   ${FormElementStyle} // basic css style for all form elements
   width: 100%;
   display: block;

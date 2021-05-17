@@ -45,6 +45,7 @@ export default function Sidebar() {
   const [isLogout, setIsLogout] = React.useState(false);
   const [fakeLoading, setFakeLoading] = React.useState(false);
 
+  const [show, setShow] = React.useState(true);
   const gotoProfile = () => {
     history.push('/profile');
   };
