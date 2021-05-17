@@ -15,8 +15,7 @@ import { useContainerSaga } from './slice';
 import {
   selectLoading,
   selectError,
-  selectData,
-  selectTransactionHistoryDetailsData,
+  selectTransactionHistoryData,
 } from './slice/selectors';
 import { transactionHistoryDefaultState } from './slice';
 
@@ -33,21 +32,20 @@ export function TransactionHistoryPage(props) {
   const [transactionType, setTransactionType] = React.useState(
     TRANSACTION_TYPE.ALL,
   );
-  const [transactionDetails, setFileteredTransactionDetails] = React.useState([
+  const [transactionHistory, setFilteredTransactionHistory] = React.useState([
     transactionHistoryDefaultState,
   ]);
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
-  const success: any = useSelector(selectData);
-
+  const success: any = useSelector(selectTransactionHistoryData);
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());
   }, [actions, dispatch]);
 
   React.useEffect(() => {
-    setFileteredTransactionDetails(success);
+    if (success?.data?.length) setFilteredTransactionHistory(success.data);
   }, [success]);
 
   const handleViewTransactionDetails = (id: string) => {
@@ -57,12 +55,12 @@ export function TransactionHistoryPage(props) {
   const filteredTransactionDetails = (type: string) => {
     setTransactionType(type);
     if (type === TRANSACTION_TYPE.ALL) {
-      setFileteredTransactionDetails(success);
+      setFilteredTransactionHistory(success?.data);
     } else {
-      const data = success?.filter(
+      const data = success?.data?.filter(
         transaction => transaction.transaction_type === type,
       );
-      setFileteredTransactionDetails(data);
+      setFilteredTransactionHistory(data);
     }
   };
 
@@ -134,16 +132,19 @@ export function TransactionHistoryPage(props) {
             <p>Recent transaction will reflect within 24 hours.</p>
           </S.TransactionTitle>
           <ComponentLoading isLoading={loading}>
-            {transactionDetails.length ? (
+            {transactionHistory.length ? (
               <S.TransactionList>
-                {transactionDetails.map((d, i) => {
+                {transactionHistory.map((d, i) => {
                   const isPostiveAmount =
                     d.transaction_category.transaction_type === 'POSITIVE';
                   const isNegativeAmount =
                     d.transaction_category.transaction_type === 'NEGATIVE';
 
                   return (
-                    <S.TransactionListItem key={i}>
+                    <S.TransactionListItem
+                      key={i}
+                      isLast={i + 1 === transactionHistory.length}
+                    >
                       <S.ListContainer>
                         <S.ListTitle>
                           {d.transaction_category.title}
@@ -177,6 +178,16 @@ export function TransactionHistoryPage(props) {
                     </S.TransactionListItem>
                   );
                 })}
+                <S.TransactionListItem noBorder>
+                  <Button
+                    onClick={() => alert('For development')}
+                    color="secondary"
+                    size="medium"
+                    variant="outlined"
+                  >
+                    See more transactions
+                  </Button>
+                </S.TransactionListItem>
               </S.TransactionList>
             ) : (
               <S.EmptyWrapper>
