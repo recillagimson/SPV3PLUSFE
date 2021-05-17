@@ -6,9 +6,14 @@ import { initialState } from '.';
 // First select the relevant part from the state
 const selectDomain = (state: RootState) => state.sendToBank || initialState;
 
-export const selectPesonetData = createSelector(
+export const selectBanks = createSelector(
   [selectDomain],
   subState => subState.data,
+);
+
+export const selectPurposes = createSelector(
+  [selectDomain],
+  subState => subState.purposes,
 );
 
 export const selectLoading = createSelector(
@@ -24,4 +29,14 @@ export const selectError = createSelector(
 export const selectBankTransactionType = createSelector(
   [selectDomain],
   subState => subState.bankTransactionType,
+);
+
+export const selectValidateTransaction = createSelector(
+  [selectDomain],
+  subState => subState.validate,
+);
+
+export const selectFormData = createSelector(
+  [selectDomain],
+  subState => subState.formData,
 );

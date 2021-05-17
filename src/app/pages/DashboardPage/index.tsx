@@ -154,7 +154,7 @@ export function DashboardPage() {
           <SendMoney />
           Send Money
         </DashboardButton>
-        <DashboardButton onClick={() => history.push('/onlinebank')}>
+        <DashboardButton onClick={() => history.push('/send-to-bank')}>
           <SendToBank />
           Send To Bank
         </DashboardButton>

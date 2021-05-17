@@ -3,19 +3,19 @@ import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import ReactCodeInput from 'react-code-input';
 
-import { Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 // get our fontawesome imports
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
-import Loading from 'app/components/Loading';
+import ComponentLoading from 'app/components/ComponentLoading';
 import Box from 'app/components/Box';
 import Button from 'app/components/Elements/Button';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
+import Select from 'app/components/Elements/Select';
 import H3 from 'app/components/Elements/H3';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Dialog from 'app/components/Dialog';
@@ -27,20 +27,29 @@ import { useContainerSaga } from './slice';
 import {
   selectLoading,
   selectError,
-  selectPesonetData,
+  selectBanks,
+  selectPurposes,
+  selectBankTransactionType,
+  selectValidateTransaction,
 } from './slice/selectors';
+
+import { BankState } from './slice/types';
+
+// Helpers
+import {
+  initialFormData,
+  initialformErrors,
+  BANK_TRANSACTION_TYPE,
+} from './helpers';
+
+import { validateEmail } from 'app/components/Helpers';
+
+// Styled Components
+import * as S from './SendToBank.style';
 
 // Assets
 import InstapayLogo from 'app/components/Assets/instapay.svg';
 import PesonetLogo from 'app/components/Assets/pesonet.svg';
-import LockLogo from 'app/components/Assets/icon-lock.svg';
-
-// Helpers
-import { BANK_ICONS } from './helpers';
-
-// Styled Components
-import * as S from './SendToBank.style';
-import { AnyARecord } from 'dns';
 
 export function SendToBank() {
   const [steps, setSteps] = React.useState(0);
@@ -48,31 +57,114 @@ export function SendToBank() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
-  // const error: any = useSelector(selectError);
-  const banks = useSelector(selectPesonetData);
+  const apiErrors: any = useSelector(selectError);
+  const banks = useSelector(selectBanks);
+  const purposes = useSelector(selectPurposes);
+  const bankTransactionType = useSelector(selectBankTransactionType);
+  const validateTransaction = useSelector(selectValidateTransaction);
 
-  const selectBankTransactionType = (type: string) => {
-    dispatch(actions.getPesonetBanksLoading(type));
+  const [formData, setFormData] = React.useState(initialFormData);
+  const [formErrors, setFormErrors] = React.useState(initialformErrors);
+
+  React.useEffect(() => {
+    dispatch(actions.getPurposesLoading());
+  }, []);
+
+  React.useEffect(() => {
+    if (apiErrors?.errors?.error_code?.length) {
+      apiErrors?.errors?.error_code?.map(err => {
+        if (err === 402) {
+          setFormErrors({
+            ...formErrors,
+            amount: 'You do not have enough balance.',
+          });
+        }
+        if (err === 405) {
+          setFormErrors({
+            ...formErrors,
+            amount: 'Oops! You have reached the allowable wallet limit for this month. Please try again next month.',
+          });
+        }
+
+        return null;
+      });
+    }
+  }, [apiErrors]);
+
+  React.useEffect(() => {
+    console.log('validateTransaction', validateTransaction);
+  }, [validateTransaction]);
+
+  const validateForm = formData => {
+    const errors: any = {};
+    if (formData.account_number === '') {
+      errors.account_number = 'This is a required field.';
+    }
+
+    if (formData.account_name === '') {
+      errors.account_name = 'This is a required field.';
+    }
+
+    if (formData.amount === '') {
+      errors.amount = 'This is a required field.';
+    }
+
+    if (formData.purpose === '') {
+      errors.purpose = 'This is a required field.';
+    }
+
+    if (!validateEmail(formData.send_receipt_to)) {
+      errors.send_receipt_to = 'This is a required field and a valid email.';
+    }
+
+    const hasFormErrors = !!Object.keys(errors).filter(err => err !== '')
+      .length;
+
+    if (hasFormErrors) {
+      setFormErrors(errors);
+    } else {
+      setFormErrors(initialformErrors);
+    }
+
+    return {
+      errors,
+      hasErrors: hasFormErrors,
+    };
+  };
+
+  const _handleSelectBankTransactionType = (type: string) => {
+    dispatch(actions.getBanksLoading(type));
     setSteps(steps + 1);
   };
 
-  const CTA_ITEMS = [
-    {
-      id: 'instapay',
-      header: 'Receive Instantly Free',
-      icon: InstapayLogo,
-      items: ['Select partner banks', 'Transaction limit is PHP 50,000'],
-    },
-    {
-      id: 'pesonet',
-      header: 'Receive by end of the day for FREE',
-      icon: PesonetLogo,
-      items: [
-        'Transfers made before the 12:30 PM cut off are processed within the same banking day.',
-        'Transactions after cut off or on holidays are processed the next banking day.',
-      ],
-    },
-  ];
+  const _handleSelectBankData = (data: BankState) => {
+    const { code, bank } = data;
+    setFormData({
+      ...formData,
+      bank_code: code,
+      bank_name: bank,
+    });
+    setSteps(steps + 1);
+  };
+
+  const _handleChangeFormFieldValues = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const _onSubmitFormData = (e: any) => {
+    e.preventDefault();
+    const errors = validateForm(formData);
+
+    if (!errors.hasErrors) {
+      // dispatch(actions.validateBankLoading(formData));
+      setSteps(steps + 1);
+    }
+  };
 
   const renderReviewContainer = (type?: string) => {
     const isSuccessReview = type === 'successReview';
@@ -81,53 +173,41 @@ export function SendToBank() {
       <S.ReviewContainer>
         <S.ReviewListItem>
           <p>Bank</p>
-          <p>BPI Family Bank</p>
+          <p>{formData.bank_name}</p>
         </S.ReviewListItem>
         <S.ReviewListItem>
           <p>Account Number</p>
-          <p>3021654789652</p>
+          <p>{formData.account_number}</p>
         </S.ReviewListItem>
         <S.ReviewListItem>
           <p>Account Name</p>
-          <p>Juan Dela Cruz</p>
+          <p>{formData.account_name}</p>
         </S.ReviewListItem>
         <S.ReviewListItem>
           <p>Amount</p>
-          <p>PHP 4000.00</p>
-        </S.ReviewListItem>
-        {!isSuccessReview && (
-          <S.ReviewListItem>
-            <p>Purpose</p>
-            <p>Fund Transfer</p>
-          </S.ReviewListItem>
-        )}
-        <S.ReviewListItem>
-          <p>Send Receipt To</p>
-          <p>None</p>
+          <p>{formData.amount}</p>
         </S.ReviewListItem>
         {isSuccessReview ? (
-          <S.ReviewListItem>
-          <p>Transaction Number</p>
-          <p>000001</p>
-        </S.ReviewListItem>
-        ) : (
           <React.Fragment>
             <S.ReviewListItem>
-              <p>Service Fee</p>
-              <p>PHP 150.00</p>
+              <p>Send Receipt To</p>
+              <p>None</p>
             </S.ReviewListItem>
             <S.ReviewListItem>
-              <p>Date</p>
-              <p>10 August 2020, 03:46 PM</p>
+              <p>Transaction Number</p>
+              <p>000001</p>
             </S.ReviewListItem>
           </React.Fragment>
+        ) : (
+          <S.ReviewListItem>
+            <p>Purpose</p>
+            <p>{formData.purpose}</p>
+          </S.ReviewListItem>
         )}
       </S.ReviewContainer>
     );
   };
 
-  console.log('banks', banks);
-  console.log('loading', loading);
   const renderSteps = (step: number) => {
     switch (step) {
       case 0:
@@ -135,10 +215,10 @@ export function SendToBank() {
           <S.Wrapper>
             <p>To Bank account</p>
             <S.CTAWrapper>
-              {CTA_ITEMS.map((cta, i) => (
+              {BANK_TRANSACTION_TYPE.map((cta, i) => (
                 <S.SendCTA
                   key={i}
-                  onClick={() => selectBankTransactionType(cta.id)}
+                  onClick={() => _handleSelectBankTransactionType(cta.id)}
                 >
                   <S.SendCTAContent>
                     <p>{cta.header}</p>
@@ -160,20 +240,26 @@ export function SendToBank() {
       case 1:
         return (
           <S.Wrapper>
-            {BANK_ICONS.map((icon, i) => (
-              <S.BankIcons
-                src={icon.icon}
-                alt={icon.alt}
-                onClick={() => setSteps(2)}
-              />
-            ))}
+            <S.List>
+              {banks?.map((d: any) => (
+                <S.ListItem key={d.code}>
+                  <S.ItemTitle>{d.bank}</S.ItemTitle>
+                  <FontAwesomeIcon
+                    icon="chevron-right"
+                    onClick={() => _handleSelectBankData(d)}
+                  />
+                </S.ListItem>
+              ))}
+            </S.List>
           </S.Wrapper>
         );
       case 2:
         return (
           <S.Wrapper>
             <S.ContentImage
-              src={InstapayLogo}
+              src={
+                bankTransactionType === 'instapay' ? InstapayLogo : PesonetLogo
+              }
               alt="Instapay"
               margin="0 0 20px"
             />
@@ -184,12 +270,15 @@ export function SendToBank() {
                 </Label>
                 <Input
                   required
-                  type="text"
-                  value={''}
-                  onChange={e => console.log('e', e)}
+                  type="number"
+                  name="amount"
+                  value={formData.amount}
+                  onChange={_handleChangeFormFieldValues}
                   placeholder="PHP 0.00"
                 />
-                <ErrorMsg formError>This is a required field</ErrorMsg>
+                {formErrors.amount && (
+                  <ErrorMsg formError>{formErrors.amount}</ErrorMsg>
+                )}
               </Field>
               <Field>
                 <Label>
@@ -198,11 +287,14 @@ export function SendToBank() {
                 <Input
                   required
                   type="text"
-                  value={''}
-                  onChange={e => console.log('e', e)}
-                  placeholder="Type your account name..."
+                  name="account_name"
+                  value={formData.account_name}
+                  maxLength={150}
+                  onChange={_handleChangeFormFieldValues}
                 />
-                <ErrorMsg formError>This is a required field</ErrorMsg>
+                {formErrors.account_name && (
+                  <ErrorMsg formError>{formErrors.account_name}</ErrorMsg>
+                )}
               </Field>
               <Field>
                 <Label>
@@ -210,42 +302,66 @@ export function SendToBank() {
                 </Label>
                 <Input
                   required
-                  type="text"
-                  value={''}
-                  onChange={e => console.log('e', e)}
-                  placeholder="0000 0000 0000 0000"
+                  type="number"
+                  name="account_number"
+                  maxLength={20}
+                  value={formData.account_number}
+                  onChange={_handleChangeFormFieldValues}
                 />
-                <ErrorMsg formError>This is a required field</ErrorMsg>
+                {formErrors.account_number && (
+                  <ErrorMsg formError>{formErrors.account_number}</ErrorMsg>
+                )}
               </Field>
               <Field>
-                <Label>Send Receipt to (optional)</Label>
+                <Label>Send Receipt to</Label>
                 <Input
                   required
-                  type="text"
-                  value={''}
-                  onChange={e => console.log('e', e)}
-                  placeholder="Enter email or mobile number (optional)"
+                  type="email"
+                  name="send_receipt_to"
+                  value={formData.send_receipt_to}
+                  onChange={_handleChangeFormFieldValues}
+                  placeholder="Enter email or mobile number"
                 />
+                {formErrors.send_receipt_to && (
+                  <ErrorMsg formError>{formErrors.send_receipt_to}</ErrorMsg>
+                )}
                 <S.FieldSubtext>
                   You can notify the recipient by entering their email address
                   and mobile number
                 </S.FieldSubtext>
               </Field>
               <Field>
-                <Label>Message (optional)</Label>
-                <Input
-                  required
-                  type="text"
-                  value={''}
-                  onChange={e => console.log('e', e)}
-                />
+                <Label>Purpose of transaction</Label>
+                <Select
+                  fullWidth
+                  value={formData.purpose}
+                  onChange={e => {
+                    setFormData({
+                      ...formData,
+                      purpose: e.target.value,
+                    });
+                  }}
+                  className={formErrors.purpose ? 'error' : undefined}
+                >
+                  <option value="" disabled>
+                    Please select
+                  </option>
+                  {purposes?.map(d => (
+                    <option key={d.code} value={d.code}>
+                      {d.description}
+                    </option>
+                  ))}
+                </Select>
+                {formErrors.purpose && (
+                  <ErrorMsg formError>{formErrors.purpose}</ErrorMsg>
+                )}
               </Field>
               <S.FormFooter>
                 <Button
                   size="medium"
                   color="secondary"
                   variant="outlined"
-                  onClick={() => setSteps(1)}
+                  onClick={() => setSteps(steps - 1)}
                 >
                   Back
                 </Button>
@@ -253,7 +369,7 @@ export function SendToBank() {
                   size="medium"
                   color="primary"
                   variant="contained"
-                  onClick={() => setSteps(3)}
+                  onClick={(e: any) => _onSubmitFormData(e)}
                 >
                   Next
                 </Button>
@@ -296,8 +412,10 @@ export function SendToBank() {
             width="400px"
             margin="20px auto"
           >
-            <S.ContentImage src={LockLogo} alt="Lock Logo" margin="0 0 20px" />
-            <H3>Enter 4-Digit one time PIN</H3>
+            <CircleIndicator size="medium" color="primary">
+              <FontAwesomeIcon icon="lock" />
+            </CircleIndicator>
+            <H3 margin="30px 0 10px">Enter 4-Digit one time PIN</H3>
             <p className="pin-description">
               The one time pin code has been sent to your mobile number
             </p>
@@ -352,7 +470,9 @@ export function SendToBank() {
     <React.Fragment>
       <Helmet title="Send To Bank" />
       <Box title={renderTitle(steps)} titleBorder={true}>
-        {renderSteps(steps)}
+        <ComponentLoading isLoading={loading}>
+          {renderSteps(steps)}
+        </ComponentLoading>
       </Box>
       {/* Show success Dialog */}
       <Dialog show={isOpen} size="small">

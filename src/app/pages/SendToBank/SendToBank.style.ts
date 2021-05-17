@@ -289,3 +289,39 @@ export const ConfirmationMessage = styled.p`
   line-height: 21px;
   margin: 10px 0 0;
 `;
+
+export const ItemTitle = styled.p`
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 0;
+`;
+
+/**
+ * List Components
+ */
+export const List = styled.ul`
+  margin: 30px 0 0;
+  padding: 0;
+
+  li {
+    list-style: none;
+  }
+`;
+
+export const ListItem = styled.li`
+  border-bottom: 1px solid #f3f4f9;
+  padding: 15px 0;
+
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+
+  svg {
+    cursor: pointer;
+  }
+
+  &:first-child {
+    border-top: 1px solid #f3f4f9;
+  }
+`;

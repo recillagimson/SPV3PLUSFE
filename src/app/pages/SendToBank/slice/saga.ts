@@ -5,19 +5,21 @@ import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
 import { selectUserToken } from 'app/App/slice/selectors';
-import { getResponsePassphrase } from 'app/App/slice/saga';
-import { selectBankTransactionType } from './selectors';
+import {
+  getRequestPassphrase,
+  getResponsePassphrase,
+} from 'app/App/slice/saga';
+import { selectBankTransactionType, selectFormData } from './selectors';
 
 import { containerActions as actions } from '.';
 
 /**
- * Help center data
+ * Get Purpose
  */
-function* getBanks() {
+function* getPurposes() {
   yield delay(500);
   const token = yield select(selectUserToken);
-  const bankTransactionType = yield select(selectBankTransactionType);
-  const requestURL = `${process.env.REACT_APP_API_URL}/send2bank/ubp-${bankTransactionType}/banks`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/send2bank/ubp-instapay/purposes`;
 
   const options = {
     method: 'GET',
@@ -45,10 +47,10 @@ function* getBanks() {
         decryptPhrase.passPhrase,
       );
 
-      yield put(actions.getPesonetBankSuccess(decryptData));
+      yield put(actions.getPurposesSuccess(decryptData));
     } else {
       yield put(
-        actions.getPesonetBankError({
+        actions.getPurposesError({
           error: true,
           message: 'An error has occured.',
         }),
@@ -62,9 +64,136 @@ function* getBanks() {
         code: 422,
         ...body,
       };
-      yield put(actions.getPesonetBankError(newError));
+      yield put(actions.getPurposesError(newError));
     } else {
-      yield put(actions.getPesonetBankError(err));
+      yield put(actions.getPurposesError(err));
+    }
+  }
+}
+
+/**
+ * Get Banks data
+ */
+function* getBanks() {
+  yield delay(500);
+  const token = yield select(selectUserToken);
+  const bankTransactionType = yield select(selectBankTransactionType);
+  const requestURL = `${process.env.REACT_APP_API_URL}/send2bank/ubp-${bankTransactionType}/banks`;
+
+  const options = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token.access_token}`,
+    },
+  };
+
+  try {
+    const apirequest = yield call(request, requestURL, options);
+    if (apirequest) {
+      // request decryption passphrase
+      let decryptPhrase: PassphraseState = yield call(
+        getResponsePassphrase,
+        apirequest.data.id,
+      );
+
+      // decrypt payload data
+      // function returns the parsed string
+      let decryptData = spdCrypto.decrypt(
+        apirequest.data.payload,
+        decryptPhrase.passPhrase,
+      );
+
+      yield put(actions.getBanksSuccess(decryptData));
+    } else {
+      yield put(
+        actions.getBanksError({
+          error: true,
+          message: 'An error has occured.',
+        }),
+      );
+    }
+  } catch (err) {
+    // special case, check the 422 for invalid data (account already exists)
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.getBanksError(newError));
+    } else {
+      yield put(actions.getBanksError(err));
+    }
+  }
+}
+
+// Validate Transaction for selected Bank
+function* validateSendToBank() {
+  yield delay(500);
+  const token = yield select(selectUserToken);
+  const bankTransactionType = yield select(selectBankTransactionType);
+  const formData = yield select(selectFormData);
+  const requestURL = `${process.env.REACT_APP_API_URL}/send2bank/ubp-${bankTransactionType}/validate`;
+
+  let encryptPayload: string = '';
+  let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
+
+  if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
+    encryptPayload = spdCrypto.encrypt(
+      JSON.stringify(formData),
+      requestPhrase.passPhrase,
+    );
+  }
+
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token.access_token}`,
+    },
+    body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
+  };
+
+  try {
+    const apirequest = yield call(request, requestURL, options);
+    if (apirequest) {
+
+      // request decryption passphrase
+      let decryptPhrase: PassphraseState = yield call(
+        getResponsePassphrase,
+        apirequest.data.id,
+      );
+
+      // decrypt payload data
+      // function returns the parsed string
+      let decryptData = spdCrypto.decrypt(
+        apirequest.data.payload,
+        decryptPhrase.passPhrase,
+      );
+
+      yield put(actions.validateBankSuccess(decryptData));
+    } else {
+      yield put(
+        actions.validateBankError({
+          error: true,
+          message: 'An error has occured.',
+        }),
+      );
+    }
+  } catch (err) {
+    // special case, check the 422 for invalid data (account already exists)
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.validateBankError(newError));
+    } else {
+      yield put(actions.validateBankError(err));
     }
   }
 }
@@ -77,5 +206,7 @@ export function* containerSaga() {
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
-  yield takeLatest(actions.getPesonetBanksLoading.type, getBanks);
+  yield takeLatest(actions.getPurposesLoading.type, getPurposes);
+  yield takeLatest(actions.getBanksLoading.type, getBanks);
+  yield takeLatest(actions.validateBankLoading.type, validateSendToBank);
 }

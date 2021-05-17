@@ -1,43 +1,43 @@
-import IconBPI from 'app/components/Assets/icon-bpi.svg';
-import IconUB from 'app/components/Assets/icon-ub.svg';
-import IconPNB from 'app/components/Assets/icon-pnb.svg';
-import IconMetrobank from 'app/components/Assets/icon-metrobank.svg';
-import IconHSBC from 'app/components/Assets/icon-hsbc.svg';
-import IconEastwest from 'app/components/Assets/icon-eastwest.svg';
-import IconPSBANK from 'app/components/Assets/icon-psbank.svg';
-import IconAUB from 'app/components/Assets/icon-aub.svg';
+// Assets
+import InstapayLogo from 'app/components/Assets/instapay.svg';
+import PesonetLogo from 'app/components/Assets/pesonet.svg';
 
-export const BANK_ICONS = [
+export const initialFormData = {
+  bank_code: '',
+  bank_name: '',
+  account_number: '',
+  account_name: '',
+  amount: '',
+  purpose: '',
+  other_purpose: '',
+  send_receipt_to: '',
+};
+
+export const initialformErrors = {
+  bank_code: '',
+  bank_name: '',
+  account_number: '',
+  account_name: '',
+  amount: '',
+  purpose: '',
+  other_purpose: '',
+  send_receipt_to: '',
+};
+
+export const BANK_TRANSACTION_TYPE = [
   {
-    icon: IconBPI,
-    alt: 'Bank'
+    id: 'instapay',
+    header: 'Receive Instantly Free',
+    icon: InstapayLogo,
+    items: ['Select partner banks', 'Transaction limit is PHP 50,000'],
   },
   {
-    icon: IconUB,
-    alt: 'Bank'
-  },
-  {
-    icon: IconPNB,
-    alt: 'Bank'
-  },
-  {
-    icon: IconMetrobank,
-    alt: 'Bank'
-  },
-  {
-    icon: IconHSBC,
-    alt: 'Bank'
-  },
-  {
-    icon: IconEastwest,
-    alt: 'Bank'
-  },
-  {
-    icon: IconPSBANK,
-    alt: 'Bank'
-  },
-  {
-    icon: IconAUB,
-    alt: 'Bank'
+    id: 'pesonet',
+    header: 'Receive by end of the day for FREE',
+    icon: PesonetLogo,
+    items: [
+      'Transfers made before the 12:30 PM cut off are processed within the same banking day.',
+      'Transactions after cut off or on holidays are processed the next banking day.',
+    ],
   },
 ];

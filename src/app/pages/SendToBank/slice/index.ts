@@ -9,30 +9,71 @@ export const initialState: ContainerState = {
   loading: false,
   error: {},
   data: [],
+  purposes: [],
+  validate: {},
+  bankTransactionType: '',
+  formData: {},
 };
 
 const slice = createSlice({
   name: 'sendToBank',
   initialState,
   reducers: {
-    getPesonetBanksLoading(state, action: PayloadAction<string>) {
+    getPurposesLoading(state) {
+      state.loading = true;
+      state.error = {};
+      state.purposes = [];
+    },
+    getPurposesSuccess(state, action: PayloadAction<[]>) {
+      state.loading = false;
+      state.purposes = action.payload;
+    },
+    getPurposesError(state, action: PayloadAction<ErrorState>) {
+      state.error = action.payload;
+      state.loading = false;
+      state.purposes = [];
+    },
+    getPurposesReset(state) {
+      state.loading = false;
+      state.error = {};
+      state.purposes = [];
+    },
+    getBanksLoading(state, action: PayloadAction<string>) {
       state.loading = true;
       state.error = {};
       state.data = [];
       state.bankTransactionType = action.payload;
     },
-    getPesonetBankSuccess(state, action: PayloadAction<[]>) {
+    getBanksSuccess(state, action: PayloadAction<[]>) {
       state.loading = false;
       state.data = action.payload;
     },
-    getPesonetBankError(state, action: PayloadAction<ErrorState>) {
+    getBanksError(state, action: PayloadAction<ErrorState>) {
       state.error = action.payload;
       state.loading = false;
     },
-    getPesonetBankReset(state) {
+    getBanksReset(state) {
       state.loading = false;
       state.error = {};
       state.data = [];
+    },
+    validateBankLoading(state, action: PayloadAction<object>) {
+      state.loading = true;
+      state.error = {};
+      state.validate = {};
+      state.formData = action.payload;
+    },
+    validateBankSuccess(state, action: PayloadAction<object>) {
+      state.loading = false;
+      state.error = {};
+      state.validate = action.payload;
+      state.formData = {};
+    },
+    validateBankError(state, action: PayloadAction<ErrorState>) {
+      state.error = action.payload;
+      state.loading = false;
+      state.validate = {};
+      state.formData = {};
     },
   },
 });
