@@ -7,6 +7,7 @@ import { LoginState } from 'app/pages/LoginPage/slice/types';
 import { RegisterState } from 'app/pages/RegisterPage/slice/types';
 import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
 import { SendMoneyState } from 'app/pages/SendMoney/slice/types';
+import { GenerateQRState } from 'app/pages/GenerateQR/slice/types';
 import { ProfileState } from 'app/pages/ProfilePage/slice/types';
 import { NotificationsState } from 'app/pages/Notification/slice/types';
 import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice/types';
@@ -30,6 +31,7 @@ export interface RootState {
   verifyOTP?: VerifyOTPState;
   updatePassword?: UpdatePasswordState;
   sendMoney?: SendMoneyState;
+  generateQR?: GenerateQRState;
   profile?: ProfileState;
   notifications?: NotificationsState;
 

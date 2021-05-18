@@ -530,7 +530,7 @@ export function SendMoney() {
                 <Grid container justify="center" spacing={3}>
                   <Grid item xs={12} md={8}>
                     <Avatar
-                      image="https://source.unsplash.com/random/120x120"
+                      image={validateSuccess.selfie_location}
                       size="medium"
                     />
                     <p className="email">{validateSuccess.first_name}</p>
@@ -544,7 +544,10 @@ export function SendMoney() {
                       <Grid item xs={6} className="item">
                         <span className="value">
                           {' '}
-                          PHP {parseInt(amount.value)}.00
+                          PHP{' '}
+                          {Number.isInteger(validateSuccess.amount)
+                            ? validateSuccess.amount + '.00'
+                            : validateSuccess.amount}
                         </span>
                       </Grid>
                       <Grid item xs={6} className="item">
@@ -560,7 +563,10 @@ export function SendMoney() {
                     <br />
                     <p>Total amount</p>
                     <H3 className="total-amount">
-                      PHP {parseInt(amount.value)}.00
+                      PHP{' '}
+                      {Number.isInteger(validateSuccess.amount)
+                        ? validateSuccess.amount + '.00'
+                        : validateSuccess.amount}
                     </H3>
                     <br />
                     <Button
