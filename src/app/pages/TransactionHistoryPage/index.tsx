@@ -29,6 +29,7 @@ import * as S from './TransactionHistory.style';
 import NoTransactionsLogo from 'app/components/Assets/no-transactions.svg';
 
 export function TransactionHistoryPage(props) {
+  const [pagination, setPagination] = React.useState(5); // Temporary pagination
   const [transactionType, setTransactionType] = React.useState(
     TRANSACTION_TYPE.ALL,
   );
@@ -134,7 +135,7 @@ export function TransactionHistoryPage(props) {
           <ComponentLoading isLoading={loading}>
             {transactionHistory.length ? (
               <S.TransactionList>
-                {transactionHistory.map((d, i) => {
+                {transactionHistory?.slice(0, pagination).map((d, i) => {
                   const isPostiveAmount =
                     d.transaction_category.transaction_type === 'POSITIVE';
                   const isNegativeAmount =

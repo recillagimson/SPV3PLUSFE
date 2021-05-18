@@ -27,6 +27,7 @@ import {
   bankListData,
   receivedMoneyListData,
   dragonpayListData,
+  loadListtData,
 } from './helpers';
 
 // Assets
@@ -45,8 +46,6 @@ function TransactionHistoryDetailsPage(props) {
   const transactionHistoryDetailsData = useSelector(
     selectTransactionHistoryDetailsData,
   );
-
-  console.log('transactionHistoryDetailsData', transactionHistoryDetailsData);
 
   React.useEffect(() => {
     dispatch(actions.getTransactionHistoryDetailsLoading(id));
@@ -76,16 +75,22 @@ function TransactionHistoryDetailsPage(props) {
       'Dragonpay',
     ) !== -1;
 
+  const isLoadTransaction =
+    transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
+      'Load',
+    ) !== -1;
+
   const renderListItems = () => {
     if (isBankTransaction) return bankListData(transactionHistoryDetailsData);
     if (isReceiveMoneyTransaction || isSendMoneyTransaction)
       return receivedMoneyListData(transactionHistoryDetailsData);
     if (isDragonpayTransaction) return dragonpayListData(transactionHistoryDetailsData);
+    if (isLoadTransaction) return loadListtData(transactionHistoryDetailsData);
 
     return [];
   };
 
-  const hasServiceFee = isBankTransaction;
+  const hasServiceFee = isBankTransaction || isLoadTransaction;
 
   return (
     <>

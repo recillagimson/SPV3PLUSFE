@@ -1,6 +1,15 @@
 import { parseToNumber, numberWithCommas } from 'utils/common';
 
 export const bankListData = transactionHistoryDetailsData => {
+  const fullName = `${
+    transactionHistoryDetailsData?.transactable?.receiver_details?.first_name
+  } ${
+    transactionHistoryDetailsData?.transactable?.receiver_details?.last_name ||
+    ''
+  } ${
+    transactionHistoryDetailsData?.transactable?.receiver_details
+      ?.middle_name || ''
+  }`;
   return [
     {
       label: 'Bank',
@@ -12,7 +21,7 @@ export const bankListData = transactionHistoryDetailsData => {
     },
     {
       label: 'Account Name',
-      value: transactionHistoryDetailsData?.transactable?.account_name,
+      value: fullName,
     },
     {
       label: 'Amount',
@@ -32,10 +41,19 @@ export const bankListData = transactionHistoryDetailsData => {
 };
 
 export const receivedMoneyListData = transactionHistoryDetailsData => {
+  const fullName = `${
+    transactionHistoryDetailsData?.transactable?.receiver_details?.first_name
+  } ${
+    transactionHistoryDetailsData?.transactable?.receiver_details?.last_name ||
+    ''
+  } ${
+    transactionHistoryDetailsData?.transactable?.receiver_details
+      ?.middle_name || ''
+  }`;
   return [
     {
       label: 'Name',
-      value: transactionHistoryDetailsData?.transaction_category?.name,
+      value: fullName,
     },
     {
       label: 'Mobile Number',
@@ -65,6 +83,24 @@ export const dragonpayListData = transactionHistoryDetailsData => {
     {
       label: 'Transaction Number',
       value: transactionHistoryDetailsData?.transactable?.reference_number,
+    },
+  ];
+};
+
+export const loadListtData = transactionHistoryDetailsData => {
+  return [
+    {
+      label: 'Mobile Number',
+      value:
+        transactionHistoryDetailsData?.transactable?.recipient_mobile_number,
+    },
+    {
+      label: 'Transaction Number',
+      value: transactionHistoryDetailsData?.transactable?.reference_number,
+    },
+    {
+      label: 'Message',
+      value: transactionHistoryDetailsData?.transactable?.message || 'None',
     },
   ];
 };

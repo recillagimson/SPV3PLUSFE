@@ -36,6 +36,11 @@ export interface TransactionHistoryDetailsState {
     message: string;
     reference_number: string;
     service_fee: string;
+    receiver_details: {
+      first_name: string;
+      last_name: string;
+      middle_name: string;
+    };
   };
   transaction_category: {
     description: string;

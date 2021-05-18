@@ -23,6 +23,11 @@ export const transactionDetailsDefaultState = {
     message: '',
     reference_number: '',
     service_fee: '',
+    receiver_details: {
+      first_name: '',
+      last_name: '',
+      middle_name: '',
+    },
   },
   transaction_category: {
     description: '',

@@ -11,7 +11,7 @@ import { selectTransactionHistoryId } from './selectors';
 import { containerActions as actions } from '.';
 
 /**
- * Help center data
+ * Transaction History data
  */
 function* getTransactionHistory() {
   yield delay(500);
