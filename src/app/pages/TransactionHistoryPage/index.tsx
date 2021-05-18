@@ -2,10 +2,12 @@ import * as React from 'react';
 // import moment from 'moment';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
+import { DateTime } from 'luxon';
 
 // Components
 import Button from 'app/components/Elements/Button';
 import ComponentLoading from 'app/components/ComponentLoading';
+import LoadingLogo from 'app/components/ComponentLoading/loading_dark.gif';
 
 // Utils
 import { parseToNumber, numberWithCommas } from 'utils/common';
@@ -29,6 +31,7 @@ import * as S from './TransactionHistory.style';
 import NoTransactionsLogo from 'app/components/Assets/no-transactions.svg';
 
 export function TransactionHistoryPage(props) {
+  const [isLoading, setLoading] = React.useState(false); // Temporary loading for pagination
   const [pagination, setPagination] = React.useState(5); // Temporary pagination
   const [transactionType, setTransactionType] = React.useState(
     TRANSACTION_TYPE.ALL,
@@ -140,6 +143,9 @@ export function TransactionHistoryPage(props) {
                     d.transaction_category.transaction_type === 'POSITIVE';
                   const isNegativeAmount =
                     d.transaction_category.transaction_type === 'NEGATIVE';
+                  const date = DateTime.fromISO(d.created_at);
+                  const monthDateYear = date.toLocaleString(DateTime.DATE_MED);
+                  const time = date.toLocaleString(DateTime.TIME_SIMPLE);
 
                   return (
                     <S.TransactionListItem
@@ -150,12 +156,8 @@ export function TransactionHistoryPage(props) {
                         <S.ListTitle>
                           {d.transaction_category.title}
                         </S.ListTitle>
-                        <S.ListDescription>
-                          {/* {moment(d.created_at).format('MMMM DD, YYYY')} */}
-                        </S.ListDescription>
-                        <S.ListDescription>
-                          {/* {moment(d.created_at).format('HH:mm A')} */}
-                        </S.ListDescription>
+                        <S.ListDescription>{monthDateYear}</S.ListDescription>
+                        <S.ListDescription>{time}</S.ListDescription>
                       </S.ListContainer>
                       <S.ListContainer textAlign="right">
                         <S.ListTitle
@@ -180,14 +182,25 @@ export function TransactionHistoryPage(props) {
                   );
                 })}
                 <S.TransactionListItem noBorder>
-                  <Button
-                    onClick={() => alert('For development')}
-                    color="secondary"
-                    size="medium"
-                    variant="outlined"
-                  >
-                    See more transactions
-                  </Button>
+                  {isLoading && (
+                    <img src={LoadingLogo} alt="Squid pay loading..." />
+                  )}
+                  {!isLoading && transactionHistory.length >= pagination && (
+                    <Button
+                      onClick={() => {
+                        setLoading(true);
+                        setTimeout(() => {
+                          setPagination(pagination + 5);
+                          setLoading(false);
+                        }, 2000);
+                      }}
+                      color="secondary"
+                      size="medium"
+                      variant="outlined"
+                    >
+                      See more transactions
+                    </Button>
+                  )}
                 </S.TransactionListItem>
               </S.TransactionList>
             ) : (

@@ -91,7 +91,10 @@ function TransactionHistoryDetailsPage(props) {
   };
 
   const hasServiceFee = isBankTransaction || isLoadTransaction;
-
+  const date = DateTime.fromISO(
+    transactionHistoryDetailsData?.transactable?.created_at,
+  );
+  const monthDateYearTime = date.toLocaleString(DateTime.DATETIME_MED);
   return (
     <>
       <Helmet>
@@ -152,7 +155,7 @@ function TransactionHistoryDetailsPage(props) {
                   </S.TotalTransactions>
                   <S.FooterWrapper>
                     <Logo size="small" />
-                    <p>{DateTime.fromISO('2021-05-11 14:44:19').toString()}</p>
+                    <p>{monthDateYearTime}</p>
                   </S.FooterWrapper>
                 </S.TransactionDetailsWrapperContent>
                 <S.CuttedImageWrapper src={WrapperCuttedCornerBottom} alt="" />

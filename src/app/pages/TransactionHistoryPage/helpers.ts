@@ -41,15 +41,28 @@ export const bankListData = transactionHistoryDetailsData => {
 };
 
 export const receivedMoneyListData = transactionHistoryDetailsData => {
-  const fullName = `${
-    transactionHistoryDetailsData?.transactable?.receiver_details?.first_name
-  } ${
-    transactionHistoryDetailsData?.transactable?.receiver_details?.last_name ||
-    ''
-  } ${
-    transactionHistoryDetailsData?.transactable?.receiver_details
-      ?.middle_name || ''
-  }`;
+  let fullName = '';
+  if (transactionHistoryDetailsData?.transactable?.receiver_details) {
+    fullName = `${
+      transactionHistoryDetailsData?.transactable?.receiver_details?.first_name
+    } ${
+      transactionHistoryDetailsData?.transactable?.receiver_details
+        ?.last_name || ''
+    } ${
+      transactionHistoryDetailsData?.transactable?.receiver_details
+        ?.middle_name || ''
+    }`;
+  } else {
+    fullName = `${
+      transactionHistoryDetailsData?.transactable?.sender_details?.first_name
+    } ${
+      transactionHistoryDetailsData?.transactable?.sender_details?.last_name ||
+      ''
+    } ${
+      transactionHistoryDetailsData?.transactable?.sender_details
+        ?.middle_name || ''
+    }`;
+  }
   return [
     {
       label: 'Name',

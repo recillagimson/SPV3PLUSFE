@@ -17,6 +17,7 @@ export const transactionDetailsDefaultState = {
     account_name: '',
     account_number: '',
     bank_name: '',
+    created_at: '',
     amount: '',
     send_receipt_to: '',
     purpose: '',

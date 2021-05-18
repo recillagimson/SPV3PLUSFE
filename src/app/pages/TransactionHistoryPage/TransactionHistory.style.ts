@@ -132,6 +132,10 @@ export const TransactionListItem = styled.li<{
       button {
         min-width: 150px;
       }
+
+      img {
+        width: 100px;
+      }
     `}
 `;
 
@@ -261,7 +265,7 @@ export const FooterWrapper = styled.div`
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    margin: 0;
+    margin: 10px 0 0;
   }
 
   img {

@@ -30,6 +30,7 @@ export interface TransactionHistoryDetailsState {
     account_name: string;
     account_number: string;
     bank_name: string;
+    created_at: string;
     amount: string;
     send_receipt_to: string;
     purpose: string;
