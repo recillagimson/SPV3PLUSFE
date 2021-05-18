@@ -156,13 +156,18 @@ export function SendToBank() {
     });
   };
 
-  const _onSubmitFormData = (e: any) => {
+  const _onSubmitFormData = async (e: any) => {
     e.preventDefault();
     const errors = validateForm(formData);
 
     if (!errors.hasErrors) {
-      // dispatch(actions.validateBankLoading(formData));
-      setSteps(steps + 1);
+      try {
+        const response = await dispatch(actions.validateBankLoading(formData));
+        console.log('response', response);
+        setSteps(steps + 1);
+      } catch (err) {
+        console.log('err', err);
+      }
     }
   };
 
