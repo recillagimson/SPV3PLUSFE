@@ -18,6 +18,7 @@ const Wrapper = styled.div<{ children?: any; pad?: boolean }>`
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
+  position: relative;
 
   & > * {
     flex: 0 0 100%;
@@ -33,7 +34,7 @@ const Wrapper = styled.div<{ children?: any; pad?: boolean }>`
   `}
 
   ${media.large`
-    max-width: 1000px;
+    max-width: 950px;
   `}
 `;
 

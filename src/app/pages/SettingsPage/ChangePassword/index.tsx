@@ -68,6 +68,7 @@ export function SettingsChangePasswordPage() {
     value: '',
     error: false,
     show: false,
+    msg: '', // custom error message
   });
   const [newPass, setNewPass] = React.useState({
     value: '',
@@ -88,6 +89,7 @@ export function SettingsChangePasswordPage() {
   React.useEffect(
     () => () => {
       dispatch(actions.getFetchReset());
+      dispatch(actions.getValidateReset());
     },
     [],
   );
@@ -108,26 +110,90 @@ export function SettingsChangePasswordPage() {
   }, [validateSuccess, validateError]);
 
   // check the error payload
-  const apiErrorMessage = err => {
+  const apiErrorMessage = (err: any) => {
     if (err.code && err.code === 422) {
-      // return the errors
-      const i106 = err.errors.error_code
-        ? err.errors.error_code.find(j => j === 106)
-        : -1;
+      if (
+        err.errors &&
+        err.errors.error_code &&
+        err.errors.error_code.length > 0
+      ) {
+        // return the errors
+        const i103 = err.errors.error_code
+          ? err.errors.error_code.findIndex(j => j === 103)
+          : -1;
 
-      const i107 = err.errors.error_code
-        ? err.errors.error_code.find(j => j === 107)
-        : -1;
+        const i105 = err.errors.error_code
+          ? err.errors.error_code.findIndex(j => j === 105)
+          : -1;
 
-      if (i106 !== -1) {
-        setPassError(
-          'Your new password has already been used. Please enter a different one',
-        );
-        return;
+        const i106 = err.errors.error_code
+          ? err.errors.error_code.findIndex(j => j === 106)
+          : -1;
+
+        const i107 = err.errors.error_code
+          ? err.errors.error_code.findIndex(j => j === 107)
+          : -1;
+
+        if (
+          i103 !== -1 &&
+          err.errors.payload &&
+          err.errors.payload.length > 0
+        ) {
+          setPassError("Oops! Account doesn't exist");
+          return;
+        }
+
+        if (
+          i105 !== -1 &&
+          err.errors.payload &&
+          err.errors.payload.length > 0
+        ) {
+          setPassError(
+            'Your Account has been locked, Please contact Squidpay Support for assistance in unlocking your account.',
+          );
+          return;
+        }
+
+        if (
+          i106 !== -1 &&
+          err.errors.message &&
+          err.errors.message.length > 0
+        ) {
+          setPassError('Oops! Password already been used');
+          return;
+        }
+
+        if (
+          i107 !== -1 &&
+          err.errors.payload &&
+          err.errors.payload.length > 0
+        ) {
+          setPassError('Password cannot be changed for at least 1 day/s.');
+          return;
+        }
       }
 
-      if (i107 !== -1) {
-        setPassError('Your password cannot be changed for at least 1 day');
+      if (err.errors && !err.errors.error_code) {
+        let apiError = '';
+        if (err.errors.password && err.errors.password.length > 0) {
+          setCurrentPass({
+            ...currentPass,
+            error: true,
+            msg: 'Oops. Your current password is incorrect.',
+          });
+        }
+
+        if (err.errors.new_password && err.errors.new_password.length > 0) {
+          apiError += err.errors.new_password.join('\n');
+        }
+        if (
+          err.errors.new_password_confirmation &&
+          err.errors.new_password_confirmation.length > 0
+        ) {
+          apiError += err.errors.new_password_confirmation.join('\n');
+        }
+
+        setPassError(apiError);
         return;
       }
 
@@ -161,7 +227,11 @@ export function SettingsChangePasswordPage() {
 
     if (currentPass.value === '') {
       hasError = true;
-      setCurrentPass({ ...currentPass, error: true });
+      setCurrentPass({
+        ...currentPass,
+        error: true,
+        msg: 'Please enter your current password',
+      });
     }
 
     if (newPass.value === '') {
@@ -192,6 +262,12 @@ export function SettingsChangePasswordPage() {
         hasError = true;
         setPassError(
           'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
+        );
+      }
+      if (newPass.value.length > 20 || confirmPass.value.length > 20) {
+        hasError = true;
+        setPassError(
+          'Your password has exceeded the maximum limit of 20 characters. Please enter again your new password.',
         );
       }
     }
@@ -294,6 +370,7 @@ export function SettingsChangePasswordPage() {
                       ...currentPass,
                       value: e.currentTarget.value,
                       error: false,
+                      msg: '',
                     })
                   }
                   className={
@@ -319,9 +396,7 @@ export function SettingsChangePasswordPage() {
                 </IconButton>
               </InputIconWrapper>
               {currentPass.error && (
-                <ErrorMsg formError>
-                  Please enter your current password
-                </ErrorMsg>
+                <ErrorMsg formError>{currentPass.msg}</ErrorMsg>
               )}
               {apiError && (
                 <ErrorMsg formError>
@@ -337,13 +412,14 @@ export function SettingsChangePasswordPage() {
                 <Input
                   type={newPass.show ? 'text' : 'password'}
                   value={newPass.value}
-                  onChange={e =>
+                  onChange={e => {
                     setNewPass({
                       ...newPass,
                       value: e.currentTarget.value,
                       error: false,
-                    })
-                  }
+                    });
+                    setPassError('');
+                  }}
                   className={
                     newPass.error || Boolean(passError) ? 'error' : undefined
                   }
@@ -380,13 +456,14 @@ export function SettingsChangePasswordPage() {
                 <Input
                   type={confirmPass.show ? 'text' : 'password'}
                   value={confirmPass.value}
-                  onChange={e =>
+                  onChange={e => {
                     setConfirmPass({
                       ...confirmPass,
                       value: e.currentTarget.value,
                       error: false,
-                    })
-                  }
+                    });
+                    setPassError('');
+                  }}
                   className={
                     confirmPass.error || Boolean(passError)
                       ? 'error'
@@ -426,8 +503,8 @@ export function SettingsChangePasswordPage() {
 
       {showVerify && (
         <Box title="4-Digit One Time PIN" titleBorder withPadding>
-          {loading && <Loading position="absolute" />}
-          {validateLoading && <Loading position="absolute" />}
+          {loading && <Loading position="fixed" />}
+          {validateLoading && <Loading position="fixed" />}
           <div
             className="text-center"
             style={{ width: '400px', margin: '0 auto', padding: '0 40px' }}
@@ -481,7 +558,7 @@ export function SettingsChangePasswordPage() {
 
       {/* Password Update Success */}
       <Dialog show={success} size="small">
-        {fakeLoading && <Loading position="absolute" />}
+        {fakeLoading && <Loading position="fixed" />}
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>
           <Logo size="small" margin="0 0 30px" />
           <CircleIndicator size="large" color="primary">

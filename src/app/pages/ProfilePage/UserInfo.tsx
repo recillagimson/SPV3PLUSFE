@@ -6,15 +6,16 @@
  *
  * @prop {object}     profile       Logged In User profile
  * @prop {function}   onEdit        callback to edit profile
+ * @prop {string}     tier          Current tier of user
  */
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import Avatar from 'app/components/Elements/Avatar';
 import H2 from 'app/components/Elements/H2';
 import Button from 'app/components/Elements/Button';
+import AvatarUpload from 'app/components/UpdateProfile/UpdateAvatar';
 
 const Wrapper = styled.div`
   text-align: center;
@@ -29,6 +30,7 @@ const Wrapper = styled.div`
     display: block;
 
     strong {
+      font-size: 0.85rem;
       color: ${StyleConstants.GOLD};
     }
   }
@@ -41,27 +43,47 @@ const Wrapper = styled.div`
 type UserInfoProps = {
   login?: string;
   profile?: any;
+  tier: string;
   onEdit: () => void;
+  onChangeAvatar: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function UserInfoComponent({
   login,
   profile,
   onEdit,
+  tier,
+  onChangeAvatar,
 }: UserInfoProps) {
   return (
     <Wrapper>
-      <Avatar size="large" />
+      <AvatarUpload
+        onChange={onChangeAvatar}
+        image={
+          profile && profile.avatar_location ? profile.avatar_location : ''
+        }
+      />
       <H2>
         {profile
           ? `${profile.first_name} ${profile.middle_name} ${profile.last_name}`
           : '-'}
       </H2>
-      <p>{login}</p>
+      {/* <p>{login}</p> */}
       <small>
-        Status: <strong>Gold Member</strong>
+        <strong>{Boolean(tier) ? tier : '-'}</strong>{' '}
+        <Button
+          onClick={onEdit}
+          color="secondary"
+          variant="contained"
+          size="small"
+          style={{
+            marginLeft: 5,
+          }}
+        >
+          Upgrade
+        </Button>
       </small>
-      <Button onClick={onEdit} color="primary" variant="contained">
+      <Button onClick={onEdit} color="primary" variant="contained" size="large">
         <FontAwesomeIcon icon="pen" /> Edit Profile
       </Button>
     </Wrapper>

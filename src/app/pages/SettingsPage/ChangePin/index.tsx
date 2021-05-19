@@ -214,8 +214,8 @@ export function SettingsChangePasswordPage() {
 
       {showNewPin && (
         <Box title="4-Digit One Time PIN" titleBorder withPadding>
-          {loading && <Loading position="absolute" />}
-          {validateLoading && <Loading position="absolute" />}
+          {loading && <Loading position="fixed" />}
+          {validateLoading && <Loading position="fixed" />}
           <div
             className="text-center"
             style={{ width: '400px', margin: '0 auto', padding: '0 40px' }}
@@ -269,7 +269,7 @@ export function SettingsChangePasswordPage() {
 
       {/* Password Update Success */}
       <Dialog show={success} size="small">
-        {fakeLoading && <Loading position="absolute" />}
+        {fakeLoading && <Loading position="fixed" />}
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>
           <Logo size="small" margin="0 0 30px" />
           <CircleIndicator size="medium" color="primary">

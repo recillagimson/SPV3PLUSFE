@@ -234,7 +234,7 @@ export default function UpdatePasswordComponent({
 
   return (
     <>
-      {loading && <Loading position="absolute" />}
+      {loading && <Loading position="fixed" />}
       <Field>
         <Label>
           Password <i>*</i>

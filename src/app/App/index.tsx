@@ -9,7 +9,7 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
+import { Switch, Route, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -49,6 +49,7 @@ import { SendToBank } from 'app/pages/SendToBank/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
 import { Notifications } from 'app/pages/Notification';
+import { UpdateProfileVerificationPage } from 'app/pages/UpdateProfileVerificationPage/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 
@@ -57,11 +58,13 @@ import { Page500 } from 'app/components/500/Loadable';
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
 import PrivateRoute from './PrivateRoute';
+// import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 
 // Importing the Bootstrap CSS
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 /** selectors, slice */
+import { containerActions as dashboardAction } from 'app/pages/DashboardPage/slice';
 import { useAppSaga } from './slice';
 import {
   selectSessionExpired,
@@ -71,7 +74,7 @@ import {
 
 export function App() {
   const { i18n } = useTranslation();
-  const location = useLocation();
+  // const location = useLocation();
   const history = useHistory();
 
   // sample usage of slice (react redux)
@@ -83,11 +86,12 @@ export function App() {
   const isBlankPage = useSelector(selectIsBlankPage);
 
   React.useEffect(() => {
-    const path: string | boolean = location ? location.pathname : '/dashboard';
+    // const path: string | boolean = location ? location.pathname : '/dashboard';
     const phrase = getCookie('spv_uat_hmc'); // retrieve the passphrase use for encrypting
     const sessionCookie = getCookie('spv_uat'); // user token
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
+    const forceUpdate = getCookie('spv_uat_f');
 
     let decrypt: any = false;
     let username: string = '';
@@ -98,18 +102,23 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (decrypt) {
+    if (!forceUpdate && decrypt) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
       dispatch(actions.getSaveLoginName(username));
 
+      // delay the retrieval of references and user profile
       setTimeout(() => {
         dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
-      }, 800);
+        dispatch(dashboardAction.getFetchLoading());
+      }, 1000);
 
-      history.push(path === '/' ? '/dashboard' : path);
+      history.push('/dashboard');
+    } else if (forceUpdate) {
+      dispatch(actions.getClientTokenLoading());
+      history.push('/register/update-profile');
     } else {
       dispatch(actions.getClientTokenLoading());
 
@@ -184,9 +193,13 @@ export function App() {
               component={CardMemberAgreementPage}
             />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
+            <Route
+              path="/register/update-profile"
+              component={UpdateProfileVerificationPage}
+            />
             <Route path="/500" component={Page500} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
-            <PrivateRoute path="/sendmoney" component={SendMoney} />
+            <Route path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/scanqr" component={ScanQR} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
@@ -217,6 +230,7 @@ export function App() {
               path="/settings/change-password"
               component={SettingsChangePasswordPage}
             />
+            {/* Not found page should be the last entry for this <Switch /> container */}
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}

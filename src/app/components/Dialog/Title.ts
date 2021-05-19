@@ -8,6 +8,7 @@ const Title = styled.div`
   padding: 15px;
   border-bottom: 1px solid ${StyleConstants.BORDER_COLOR};
   font-weight: 700;
+  font-size: 1.125rem;
 
   h3 {
     font-size: 1rem;

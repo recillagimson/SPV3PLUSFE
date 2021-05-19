@@ -21,6 +21,7 @@ const LogoutWrapper = styled.div`
       width: 50%;
       opacity: 0.85;
       transition: opacity 0.3s ease-in;
+      cursor: pointer;
 
       &.btn-logout {
         border-left: 1px solid ${StyleConstants.BORDER_COLOR};

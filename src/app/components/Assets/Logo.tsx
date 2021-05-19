@@ -14,7 +14,7 @@ type LogoProps = {
 
 const Wrapper = styled.span<LogoProps>`
   display: ${p => (p.isInline ? 'inline-block' : 'block')};
-  padding: 5px 15px;
+  padding: 3px 5px;
   width: ${p => (p.isInline ? 'auto' : '100%')};
   text-align: center;
   margin: ${p => (p.margin ? p.margin : '0 0')};
@@ -32,6 +32,7 @@ export default function Logo(props: LogoProps) {
       size={props.size || 'small'}
       isInline={props.isInline}
       margin={props.margin || undefined}
+      className="logo"
     >
       <img
         src={`${process.env.PUBLIC_URL || ''}/img/SPLogo.png`}

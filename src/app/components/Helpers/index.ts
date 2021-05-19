@@ -9,7 +9,10 @@ export const regExMobile = /^0(9)\d{9}$/; // number must start with 0 followed b
 
 // password strength regex
 export const regExPassword = /.{12,}$/; // password should be 12 or more characters
-export const regExStrongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&_])(?=.{12,})/; // eslint-disable-line no-useless-escape
+// export const regExStrongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&_])(?=.{12,})/; // eslint-disable-line no-useless-escape
+export const regExStrongPassword = new RegExp(
+  '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{12,})',
+);
 export const regExMediumPassword = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{8,})/;
 export const regExWeakPassword = /.{2,}$/;
 
@@ -110,10 +113,19 @@ export function doSignOut() {
   deleteCookie('spv_expire');
   deleteCookie('spv_cat');
   deleteCookie('spv_uat_u');
+  deleteCookie('spv_uat_f');
 
   // set a delay, in the component where this will be called, set a loading indicator to delay the logout
   setTimeout(() => {
     const publicURL = process.env.PUBLIC_URL || '';
     window.location.replace(`${publicURL}/`);
   }, 800);
+}
+
+/**
+ * Format number with commas
+ * @param {number}  num       number to format
+ */
+export function numberCommas(num: number = 0) {
+  return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
 }

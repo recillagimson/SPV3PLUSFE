@@ -9,6 +9,7 @@ import {
   getRequestPassphrase,
   getResponsePassphrase,
 } from 'app/App/slice/saga';
+import { appActions } from 'app/App/slice';
 
 import { containerActions as actions } from '.';
 import { selectRequest, selectValidateRequest } from './selectors';
@@ -58,7 +59,7 @@ function* getChangePassword() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-      console.log(decryptData);
+
       if (decryptData) {
         yield put(actions.getFetchSuccess(true));
       }
@@ -72,6 +73,9 @@ function* getChangePassword() {
         ...body,
       };
       yield put(actions.getFetchError(JSON.stringify(newError)));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getFetchReset());
     } else {
       yield put(actions.getFetchError(JSON.stringify(err)));
     }

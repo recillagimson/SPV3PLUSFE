@@ -10,10 +10,16 @@ export const initialState: ComponentState = {
   error: {},
   data: false,
   request: false,
+  otp: {
+    loading: false,
+    error: {},
+    data: false,
+    request: false,
+  },
 };
 
 const slice = createSlice({
-  name: 'profile',
+  name: 'profileBronze',
   initialState,
   reducers: {
     getFetchLoading(state, action: PayloadAction<object>) {
@@ -37,6 +43,28 @@ const slice = createSlice({
       state.error = {};
       state.data = false;
       state.request = false;
+    },
+    getSendOTPLoading(state, action: PayloadAction<object>) {
+      state.otp.loading = true;
+      state.otp.error = {};
+      state.otp.data = false;
+      state.otp.request = action.payload;
+    },
+    getSendOTPSuccess(state, action: PayloadAction<boolean>) {
+      state.otp.loading = false;
+      state.otp.request = false;
+      state.otp.data = action.payload;
+    },
+    getSendOTPError(state, action: PayloadAction<object>) {
+      state.otp.loading = false;
+      state.otp.request = false;
+      state.otp.error = action.payload;
+    },
+    getSendOTPReset(state) {
+      state.otp.loading = false;
+      state.otp.error = {};
+      state.otp.data = false;
+      state.otp.request = false;
     },
   },
 });
