@@ -45,23 +45,17 @@ export function GenerateQR() {
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [showForm, setShowForm] = React.useState(true);
 
-  const onImageCownload = () => {
-    const svg: any = document.getElementById('QRCode');
-    const svgData: any = new XMLSerializer().serializeToString(svg);
-    const canvas: any = document.createElement('canvas');
-    const ctx: any = canvas.getContext('2d');
-    const img: any = new Image();
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
-      const pngFile: any = canvas.toDataURL('image/png');
-      const downloadLink: any = document.createElement('a');
-      downloadLink.download = 'QRCode';
-      downloadLink.href = `${pngFile}`;
-      downloadLink.click();
-    };
-    img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
+  const downloadQR = () => {
+    const canvas: any = document.getElementById('QRCode');
+    const pngUrl = canvas
+      .toDataURL('image/png')
+      .replace('image/png', 'image/octet-stream');
+    let downloadLink = document.createElement('a');
+    downloadLink.href = pngUrl;
+    downloadLink.download = 'QRCode.png';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   };
   // Replace the first 7 digit of mobile number in the receipt
   let replaceFirst7 = (username: string) => {
@@ -198,7 +192,7 @@ export function GenerateQR() {
                     color="primary"
                     size="large"
                     variant="contained"
-                    onClick={onImageCownload}
+                    onClick={downloadQR}
                   >
                     <FontAwesomeIcon icon={faQrcode} />
                     <span className="ml-2">Download QR Code</span>
