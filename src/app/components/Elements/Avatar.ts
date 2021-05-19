@@ -8,13 +8,14 @@ import { StyleConstants } from 'styles/StyleConstants';
 
 type Props = {
   image?: string;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large' | 'xlarge';
 };
 
 const sizes = {
   small: '45px',
   medium: '65px',
   large: '110px',
+  xlarge: '210px',
 };
 
 const Avatar = styled.span<Props>`

@@ -35,7 +35,11 @@ import ListItemText from 'app/components/List/ListItemText';
 
 import VerifyOTP from 'app/components/VerifyOTP';
 
-import { validateEmail, validatePhone } from 'app/components/Helpers';
+import {
+  deleteCookie,
+  validateEmail,
+  validatePhone,
+} from 'app/components/Helpers';
 
 /** selectors */
 import {
@@ -468,6 +472,7 @@ export default function UserProfileForm({
   };
 
   const onCloseSuccessDialog = () => {
+    deleteCookie('spv_uat_f');
     setIsSuccess(false);
     setShowConfirm(false);
     setShowForm(false);
@@ -823,7 +828,8 @@ export default function UserProfileForm({
 
       {showConfirm && (
         <Box title="Review User Info" titleBorder withPadding>
-          {otpLoading && <Loading position="absolute" />}
+          {isAuthenticated && otpLoading && <Loading position="absolute" />}
+          {!isAuthenticated && loading && <Loading position="absolute" />}
           <List divider>
             <ListItem flex>
               <ListItemText

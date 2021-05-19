@@ -66,9 +66,15 @@ export default function UserDetailsList({ profile, refs, isBronze }) {
     }
   }
 
+  let bdate = '-';
+  if (profile && profile.birth_date) {
+    let bd = profile.birth_date.split('-');
+    bdate = `${bd[1]}/${bd[2]}/${bd[0]}`;
+  }
+
   return (
     <List divider>
-      <ListItem flex>
+      {/* <ListItem flex>
         <ListItemText
           label="Mobile Number"
           primary="0917xxxx"
@@ -79,7 +85,7 @@ export default function UserDetailsList({ profile, refs, isBronze }) {
         <IconButton onClick={() => alert('clicked')}>
           <FontAwesomeIcon icon="chevron-right" />
         </IconButton>
-      </ListItem>
+      </ListItem> */}
       <ListItem flex>
         <ListItemText
           label="Nationality"
@@ -92,7 +98,7 @@ export default function UserDetailsList({ profile, refs, isBronze }) {
       <ListItem flex>
         <ListItemText
           label="Date of Birth"
-          primary={profile ? profile.birth_date : '-'}
+          primary={profile ? bdate : '-'}
           style={{
             flexGrow: 1,
           }}

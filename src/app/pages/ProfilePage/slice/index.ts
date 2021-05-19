@@ -13,16 +13,16 @@ export const initialState: ContainerState = {
 };
 
 const slice = createSlice({
-  name: 'profile',
+  name: 'updateProfile',
   initialState,
   reducers: {
-    getFetchLoading(state, action: PayloadAction<object>) {
+    getFetchLoading(state, action: PayloadAction<any>) {
       state.loading = true;
       state.error = {};
       state.data = false;
       state.request = action.payload;
     },
-    getFetchSuccess(state, action: PayloadAction<object>) {
+    getFetchSuccess(state, action: PayloadAction<boolean>) {
       state.loading = false;
       state.request = false;
       state.data = action.payload;

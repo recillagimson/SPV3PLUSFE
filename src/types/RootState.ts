@@ -1,4 +1,3 @@
-import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 import { GlobalState } from 'app/App/slice/types';
 
@@ -32,11 +31,10 @@ export interface RootState {
   verifyOTP?: VerifyOTPState;
   updatePassword?: UpdatePasswordState;
   sendMoney?: SendMoneyState;
-  profile?: ProfileState;
+  updateProfile?: ProfileState;
   profileBronze?: ProfileBronzeState;
   profileSilver?: ProfileSilverState;
   notifications?: NotificationsState;
-
   helpCenter?: any;
   transactionHistory?: TransactionHistoryState;
   changePassword?: ChangePasswordState;

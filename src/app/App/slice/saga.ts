@@ -168,11 +168,14 @@ export function* getLoggedInUserProfile() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-      console.log(decryptData);
+
       yield put(actions.getUserProfile(decryptData));
       return true;
     }
   } catch (err) {
+    if (err && err.response && err.response.status === 401) {
+      yield put(actions.getIsSessionExpired(true));
+    }
     return false;
   }
 }
