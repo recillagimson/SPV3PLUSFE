@@ -11,7 +11,7 @@ import { selectTransactionHistoryId } from './selectors';
 import { containerActions as actions } from '.';
 
 /**
- * Help center data
+ * Transaction History data
  */
 function* getTransactionHistory() {
   yield delay(500);
@@ -102,22 +102,7 @@ function* getTransactionHistoryDetails() {
         decryptPhrase.passPhrase,
       );
 
-      const filteredProperties = {
-        bankName: decryptData?.transactable?.bank_name,
-        accountNumber: decryptData?.transactable?.account_number,
-        accountName: decryptData?.transactable?.account_name,
-        transactionNumber: decryptData?.transactable?.reference_number,
-        amount: decryptData?.transactable?.amount,
-        signedAmount: decryptData?.signed_total_amount,
-        serviceFee: decryptData?.transactable?.service_fee,
-        purpose: decryptData?.transactable?.purpose,
-        transactionDate: decryptData?.transactable?.transaction_date,
-        transactionType: decryptData?.transaction_category?.transaction_type,
-      };
-
-      yield put(
-        actions.getTransactionHistoryDetailsSuccess(filteredProperties),
-      );
+      yield put(actions.getTransactionHistoryDetailsSuccess(decryptData));
     } else {
       yield put(
         actions.getTransactionHistoryDetailsError({

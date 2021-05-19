@@ -13,7 +13,7 @@ const List = styled.ul<{ divider?: boolean; padding?: string }>`
   ${p =>
     p.divider &&
     `
-    li {
+    li:not(:last-child) {
       border-bottom: 1px solid ${StyleConstants.LIGHT_BORDER_COLOR};
     }
   `}
