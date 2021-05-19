@@ -9,7 +9,7 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
+import { Switch, Route, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -58,10 +58,6 @@ import { Page500 } from 'app/components/500/Loadable';
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
 import PrivateRoute from './PrivateRoute';
-// import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
-
-// Importing the Bootstrap CSS
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 /** selectors, slice */
 import { containerActions as dashboardAction } from 'app/pages/DashboardPage/slice';
@@ -71,11 +67,10 @@ import {
   selectIsAuthenticated,
   selectIsBlankPage,
 } from './slice/selectors';
-import { usePrevious } from 'app/components/Helpers/Hooks';
 
 export function App() {
   const { i18n } = useTranslation();
-  const location = useLocation();
+  // const location = useLocation();
   const history = useHistory();
 
   // sample usage of slice (react redux)
@@ -87,7 +82,7 @@ export function App() {
   const isBlankPage = useSelector(selectIsBlankPage);
 
   React.useEffect(() => {
-    const path: string | boolean = location ? location.pathname : '/dashboard';
+    // const path: string | boolean = location ? location.pathname : '/dashboard';
     const phrase = getCookie('spv_uat_hmc'); // retrieve the passphrase use for encrypting
     const sessionCookie = getCookie('spv_uat'); // user token
     const clientCookie = getCookie('spv_cat') || ''; // client token
@@ -116,7 +111,7 @@ export function App() {
         dispatch(dashboardAction.getFetchLoading());
       }, 1000);
 
-      history.push(path === '/' ? '/dashboard' : path);
+      history.push('/dashboard');
     } else if (forceUpdate) {
       dispatch(actions.getClientTokenLoading());
       history.push('/register/update-profile');

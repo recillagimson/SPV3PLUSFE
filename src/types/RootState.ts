@@ -1,4 +1,3 @@
-import { TransactionHistoryPage } from 'app/pages/TransactionHistoryPage/Loadable';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 import { GlobalState } from 'app/App/slice/types';
 
@@ -18,6 +17,8 @@ import { TransactionHistoryState } from 'app/pages/TransactionHistoryPage/slice/
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
 import { VerifyOTPState } from 'app/components/VerifyOTP/slice/types';
+import { ProfileBronzeState } from 'app/components/UpdateProfile/Bronze/slice/types';
+import { ProfileSilverState } from 'app/components/UpdateProfile/Silver/slice/types';
 
 /* 
   Because the redux-injectors injects your reducers asynchronously somewhere in your code
@@ -33,8 +34,10 @@ export interface RootState {
   sendMoney?: SendMoneyState;
   generateQR?: GenerateQRState;
   profile?: ProfileState;
+  updateProfile?: ProfileState;
+  profileBronze?: ProfileBronzeState;
+  profileSilver?: ProfileSilverState;
   notifications?: NotificationsState;
-
   helpCenter?: any;
   transactionHistory?: TransactionHistoryState;
   changePassword?: ChangePasswordState;

@@ -20,3 +20,8 @@ export const selectError = createSelector(
   [selectDomain],
   subState => subState.error,
 );
+
+export const selectTransactionData = createSelector(
+  [selectDomain],
+  subState => subState.transaction.data,
+);

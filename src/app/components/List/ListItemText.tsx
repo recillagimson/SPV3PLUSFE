@@ -25,9 +25,14 @@ interface TypographyProps extends React.HTMLAttributes<any> {
   align?: 'left' | 'right' | 'center';
   bold?: boolean;
   icon?: boolean; // Show Arrow Icon
+  color?: undefined | 'POSITIVE' | 'NEGATIVE';
 }
 
-const Wrapper = styled.div<{ small?: boolean; align?: string; icon?: boolean }>`
+const Wrapper = styled.div<{
+  small?: boolean;
+  align?: string;
+  icon?: boolean;
+}>`
   font-size: ${p => (p.small ? '0.8rem' : '1rem')};
   text-align: ${p => (p.align ? p.align : 'left')};
   position: relative;
@@ -56,15 +61,25 @@ const Wrapper = styled.div<{ small?: boolean; align?: string; icon?: boolean }>`
   }
 `;
 
-const Primary = styled.p<{ bold?: boolean }>`
-  font-size: 1em;
+const Primary = styled.p<{
+  bold?: boolean;
+  color?: undefined | 'POSITIVE' | 'NEGATIVE';
+}>`
+  font-size: 1rem;
   font-weight: ${p => (p.bold ? '700' : '500')};
   margin: 0 0;
+  color: ${p =>
+    p.color && p.color === 'POSITIVE'
+      ? StyleConstants.POSITIVE
+      : p.color === 'NEGATIVE'
+      ? StyleConstants.NEGATIVE
+      : 'inherit'};
 `;
 
 const Secondary = styled.p`
-  font-size: 0.85em;
+  /* font-size: 0.85em; */
   margin: 0 0;
+  white-space: pre-wrap;
 `;
 
 const Caption = styled.small`
@@ -86,6 +101,7 @@ export default function TypographyComponent({
   align,
   bold,
   icon,
+  color,
   ...rest
 }: TypographyProps) {
   return (
@@ -97,7 +113,9 @@ export default function TypographyComponent({
     >
       {Boolean(label) && <Label>{label}</Label>}
       {Boolean(primary) && (
-        <Primary bold={bold || undefined}>{primary}</Primary>
+        <Primary bold={bold || undefined} color={color}>
+          {primary}
+        </Primary>
       )}
       {Boolean(caption) && <Caption>{caption}</Caption>}
       {Boolean(secondary) && <Secondary>{secondary}</Secondary>}
