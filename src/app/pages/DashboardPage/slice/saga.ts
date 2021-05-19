@@ -101,8 +101,11 @@ function* getTransactionHistory() {
       );
 
       if (decryptData && decryptData.data && decryptData.data.length > 0) {
-        const recentTransaction = decryptData.data.splice(1);
-        console.log(recentTransaction);
+        const recentTransaction =
+          decryptData.data.length > 2
+            ? decryptData.data.slice(0, 2)
+            : decryptData.data;
+
         yield put(actions.getTransactionSuccess(recentTransaction));
       }
     }

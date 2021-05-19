@@ -67,10 +67,13 @@ export function DashboardPage() {
   }
 
   let transactionItems: React.ReactNode | undefined = (
-    <ListItem flex>
+    <ListItem>
       <p style={{ textAlign: 'center', padding: 10 }}>
         {' '}
-        No transaction history
+        No Transactions
+        <small style={{ display: 'block' }}>
+          You haven’t made any transactions yet
+        </small>
       </p>
     </ListItem>
   );
@@ -92,7 +95,9 @@ export function DashboardPage() {
           <ListItemText
             bold
             align="right"
-            primary={numberCommas(parseFloat(i.signed_total_amount).toFixed(2))}
+            primary={`PHP ${numberCommas(
+              parseFloat(i.signed_total_amount).toFixed(2),
+            )}`}
             color={i.transaction_category.transaction_type}
             small
           />

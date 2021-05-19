@@ -16,7 +16,7 @@ import Loading from 'app/components/Loading';
 import Button from 'app/components/Elements/Button';
 
 import HomeIcon from 'app/components/Assets/Home';
-import QRCodeIcon from 'app/components/Assets/QRCode';
+import QRCodeIcon from 'app/components/Assets/QRCodeSmall';
 // import AccountIcon from 'app/components/Assets/Account';
 import PromosIcon from 'app/components/Assets/Promos';
 import AccountSecurityIcon from 'app/components/Assets/AccountSecurity';
@@ -144,14 +144,14 @@ export default function Sidebar() {
             <PromosIcon />
             Promos
           </NavButton>
-          <NavButton as={NavLink} to="/settings">
-            <AccountSecurityIcon />
-            Account Security
-          </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
           <NavButton onClick={() => alert('For Development')}>
             <MerchantInquiryIcon />
             Merchant Inquiry
+          </NavButton>
+          <NavButton as={NavLink} to="/settings">
+            <AccountSecurityIcon />
+            Account Security
           </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
           <NavButton onClick={() => alert('For Development')}>
