@@ -8,6 +8,12 @@ export interface DashboardState {
   error?: {};
   data: {} | boolean;
   request: {} | boolean;
+  transaction: {
+    loading: boolean;
+    error?: {};
+    data: [] | boolean;
+    request: {} | boolean;
+  };
 }
 
 export type ContainerState = DashboardState;

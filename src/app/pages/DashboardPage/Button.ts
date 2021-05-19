@@ -19,11 +19,13 @@ const DashboardButton = styled.button`
   color: inherit;
   display: block;
   cursor: pointer;
+  text-decoration: none;
+  text-align: center;
 
   svg {
     height: 64px;
     display: block;
-    margin: 0 auto 2px;
+    margin: 0 auto 8px;
   }
 
   &:focus-visible {

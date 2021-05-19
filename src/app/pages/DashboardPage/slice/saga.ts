@@ -67,6 +67,64 @@ function* getDashboard() {
 }
 
 /**
+ * Get Transaction History
+ */
+function* getTransactionHistory() {
+  yield delay(500);
+  const token = yield select(selectUserToken);
+
+  const requestURL = `${process.env.REACT_APP_API_URL}/user/transaction/histories`;
+
+  const options = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token.access_token}`,
+    },
+  };
+
+  try {
+    const apirequest = yield call(request, requestURL, options);
+    if (apirequest) {
+      // request decryption passphrase
+      let decryptPhrase: PassphraseState = yield call(
+        getResponsePassphrase,
+        apirequest.data.id,
+      );
+
+      // decrypt payload data
+      // function returns the parsed string
+      let decryptData = spdCrypto.decrypt(
+        apirequest.data.payload,
+        decryptPhrase.passPhrase,
+      );
+
+      if (decryptData && decryptData.data && decryptData.data.length > 0) {
+        const recentTransaction = decryptData.data.splice(1);
+        console.log(recentTransaction);
+        yield put(actions.getTransactionSuccess(recentTransaction));
+      }
+    }
+  } catch (err) {
+    // special case, check the 422 for invalid data (account already exists)
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.getTransactionError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getTransactionReset());
+    } else {
+      yield put(actions.getTransactionError(err));
+    }
+  }
+}
+
+/**
  * Root saga manages watcher lifecycle
  */
 export function* containerSaga() {
@@ -75,4 +133,5 @@ export function* containerSaga() {
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
   yield takeLatest(actions.getFetchLoading.type, getDashboard);
+  yield takeLatest(actions.getTransactionLoading.type, getTransactionHistory);
 }
