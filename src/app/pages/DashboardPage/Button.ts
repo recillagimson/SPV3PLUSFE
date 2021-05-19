@@ -18,6 +18,7 @@ const DashboardButton = styled.button`
   font-size: 0.9rem;
   color: inherit;
   display: block;
+  cursor: pointer;
 
   svg {
     height: 64px;

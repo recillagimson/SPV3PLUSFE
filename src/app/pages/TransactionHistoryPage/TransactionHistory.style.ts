@@ -105,11 +105,38 @@ export const TransactionList = styled.ul`
   padding: 0;
 `;
 
-export const TransactionListItem = styled.li`
+export const TransactionListItem = styled.li<{
+  noBorder?: boolean;
+  isLast?: boolean;
+}>`
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #e7eaf3;
   padding: 10px 0;
+
+  ${({ isLast }) =>
+    isLast &&
+    css`
+      border-bottom: 0;
+    `}
+
+  ${({ noBorder }) =>
+    noBorder &&
+    css`
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 0;
+      padding: 20px 0;
+
+      button {
+        min-width: 150px;
+      }
+
+      img {
+        width: 100px;
+      }
+    `}
 `;
 
 export const ListContainer = styled.div<{
@@ -189,12 +216,11 @@ export const TransactionDetailsWrapperContent = styled.div`
   padding: 20px;
 
   h6 {
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 21px;
     margin: 0 auto;
     text-align: center;
-    width: 240px;
   }
 `;
 
@@ -217,11 +243,13 @@ export const TransactionDetailsListItem = styled.li`
   p {
     font-size: 14px;
     font-weight: 400;
+    flex: 1;
     line-height: 21px;
     margin: 0;
 
     &:last-child {
       font-weight: 600;
+      text-align: right;
     }
   }
 `;
@@ -237,7 +265,11 @@ export const FooterWrapper = styled.div`
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    margin: 0;
+    margin: 10px 0 0;
+  }
+
+  img {
+    width: 150px;
   }
 `;
 
@@ -296,10 +328,26 @@ export const PaddingWrapper = styled.div`
   padding: 20px;
   text-align: center;
 
+  h3,
+  p {
+    text-align: left;
+  }
+
   h3 {
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 36px;
-    margin: 15px 0;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 27px;
+    margin: 0 0 15px;
+  }
+
+  p {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    margin: 0 0 70px;
+  }
+
+  button {
+    margin: 50px 0 0;
   }
 `;

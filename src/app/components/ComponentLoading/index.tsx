@@ -5,7 +5,8 @@
  */
 import * as React from 'react';
 
-import loading from './loading.gif';
+import loading from './loading_light.gif';
+import loadingDark from './loading_dark.gif';
 
 // Styles
 import * as S from './ComponentLoading.style';
@@ -13,6 +14,7 @@ import * as S from './ComponentLoading.style';
 type Props = {
   isLoading?: boolean;
   children: React.ReactNode;
+  invert?: boolean;
 };
 
 function ComponentLoading(props: Props) {
@@ -20,7 +22,7 @@ function ComponentLoading(props: Props) {
     <S.Wrapper>
       {props.isLoading ? (
         <div className="loading-container">
-          <img src={loading} alt="Loading..." />
+          <img src={props.invert ? loading : loadingDark} alt="Loading..." />
         </div>
       ) : (
         props.children

@@ -8,6 +8,8 @@ import Loading from 'app/components/Loading';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 
+/** selectors, slice */
+import { selectData as selectDashboardData } from 'app/pages/DashboardPage/slice/selectors';
 import {
   selectLoggedInName,
   selectReferences,
@@ -22,6 +24,7 @@ export function UserProfilePage() {
   const profile = useSelector(selectUser);
   const login = useSelector(selectLoggedInName);
   const refs = useSelector(selectReferences);
+  const dashData: any = useSelector(selectDashboardData);
 
   const [showProfile, setShowProfile] = React.useState(true);
   const [showUpdateProfile, setShowUpdateProfile] = React.useState(false);
@@ -57,6 +60,11 @@ export function UserProfilePage() {
                 setShowProfile(prev => !prev);
                 setShowUpdateProfile(prev => !prev);
               }}
+              tier={
+                dashData && dashData.tier
+                  ? `${dashData.tier.tier_class} Member`
+                  : ''
+              }
             />
             <UserInfoList profile={profile} refs={refs} />
           </div>

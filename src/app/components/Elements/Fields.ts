@@ -31,8 +31,8 @@ const Field = styled.div<FieldProps>`
       & > label {
         font-size: 1rem;
         padding-top: 13px;
-        max-width: 200px;
-        min-width: 200px;
+        max-width: 205px;
+        min-width: 205px;
       }
     `}
   `}

@@ -13,14 +13,14 @@ import IconButton from 'app/components/Elements/IconButton';
 
 export default function UserDetailsList({ profile, refs }) {
   let country = '-';
-  // let nationality = '-';
+  let nationality = '-';
   let natureOfWork = '-';
   let sourceOfFunds = '-';
   if (profile && refs && Object.keys(refs).length > 0) {
     country = refs.countries.findIndex(j => j.id === profile.country_id);
-    // nationality = refs.nationalities.findIndex(
-    //   j => j.id === profile.nationality_id,
-    // );
+    nationality = refs.nationalities.findIndex(
+      j => j.id === profile.nationality_id,
+    );
     natureOfWork =
       profile.encoded_nature_of_work !== ''
         ? profile.encoded_nature_of_work
@@ -35,7 +35,8 @@ export default function UserDetailsList({ profile, refs }) {
     <List divider>
       <ListItem flex>
         <ListItemText
-          primary="Change Email Address"
+          label="Mobile Number"
+          primary="0917xxxx"
           style={{
             flexGrow: 1,
           }}
@@ -46,36 +47,45 @@ export default function UserDetailsList({ profile, refs }) {
       </ListItem>
       <ListItem flex>
         <ListItemText
-          primary="Change Mobile Number"
+          label="Nationality"
+          primary={profile ? refs.nationalities[nationality].description : '-'}
           style={{
             flexGrow: 1,
           }}
         />
-        <IconButton onClick={() => alert('clicked')}>
-          <FontAwesomeIcon icon="chevron-right" />
-        </IconButton>
       </ListItem>
       <ListItem flex>
         <ListItemText
-          primary="Upload ID"
-          style={{
-            flexGrow: 1,
-          }}
-        />
-        <IconButton onClick={() => alert('clicked')}>
-          <FontAwesomeIcon icon="chevron-right" />
-        </IconButton>
-      </ListItem>
-      <ListItem flex>
-        <ListItemText
-          label="Birthdate"
+          label="Date of Birth"
           primary={profile ? profile.birth_date : '-'}
           style={{
             flexGrow: 1,
           }}
         />
       </ListItem>
-      <ListItem flex>
+      {profile && profile.guardian_name && (
+        <>
+          <ListItem flex>
+            <ListItemText
+              label="Guardian's Name"
+              primary={profile ? profile.guardian_name : '-'}
+              style={{
+                flexGrow: 1,
+              }}
+            />
+          </ListItem>
+          <ListItem flex>
+            <ListItemText
+              label="Guardian's Mobile Number"
+              primary={profile ? profile.guardian_mobile_number : '-'}
+              style={{
+                flexGrow: 1,
+              }}
+            />
+          </ListItem>
+        </>
+      )}
+      {/* <ListItem flex>
         <ListItemText
           label="Birthplace"
           primary={profile ? profile.place_of_birth : '-'}
@@ -83,7 +93,7 @@ export default function UserDetailsList({ profile, refs }) {
             flexGrow: 1,
           }}
         />
-      </ListItem>
+      </ListItem> */}
       <ListItem flex>
         <ListItemText
           label="Country"
@@ -107,7 +117,7 @@ export default function UserDetailsList({ profile, refs }) {
       <ListItem flex>
         <ListItemText
           label="Province / State"
-          primary={profile ? profile.provice_state : '-'}
+          primary={profile ? profile.province_state : '-'}
           style={{
             flexGrow: 1,
           }}
@@ -131,7 +141,7 @@ export default function UserDetailsList({ profile, refs }) {
           }}
         />
       </ListItem>
-      <ListItem flex>
+      {/* <ListItem flex>
         <ListItemText
           label="Source of Funds"
           primary={profile ? sourceOfFunds : '-'}
@@ -148,7 +158,7 @@ export default function UserDetailsList({ profile, refs }) {
             flexGrow: 1,
           }}
         />
-      </ListItem>
+      </ListItem> */}
     </List>
   );
 }
