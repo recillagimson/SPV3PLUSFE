@@ -6,7 +6,7 @@ export type ErrorState = ApiErrorState;
 export interface ProfileState {
   loading: boolean;
   error?: {};
-  data: {} | boolean;
+  data: boolean;
   request: {} | boolean;
 }
 

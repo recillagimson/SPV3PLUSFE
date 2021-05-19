@@ -14,6 +14,8 @@ import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
 
+import { numberCommas } from 'app/components/Helpers';
+
 /** svg icons */
 import AddMoney from 'app/components/Assets/AddMoney';
 import SendMoney from 'app/components/Assets/SendMoney';
@@ -45,9 +47,11 @@ export function DashboardPage() {
     dispatch(actions.getFetchLoading());
   }, [actions, dispatch]);
 
-  let balanceInfo = '0.00';
+  let balanceInfo = '0.0';
   if (dashData && dashData.balance_info) {
-    balanceInfo = dashData.balance_info.available_balance;
+    balanceInfo = numberCommas(
+      parseFloat(dashData.balance_info.available_balance),
+    );
   }
 
   return (
@@ -146,7 +150,7 @@ export function DashboardPage() {
       </Grid>
 
       <ButtonFlexWrapper>
-        <DashboardButton onClick={() => history.push('/add-money')}>
+        <DashboardButton onClick={() => history.push('/addmoney')}>
           <AddMoney />
           Add Money
         </DashboardButton>

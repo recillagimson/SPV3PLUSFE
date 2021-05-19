@@ -113,10 +113,19 @@ export function doSignOut() {
   deleteCookie('spv_expire');
   deleteCookie('spv_cat');
   deleteCookie('spv_uat_u');
+  deleteCookie('spv_uat_f');
 
   // set a delay, in the component where this will be called, set a loading indicator to delay the logout
   setTimeout(() => {
     const publicURL = process.env.PUBLIC_URL || '';
     window.location.replace(`${publicURL}/`);
   }, 800);
+}
+
+/**
+ * Format number with commas
+ * @param {number}  num       number to format
+ */
+export function numberCommas(num: number = 0) {
+  return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
 }

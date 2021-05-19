@@ -89,6 +89,7 @@ export function SettingsChangePasswordPage() {
   React.useEffect(
     () => () => {
       dispatch(actions.getFetchReset());
+      dispatch(actions.getValidateReset());
     },
     [],
   );
@@ -109,43 +110,65 @@ export function SettingsChangePasswordPage() {
   }, [validateSuccess, validateError]);
 
   // check the error payload
-  const apiErrorMessage = err => {
+  const apiErrorMessage = (err: any) => {
     if (err.code && err.code === 422) {
-      if (err.errors.error_code) {
+      if (
+        err.errors &&
+        err.errors.error_code &&
+        err.errors.error_code.length > 0
+      ) {
         // return the errors
         const i103 = err.errors.error_code
-          ? err.errors.error_code.find(j => j === 103)
+          ? err.errors.error_code.findIndex(j => j === 103)
           : -1;
 
         const i105 = err.errors.error_code
-          ? err.errors.error_code.find(j => j === 105)
+          ? err.errors.error_code.findIndex(j => j === 105)
           : -1;
 
         const i106 = err.errors.error_code
-          ? err.errors.error_code.find(j => j === 106)
+          ? err.errors.error_code.findIndex(j => j === 106)
           : -1;
 
         const i107 = err.errors.error_code
-          ? err.errors.error_code.find(j => j === 107)
+          ? err.errors.error_code.findIndex(j => j === 107)
           : -1;
 
-        if (i103 !== -1) {
-          setPassError(err.errors.payload);
+        if (
+          i103 !== -1 &&
+          err.errors.payload &&
+          err.errors.payload.length > 0
+        ) {
+          setPassError("Oops! Account doesn't exist");
           return;
         }
 
-        if (i105 !== -1) {
-          setPassError(err.errors.payload);
+        if (
+          i105 !== -1 &&
+          err.errors.payload &&
+          err.errors.payload.length > 0
+        ) {
+          setPassError(
+            'Your Account has been locked, Please contact Squidpay Support for assistance in unlocking your account.',
+          );
           return;
         }
 
-        if (i106 !== -1) {
-          setPassError(err.errors.password);
+        if (
+          i106 !== -1 &&
+          err.errors.message &&
+          err.errors.message.length > 0
+        ) {
+          setPassError('Oops! Password already been used');
           return;
         }
 
-        if (i107 !== -1) {
-          setPassError(err.errors.payload);
+        if (
+          i107 !== -1 &&
+          err.errors.payload &&
+          err.errors.payload.length > 0
+        ) {
+          setPassError('Password cannot be changed for at least 1 day/s.');
           return;
         }
       }

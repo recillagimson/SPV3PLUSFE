@@ -37,3 +37,7 @@ Start Coding!
 ### Release notes
 
 1. Login / Registration / Forgot Password Modules
+2. Notifications
+3. Transaction History
+4. Send Money (Squid to Squid)
+5. Update Profile (Bronze/Silver and Up) and Change Avatar

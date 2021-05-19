@@ -28,8 +28,8 @@ const colors = {
 };
 
 const IconButton = styled.button<IconButtonProps>`
-  width: ${p => (p.size === 'small' ? '26px' : '36px')};
-  height: ${p => (p.size === 'small' ? '26px' : '36px')};
+  width: ${p => (p.size === 'small' ? '28px' : '36px')};
+  height: ${p => (p.size === 'small' ? '28px' : '36px')};
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -42,7 +42,7 @@ const IconButton = styled.button<IconButtonProps>`
   background-color: ${p =>
     p.color ? colors[p.color].bg : colors['default'].bg};
   color: ${p => (p.color ? colors[p.color].text : colors['default'].text)};
-  opacity: 0.7;
+  opacity: 0.8;
 
   &:focus-visible {
     box-shadow: 0 0 2px 2px ${StyleConstants.FOCUS_COLOR};
@@ -51,6 +51,10 @@ const IconButton = styled.button<IconButtonProps>`
     /* background-color: ${StyleConstants.GRAY_BG};
     color: inherit; */
     opacity: 1;
+  }
+
+  svg {
+    margin-left: 1px;
   }
 `;
 
