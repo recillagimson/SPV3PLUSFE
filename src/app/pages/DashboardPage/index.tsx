@@ -162,7 +162,7 @@ export function DashboardPage() {
       </Grid>
 
       <ButtonFlexWrapper>
-        <DashboardButton onClick={() => history.push('/addmoney')}>
+        <DashboardButton onClick={() => history.push('/addmoneyviabpi')}>
           <AddMoney />
           Add Money
         </DashboardButton>
