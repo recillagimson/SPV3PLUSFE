@@ -182,7 +182,7 @@ export function DashboardPage() {
           <BuyLoad />
           Buy Load
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => history.push('/generateqr')}>
           <QRCode />
           QR Code
         </DashboardButton>
