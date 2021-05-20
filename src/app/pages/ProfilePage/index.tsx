@@ -158,7 +158,7 @@ export function UserProfilePage() {
     />
   );
 
-  if (Boolean(tierID) && tierID !== TierIDs.bronze.id) {
+  if (Boolean(tierID) && tierID !== TierIDs.bronze) {
     updateForm = (
       <ProfileSilver
         onCancel={() => {
@@ -200,7 +200,7 @@ export function UserProfilePage() {
             <UserInfoList
               profile={profile}
               refs={refs}
-              isBronze={Boolean(tierID) && tierID === TierIDs.bronze.id}
+              isBronze={Boolean(tierID) && tierID === TierIDs.bronze}
             />
           </div>
         </Box>
