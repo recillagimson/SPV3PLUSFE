@@ -134,7 +134,10 @@ export function DashboardPage() {
             <IconButton
               size="small"
               color="primary"
-              onClick={() => history.push('/addmoney')}
+              onClick={() => {
+                alert('Feature coming soon');
+                // history.push('/addmoney');
+              }}
             >
               <FontAwesomeIcon icon="plus" />
             </IconButton>
@@ -162,7 +165,12 @@ export function DashboardPage() {
       </Grid>
 
       <ButtonFlexWrapper>
-        <DashboardButton onClick={() => history.push('/addmoney')}>
+        <DashboardButton
+          onClick={() => {
+            alert('Feature coming soon');
+            // history.push('/addmoney');
+          }}
+        >
           <AddMoney />
           Add Money
         </DashboardButton>
@@ -170,15 +178,20 @@ export function DashboardPage() {
           <SendMoney />
           Send Money
         </DashboardButton>
-        <DashboardButton onClick={() => history.push('/onlinebank')}>
+        <DashboardButton
+          onClick={() => {
+            alert('Feature coming soon');
+            // history.push('/onlinebank');
+          }}
+        >
           <SendToBank />
           Send To Bank
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => alert('Feature coming soon')}>
           <PayBills />
           Pay Bills
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => alert('Feature coming soon')}>
           <BuyLoad />
           Buy Load
         </DashboardButton>
@@ -186,7 +199,7 @@ export function DashboardPage() {
           <QRCode />
           QR Code
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => alert('Feature coming soon')}>
           <QuickGuide />
           SquidPay Quick Guide
         </DashboardButton>

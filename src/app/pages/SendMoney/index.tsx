@@ -433,20 +433,20 @@ export function SendMoney() {
                     }
                     error={validateApiMsg.code === '402' ? true : undefined}
                   />
-                  {amount.error && (
-                    <ErrorMsg formError>* Invalid Amount</ErrorMsg>
-                  )}
-
-                  {/* API Error Message */}
-                  {validateApiMsg.code === '402' && !amount.error && (
-                    <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
-                  )}
                   {/* <small>
                   Your daily limit is 20,000 PHP and monthly limit is 100,000
                   PHP
                 </small> */}
                   <span>PHP</span>
                 </InputTextWrapper>
+                {amount.error && (
+                  <ErrorMsg formError>* Invalid Amount</ErrorMsg>
+                )}
+
+                {/* API Error Message */}
+                {validateApiMsg.code === '402' && !amount.error && (
+                  <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                )}
               </Field>
 
               <Field>
