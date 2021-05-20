@@ -8,6 +8,7 @@
  * @prop {boolean}  small         if defined, will render a smaller size font
  * @prop {string}   align         one of 'left' | 'right' | 'center' : default: 'left'
  * @prop {boolean}  bold          will display a bold title
+ * @prop {string|boolean} icon    if declared, will display a default icon of chevron-right, if you want to use other icon, pass as string ie: icon="envelope"
  */
 import * as React from 'react';
 import styled from 'styled-components/macro';
@@ -15,6 +16,7 @@ import { StyleConstants } from 'styles/StyleConstants';
 
 import Label from 'app/components/Elements/Label';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 interface TypographyProps extends React.HTMLAttributes<any> {
   label?: string;
@@ -24,7 +26,7 @@ interface TypographyProps extends React.HTMLAttributes<any> {
   small?: boolean;
   align?: 'left' | 'right' | 'center';
   bold?: boolean;
-  icon?: boolean; // Show Arrow Icon
+  icon?: boolean | IconProp; // Show Arrow Icon
   color?: undefined | 'POSITIVE' | 'NEGATIVE';
 }
 
@@ -36,9 +38,10 @@ const Wrapper = styled.div<{
   font-size: ${p => (p.small ? '0.8rem' : '1rem')};
   text-align: ${p => (p.align ? p.align : 'left')};
   position: relative;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 14px;
+  padding-bottom: 14px;
   padding-right: ${p => (p.icon ? '35px' : '0')};
+  padding-left: 2px;
 
   &[role='presentation'] {
     cursor: pointer;
@@ -104,14 +107,19 @@ export default function TypographyComponent({
   color,
   ...rest
 }: TypographyProps) {
+  let iconName: IconProp = 'chevron-right';
+  if (icon && typeof icon === 'string') {
+    iconName = icon;
+  }
+
   return (
     <Wrapper
       small={small || undefined}
       align={align || undefined}
-      icon={icon || undefined}
+      icon={icon ? true : undefined}
       {...rest}
     >
-      {Boolean(label) && <Label>{label}</Label>}
+      {Boolean(label) && <Label nomargin>{label}</Label>}
       {Boolean(primary) && (
         <Primary bold={bold || undefined} color={color}>
           {primary}
@@ -119,7 +127,7 @@ export default function TypographyComponent({
       )}
       {Boolean(caption) && <Caption>{caption}</Caption>}
       {Boolean(secondary) && <Secondary>{secondary}</Secondary>}
-      {icon && <FontAwesomeIcon icon="chevron-right" />}
+      {icon && <FontAwesomeIcon icon={iconName} />}
     </Wrapper>
   );
 }
