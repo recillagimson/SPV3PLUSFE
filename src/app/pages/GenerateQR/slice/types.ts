@@ -3,11 +3,11 @@ import { ApiErrorState } from 'types/Default';
 /* --- STATE --- */
 export type ErrorState = ApiErrorState;
 
-export interface HelpCenterState {
+export interface GenerateQRState {
   loading: boolean;
   error?: object;
-  data: object;
+  data: object | boolean;
   request: object | boolean;
 }
 
-export type ContainerState = HelpCenterState;
+export type ContainerState = GenerateQRState;

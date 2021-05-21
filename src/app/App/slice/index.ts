@@ -46,7 +46,7 @@ const slice = createSlice({
       state.data = false;
       state.token = '';
     },
-    getLoadUserProfile() {}, // an action only to dispatch retrieving of user profile
+    getLoadUserProfile(state) {}, // an action only to dispatch retrieving of user profile
     getUserProfile(state, action: PayloadAction<UserProfileState>) {
       state.user = action.payload;
     },

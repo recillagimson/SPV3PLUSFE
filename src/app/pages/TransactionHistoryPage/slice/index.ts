@@ -10,16 +10,33 @@ import {
 import { containerSaga } from './saga';
 
 export const transactionDetailsDefaultState = {
-  bankName: '',
-  accountNumber: '',
-  accountName: '',
-  transactionNumber: '',
-  amount: '',
-  signedAmount: '',
-  serviceFee: '',
-  purpose: '',
+  id: '',
+  signed_total_amount: '',
+  total_amount: '',
+  transactable: {
+    account_name: '',
+    account_number: '',
+    bank_name: '',
+    created_at: '',
+    amount: '',
+    send_receipt_to: '',
+    purpose: '',
+    message: '',
+    reference_number: '',
+    service_fee: '',
+    receiver_details: {
+      first_name: '',
+      last_name: '',
+      middle_name: '',
+    },
+  },
+  transaction_category: {
+    description: '',
+    name: '',
+    title: '',
+    transaction_type: '',
+  },
   transactionDate: '',
-  transactionType: '',
 };
 
 export const transactionHistoryDefaultState = {
@@ -35,7 +52,7 @@ export const transactionHistoryDefaultState = {
 export const initialState: ContainerState = {
   loading: false,
   error: {},
-  data: [],
+  transactionHistory: {},
   transactionHistoryDetails: transactionDetailsDefaultState,
   transactionHistoryDetailsError: {},
   transactionHistoryId: '',
@@ -48,11 +65,11 @@ const slice = createSlice({
     getFetchLoading(state) {
       state.loading = true;
       state.error = {};
-      state.data = [];
+      state.transactionHistory = {};
     },
     getFetchSuccess(state, action: PayloadAction<[]>) {
       state.loading = false;
-      state.data = action.payload;
+      state.transactionHistory = action.payload;
     },
     getFetchError(state, action: PayloadAction<ErrorState>) {
       state.error = action.payload;
@@ -61,7 +78,7 @@ const slice = createSlice({
     getFetchReset(state) {
       state.loading = false;
       state.error = {};
-      state.data = [];
+      state.transactionHistory = {};
     },
     getTransactionHistoryDetailsLoading(state, action: PayloadAction<string>) {
       state.loading = true;

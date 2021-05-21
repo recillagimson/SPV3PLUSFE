@@ -3,13 +3,9 @@ import { DateTime } from 'luxon';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 
-// get our fontawesome imports
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 // Components
 import Button from 'app/components/Elements/Button';
 import ComponentLoading from 'app/components/ComponentLoading';
-import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Dialog from 'app/components/Dialog';
 
 // Utils
@@ -26,12 +22,22 @@ import {
 // Styles
 import * as S from './TransactionHistory.style';
 
+// Helpers
+import {
+  bankListData,
+  receivedMoneyListData,
+  dragonpayListData,
+  loadListtData,
+} from './helpers';
+
 // Assets
 import Logo from 'app/components/Assets/Logo';
 import WrapperCuttedCornerBottom from 'app/components/Assets/WrapperCuttedCornerBottom.svg';
 import WrapperCuttedCornerTop from 'app/components/Assets/WrapperCuttedCornerTop.svg';
+import TransactionScreenshotLogo from 'app/components/Assets/TransactionScreenshotLogo.svg';
 
 function TransactionHistoryDetailsPage(props) {
+  const [isOpen, setOpen] = React.useState(false);
   const { id } = props.match.params;
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
@@ -43,34 +49,57 @@ function TransactionHistoryDetailsPage(props) {
 
   React.useEffect(() => {
     dispatch(actions.getTransactionHistoryDetailsLoading(id));
-  }, [actions, dispatch]);
-
-  const transactionListData = [
-    {
-      label: 'Account Name',
-      value: transactionHistoryDetailsData?.accountName,
-    },
-    {
-      label: 'Account Number',
-      value: transactionHistoryDetailsData?.accountNumber,
-    },
-    {
-      label: 'Transaction Number',
-      value: transactionHistoryDetailsData?.transactionNumber,
-    },
-    {
-      label: 'Purpose of transaction',
-      value: transactionHistoryDetailsData?.purpose,
-    },
-  ];
+  }, [actions, dispatch, id]);
 
   const isPostiveAmount =
-    transactionHistoryDetailsData?.transactionType === 'POSITIVE';
+    transactionHistoryDetailsData?.transaction_category?.transaction_type ===
+    'POSITIVE';
+
+  const isBankTransaction =
+    transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
+      'Bank',
+    ) !== -1;
+
+  const isReceiveMoneyTransaction =
+    transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
+      'Receive',
+    ) !== -1;
+
+  const isSendMoneyTransaction =
+    transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
+      'Send',
+    ) !== -1;
+
+  const isDragonpayTransaction =
+    transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
+      'Dragonpay',
+    ) !== -1;
+
+  const isLoadTransaction =
+    transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
+      'Load',
+    ) !== -1;
 
   console.log(
     'transactionHistoryDetailsData?.transactionDate',
     transactionHistoryDetailsData?.transactionDate,
   );
+  const renderListItems = () => {
+    if (isBankTransaction) return bankListData(transactionHistoryDetailsData);
+    if (isReceiveMoneyTransaction || isSendMoneyTransaction)
+      return receivedMoneyListData(transactionHistoryDetailsData);
+    if (isDragonpayTransaction)
+      return dragonpayListData(transactionHistoryDetailsData);
+    if (isLoadTransaction) return loadListtData(transactionHistoryDetailsData);
+
+    return [];
+  };
+
+  const hasServiceFee = isBankTransaction || isLoadTransaction;
+  const date = DateTime.fromISO(
+    transactionHistoryDetailsData?.transactable?.created_at,
+  );
+  const monthDateYearTime = date.toLocaleString(DateTime.DATETIME_MED);
   return (
     <>
       <Helmet>
@@ -84,11 +113,19 @@ function TransactionHistoryDetailsPage(props) {
           {!loading && (
             <S.TransactionContent width="420px">
               <S.TransactionDetailsWrapper>
-                <S.CuttedImageWrapper src={WrapperCuttedCornerTop} alt="" />
+                <S.CuttedImageWrapper
+                  src={WrapperCuttedCornerTop}
+                  alt="Squid pay"
+                />
                 <S.TransactionDetailsWrapperContent>
-                  <h6>Send Money to Land Bank of the Philippines</h6>
+                  <h6>
+                    {
+                      transactionHistoryDetailsData?.transaction_category
+                        ?.description
+                    }
+                  </h6>
                   <S.TransactionDetailsList>
-                    {transactionListData?.map((d, i) => (
+                    {renderListItems().map((d, i) => (
                       <S.TransactionDetailsListItem key={i}>
                         <p>{d.label}</p>
                         <p>{d.value}</p>
@@ -105,20 +142,26 @@ function TransactionHistoryDetailsPage(props) {
                       PHP&nbsp;
                       {numberWithCommas(
                         parseToNumber(
-                          transactionHistoryDetailsData.signedAmount,
+                          transactionHistoryDetailsData.signed_total_amount,
                         ),
                       )}
                     </p>
-                    <p>
-                      Service Fee: PHP&nbsp;
-                      {numberWithCommas(
-                        parseToNumber(transactionHistoryDetailsData.serviceFee),
-                      )}
-                    </p>
+                    {hasServiceFee && (
+                      <p>
+                        Service Fee: PHP&nbsp;
+                        {numberWithCommas(
+                          parseToNumber(
+                            transactionHistoryDetailsData.transactable
+                              .service_fee,
+                          ),
+                        )}
+                      </p>
+                    )}
                   </S.TotalTransactions>
                   <S.FooterWrapper>
                     <Logo size="small" />
                     <p>{DateTime.fromISO('2021-05-11 14:44:19').toString()}</p>
+                    <p>{monthDateYearTime}</p>
                   </S.FooterWrapper>
                 </S.TransactionDetailsWrapperContent>
                 <S.CuttedImageWrapper src={WrapperCuttedCornerBottom} alt="" />
@@ -126,7 +169,7 @@ function TransactionHistoryDetailsPage(props) {
               <S.ButtonContainer direction="column" margin="20px 0 0">
                 <Button
                   fullWidth
-                  onClick={() => {}}
+                  onClick={() => setOpen(!isOpen)}
                   variant="outlined"
                   color="secondary"
                   size="large"
@@ -146,21 +189,19 @@ function TransactionHistoryDetailsPage(props) {
             </S.TransactionContent>
           )}
         </ComponentLoading>
-        <Dialog show={false} size="small">
+        <Dialog show={isOpen} size="small">
           <S.PaddingWrapper>
-            <Logo size="small" margin="0 0 40px" />
-            <CircleIndicator size="medium">
-              <FontAwesomeIcon icon="check" />
-            </CircleIndicator>
-            <h3>Transaction successfully saved</h3>
+            <h3>Instructions</h3>
+            <p>Capture and Save your receipt.</p>
+            <img src={TransactionScreenshotLogo} alt="Squid pay transaction" />
             <Button
               size="large"
               color="primary"
               variant="contained"
-              onClick={() => alert('For Development')}
+              onClick={() => setOpen(!isOpen)}
               fullWidth
             >
-              Close
+              Ok
             </Button>
           </S.PaddingWrapper>
         </Dialog>

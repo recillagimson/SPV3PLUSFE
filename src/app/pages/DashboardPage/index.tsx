@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { DateTime } from 'luxon';
+
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 import Button from 'app/components/Elements/Button';
@@ -12,6 +14,11 @@ import Grid from 'app/components/Elements/Grid';
 import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
+import H5 from 'app/components/Elements/H5';
+
+import PromosDeals from 'app/components/PromosDeals';
+
+import { numberCommas } from 'app/components/Helpers';
 
 /** svg icons */
 import AddMoney from 'app/components/Assets/AddMoney';
@@ -22,6 +29,7 @@ import BuyLoad from 'app/components/Assets/BuyLoad';
 import QRCode from 'app/components/Assets/QRCode';
 import QuickGuide from 'app/components/Assets/QuickGuide';
 import Others from 'app/components/Assets/Others';
+import NewsUpdate from 'app/components/Assets/NewsUpdate';
 
 import Balance from './Balance';
 import ButtonFlexWrapper from './ButtonFlex';
@@ -29,7 +37,12 @@ import DashboardButton from './Button';
 
 /** selectors */
 import { useContainerSaga } from './slice';
-import { selectLoading, selectError, selectData } from './slice/selectors';
+import {
+  selectLoading,
+  selectError,
+  selectData,
+  selectTransactionData,
+} from './slice/selectors';
 import Loading from 'app/components/Loading';
 
 export function DashboardPage() {
@@ -39,14 +52,58 @@ export function DashboardPage() {
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
   const dashData: any = useSelector(selectData);
+  const transactionData: any = useSelector(selectTransactionData);
 
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());
+    dispatch(actions.getTransactionLoading());
   }, [actions, dispatch]);
 
-  let balanceInfo = '0.00';
+  let balanceInfo = '000.00';
   if (dashData && dashData.balance_info) {
-    balanceInfo = dashData.balance_info.available_balance;
+    balanceInfo = numberCommas(
+      parseFloat(dashData.balance_info.available_balance).toFixed(2),
+    );
+  }
+
+  let transactionItems: React.ReactNode | undefined = (
+    <ListItem>
+      <p style={{ textAlign: 'center', padding: 10 }}>
+        {' '}
+        No Transactions
+        <small style={{ display: 'block' }}>
+          You haven’t made any transactions yet
+        </small>
+      </p>
+    </ListItem>
+  );
+
+  if (transactionData && transactionData.length > 0) {
+    transactionItems = transactionData.map(i => {
+      const date = DateTime.fromISO(i.created_at).toFormat('LLLL dd, yyyy\ntt');
+      return (
+        <ListItem flex key={i.id}>
+          <ListItemText
+            bold
+            primary={i.transaction_category.title}
+            secondary={date}
+            style={{
+              flexGrow: 1,
+            }}
+            small
+          />
+          <ListItemText
+            bold
+            align="right"
+            primary={`PHP ${numberCommas(
+              parseFloat(i.signed_total_amount).toFixed(2),
+            )}`}
+            color={i.transaction_category.transaction_type}
+            small
+          />
+        </ListItem>
+      );
+    });
   }
 
   return (
@@ -85,12 +142,7 @@ export function DashboardPage() {
         </Box>
 
         <Box
-          title="Recent Transaction"
-          titleAction={
-            <IconButton onClick={() => history.push('/transaction-history')}>
-              <FontAwesomeIcon icon="ellipsis-h" />
-            </IconButton>
-          }
+          title="Transaction History"
           footerBorder
           footer={
             <Button
@@ -103,49 +155,19 @@ export function DashboardPage() {
           }
           footerAlign="center"
         >
-          <List divider padding="20px 25px">
-            <ListItem flex>
-              <ListItemText
-                bold
-                primary="Online Transfer"
-                caption={`Fund transfer via Instapay`}
-                style={{
-                  flexGrow: 1,
-                }}
-                small
-              />
-              <ListItemText
-                bold
-                align="right"
-                primary="PHP 1,000.00"
-                caption={`August 10, 2020\n03:46 PM`}
-                small
-              />
-            </ListItem>
-            <ListItem flex>
-              <ListItemText
-                bold
-                primary="Online Transfer"
-                caption={`Fund transfer via Instapay`}
-                style={{
-                  flexGrow: 1,
-                }}
-                small
-              />
-              <ListItemText
-                bold
-                align="right"
-                primary="PHP 1,000.00"
-                caption={`August 10, 2020\n03:46 PM`}
-                small
-              />
-            </ListItem>
+          <List divider padding="10px 25px">
+            {transactionItems}
           </List>
         </Box>
       </Grid>
 
       <ButtonFlexWrapper>
-        <DashboardButton onClick={() => history.push('/add-money')}>
+        <DashboardButton
+          onClick={() => {
+            alert('Feature coming soon');
+            // history.push('/addmoney');
+          }}
+        >
           <AddMoney />
           Add Money
         </DashboardButton>
@@ -153,31 +175,45 @@ export function DashboardPage() {
           <SendMoney />
           Send Money
         </DashboardButton>
-        <DashboardButton onClick={() => history.push('/onlinebank')}>
+        <DashboardButton
+          onClick={() => {
+            alert('Feature coming soon');
+            // history.push('/onlinebank');
+          }}
+        >
           <SendToBank />
           Send To Bank
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => alert('Feature coming soon')}>
           <PayBills />
           Pay Bills
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => alert('Feature coming soon')}>
           <BuyLoad />
           Buy Load
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => history.push('/generateqr')}>
           <QRCode />
           QR Code
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => alert('Feature coming soon')}>
           <QuickGuide />
           SquidPay Quick Guide
         </DashboardButton>
-        <DashboardButton>
-          <Others />
-          Others
+        <DashboardButton
+          as="a"
+          href="https://www.facebook.com/SquidPay/"
+          target="_blank"
+        >
+          <NewsUpdate />
+          News and Update
         </DashboardButton>
       </ButtonFlexWrapper>
+
+      <div style={{ padding: '20px 0' }}>
+        <H5>Promos and Deals</H5>
+        <PromosDeals />
+      </div>
       {/* <div>
         <Box
           title="Sample Container for Box UI"

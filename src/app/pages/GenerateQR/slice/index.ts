@@ -8,18 +8,19 @@ import { containerSaga } from './saga';
 export const initialState: ContainerState = {
   loading: false,
   error: {},
-  data: {},
+  data: false,
   request: false,
 };
 
 const slice = createSlice({
-  name: 'helpCenter',
+  name: 'generateQR',
   initialState,
   reducers: {
-    getFetchLoading(state) {
+    getFetchLoading(state, action: PayloadAction<object>) {
       state.loading = true;
       state.error = {};
-      state.data = {};
+      state.data = false;
+      state.request = action.payload;
     },
     getFetchSuccess(state, action: PayloadAction<object>) {
       state.loading = false;
@@ -34,7 +35,7 @@ const slice = createSlice({
     getFetchReset(state) {
       state.loading = false;
       state.error = {};
-      state.data = {};
+      state.data = false;
       state.request = false;
     },
   },

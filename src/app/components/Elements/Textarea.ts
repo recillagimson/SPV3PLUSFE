@@ -5,10 +5,13 @@ import FormElementStyle from './FormElementsStyle';
 
 const Textarea = styled.textarea`
   ${FormElementStyle};
+
   width: 100%;
   display: block;
-  max-height: 5em;
+  min-height: 110px;
+  max-height: 12em;
   resize: none;
+  font-family: inherit;
 `;
 
 export default Textarea;

@@ -6,7 +6,7 @@ export type ErrorState = ApiErrorState;
 export interface TransactionHistoryState {
   loading: boolean;
   error?: object;
-  data: TransactionHistoryDataState[];
+  transactionHistory: object;
   transactionHistoryDetails: TransactionHistoryDetailsState;
   transactionHistoryDetailsError: object;
   transactionHistoryId: string;
@@ -23,16 +23,33 @@ export interface TransactionHistoryDataState {
 }
 
 export interface TransactionHistoryDetailsState {
-  bankName: string;
-  accountName: string;
-  accountNumber: string;
-  transactionNumber: string;
-  amount: string;
-  signedAmount: string;
-  serviceFee: string;
-  purpose: string;
-  transactionDate: string;
-  transactionType: string;
+  id: string;
+  signed_total_amount: string;
+  total_amount: string;
+  transactable: {
+    account_name: string;
+    account_number: string;
+    bank_name: string;
+    created_at: string;
+    amount: string;
+    send_receipt_to: string;
+    purpose: string;
+    message: string;
+    reference_number: string;
+    service_fee: string;
+    receiver_details: {
+      first_name: string;
+      last_name: string;
+      middle_name: string;
+    };
+  };
+  transaction_category: {
+    description: string;
+    name: string;
+    title: string;
+    transaction_type: string;
+  };
+  transactionDate: any;
 }
 
 export type ContainerState = TransactionHistoryState;

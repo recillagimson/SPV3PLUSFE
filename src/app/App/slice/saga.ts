@@ -173,6 +173,9 @@ export function* getLoggedInUserProfile() {
       return true;
     }
   } catch (err) {
+    if (err && err.response && err.response.status === 401) {
+      yield put(actions.getIsSessionExpired(true));
+    }
     return false;
   }
 }

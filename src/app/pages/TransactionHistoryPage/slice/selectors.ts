@@ -7,9 +7,9 @@ import { initialState } from '.';
 const selectDomain = (state: RootState) =>
   state.transactionHistory || initialState;
 
-export const selectData = createSelector(
+export const selectTransactionHistoryData = createSelector(
   [selectDomain],
-  subState => subState.data,
+  subState => subState.transactionHistory,
 );
 
 export const selectLoading = createSelector(

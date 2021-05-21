@@ -5,10 +5,12 @@ export const parseToNumber = (val: any): any => {
   if (isNumber) {
     return amount.toFixed(2);
   } else {
-    return 0;
+    return 0.0;
   }
 };
 
-export const numberWithCommas = (val: Number) => {
-  return val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+export const numberWithCommas = (val: string) => {
+  return parseToNumber(val)
+    .toString()
+    .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 };

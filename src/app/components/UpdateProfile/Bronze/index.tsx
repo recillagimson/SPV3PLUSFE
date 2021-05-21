@@ -6,7 +6,6 @@
  *
  * @prop  {function}  onCancel        Callback when user cancelled the update
  * @prop  {function}  onSuccess       Callback when user successfully updated the profile
- * @prop  {function}  onConfirm       Callback when user is reviewing info will return a true parameter in function
  */
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,6 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Loading from 'app/components/Loading';
+import Box from 'app/components/Box';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
 import Select from 'app/components/Elements/Select';
@@ -25,6 +25,7 @@ import Flex from 'app/components/Elements/Flex';
 import Logo from 'app/components/Assets/Logo';
 
 import H3 from 'app/components/Elements/H3';
+import H5 from 'app/components/Elements/H5';
 import Dialog from 'app/components/Dialog';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import ParentalConsent from 'app/components/ParentalConsent';
@@ -32,37 +33,58 @@ import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
 
-import { validateEmail, validatePhone } from 'app/components/Helpers';
+import VerifyOTP from 'app/components/VerifyOTP';
+
+import {
+  deleteCookie,
+  validateEmail,
+  validatePhone,
+} from 'app/components/Helpers';
 
 /** selectors */
+import {
+  selectReferences,
+  selectUser,
+  selectIsAuthenticated,
+} from 'app/App/slice/selectors';
 import { useComponentSaga } from './slice';
-import { selectReferences, selectUser } from 'app/App/slice/selectors';
 import { appActions } from 'app/App/slice';
-import { selectLoading, selectError, selectData } from './slice/selectors';
-import H5 from 'app/components/Elements/H5';
+import {
+  selectLoading,
+  selectError,
+  selectData,
+  selectOTPLoading,
+  selectOTPError,
+  selectOTPData,
+} from './slice/selectors';
 
 export default function UserProfileForm({
   onCancel,
   onSuccess,
-  onConfirm,
 }: {
   onCancel: () => void;
   onSuccess: () => void;
-  onConfirm: (c: boolean) => void;
 }) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
   const refs: any = useSelector(selectReferences);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
   const profile = useSelector(selectUser);
 
+  const otpLoading = useSelector(selectOTPLoading);
+  const otpError: any = useSelector(selectOTPError);
+  const otpSuccess = useSelector(selectOTPData);
+
   // local states
   const [isLoading, setIsLoading] = React.useState(true); // we will show a loading indicator till we have the references
   const [showForm, setShowForm] = React.useState(true);
   const [showConfirm, setShowConfirm] = React.useState(false);
+  const [showOTP, setShowOTP] = React.useState(false);
+
   // years array loop
   const [years, setYears] = React.useState<number[]>([]);
 
@@ -155,104 +177,117 @@ export default function UserProfileForm({
 
     if (refs && Object.keys(refs).length > 0) {
       setIsLoading(false);
+
+      if (profile && Object.keys(profile).length > 0) {
+        writeProfileDetails(profile);
+      }
     }
-  }, [refs]);
+  }, [refs, profile]);
 
   React.useEffect(() => {
     if (error && Object.keys(error).length > 0) {
-      let apiError: string | undefined;
-      if (error && Object.keys(error).length > 0) {
-        if (error.code && error.code === 422) {
-          if (error.errors) {
-            if (error.errors.last_name && error.errors.last_name.length > 0) {
-              apiError += error.errors.last_name.join('\n');
-            }
-            if (error.errors.first_name && error.errors.first_name.length > 0) {
-              apiError += error.errors.first_name.join('\n');
-            }
-            if (error.errors.birth_date && error.errors.birth_date.length > 0) {
-              apiError += error.errors.birth_date.join('\n');
-            }
-            if (
-              error.errors.middle_name &&
-              error.errors.middle_name.length > 0
-            ) {
-              apiError += error.errors.middle_name.join('\n');
-            }
-            if (
-              error.errors.nationality_id &&
-              error.errors.nationality_id.length > 0
-            ) {
-              apiError += error.errors.nationality_id.join('\n');
-            }
-            if (error.errors.country_id && error.errors.country_id.length > 0) {
-              apiError += error.errors.country_id.join('\n');
-            }
-            if (
-              error.errors.house_no_street &&
-              error.errors.house_no_street.length > 0
-            ) {
-              apiError += error.errors.house_no_street.join('\n');
-            }
-            if (error.errors.city && error.errors.city.length > 0) {
-              apiError += error.errors.city.join('\n');
-            }
-            if (
-              error.errors.province_state &&
-              error.errors.province_state.length > 0
-            ) {
-              apiError += error.errors.province_state.join('\n');
-            }
-            if (
-              error.errors.postal_code &&
-              error.errors.postal_code.length > 0
-            ) {
-              apiError += error.errors.postal_code.join('\n');
-            }
-            if (
-              error.errors.guardian_name &&
-              error.errors.guardian_name.length > 0
-            ) {
-              apiError += error.errors.guardian_name.join('\n');
-            }
-            if (
-              error.errors.guardian_mobile_number &&
-              error.errors.guardian_mobile_number.length > 0
-            ) {
-              apiError += error.errors.guardian_mobile_number.join('\n');
-            }
-            if (
-              error.errors.is_accept_parental_consent &&
-              error.errors.is_accept_parental_consent.length > 0
-            ) {
-              apiError += error.errors.is_accept_parental_consent.join('\n');
-            }
-          }
-          setApiErrorMsg(apiError || '');
-          setIsError(true);
-        }
-        if (error.code && error.code !== 422) {
-          apiError = error.response.statusText;
-          setApiErrorMsg(apiError || '');
-          setIsError(true);
-        }
-        if (!error.response && (!error.code || error.code !== 422)) {
-          apiError = error.message;
-          setApiErrorMsg(apiError || '');
-          setIsError(true);
-        }
-      }
+      onApiError(error);
     }
-  }, [error]);
+    if (otpError && Object.keys(otpError).length > 0) {
+      onApiError(otpError);
+    }
+  }, [error, otpError]);
 
   React.useEffect(() => {
     if (success && Object.keys(success).length > 0) {
       dispatch(appActions.getLoadUserProfile());
       setIsSuccess(true);
     }
-  }, [success]);
+    if (otpSuccess) {
+      setShowConfirm(false);
+      setShowOTP(true);
+      dispatch(actions.getSendOTPReset());
+    }
+  }, [success, otpSuccess]);
 
-  // function for looping year
+  const onApiError = (err: any) => {
+    let apiError: string | undefined;
+
+    if (err.code && err.code === 422) {
+      if (err.errors && err.errors.error_code) {
+        const i110 = err.errors.error_code.findIndex(j => j === 110); // otp error 110
+        if (i110 !== -1) {
+          apiError += err.errors.message.join('\n');
+        }
+      }
+
+      if (err.errors && !err.errors.error_code) {
+        if (err.errors.last_name && err.errors.last_name.length > 0) {
+          apiError += err.errors.last_name.join('\n');
+        }
+        if (err.errors.first_name && err.errors.first_name.length > 0) {
+          apiError += err.errors.first_name.join('\n');
+        }
+        if (err.errors.birth_date && err.errors.birth_date.length > 0) {
+          apiError += err.errors.birth_date.join('\n');
+        }
+        if (err.errors.middle_name && err.errors.middle_name.length > 0) {
+          apiError += err.errors.middle_name.join('\n');
+        }
+        if (err.errors.nationality_id && err.errors.nationality_id.length > 0) {
+          apiError += err.errors.nationality_id.join('\n');
+        }
+        if (err.errors.country_id && err.errors.country_id.length > 0) {
+          apiError += err.errors.country_id.join('\n');
+        }
+        if (
+          err.errors.house_no_street &&
+          err.errors.house_no_street.length > 0
+        ) {
+          apiError += err.errors.house_no_street.join('\n');
+        }
+        if (err.errors.city && err.errors.city.length > 0) {
+          apiError += err.errors.city.join('\n');
+        }
+        if (err.errors.province_state && err.errors.province_state.length > 0) {
+          apiError += err.errors.province_state.join('\n');
+        }
+        if (err.errors.postal_code && err.errors.postal_code.length > 0) {
+          apiError += err.errors.postal_code.join('\n');
+        }
+        if (err.errors.guardian_name && err.errors.guardian_name.length > 0) {
+          apiError += err.errors.guardian_name.join('\n');
+        }
+        if (
+          err.errors.guardian_mobile_number &&
+          err.errors.guardian_mobile_number.length > 0
+        ) {
+          apiError += err.errors.guardian_mobile_number.join('\n');
+        }
+        if (
+          err.errors.is_accept_parental_consent &&
+          err.errors.is_accept_parental_consent.length > 0
+        ) {
+          apiError += err.errors.is_accept_parental_consent.join('\n');
+        }
+
+        // otp error
+        if (err.errors.otp_type && err.errors.otp_type.length > 0) {
+          apiError += err.errors.otp_type.join('\n');
+        }
+      }
+
+      setApiErrorMsg(apiError || '');
+      setIsError(true);
+    }
+    if (error.code && error.code !== 422) {
+      apiError = error.response.statusText;
+      setApiErrorMsg(apiError || '');
+      setIsError(true);
+    }
+    if (!error.response && (!error.code || error.code !== 422)) {
+      apiError = error.message;
+      setApiErrorMsg(apiError || '');
+      setIsError(true);
+    }
+  };
+
+  // function for looping year on birthday
   const loopYear = (yyyy: number) => {
     const yearArray: number[] = [];
     let currentYear = new Date().getFullYear() - 15;
@@ -262,6 +297,34 @@ export default function UserProfileForm({
       yearArray.push(currentYear--);
     }
     setYears(yearArray);
+  };
+
+  /** Call this function if user has profile */
+  const writeProfileDetails = (prof: any) => {
+    setFirstName({ value: prof.first_name, error: false });
+    setMiddleName({ value: prof.middle_name, error: false });
+    setLastName({ value: prof.last_name, error: false });
+    const nI = refs.nationalities.findIndex(j => j.id === prof.nationality_id);
+    setNationality({ value: nI, error: false });
+    const bdate = prof.birth_date.split('-');
+    setBirthDate({
+      year: bdate[0],
+      month: bdate[1],
+      day: bdate[2],
+      error: false,
+    });
+    const cI = refs.countries.findIndex(j => j.id === prof.country_id);
+    setCountry({ value: cI, error: false });
+    setGuardianName({ value: prof.guardian_name, error: false });
+    setGuardianMobile({ value: prof.guardian_mobile_number, error: false });
+    setConsent({
+      value: Boolean(prof.is_accept_parental_consent),
+      error: false,
+    });
+    setHouseNo({ value: prof.house_no_street, error: false });
+    setCity({ value: prof.city, error: false });
+    setProvince({ value: prof.province_state, error: false });
+    setPostal({ value: prof.postal_code, error: false });
   };
 
   const onChangeBirthDate = e => {
@@ -353,14 +416,19 @@ export default function UserProfileForm({
     if (!hasError) {
       setShowForm(prev => !prev);
       setShowConfirm(prev => !prev);
-      onConfirm(true);
     }
   };
 
   const onBackToForm = () => {
     setShowForm(prev => !prev);
     setShowConfirm(prev => !prev);
-    onConfirm(false);
+  };
+
+  const onGenerateOTP = () => {
+    const data = {
+      otp_type: 'update_profile',
+    };
+    dispatch(actions.getSendOTPLoading(data));
   };
 
   const onSubmit = () => {
@@ -404,9 +472,11 @@ export default function UserProfileForm({
   };
 
   const onCloseSuccessDialog = () => {
+    deleteCookie('spv_uat_f');
     setIsSuccess(false);
-    setShowConfirm(prev => !prev);
-    setShowForm(prev => !prev);
+    setShowConfirm(false);
+    setShowForm(false);
+    setShowOTP(false);
     dispatch(actions.getFetchReset());
     onSuccess();
   };
@@ -425,10 +495,9 @@ export default function UserProfileForm({
 
   return (
     <>
-      {isLoading && <Loading position="absolute" />}
-      {loading && <Loading position="absolute" />}
+      {isLoading && <Loading position="fixed" />}
       {showForm && (
-        <>
+        <Box title="User Info" titleBorder withPadding>
           <form>
             <Field flex>
               <Label>First Name</Label>
@@ -440,6 +509,7 @@ export default function UserProfileForm({
                   }
                   className={firstName.error ? 'error' : undefined}
                   placeholder="First Name"
+                  disabled={isAuthenticated}
                 />
                 {firstName.error && (
                   <ErrorMsg formError>First Name is required.</ErrorMsg>
@@ -459,6 +529,7 @@ export default function UserProfileForm({
                   }
                   className={middleName.error ? 'error' : undefined}
                   placeholder="Middle Name"
+                  disabled={isAuthenticated}
                 />
                 {middleName.error && (
                   <ErrorMsg formError>Middle Name is required.</ErrorMsg>
@@ -475,6 +546,7 @@ export default function UserProfileForm({
                   }
                   className={lastName.error ? 'error' : undefined}
                   placeholder="Last Name"
+                  disabled={isAuthenticated}
                 />
                 {lastName.error && (
                   <ErrorMsg formError>Last Name is required.</ErrorMsg>
@@ -513,54 +585,64 @@ export default function UserProfileForm({
             <Field flex>
               <Label>Date of Birth</Label>
               <div style={{ flexGrow: 1 }}>
-                <Select
-                  name="month"
-                  value={birthDate.month}
-                  onChange={onChangeBirthDate}
-                  className={birthDate.error ? 'error' : undefined}
-                >
-                  <option value="" disabled>
-                    mm
-                  </option>
-                  <option value="01">Jan</option>
-                  <option value="02">Feb</option>
-                  <option value="03">Mar</option>
-                  <option value="04">Apr</option>
-                  <option value="05">May</option>
-                  <option value="06">Jun</option>
-                  <option value="07">Jul</option>
-                  <option value="08">Aug</option>
-                  <option value="09">Sept</option>
-                  <option value="10">Oct</option>
-                  <option value="11">Nov</option>
-                  <option value="12">Dec</option>
-                </Select>
-                <Select
-                  name="day"
-                  value={birthDate.day}
-                  onChange={onChangeBirthDate}
-                  className={birthDate.error ? 'error' : undefined}
-                >
-                  <option value="" disabled>
-                    dd
-                  </option>
-                  {days}
-                </Select>
-                <Select
-                  name="year"
-                  value={birthDate.year}
-                  onChange={onChangeBirthDate}
-                  className={birthDate.error ? 'error' : undefined}
-                >
-                  <option value="" disabled>
-                    yyyy
-                  </option>
-                  {years.map(i => (
-                    <option key={i} value={i < 9 ? `0${i}` : i}>
-                      {i < 9 ? `0${i}` : i}
-                    </option>
-                  ))}
-                </Select>
+                {!isAuthenticated && (
+                  <>
+                    <Select
+                      name="month"
+                      value={birthDate.month}
+                      onChange={onChangeBirthDate}
+                      className={birthDate.error ? 'error' : undefined}
+                    >
+                      <option value="" disabled>
+                        mm
+                      </option>
+                      <option value="01">Jan</option>
+                      <option value="02">Feb</option>
+                      <option value="03">Mar</option>
+                      <option value="04">Apr</option>
+                      <option value="05">May</option>
+                      <option value="06">Jun</option>
+                      <option value="07">Jul</option>
+                      <option value="08">Aug</option>
+                      <option value="09">Sept</option>
+                      <option value="10">Oct</option>
+                      <option value="11">Nov</option>
+                      <option value="12">Dec</option>
+                    </Select>
+                    <Select
+                      name="day"
+                      value={birthDate.day}
+                      onChange={onChangeBirthDate}
+                      className={birthDate.error ? 'error' : undefined}
+                    >
+                      <option value="" disabled>
+                        dd
+                      </option>
+                      {days}
+                    </Select>
+                    <Select
+                      name="year"
+                      value={birthDate.year}
+                      onChange={onChangeBirthDate}
+                      className={birthDate.error ? 'error' : undefined}
+                    >
+                      <option value="" disabled>
+                        yyyy
+                      </option>
+                      {years.map(i => (
+                        <option key={i} value={i < 9 ? `0${i}` : i}>
+                          {i < 9 ? `0${i}` : i}
+                        </option>
+                      ))}
+                    </Select>
+                  </>
+                )}
+                {isAuthenticated && (
+                  <Input
+                    value={`${birthDate.month}/${birthDate.day}/${birthDate.year}`}
+                    disabled={isAuthenticated}
+                  />
+                )}
                 {birthDate.error && (
                   <ErrorMsg formError>Date of Birth is required</ErrorMsg>
                 )}
@@ -741,11 +823,13 @@ export default function UserProfileForm({
               </Button>
             </Flex>
           </form>
-        </>
+        </Box>
       )}
 
       {showConfirm && (
-        <>
+        <Box title="Review User Info" titleBorder withPadding>
+          {isAuthenticated && otpLoading && <Loading position="absolute" />}
+          {!isAuthenticated && loading && <Loading position="absolute" />}
           <List divider>
             <ListItem flex>
               <ListItemText
@@ -892,12 +976,40 @@ export default function UserProfileForm({
               variant="contained"
               color="primary"
               size="large"
-              onClick={onSubmit}
+              onClick={isAuthenticated ? onGenerateOTP : onSubmit}
             >
               Confirm
             </Button>
           </Flex>
-        </>
+        </Box>
+      )}
+
+      {showOTP && (
+        <Box title="4-Digit One Time PIN" titleBorder withPadding>
+          {loading && <Loading position="absolute" />}
+          <div
+            className="text-center"
+            style={{ maxWidth: 380, margin: '0 auto' }}
+          >
+            <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
+            <p className="f-small">
+              The one time pin code has been sent to your mobile number
+            </p>
+
+            <VerifyOTP
+              apiURL="/auth/verify/otp"
+              otpType="update_profile"
+              onSuccess={onSubmit}
+            />
+
+            <Field className="text-center f-small" margin="20px 0 10px">
+              Need a new code?{' '}
+              <button className="btn-resend-code" onClick={onGenerateOTP}>
+                Resend Code
+              </button>
+            </Field>
+          </div>
+        </Box>
       )}
 
       <ParentalConsent
@@ -914,7 +1026,7 @@ export default function UserProfileForm({
 
       {/* Show api error */}
       <Dialog show={isError} size="small">
-        <div className="text-center">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="times" />
           </CircleIndicator>
@@ -923,10 +1035,11 @@ export default function UserProfileForm({
           <Button
             fullWidth
             onClick={onCloseErrorDialog}
-            variant="outlined"
-            color="secondary"
+            variant="contained"
+            color="primary"
+            size="large"
           >
-            Ok
+            Close
           </Button>
         </div>
       </Dialog>
@@ -945,6 +1058,7 @@ export default function UserProfileForm({
             onClick={onCloseSuccessDialog}
             variant="contained"
             color="primary"
+            size="large"
           >
             Close
           </Button>

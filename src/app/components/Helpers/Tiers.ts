@@ -1,7 +1,7 @@
 /**
  * Tiers Information
  */
-export const TierIDs = [
+export const Tiers = [
   {
     id: 'c5d5cb3e-a175-11eb-b447-1c1b0d14e211',
     class: 'Bronze',
@@ -33,3 +33,11 @@ export const TierIDs = [
     status: 'Expert',
   },
 ];
+
+export const TierIDs = {
+  bronze: 'c5d5cb3e-a175-11eb-b447-1c1b0d14e211',
+  silver: '5e007ec8-a176-11eb-b447-1c1b0d14e211',
+  gold: '60d40d2f-a176-11eb-b447-1c1b0d14e211',
+  platinum: '63baa95c-a176-11eb-b447-1c1b0d14e211',
+  diamond: '68d63df8-a176-11eb-b447-1c1b0d14e211',
+};
