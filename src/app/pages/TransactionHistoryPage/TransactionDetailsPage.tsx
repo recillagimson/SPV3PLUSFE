@@ -80,11 +80,16 @@ function TransactionHistoryDetailsPage(props) {
       'Load',
     ) !== -1;
 
+  console.log(
+    'transactionHistoryDetailsData?.transactionDate',
+    transactionHistoryDetailsData?.transactionDate,
+  );
   const renderListItems = () => {
     if (isBankTransaction) return bankListData(transactionHistoryDetailsData);
     if (isReceiveMoneyTransaction || isSendMoneyTransaction)
       return receivedMoneyListData(transactionHistoryDetailsData);
-    if (isDragonpayTransaction) return dragonpayListData(transactionHistoryDetailsData);
+    if (isDragonpayTransaction)
+      return dragonpayListData(transactionHistoryDetailsData);
     if (isLoadTransaction) return loadListtData(transactionHistoryDetailsData);
 
     return [];
@@ -155,6 +160,7 @@ function TransactionHistoryDetailsPage(props) {
                   </S.TotalTransactions>
                   <S.FooterWrapper>
                     <Logo size="small" />
+                    <p>{DateTime.fromISO('2021-05-11 14:44:19').toString()}</p>
                     <p>{monthDateYearTime}</p>
                   </S.FooterWrapper>
                 </S.TransactionDetailsWrapperContent>

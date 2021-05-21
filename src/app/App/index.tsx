@@ -71,6 +71,9 @@ import {
   selectIsAuthenticated,
   selectIsBlankPage,
 } from './slice/selectors';
+import { usePrevious } from 'app/components/Helpers/Hooks';
+import { AddMoney } from 'app/pages/AddMoney';
+import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -202,6 +205,12 @@ export function App() {
             <PrivateRoute
               path={['/notifications/:id', '/notifications']}
               component={Notifications}
+            />
+            <PrivateRoute exact path="/add-money" component={AddMoney} />
+            <PrivateRoute
+              exact
+              path="/add-money/dragonpay"
+              component={Dragonpay}
             />
             <PrivateRoute
               exact
