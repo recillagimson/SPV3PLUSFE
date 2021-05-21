@@ -26,7 +26,7 @@ const ModalBody = styled.div`
 export default function AddMoneyFrame(props) {
   const { urlLink, onClick, title } = props;
   const frame = React.useRef(null);
-  const [currentUrl, setCurrentUrl] = React.useState(null);
+  const [status, setStatus] = React.useState('');
   const [save, setSave] = React.useState(false);
 
   const attributes = {
@@ -46,42 +46,62 @@ export default function AddMoneyFrame(props) {
   // iframe has loaded
   const onReady = e => {
     if (canAccessIFrame(frame.current)) {
-      console.log('true');
+      setSave(true);
     }
   };
 
   React.useEffect(() => {
     if (save) {
       const currentIframe: any = frame.current;
-      setCurrentUrl(currentIframe.src);
+      const urlParams = new URLSearchParams(
+        currentIframe._frame.contentWindow.location.search,
+      );
+      const statusParam = urlParams.get('status');
+      setStatus(statusCodeHandler(statusParam));
     }
   }, [save]);
 
   React.useEffect(() => {
-    if (currentUrl) {
+    if (status) {
       setSave(false);
     }
-  }, [currentUrl]);
+  }, [status]);
 
-  const iframeHandler = e => {
-    if (!save) {
-      setSave(true);
+  // S - SUCCESS
+  // F - FAILED
+  // P - PENDING
+  // U - PENDING
+  // R - FAILED
+  // K - FAILED
+  // V - FAILED
+  // A - FAILED
+
+  const statusCodeHandler = status => {
+    switch (status) {
+      case 'P':
+      case 'U':
+        return 'Pending';
+      case 'R':
+      case 'K':
+      case 'V':
+      case 'A':
+        return 'Failed';
+      case 'S':
+        return 'Success';
+      default:
+        return 'Failed';
     }
   };
 
-  function canAccessIFrame(iframe) {
-    var html = null;
+  const canAccessIFrame = iframe => {
     try {
-      // deal with older browsers
-      console.log('iframe', iframe._frame.contentWindow);
-      var doc = iframe.contentDocument || iframe.contentWindow.document;
-      html = doc.body.innerHTML;
+      console.log('iframe', iframe._frame.contentWindow.location.search);
+      return true;
     } catch (err) {
       console.log(err);
+      return false;
     }
-
-    return html !== null;
-  }
+  };
 
   return (
     <ModalBody>
@@ -96,13 +116,17 @@ export default function AddMoneyFrame(props) {
           justifyContent: 'center',
         }}
       >
-        <IframeComm
-          ref={frame}
-          attributes={attributes}
-          postMessageData={postMessageData}
-          handleReady={onReady}
-          handleReceiveMessage={onReceiveMessage}
-        />
+        {status ? (
+          <h3>Transaction {status}</h3>
+        ) : (
+          <IframeComm
+            ref={frame}
+            attributes={attributes}
+            postMessageData={postMessageData}
+            handleReady={onReady}
+            handleReceiveMessage={onReceiveMessage}
+          />
+        )}
         <Button
           size="large"
           color="primary"
