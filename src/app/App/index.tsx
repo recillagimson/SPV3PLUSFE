@@ -48,6 +48,7 @@ import {
 import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
+import { SettingsChangePinPage } from 'app/pages/SettingsPage/ChangePin/Loadable';
 import { Notifications } from 'app/pages/Notification';
 import { UpdateProfileVerificationPage } from 'app/pages/UpdateProfileVerificationPage/Loadable';
 import { ContactUsPage } from 'app/pages/ContactUsPage/Loadable';
@@ -231,6 +232,11 @@ export function App() {
               exact
               path="/settings/change-password"
               component={SettingsChangePasswordPage}
+            />
+            <PrivateRoute
+              exact
+              path="/settings/change-pin"
+              component={SettingsChangePinPage}
             />
             <PrivateRoute exact path="/contact-us" component={ContactUsPage} />
             <PrivateRoute

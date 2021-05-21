@@ -20,7 +20,7 @@ function* getChangePassword() {
   const token = yield select(selectUserToken);
   const payload = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/user/password`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/user/pin`;
 
   let encryptPayload: string = '';
 
@@ -79,13 +79,13 @@ function* getChangePassword() {
 }
 
 /**
- * Validate Change Password
+ * Validate Change Pin
  */
-function* getValidatePassword() {
+function* getValidatePin() {
   const token = yield select(selectUserToken);
   const payload = yield select(selectValidateRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/user/password/validate`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/user/pin/validate`;
 
   let encryptPayload: string = '';
 
@@ -152,5 +152,5 @@ export function* containerSaga() {
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
   yield takeLatest(actions.getFetchLoading.type, getChangePassword);
-  yield takeLatest(actions.getValidateLoading.type, getValidatePassword);
+  yield takeLatest(actions.getValidateLoading.type, getValidatePin);
 }

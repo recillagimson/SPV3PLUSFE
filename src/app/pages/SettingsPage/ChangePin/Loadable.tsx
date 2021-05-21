@@ -4,7 +4,7 @@
 
 import { lazyLoad } from 'utils/loadable';
 
-export const SettingsChangePasswordPage = lazyLoad(
+export const SettingsChangePinPage = lazyLoad(
   () => import('./index'),
-  module => module.SettingsChangePasswordPage,
+  module => module.SettingsChangePinPage,
 );
