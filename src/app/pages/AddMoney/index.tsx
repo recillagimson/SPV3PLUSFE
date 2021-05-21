@@ -23,7 +23,7 @@ export function AddMoney() {
         <AddMoneyBody>
           <AddMoneyItem
             name="Dragonpay"
-            onClick={() => history.push('/addmoney/dragonpay')}
+            onClick={() => history.push('/add-money/dragonpay')}
           />
           <AddMoneyItem name="BPI" onClick={() => alert('clicked')} />
         </AddMoneyBody>

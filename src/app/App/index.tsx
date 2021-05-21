@@ -210,10 +210,10 @@ export function App() {
               path={['/notifications/:id', '/notifications']}
               component={Notifications}
             />
-            <PrivateRoute exact path="/addmoney" component={AddMoney} />
+            <PrivateRoute exact path="/add-money" component={AddMoney} />
             <PrivateRoute
               exact
-              path="/addmoney/dragonpay"
+              path="/add-money/dragonpay"
               component={Dragonpay}
             />
             <PrivateRoute

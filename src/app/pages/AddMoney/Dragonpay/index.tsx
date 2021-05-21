@@ -4,6 +4,7 @@ import Box from 'app/components/Box';
 import Button from 'app/components/Elements/Button';
 import Input from 'app/components/Elements/Input';
 import AddMoneyModal from '../components/AddMoneyModal';
+import AddMoneyFrame from '../components/AddMoneyFrame';
 import Loading from 'app/components/Loading';
 import { StyleConstants } from 'styles/StyleConstants';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,6 +19,9 @@ export function Dragonpay() {
   const inputEl: any = React.useRef(null);
   const [showModal, setShowModal] = React.useState({
     status: '',
+    show: false,
+  });
+  const [showIframe, setShowIframe] = React.useState({
     show: false,
     url: '',
   });
@@ -42,11 +46,12 @@ export function Dragonpay() {
 
   function handlerCloseModal() {
     dispatch(actions.getFetchReset());
-    setShowModal({ status: '', show: false, url: '' });
-    if (addMoneyDragonpay && addMoneyDragonpay.Url) {
-      console.log(addMoneyDragonpay);
-      // window.location.assign(addMoneyDragonpay.Url);
-    }
+    setShowModal({ status: '', show: false });
+  }
+
+  function handlerCloseFrame() {
+    dispatch(actions.getFetchReset());
+    setShowIframe({ show: false, url: '' });
   }
 
   React.useEffect(() => {
@@ -59,13 +64,11 @@ export function Dragonpay() {
       setShowModal({
         status: 'failed',
         show: true,
-        url: '',
       });
     }
 
     if (addMoneyDragonpay) {
-      setShowModal({
-        status: 'success',
+      setShowIframe({
         show: true,
         url: addMoneyDragonpay.Url,
       });
@@ -164,8 +167,14 @@ export function Dragonpay() {
         {showModal.show && (
           <AddMoneyModal
             success={showModal.status}
-            urlLink={showModal.url}
             onClick={handlerCloseModal}
+          />
+        )}
+        {showIframe.show && (
+          <AddMoneyFrame
+            urlLink={showIframe.url}
+            title="Dragonpay"
+            onClick={handlerCloseFrame}
           />
         )}
       </Box>
