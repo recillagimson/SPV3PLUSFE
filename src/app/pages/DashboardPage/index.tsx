@@ -121,7 +121,7 @@ export function DashboardPage() {
             <Button
               color="secondary"
               size="medium"
-              onClick={() => history.push('/addmoney')}
+              onClick={() => history.push('/add-money')}
             >
               Add Money
             </Button>
@@ -134,10 +134,7 @@ export function DashboardPage() {
             <IconButton
               size="small"
               color="primary"
-              onClick={() => {
-                alert('Feature coming soon');
-                // history.push('/addmoney');
-              }}
+              onClick={() => history.push('/add-money')}
             >
               <FontAwesomeIcon icon="plus" />
             </IconButton>
