@@ -1,7 +1,8 @@
 import React from 'react';
-import Button from 'app/components/Elements/Button';
 import styled, { keyframes } from 'styled-components/macro';
 import IframeComm from 'react-iframe-comm';
+import AddMoneyStatus from '../AddMoneyStatus';
+import Button from 'app/components/Elements/Button';
 
 const revealAnimation = keyframes`
     from { opacity: 0; }
@@ -34,13 +35,6 @@ export default function AddMoneyFrame(props) {
     width: '540',
     height: '450',
     title: title,
-  };
-
-  const postMessageData = 'hello iframe';
-
-  // parent received a message from iframe
-  const onReceiveMessage = e => {
-    console.log('onReceiveMessage', e);
   };
 
   // iframe has loaded
@@ -80,16 +74,17 @@ export default function AddMoneyFrame(props) {
     switch (status) {
       case 'P':
       case 'U':
-        return 'Pending';
+        return 'pending';
+      case 'F':
       case 'R':
       case 'K':
       case 'V':
       case 'A':
-        return 'Failed';
+        return 'failed';
       case 'S':
-        return 'Success';
+        return 'success';
       default:
-        return 'Failed';
+        return 'failed';
     }
   };
 
@@ -117,25 +112,25 @@ export default function AddMoneyFrame(props) {
         }}
       >
         {status ? (
-          <h3>Transaction {status}</h3>
+          <AddMoneyStatus success={status} onClick={onClick} />
         ) : (
-          <IframeComm
-            ref={frame}
-            attributes={attributes}
-            postMessageData={postMessageData}
-            handleReady={onReady}
-            handleReceiveMessage={onReceiveMessage}
-          />
+          <>
+            <IframeComm
+              ref={frame}
+              attributes={attributes}
+              handleReady={onReady}
+            />
+            <Button
+              size="large"
+              color="primary"
+              variant="contained"
+              style={{ width: '380px', marginTop: '25px' }}
+              onClick={onClick}
+            >
+              Close
+            </Button>
+          </>
         )}
-        <Button
-          size="large"
-          color="primary"
-          variant="contained"
-          style={{ width: '380px', marginTop: '25px' }}
-          onClick={onClick}
-        >
-          Close
-        </Button>
       </div>
     </ModalBody>
   );
