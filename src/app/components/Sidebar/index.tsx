@@ -54,9 +54,8 @@ export default function Sidebar() {
   ) => {
     if (e && e.stopPropagation) e.stopPropagation(); // stop propagation of click into the parent element
 
-    alert('Feature coming soon');
     // enable once tier upgrade is ready
-    // history.push('/tier-upgrade');
+    history.push('/tiers');
   };
 
   const onLogout = () => {
@@ -88,7 +87,11 @@ export default function Sidebar() {
         />
         <div className="user-info" role="presentation" onClick={gotoProfile}>
           <Avatar
-            // image="https://source.unsplash.com/random/120x120"
+            image={
+              profile && profile.avatar_location
+                ? profile.avatar_location
+                : undefined
+            }
             size="medium"
           />
           <div className="user-short-details">

@@ -28,11 +28,7 @@ import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
 import IconButton from 'app/components/Elements/IconButton';
 
 import VerifyOTP from 'app/components/VerifyOTP';
-import {
-  doSignOut,
-  regExStrongPassword,
-  validateEmail,
-} from 'app/components/Helpers';
+import { validateEmail } from 'app/components/Helpers';
 
 /** slice, types */
 import { selectLoggedInName } from 'app/App/slice/selectors';
@@ -60,7 +56,6 @@ export function SettingsChangePinPage() {
   const validateSuccess = useSelector(selectValidateData);
 
   // show different UI
-  const [fakeLoading, setFakeLoading] = React.useState(false);
   const [showForm, setShowForm] = React.useState(true);
   const [showVerify, setShowVerify] = React.useState(false);
   // const [resendCode, setResendCode] = React.useState(false);
@@ -581,7 +576,6 @@ export function SettingsChangePinPage() {
 
       {/* Password Update Success */}
       <Dialog show={success} size="small">
-        {fakeLoading && <Loading position="fixed" />}
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>
           <Logo size="small" margin="0 0 30px" />
           <CircleIndicator size="large" color="primary">

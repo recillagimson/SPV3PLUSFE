@@ -54,6 +54,7 @@ import { UpdateProfileVerificationPage } from 'app/pages/UpdateProfileVerificati
 import { ContactUsPage } from 'app/pages/ContactUsPage/Loadable';
 import { ChatSupportPage } from 'app/pages/ChatSupportPage/Loadable';
 import { MerchantInquiryPage } from 'app/pages/MerchantInquiry/Loadable';
+import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 
@@ -248,6 +249,12 @@ export function App() {
               exact
               path="/merchant-inquiry"
               component={MerchantInquiryPage}
+            />
+            <PrivateRoute exact path="/tiers" component={TiersPage} />
+            <PrivateRoute
+              exact
+              path="/tiers/upgrade"
+              component={TierUpgradePage}
             />
 
             {/* Not found page should be the last entry for this <Switch /> container */}

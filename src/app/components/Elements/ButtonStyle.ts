@@ -207,6 +207,12 @@ const ButtonStyle = css<Props>`
   .svg-inline--fa {
     margin: 0 3px;
   }
+
+  &:disabled {
+    cursor: default;
+    background-color: ${StyleConstants.BODY_COLOR};
+    color: ${StyleConstants.MAIN_TEXT};
+  }
 `;
 
 export default ButtonStyle;

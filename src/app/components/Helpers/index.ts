@@ -125,7 +125,14 @@ export function doSignOut() {
 /**
  * Format number with commas
  * @param {number}  num       number to format
+ *
+ * @returns                   returns the formatted string number
  */
-export function numberCommas(num: number | string = 0) {
-  return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+export function numberCommas(num: number | string = 0): string {
+  const n = typeof num === 'number' ? num.toString() : num;
+
+  return parseFloat(n)
+    .toFixed(2) // add a two digit
+    .toString() // convert to string
+    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ','); // add commas
 }
