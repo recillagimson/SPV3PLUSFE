@@ -165,7 +165,19 @@ export function GenerateQR() {
             {isSuccess && (
               <>
                 <Flex justifyContent="center">
-                  <QRCode value={success.id} size="200" id="QRCode" />
+                  <QRCode
+                    value={success.id}
+                    size="200"
+                    id="QRCode"
+                    // imageSettings={{
+                    //   src: 'https://static.zpao.com/favicon.png',
+                    //   x: null,
+                    //   y: null,
+                    //   height: 24,
+                    //   width: 24,
+                    //   excavate: true,
+                    // }}
+                  />
                 </Flex>
                 <br />
 
