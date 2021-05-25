@@ -41,6 +41,7 @@ const Wrapper = styled.div`
         max-height: 250px;
         overflow-y: auto;
         margin: 5px 0;
+        white-space: pre-wrap;
       }
     }
   }
@@ -69,7 +70,6 @@ class ErrorBoundary extends React.Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.log(errorInfo);
     this.setState({
       error: error,
       errorInfo: errorInfo,

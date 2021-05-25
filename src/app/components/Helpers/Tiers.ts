@@ -156,3 +156,70 @@ export const TierIDs = {
   platinum: '63baa95c-a176-11eb-b447-1c1b0d14e211',
   diamond: '68d63df8-a176-11eb-b447-1c1b0d14e211',
 };
+
+export const TierRequiredIDs = {
+  primary: [
+    {
+      id: '',
+      name: 'PASSPORT',
+    },
+    {
+      id: '',
+      name: 'PRC ID',
+    },
+    {
+      id: '',
+      name: 'NBI CLEARANCE',
+    },
+    {
+      id: '',
+      name: 'GSIS ID',
+    },
+    {
+      id: '',
+      name: 'IBP ID',
+    },
+    {
+      id: '',
+      name: 'DRIVER’S LICENSE',
+    },
+    {
+      id: '',
+      name: 'SCHOOL ID',
+    },
+  ],
+  secondary: [
+    {
+      id: '',
+      name: 'PWD ID',
+    },
+    {
+      id: '',
+      name: 'SENIOR CITIZEN CARD',
+    },
+    {
+      id: '',
+      name: 'GOVERNMENT OFFICE AND GOCC ID',
+    },
+    {
+      id: '',
+      name: 'PHICB',
+    },
+    {
+      id: '',
+      name: 'ADMINISTRATION ID',
+    },
+    {
+      id: '',
+      name: 'PWD ID',
+    },
+    {
+      id: '',
+      name: 'DSWD CERTIFICATE',
+    },
+    {
+      id: '',
+      name: 'SEAMAN’S BOOK',
+    },
+  ],
+};

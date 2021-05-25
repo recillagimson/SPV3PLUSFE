@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useLocation, useHistory } from 'react-router-dom';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
@@ -13,8 +12,10 @@ import { TierIDs } from 'app/components/Helpers/Tiers';
 
 import { TierRequirements } from './Requirements';
 
-export function TierUpgradePage() {
-  const history = useHistory();
+/**
+ * Silver Upgrade Component
+ */
+export function SilverUpgradeComponent() {
   const location: any = useLocation();
 
   const [showRequirement, setShowRequirement] = React.useState(true);
@@ -47,10 +48,6 @@ export function TierUpgradePage() {
 
   return (
     <ProtectedContent>
-      <Helmet>
-        <title>Upgrade [Tier]</title>
-      </Helmet>
-
       {showRequirement && (
         <Box
           title={tier.name}

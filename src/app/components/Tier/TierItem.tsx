@@ -50,7 +50,7 @@ export default function TierItem({
           <h6>Available Services</h6>
           <ul>
             {services.map(i => (
-              <li>
+              <li key={i.name.replace(' ', '-').toLowerCase()}>
                 <span className="icon">
                   <FontAwesomeIcon icon={i.enabled ? 'check' : 'times'} />
                 </span>

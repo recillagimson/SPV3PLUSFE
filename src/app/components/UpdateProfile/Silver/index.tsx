@@ -344,11 +344,11 @@ export default function UserProfileForm({
       error: false,
     });
     setPlaceOfBirth({
-      value: prof.place_of_birth,
+      value: prof.place_of_birth || '',
       error: false,
     });
     setMothersMaidenName({
-      value: prof.mother_maidenname,
+      value: prof.mother_maidenname || '',
       error: false,
     });
     const mI = refs.maritalStatus.findIndex(
@@ -416,7 +416,7 @@ export default function UserProfileForm({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     if (e && e.preventDefault) e.preventDefault();
-
+    console.log('validating');
     let hasError = false;
 
     if (firstName.value === '') {
@@ -445,6 +445,21 @@ export default function UserProfileForm({
     if (nationality.value === '') {
       hasError = true;
       setNationality({ ...nationality, error: true });
+    }
+
+    if (placeOfBirth.value === '') {
+      hasError = true;
+      setPlaceOfBirth({ ...placeOfBirth, error: true });
+    }
+
+    if (mothersMaidenName.value === '') {
+      hasError = true;
+      setMothersMaidenName({ ...mothersMaidenName, error: true });
+    }
+
+    if (marital.value === '') {
+      hasError = true;
+      setMarital({ ...marital, error: true });
     }
 
     if (houseNo.value === '') {
@@ -487,7 +502,11 @@ export default function UserProfileForm({
       }
     }
 
-    // others for nature of work and source of funds
+    // others for nature of work and source of funds, occupation, employer
+    if (natureOfWork.value === '') {
+      hasError = true;
+      setNatureOfWork({ ...natureOfWork, error: true });
+    }
     if (
       natureOfWork.value !== '' &&
       refs.natureOfWork[parseInt(natureOfWork.value)].id ===
@@ -497,6 +516,11 @@ export default function UserProfileForm({
       hasError = true;
       setNatureOfWork({ ...natureOfWork, error: true });
     }
+
+    if (sourceOfFunds.value === '') {
+      hasError = true;
+      setSourceOfFunds({ ...sourceOfFunds, error: true });
+    }
     if (
       sourceOfFunds.value !== '' &&
       refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
@@ -505,6 +529,16 @@ export default function UserProfileForm({
     ) {
       hasError = true;
       setSourceOfFunds({ ...sourceOfFunds, error: true });
+    }
+
+    if (occupation.value === '') {
+      hasError = true;
+      setOccupation({ ...occupation, error: true });
+    }
+
+    if (employer.value === '') {
+      hasError = true;
+      setEmployer({ ...employer, error: true });
     }
 
     if (!hasError) {
@@ -777,7 +811,7 @@ export default function UserProfileForm({
                   placeholder="Place of birth"
                 />
                 {placeOfBirth.error && (
-                  <ErrorMsg formError>Last Name is required.</ErrorMsg>
+                  <ErrorMsg formError>Place of birth is required.</ErrorMsg>
                 )}
               </div>
             </Field>
@@ -793,7 +827,7 @@ export default function UserProfileForm({
                     })
                   }
                   className={mothersMaidenName.error ? 'error' : undefined}
-                  placeholder="Place of birth"
+                  placeholder="Mothers maiden name"
                 />
                 {mothersMaidenName.error && (
                   <ErrorMsg formError>Mothers maiden name required.</ErrorMsg>
@@ -1106,31 +1140,41 @@ export default function UserProfileForm({
             </Field>
             <Field flex>
               <Label>Occupation</Label>
-              <Input
-                value={occupation.value}
-                onChange={e =>
-                  setOccupation({
-                    value: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={occupation.error ? 'error' : undefined}
-                placeholder="Occupation"
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={occupation.value}
+                  onChange={e =>
+                    setOccupation({
+                      value: e.currentTarget.value,
+                      error: false,
+                    })
+                  }
+                  className={occupation.error ? 'error' : undefined}
+                  placeholder="Occupation"
+                />
+                {occupation.error && (
+                  <ErrorMsg formError>Enter your occupation</ErrorMsg>
+                )}
+              </div>
             </Field>
             <Field flex>
               <Label>Employer</Label>
-              <Input
-                value={employer.value}
-                onChange={e =>
-                  setEmployer({
-                    value: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={employer.error ? 'error' : undefined}
-                placeholder="Employer"
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={employer.value}
+                  onChange={e =>
+                    setEmployer({
+                      value: e.currentTarget.value,
+                      error: false,
+                    })
+                  }
+                  className={employer.error ? 'error' : undefined}
+                  placeholder="Employer"
+                />
+                {employer.error && (
+                  <ErrorMsg formError>Enter your employer</ErrorMsg>
+                )}
+              </div>
             </Field>
 
             <Flex alignItems="center" justifyContent="flex-end">

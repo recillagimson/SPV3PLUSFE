@@ -14,6 +14,7 @@ import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice
 import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 import { DashboardState } from 'app/pages/DashboardPage/slice/types';
 import { TransactionHistoryState } from 'app/pages/TransactionHistoryPage/slice/types';
+import { TierUpgradeState } from 'app/pages/TierUpgradePage/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -40,11 +41,10 @@ export interface RootState {
   profileSilver?: ProfileSilverState;
   notifications?: NotificationsState;
   addMoneyDragonpay: AddMoneyDragonpayState;
-
-  helpCenter?: any;
   transactionHistory?: TransactionHistoryState;
   changePassword?: ChangePasswordState;
   changePin?: ChangePinState;
   dashboard?: DashboardState;
+  tierUpgrade?: TierUpgradeState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

@@ -83,3 +83,16 @@ export interface UserProfileState {
   deleted_at?: string | null;
   user_account: any;
 }
+
+export interface IDTypes {
+  id: string;
+  type: string;
+  description: string;
+  is_primary: number;
+  status: number;
+  user_created?: string;
+  user_updated?: null;
+  created_at?: string;
+  updated_at?: null;
+  deleted_at?: null;
+}

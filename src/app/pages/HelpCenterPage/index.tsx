@@ -33,7 +33,9 @@ export function HelpCenterPage() {
           </ListItem>
           <ListItem flex>
             <ListItemButton
-              onClick={() => history.push('/chat-support')}
+              as="a"
+              href="https://www.facebook.com/messages/t/100608264934915"
+              target="_blank"
               style={{
                 flexGrow: 1,
               }}
