@@ -1,10 +1,10 @@
 import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
-const Label = styled.label`
+const Label = styled.label<{ nomargin?: boolean }>`
   color: ${StyleConstants.LABEL_TEXT};
   font-size: 0.8rem;
-  margin: 0 0 5px;
+  margin: ${p => (p.nomargin ? '0 0 2px' : '0 0 5px')};
   display: block;
 
   i {

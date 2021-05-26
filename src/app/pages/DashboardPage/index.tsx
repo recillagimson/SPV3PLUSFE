@@ -67,10 +67,13 @@ export function DashboardPage() {
   }
 
   let transactionItems: React.ReactNode | undefined = (
-    <ListItem flex>
+    <ListItem>
       <p style={{ textAlign: 'center', padding: 10 }}>
         {' '}
-        No transaction history
+        No Transactions
+        <small style={{ display: 'block' }}>
+          You haven’t made any transactions yet
+        </small>
       </p>
     </ListItem>
   );
@@ -92,7 +95,9 @@ export function DashboardPage() {
           <ListItemText
             bold
             align="right"
-            primary={numberCommas(parseFloat(i.signed_total_amount).toFixed(2))}
+            primary={`PHP ${numberCommas(
+              parseFloat(i.signed_total_amount).toFixed(2),
+            )}`}
             color={i.transaction_category.transaction_type}
             small
           />
@@ -116,7 +121,7 @@ export function DashboardPage() {
             <Button
               color="secondary"
               size="medium"
-              onClick={() => history.push('/addmoney')}
+              onClick={() => history.push('/add-money')}
             >
               Add Money
             </Button>
@@ -129,7 +134,7 @@ export function DashboardPage() {
             <IconButton
               size="small"
               color="primary"
-              onClick={() => history.push('/addmoney')}
+              onClick={() => history.push('/add-money')}
             >
               <FontAwesomeIcon icon="plus" />
             </IconButton>
@@ -157,7 +162,12 @@ export function DashboardPage() {
       </Grid>
 
       <ButtonFlexWrapper>
-        <DashboardButton onClick={() => history.push('/addmoney')}>
+        <DashboardButton
+          onClick={() => {
+            alert('Feature coming soon');
+            // history.push('/addmoney');
+          }}
+        >
           <AddMoney />
           Add Money
         </DashboardButton>
@@ -165,23 +175,28 @@ export function DashboardPage() {
           <SendMoney />
           Send Money
         </DashboardButton>
-        <DashboardButton onClick={() => history.push('/send-to-bank')}>
+        <DashboardButton
+          onClick={() => {
+            alert('Feature coming soon');
+            // history.push('/onlinebank');
+          }}
+        >
           <SendToBank />
           Send To Bank
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => alert('Feature coming soon')}>
           <PayBills />
           Pay Bills
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => alert('Feature coming soon')}>
           <BuyLoad />
           Buy Load
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => history.push('/generateqr')}>
           <QRCode />
           QR Code
         </DashboardButton>
-        <DashboardButton>
+        <DashboardButton onClick={() => alert('Feature coming soon')}>
           <QuickGuide />
           SquidPay Quick Guide
         </DashboardButton>

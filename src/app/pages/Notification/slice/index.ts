@@ -25,7 +25,6 @@ const slice = createSlice({
       state.notifications = action.payload;
     },
     getFetchError(state, action: PayloadAction<ErrorState>) {
-      console.log('BODY', action.payload);
       state.error = action.payload;
       state.loading = false;
     },

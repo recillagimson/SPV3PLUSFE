@@ -16,7 +16,7 @@ import Loading from 'app/components/Loading';
 import Button from 'app/components/Elements/Button';
 
 import HomeIcon from 'app/components/Assets/Home';
-import QRCodeIcon from 'app/components/Assets/QRCode';
+import QRCodeIcon from 'app/components/Assets/QRCodeSmall';
 // import AccountIcon from 'app/components/Assets/Account';
 import PromosIcon from 'app/components/Assets/Promos';
 import AccountSecurityIcon from 'app/components/Assets/AccountSecurity';
@@ -32,7 +32,7 @@ import Navigation from './Navigation';
 import NavButton from './NavButton';
 
 /** selectors, actions */
-import { UserProfileState } from 'types/Default';
+// import { UserProfileState } from 'types/Default';
 // import { appActions } from 'app/App/slice';
 import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
 import LogoutWrapper from './LogoutWrapper';
@@ -54,25 +54,14 @@ export default function Sidebar() {
   ) => {
     if (e && e.stopPropagation) e.stopPropagation(); // stop propagation of click into the parent element
 
-    history.push('/tier-upgrade');
+    alert('Feature coming soon');
+    // enable once tier upgrade is ready
+    // history.push('/tier-upgrade');
   };
 
   const onLogout = () => {
     setFakeLoading(true);
-    // we might not need this next two lines, check the logout out scenario
-    // delete if not needed anymore
-    // dispatch(appActions.getTokenReset());
-    // dispatch(appActions.getIsAuthenticated(false));
-    // deleteCookie('spv_uat_hmc');
-    // deleteCookie('spv_uat');
-    // deleteCookie('spv_expire');
-    // deleteCookie('spv_cat');
-    // deleteCookie('spv_uat_u');
 
-    // setTimeout(() => {
-    //   const publicURL = process.env.PUBLIC_URL || '';
-    //   window.location.replace(`${publicURL}/`);
-    // }, 1000);
     doSignOut();
   };
 
@@ -131,7 +120,7 @@ export default function Sidebar() {
             Home
           </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton onClick={() => alert('For Development')}>
+          <NavButton as={NavLink} to="/generateqr">
             <QRCodeIcon />
             QR Code
           </NavButton>
@@ -140,26 +129,26 @@ export default function Sidebar() {
             Account Verification
           </NavButton> */}
           {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton onClick={() => alert('For Development')}>
+          <NavButton onClick={() => alert('Feature coming soon')}>
             <PromosIcon />
             Promos
+          </NavButton>
+          {/* <NavButton as={NavLink} to="/dashboard"> */}
+          <NavButton as={NavLink} to="/merchant-inquiry">
+            <MerchantInquiryIcon />
+            Merchant Inquiry
           </NavButton>
           <NavButton as={NavLink} to="/settings">
             <AccountSecurityIcon />
             Account Security
           </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton onClick={() => alert('For Development')}>
-            <MerchantInquiryIcon />
-            Merchant Inquiry
-          </NavButton>
-          {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton onClick={() => alert('For Development')}>
+          <NavButton as={NavLink} to="/help-center">
             <HelpCenterIcon />
-            Help Centre
+            Help Center
           </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton onClick={() => alert('For Development')}>
+          <NavButton as={NavLink} to="/contact-us">
             <ContactUsIcon />
             Contact Us
           </NavButton>

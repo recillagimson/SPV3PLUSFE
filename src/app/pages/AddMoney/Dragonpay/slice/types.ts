@@ -3,11 +3,11 @@ import { ApiErrorState } from 'types/Default';
 /* --- STATE --- */
 export type ErrorState = ApiErrorState;
 
-export interface HelpCenterState {
+export interface AddMoneyDragonpayState {
   loading: boolean;
   error?: object;
-  data: object;
-  request: object | boolean;
+  amount: number | null;
+  addMoneyDragonpay: any;
 }
 
-export type ContainerState = HelpCenterState;
+export type ContainerState = AddMoneyDragonpayState;

@@ -99,10 +99,30 @@ export function UserProfilePage() {
   };
 
   const onSubmitAvatar = () => {
-    const fileData = new FormData();
-    fileData.append('avatar_photo', selectedAvatar[0], selectedAvatar[0].name);
+    const acceptImage = [
+      'image/gif',
+      'image/jpeg',
+      'image/png',
+      'image/jpg',
+      'image/bmp',
+      'image/tiff',
+      'image/webp',
+    ];
 
-    dispatch(actions.getFetchLoading(fileData));
+    if (
+      selectedAvatar &&
+      selectedAvatar.length > 0 &&
+      acceptImage.includes(selectedAvatar[0].type)
+    ) {
+      const fileData = new FormData();
+      fileData.append(
+        'avatar_photo',
+        selectedAvatar[0],
+        selectedAvatar[0].name,
+      );
+
+      dispatch(actions.getFetchLoading(fileData));
+    }
   };
 
   const onCloseUploadDialog = (refresh: boolean) => {
@@ -158,7 +178,7 @@ export function UserProfilePage() {
     />
   );
 
-  if (Boolean(tierID) && tierID !== TierIDs.bronze.id) {
+  if (Boolean(tierID) && tierID !== TierIDs.bronze) {
     updateForm = (
       <ProfileSilver
         onCancel={() => {
@@ -200,7 +220,7 @@ export function UserProfilePage() {
             <UserInfoList
               profile={profile}
               refs={refs}
-              isBronze={Boolean(tierID) && tierID === TierIDs.bronze.id}
+              isBronze={Boolean(tierID) && tierID === TierIDs.bronze}
             />
           </div>
         </Box>

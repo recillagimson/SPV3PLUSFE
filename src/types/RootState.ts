@@ -6,8 +6,10 @@ import { LoginState } from 'app/pages/LoginPage/slice/types';
 import { RegisterState } from 'app/pages/RegisterPage/slice/types';
 import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
 import { SendMoneyState } from 'app/pages/SendMoney/slice/types';
+import { GenerateQRState } from 'app/pages/GenerateQR/slice/types';
 import { ProfileState } from 'app/pages/ProfilePage/slice/types';
 import { NotificationsState } from 'app/pages/Notification/slice/types';
+import { AddMoneyDragonpayState } from 'app/pages/AddMoney/Dragonpay/slice/types';
 import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice/types';
 import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 import { DashboardState } from 'app/pages/DashboardPage/slice/types';
@@ -31,10 +33,14 @@ export interface RootState {
   verifyOTP?: VerifyOTPState;
   updatePassword?: UpdatePasswordState;
   sendMoney?: SendMoneyState;
+  generateQR?: GenerateQRState;
+  profile?: ProfileState;
   updateProfile?: ProfileState;
   profileBronze?: ProfileBronzeState;
   profileSilver?: ProfileSilverState;
   notifications?: NotificationsState;
+  addMoneyDragonpay: AddMoneyDragonpayState;
+
   helpCenter?: any;
   transactionHistory?: TransactionHistoryState;
   changePassword?: ChangePasswordState;
