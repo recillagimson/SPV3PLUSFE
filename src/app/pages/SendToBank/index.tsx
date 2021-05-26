@@ -41,6 +41,7 @@ import {
 
 // Utils
 import { numberWithCommas, parseToNumber } from 'utils/common';
+import { validateEmail } from 'app/components/Helpers';
 
 // Styled Components
 import * as S from './SendToBank.style';
@@ -118,7 +119,7 @@ export function SendToBank() {
       errors.purpose = 'This is a required field.';
     }
 
-    if (formData.send_receipt_to === '') {
+    if (!validateEmail(formData.send_receipt_to)) {
       errors.send_receipt_to = 'This is a required field and a valid email.';
     }
 
@@ -231,7 +232,7 @@ export function SendToBank() {
                 >
                   <S.SendCTAContent>
                     <p>{cta.header}</p>
-                    <img src={cta.icon} alt="Instapay" />
+                    <img src={cta.icon} alt="Send to bank" />
                     <S.CTAList>
                       {cta.items.map((item, i) => (
                         <S.CTAListItem key={i}>- {item}</S.CTAListItem>
@@ -329,7 +330,7 @@ export function SendToBank() {
                   name="send_receipt_to"
                   value={formData.send_receipt_to}
                   onChange={_handleChangeFormFieldValues}
-                  placeholder="Enter email or mobile number"
+                  placeholder="Enter a valid email address"
                 />
                 {formErrors.send_receipt_to && (
                   <ErrorMsg formError>{formErrors.send_receipt_to}</ErrorMsg>
@@ -395,7 +396,12 @@ export function SendToBank() {
             width="380px"
             margin="20px auto"
           >
-            <S.ContentImage src={InstapayLogo} alt="Instapay" />
+            <S.ContentImage
+              src={
+                bankTransactionType === 'instapay' ? InstapayLogo : PesonetLogo
+              }
+              alt="Send to bank type"
+            />
             {renderReviewContainer('totalReview')}
             <S.ReviewTotal>
               <p className="total-description">Total amount plus service fee</p>
