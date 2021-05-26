@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import ReactCodeInput from 'react-code-input';
 
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -16,7 +15,6 @@ import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
 import Select from 'app/components/Elements/Select';
-import H3 from 'app/components/Elements/H3';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 
 import { VerifyOTPPage } from './VerifyPage';
@@ -43,7 +41,6 @@ import {
 
 // Utils
 import { numberWithCommas, parseToNumber } from 'utils/common';
-import { validateEmail } from 'app/components/Helpers';
 
 // Styled Components
 import * as S from './SendToBank.style';

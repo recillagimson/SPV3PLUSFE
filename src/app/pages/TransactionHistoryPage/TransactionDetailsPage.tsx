@@ -84,7 +84,9 @@ function TransactionHistoryDetailsPage(props) {
     if (isBankTransaction) return bankListData(transactionHistoryDetailsData);
     if (isReceiveMoneyTransaction || isSendMoneyTransaction)
       return receivedMoneyListData(transactionHistoryDetailsData);
-    if (isDragonpayTransaction) return dragonpayListData(transactionHistoryDetailsData);
+    if (isDragonpayTransaction)
+      return dragonpayListData(transactionHistoryDetailsData);
+
     if (isLoadTransaction) return loadListtData(transactionHistoryDetailsData);
 
     return [];

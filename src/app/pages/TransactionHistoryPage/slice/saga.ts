@@ -31,7 +31,6 @@ function* getTransactionHistory() {
   try {
     const apirequest = yield call(request, requestURL, options);
     if (apirequest) {
-
       // request decryption passphrase
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
@@ -88,7 +87,6 @@ function* getTransactionHistoryDetails() {
   try {
     const apirequest = yield call(request, requestURL, options);
     if (apirequest) {
-
       // request decryption passphrase
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
