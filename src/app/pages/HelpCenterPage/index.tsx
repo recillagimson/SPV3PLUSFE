@@ -16,14 +16,14 @@ export function HelpCenterPage() {
   return (
     <ProtectedContent>
       <Helmet>
-        <title>Settings</title>
+        <title>Help Center</title>
       </Helmet>
 
       <Box title="Help Center" titleBorder withPadding>
         <List divider bordertop>
           <ListItem flex>
             <ListItemButton
-              onClick={() => alert('Feature coming soon')}
+              onClick={() => history.push('/help-center/faq')}
               style={{
                 flexGrow: 1,
               }}

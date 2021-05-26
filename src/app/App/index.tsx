@@ -45,7 +45,7 @@ import {
   TransactionHistoryPage,
   TransactionHistoryDetailsPage,
 } from 'app/pages/TransactionHistoryPage/Loadable';
-import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
+import { HelpCenterPage, FAQPage } from 'app/pages/HelpCenterPage/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
 import { SettingsChangePinPage } from 'app/pages/SettingsPage/ChangePin/Loadable';
@@ -120,6 +120,10 @@ export function App() {
       }, 1000);
 
       history.push('/dashboard');
+
+      if (process.env.PUBLIC_URL !== '') {
+        loadFbAsync(); // load fb
+      }
     } else if (forceUpdate) {
       dispatch(actions.getClientTokenLoading());
       history.push('/register/update-profile');
@@ -132,6 +136,16 @@ export function App() {
     }
   }, []);
 
+  React.useEffect(() => {
+    if (
+      isAuthenticated &&
+      process.env.PUBLIC_URL !== '' && // @ts-ignore
+      !window.fbAsyncInit
+    ) {
+      loadFbAsync(); // load fb
+    }
+  }, [isAuthenticated]);
+
   const onClickSessionExpired = () => {
     // const publicURL = process.env.PUBLIC_URL || '';
 
@@ -139,6 +153,30 @@ export function App() {
     doSignOut();
     dispatch(actions.getIsAuthenticated(false));
     dispatch(actions.getIsSessionExpired(false));
+  };
+
+  const loadFbAsync = () => {
+    var chatbox: any = document.getElementById('fb-customer-chat');
+    chatbox.setAttribute('page_id', '100608264934915');
+    chatbox.setAttribute('attribution', 'biz_inbox');
+    // @ts-ignore
+    window.fbAsyncInit = function () {
+      // @ts-ignore
+      FB.init({
+        xfbml: true,
+        version: 'v10.0',
+      });
+    };
+
+    (function (d, s, id) {
+      var js,
+        fjs: any = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s);
+      js.id = id;
+      js.src = '//connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+      fjs.parentNode.insertBefore(js, fjs);
+    })(document, 'script', 'facebook-jssdk');
   };
 
   return (
@@ -228,6 +266,7 @@ export function App() {
               path="/help-center"
               component={HelpCenterPage}
             />
+            <PrivateRoute exact path="/help-center/faq" component={FAQPage} />
             <PrivateRoute exact path="/settings" component={SettingsPage} />
             <PrivateRoute
               exact
@@ -283,6 +322,9 @@ export function App() {
         </div>
       </Dialog>
       <GlobalStyle />
+      {/*  FB Root */}
+      <div id="fb-root"></div>
+      <div id="fb-customer-chat" className="fb-customerchat" />
     </>
   );
 }

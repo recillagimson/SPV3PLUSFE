@@ -38,6 +38,7 @@ type BoxProps = {
   footerBorder?: boolean;
   footerAlign?: 'left' | 'right' | 'center' | undefined;
   withPadding?: boolean;
+  onBack?: () => void; // if defined, title will become a button with onBack as the click callback
 };
 
 export default function BoxComponent({
@@ -49,6 +50,7 @@ export default function BoxComponent({
   footerBorder,
   footerAlign,
   withPadding,
+  onBack,
 }: BoxProps) {
   let showTitle = false;
   if (title && title !== '') {
@@ -65,7 +67,18 @@ export default function BoxComponent({
           border={titleBorder || undefined}
           hasbutton={Boolean(titleAction) || undefined}
         >
-          {title ? <span className="bt-text">{title}</span> : ''} {titleAction}
+          {title ? (
+            <span
+              className="bt-text"
+              role={Boolean(onBack) ? 'presentation' : undefined}
+              onClick={Boolean(onBack) ? onBack : undefined}
+            >
+              {title}
+            </span>
+          ) : (
+            ''
+          )}{' '}
+          {titleAction}
         </Title>
       )}
       <div className="bt-child">{React.Children.toArray(children)}</div>

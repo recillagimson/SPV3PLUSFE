@@ -32,6 +32,7 @@ import {
   faCamera,
   faPhone,
   faIdCard,
+  faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -62,4 +63,5 @@ library.add(
   faCamera,
   faPhone,
   faIdCard,
+  faSearch,
 );
