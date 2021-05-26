@@ -46,5 +46,6 @@ export interface RootState {
   changePin?: ChangePinState;
   dashboard?: DashboardState;
   tierUpgrade?: TierUpgradeState;
+  sendToBank?: any;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }
