@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { useHistory } from 'react-router-dom';
+import { DateTime } from 'luxon';
 
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -115,6 +116,9 @@ export function VerifyOTPPage(props) {
     );
   };
 
+  const date = DateTime.fromISO(success?.transaction_date);
+  const monthDateYearTime = date.toLocaleString(DateTime.DATETIME_MED);
+
   return (
     <React.Fragment>
       <S.Wrapper
@@ -172,7 +176,7 @@ export function VerifyOTPPage(props) {
               </p>
             </S.ReviewTotal>
             <Logo size="small" />
-            <p className="date">04 March 2021, 3:26 PM</p>
+            <p className="date">{monthDateYearTime}</p>
             <S.CuttedImageWrapper
               src={WrapperCuttedCornerBottom}
               alt="Squid pay"
