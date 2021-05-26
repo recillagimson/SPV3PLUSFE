@@ -40,3 +40,8 @@ export const selectFormData = createSelector(
   [selectDomain],
   subState => subState.formData,
 );
+
+export const selectSuccessSendToBank = createSelector(
+  [selectDomain],
+  subState => subState.successSendTobank,
+);

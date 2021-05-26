@@ -11,6 +11,8 @@ export const initialState: ContainerState = {
   data: [],
   purposes: [],
   validate: {},
+  generateOTP: {},
+  successSendTobank: {},
   bankTransactionType: '',
   formData: {},
 };
@@ -67,13 +69,48 @@ const slice = createSlice({
       state.loading = false;
       state.error = {};
       state.validate = action.payload;
-      state.formData = {};
     },
     validateBankError(state, action: PayloadAction<ErrorState>) {
       state.error = action.payload;
       state.loading = false;
       state.validate = {};
       state.formData = {};
+    },
+    generateSendToBankOTPLoading(state) {
+      state.loading = true;
+      state.error = {};
+    },
+    generateSendToBankOTPSuccess(state, action: PayloadAction<object>) {
+      state.loading = false;
+      state.error = {};
+      state.generateOTP = action.payload;
+    },
+    generateSendToBankOTPError(state, action: PayloadAction<ErrorState>) {
+      state.error = action.payload;
+      state.loading = false;
+      state.generateOTP = {};
+    },
+    sendToBankLoading(state) {
+      state.loading = true;
+      state.error = {};
+    },
+    sendToBankSuccess(state, action: PayloadAction<object>) {
+      state.loading = false;
+      state.error = {};
+      state.successSendTobank = action.payload;
+    },
+    sendToBankError(state, action: PayloadAction<ErrorState>) {
+      state.error = action.payload;
+      state.loading = false;
+      state.successSendTobank = {};
+    },
+    resetTransaction(state) {
+      state.error = {};
+      state.loading = false;
+      state.formData = {};
+      state.validate = {};
+      state.generateOTP = {};
+      state.successSendTobank = {};
     },
   },
 });

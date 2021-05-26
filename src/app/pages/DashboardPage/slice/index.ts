@@ -10,6 +10,12 @@ export const initialState: ContainerState = {
   error: {},
   data: false,
   request: false,
+  transaction: {
+    loading: false,
+    error: {},
+    data: false,
+    request: false,
+  },
 };
 
 const slice = createSlice({
@@ -32,6 +38,23 @@ const slice = createSlice({
       state.loading = false;
       state.error = {};
       state.data = false;
+    },
+    getTransactionLoading(state) {
+      state.transaction.loading = true;
+      state.transaction.error = {};
+    },
+    getTransactionSuccess(state, action: PayloadAction<[]>) {
+      state.transaction.loading = false;
+      state.transaction.data = action.payload;
+    },
+    getTransactionError(state, action: PayloadAction<ErrorState>) {
+      state.transaction.error = action.payload;
+      state.transaction.loading = false;
+    },
+    getTransactionReset(state) {
+      state.transaction.loading = false;
+      state.transaction.error = {};
+      state.transaction.data = false;
     },
   },
 });

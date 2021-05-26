@@ -126,6 +126,6 @@ export function doSignOut() {
  * Format number with commas
  * @param {number}  num       number to format
  */
-export function numberCommas(num: number = 0) {
+export function numberCommas(num: number | string = 0) {
   return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
 }

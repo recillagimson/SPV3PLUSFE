@@ -58,10 +58,6 @@ import { Page500 } from 'app/components/500/Loadable';
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
 import PrivateRoute from './PrivateRoute';
-// import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
-
-// Importing the Bootstrap CSS
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 /** selectors, slice */
 import { containerActions as dashboardAction } from 'app/pages/DashboardPage/slice';

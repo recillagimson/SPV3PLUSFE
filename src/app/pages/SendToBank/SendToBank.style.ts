@@ -18,7 +18,7 @@ export const Wrapper = styled.div<{
       display: ${display};
     `}
 
-	${({ alignment }) =>
+  ${({ alignment }) =>
     alignment &&
     css`
       align-items: ${alignment};
@@ -258,9 +258,11 @@ export const ReviewListItem = styled.div`
 `;
 
 export const SuccessWrapper = styled.div`
-  background: #FFF9DD;
+  box-shadow: 0px 12px 15px rgba(140, 152, 164, 0.1);
+  margin: 10px auto 20px;
+  position: relative;
+  background: #faedab;
   padding: 20px;
-  margin: 10px 0 20px;
 
   display: flex;
   align-items: center;
@@ -323,5 +325,29 @@ export const ListItem = styled.li`
 
   &:first-child {
     border-top: 1px solid #f3f4f9;
+  }
+`;
+
+export const DetailsWrapper = styled.div<{
+  padding?: string;
+}>`
+  ${({ padding }) =>
+    padding &&
+    css`
+      padding: ${padding};
+    `}
+`;
+
+export const CuttedImageWrapper = styled.img`
+  &:first-child {
+    position: absolute;
+    top: -7px;
+    width: 100%;
+  }
+
+  &:last-child {
+    position: absolute;
+    bottom: -7px;
+    width: 100%;
   }
 `;

@@ -8,6 +8,8 @@ export interface SendToBankHistoryState {
   error?: object;
   data: BankState[];
   purposes: [];
+  generateOTP: object;
+  successSendTobank: object;
   bankTransactionType?: string;
   validate?: object;
   formData?: object;
