@@ -167,7 +167,6 @@ export default function Sidebar() {
             <strong>Logout</strong>
           </p>
           <p>Aww... You're leaving already?</p>
-
           <div className="buttons">
             <button
               type="button"

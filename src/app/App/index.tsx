@@ -46,6 +46,7 @@ import {
   TransactionHistoryDetailsPage,
 } from 'app/pages/TransactionHistoryPage/Loadable';
 import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
+import { SendToBank } from 'app/pages/SendToBank/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
 import { SettingsChangePinPage } from 'app/pages/SettingsPage/ChangePin/Loadable';
@@ -227,6 +228,7 @@ export function App() {
               path="/help-center"
               component={HelpCenterPage}
             />
+            <PrivateRoute exact path="/send-to-bank" component={SendToBank} />
             <PrivateRoute exact path="/settings" component={SettingsPage} />
             <PrivateRoute
               exact
