@@ -46,5 +46,6 @@ export interface RootState {
   changePassword?: ChangePasswordState;
   changePin?: ChangePinState;
   dashboard?: DashboardState;
+  sendToBank?: any;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

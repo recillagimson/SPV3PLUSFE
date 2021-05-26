@@ -80,10 +80,6 @@ function TransactionHistoryDetailsPage(props) {
       'Load',
     ) !== -1;
 
-  console.log(
-    'transactionHistoryDetailsData?.transactionDate',
-    transactionHistoryDetailsData?.transactionDate,
-  );
   const renderListItems = () => {
     if (isBankTransaction) return bankListData(transactionHistoryDetailsData);
     if (isReceiveMoneyTransaction || isSendMoneyTransaction)
