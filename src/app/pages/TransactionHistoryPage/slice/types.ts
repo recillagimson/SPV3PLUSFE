@@ -49,6 +49,7 @@ export interface TransactionHistoryDetailsState {
     title: string;
     transaction_type: string;
   };
+  transactionDate: any;
 }
 
 export type ContainerState = TransactionHistoryState;

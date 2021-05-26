@@ -433,20 +433,20 @@ export function SendMoney() {
                     }
                     error={validateApiMsg.code === '402' ? true : undefined}
                   />
-                  {amount.error && (
-                    <ErrorMsg formError>* Invalid Amount</ErrorMsg>
-                  )}
-
-                  {/* API Error Message */}
-                  {validateApiMsg.code === '402' && !amount.error && (
-                    <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
-                  )}
                   {/* <small>
                   Your daily limit is 20,000 PHP and monthly limit is 100,000
                   PHP
                 </small> */}
                   <span>PHP</span>
                 </InputTextWrapper>
+                {amount.error && (
+                  <ErrorMsg formError>* Invalid Amount</ErrorMsg>
+                )}
+
+                {/* API Error Message */}
+                {validateApiMsg.code === '402' && !amount.error && (
+                  <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                )}
               </Field>
 
               <Field>
@@ -530,7 +530,7 @@ export function SendMoney() {
                 <Grid container justify="center" spacing={3}>
                   <Grid item xs={12} md={8}>
                     <Avatar
-                      image="https://source.unsplash.com/random/120x120"
+                      image={validateSuccess.selfie_location}
                       size="medium"
                     />
                     <p className="email">{validateSuccess.first_name}</p>
@@ -544,7 +544,10 @@ export function SendMoney() {
                       <Grid item xs={6} className="item">
                         <span className="value">
                           {' '}
-                          PHP {parseInt(amount.value)}.00
+                          PHP{' '}
+                          {Number.isInteger(validateSuccess.amount)
+                            ? validateSuccess.amount + '.00'
+                            : validateSuccess.amount}
                         </span>
                       </Grid>
                       <Grid item xs={6} className="item">
@@ -560,7 +563,10 @@ export function SendMoney() {
                     <br />
                     <p>Total amount</p>
                     <H3 className="total-amount">
-                      PHP {parseInt(amount.value)}.00
+                      PHP{' '}
+                      {Number.isInteger(validateSuccess.amount)
+                        ? validateSuccess.amount + '.00'
+                        : validateSuccess.amount}
                     </H3>
                     <br />
                     <Button

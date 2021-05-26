@@ -29,6 +29,8 @@ import {
   faStopwatch,
   faSquare,
   faCheckSquare,
+  faCamera,
+  faPhone,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -56,4 +58,6 @@ library.add(
   faStopwatch,
   faSquare,
   faCheckSquare,
+  faCamera,
+  faPhone,
 );

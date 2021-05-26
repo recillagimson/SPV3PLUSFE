@@ -9,7 +9,7 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
+import { Switch, Route, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
@@ -31,12 +31,13 @@ import { GlobalStyle } from 'styles/global-styles';
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
 
 import { DashboardPage } from 'app/pages/DashboardPage/Loadable';
-import { CardMemberAgreementPage } from 'app/pages/CardMemberAgreementPage/Loadable';
+// import { CardMemberAgreementPage } from 'app/pages/CardMemberAgreementPage/Loadable';
 import { LoginPage } from 'app/pages/LoginPage/Loadable';
 import { RegisterPage } from 'app/pages/RegisterPage/Loadable';
 import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
-import { ScanQR } from 'app/pages/ScanQR/Loadable';
+import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
+// import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
@@ -45,10 +46,15 @@ import {
   TransactionHistoryDetailsPage,
 } from 'app/pages/TransactionHistoryPage/Loadable';
 import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
+import { SendToBank } from 'app/pages/SendToBank/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
+import { SettingsChangePinPage } from 'app/pages/SettingsPage/ChangePin/Loadable';
 import { Notifications } from 'app/pages/Notification';
 import { UpdateProfileVerificationPage } from 'app/pages/UpdateProfileVerificationPage/Loadable';
+import { ContactUsPage } from 'app/pages/ContactUsPage/Loadable';
+import { ChatSupportPage } from 'app/pages/ChatSupportPage/Loadable';
+import { MerchantInquiryPage } from 'app/pages/MerchantInquiry/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 
@@ -57,10 +63,6 @@ import { Page500 } from 'app/components/500/Loadable';
 // private routes, use this component in rendering pages
 // that should only be accessible with the logged in user
 import PrivateRoute from './PrivateRoute';
-// import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
-
-// Importing the Bootstrap CSS
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 /** selectors, slice */
 import { containerActions as dashboardAction } from 'app/pages/DashboardPage/slice';
@@ -71,10 +73,12 @@ import {
   selectIsBlankPage,
 } from './slice/selectors';
 import { usePrevious } from 'app/components/Helpers/Hooks';
+import { AddMoney } from 'app/pages/AddMoney';
+import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
 
 export function App() {
   const { i18n } = useTranslation();
-  const location = useLocation();
+  // const location = useLocation();
   const history = useHistory();
 
   // sample usage of slice (react redux)
@@ -86,7 +90,7 @@ export function App() {
   const isBlankPage = useSelector(selectIsBlankPage);
 
   React.useEffect(() => {
-    const path: string | boolean = location ? location.pathname : '/dashboard';
+    // const path: string | boolean = location ? location.pathname : '/dashboard';
     const phrase = getCookie('spv_uat_hmc'); // retrieve the passphrase use for encrypting
     const sessionCookie = getCookie('spv_uat'); // user token
     const clientCookie = getCookie('spv_cat') || ''; // client token
@@ -115,7 +119,7 @@ export function App() {
         dispatch(dashboardAction.getFetchLoading());
       }, 1000);
 
-      history.push(path === '/' ? '/dashboard' : path);
+      history.push('/dashboard');
     } else if (forceUpdate) {
       dispatch(actions.getClientTokenLoading());
       history.push('/register/update-profile');
@@ -187,11 +191,6 @@ export function App() {
             })} */}
             <Route exact path="/" component={LoginPage} />
             <Route exact path="/register" component={RegisterPage} />
-            <Route
-              exact
-              path="/card-member-agreement"
-              component={CardMemberAgreementPage}
-            />
             <Route path="/forgotpassword" component={ForgotPasswordPage} />
             <Route
               path="/register/update-profile"
@@ -200,13 +199,19 @@ export function App() {
             <Route path="/500" component={Page500} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <Route path="/sendmoney" component={SendMoney} />
-            <PrivateRoute path="/scanqr" component={ScanQR} />
+            <PrivateRoute path="/generateqr" component={GenerateQR} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
             <PrivateRoute path="/profile" component={UserProfilePage} />
             <PrivateRoute
               path={['/notifications/:id', '/notifications']}
               component={Notifications}
+            />
+            <PrivateRoute exact path="/add-money" component={AddMoney} />
+            <PrivateRoute
+              exact
+              path="/add-money/dragonpay"
+              component={Dragonpay}
             />
             <PrivateRoute
               exact
@@ -223,12 +228,30 @@ export function App() {
               path="/help-center"
               component={HelpCenterPage}
             />
+            <PrivateRoute exact path="/send-to-bank" component={SendToBank} />
             <PrivateRoute exact path="/settings" component={SettingsPage} />
             <PrivateRoute
               exact
               path="/settings/change-password"
               component={SettingsChangePasswordPage}
             />
+            <PrivateRoute
+              exact
+              path="/settings/change-pin"
+              component={SettingsChangePinPage}
+            />
+            <PrivateRoute exact path="/contact-us" component={ContactUsPage} />
+            <PrivateRoute
+              exact
+              path="/chat-support"
+              component={ChatSupportPage}
+            />
+            <PrivateRoute
+              exact
+              path="/merchant-inquiry"
+              component={MerchantInquiryPage}
+            />
+
             {/* Not found page should be the last entry for this <Switch /> container */}
             <Route component={NotFoundPage} />
           </Switch>

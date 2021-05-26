@@ -32,7 +32,7 @@ const Label = styled.label`
     }
 
     &:checked + span svg {
-      color: ${StyleConstants.GOLD};
+      color: #007bff;
     }
   }
 `;

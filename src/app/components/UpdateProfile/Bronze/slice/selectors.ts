@@ -4,7 +4,7 @@ import { RootState } from 'types';
 import { initialState } from '.';
 
 // First select the relevant part from the state
-const selectDomain = (state: RootState) => state.profile || initialState;
+const selectDomain = (state: RootState) => state.profileBronze || initialState;
 
 export const selectData = createSelector(
   [selectDomain],
@@ -24,4 +24,24 @@ export const selectError = createSelector(
 export const selectRequest = createSelector(
   [selectDomain],
   subState => subState.request,
+);
+
+export const selectOTPData = createSelector(
+  [selectDomain],
+  subState => subState.otp.data,
+);
+
+export const selectOTPLoading = createSelector(
+  [selectDomain],
+  subState => subState.otp.loading,
+);
+
+export const selectOTPError = createSelector(
+  [selectDomain],
+  subState => subState.otp.error,
+);
+
+export const selectOTPRequest = createSelector(
+  [selectDomain],
+  subState => subState.otp.request,
 );

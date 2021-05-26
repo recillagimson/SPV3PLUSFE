@@ -81,4 +81,5 @@ export interface UserProfileState {
   created_at?: string;
   updated_at?: string;
   deleted_at?: string | null;
+  user_account: any;
 }

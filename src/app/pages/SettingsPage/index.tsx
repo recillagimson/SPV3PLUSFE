@@ -35,9 +35,7 @@ export function SettingsPage() {
           <ListItem flex>
             <ListItemText
               role="presentation"
-              onClick={() => {
-                alert('Not yet available');
-              }}
+              onClick={() => history.push('/settings/change-pin')}
               primary="Pin Code"
               style={{
                 flexGrow: 1,
