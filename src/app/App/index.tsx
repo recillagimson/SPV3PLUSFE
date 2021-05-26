@@ -12,7 +12,7 @@ import { Helmet } from 'react-helmet-async';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-
+import { remoteConfig } from 'utils/firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
@@ -122,9 +122,9 @@ export function App() {
 
       history.push('/dashboard');
 
-      if (process.env.PUBLIC_URL !== '') {
-        loadFbAsync(); // load fb
-      }
+      // if (process.env.PUBLIC_URL !== '') {
+      //   loadFbAsync(); // load fb
+      // }
     } else if (forceUpdate) {
       dispatch(actions.getClientTokenLoading());
       history.push('/register/update-profile');
@@ -138,12 +138,22 @@ export function App() {
   }, []);
 
   React.useEffect(() => {
-    if (
-      isAuthenticated &&
-      process.env.PUBLIC_URL !== '' && // @ts-ignore
-      !window.fbAsyncInit
-    ) {
-      loadFbAsync(); // load fb
+    // if (
+    //   isAuthenticated &&
+    //   process.env.PUBLIC_URL !== '' && // @ts-ignore
+    //   !window.fbAsyncInit
+    // ) {
+    //   loadFbAsync(); // load fb
+    // }
+    if (isAuthenticated) {
+      // const paths = remoteConfig.getAll();
+      remoteConfig
+        .fetchAndActivate()
+        .then(() => {
+          const paths = remoteConfig.getAll();
+          console.log(paths);
+        })
+        .catch(er => console.log(er));
     }
   }, [isAuthenticated]);
 

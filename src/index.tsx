@@ -35,6 +35,9 @@ import reportWebVitals from 'reportWebVitals';
 // Initialize languages
 import './locales/i18n';
 
+// Initialize firebase
+import './utils/firebase';
+
 // Observer font loading for custom font
 const fontObserver = new FontFaceObserver('Museo Sans', {});
 
