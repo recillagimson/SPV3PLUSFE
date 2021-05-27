@@ -8,30 +8,35 @@ import { containerSaga } from './saga';
 export const initialState: ContainerState = {
   loading: false,
   error: {},
-  notifications: null,
+  amount: null,
+  addMoneyDragonpay: null,
 };
 
 const slice = createSlice({
-  name: 'notifications',
+  name: 'addMoneyDragonpay',
   initialState,
   reducers: {
-    getFetchLoading(state) {
+    getFetchLoading(state, action: PayloadAction<number>) {
       state.loading = true;
       state.error = {};
+      state.amount = action.payload;
     },
     getFetchSuccess(state, action: PayloadAction<object | null>) {
       state.loading = false;
       state.error = {};
-      state.notifications = action.payload;
+      state.amount = null;
+      state.addMoneyDragonpay = action.payload;
     },
     getFetchError(state, action: PayloadAction<ErrorState>) {
       state.error = action.payload;
+      state.amount = null;
       state.loading = false;
     },
-    getFetchReset(state, action: PayloadAction) {
+    getFetchReset(state) {
       state.loading = false;
+      state.amount = null;
       state.error = {};
-      state.notifications = {};
+      state.addMoneyDragonpay = null;
     },
   },
 });

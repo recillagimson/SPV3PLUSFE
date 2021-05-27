@@ -36,6 +36,7 @@ export const transactionDetailsDefaultState = {
     title: '',
     transaction_type: '',
   },
+  transactionDate: '',
 };
 
 export const transactionHistoryDefaultState = {

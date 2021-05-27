@@ -49,8 +49,10 @@ import {
   TransactionHistoryDetailsPage,
 } from 'app/pages/TransactionHistoryPage/Loadable';
 import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
+import { SendToBank } from 'app/pages/SendToBank/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
+import { SettingsChangePinPage } from 'app/pages/SettingsPage/ChangePin/Loadable';
 import { Notifications } from 'app/pages/Notification';
 import { UpdateProfileVerificationPage } from 'app/pages/UpdateProfileVerificationPage/Loadable';
 import { ContactUsPage } from 'app/pages/ContactUsPage/Loadable';
@@ -73,6 +75,9 @@ import {
   selectIsAuthenticated,
   selectIsBlankPage,
 } from './slice/selectors';
+import { usePrevious } from 'app/components/Helpers/Hooks';
+import { AddMoney } from 'app/pages/AddMoney';
+import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -206,6 +211,12 @@ export function App() {
               path={['/notifications/:id', '/notifications']}
               component={Notifications}
             />
+            <PrivateRoute exact path="/add-money" component={AddMoney} />
+            <PrivateRoute
+              exact
+              path="/add-money/dragonpay"
+              component={Dragonpay}
+            />
             <PrivateRoute
               exact
               path="/transaction-history"
@@ -221,11 +232,17 @@ export function App() {
               path="/help-center"
               component={HelpCenterPage}
             />
+            <PrivateRoute exact path="/send-to-bank" component={SendToBank} />
             <PrivateRoute exact path="/settings" component={SettingsPage} />
             <PrivateRoute
               exact
               path="/settings/change-password"
               component={SettingsChangePasswordPage}
+            />
+            <PrivateRoute
+              exact
+              path="/settings/change-pin"
+              component={SettingsChangePinPage}
             />
             <PrivateRoute exact path="/contact-us" component={ContactUsPage} />
             <PrivateRoute

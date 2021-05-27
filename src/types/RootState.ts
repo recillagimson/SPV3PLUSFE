@@ -10,6 +10,7 @@ import { GenerateQRState } from 'app/pages/GenerateQR/slice/types';
 import { BuyLoadState } from 'app/pages/BuyLoadPage/slice/types';
 import { ProfileState } from 'app/pages/ProfilePage/slice/types';
 import { NotificationsState } from 'app/pages/Notification/slice/types';
+import { AddMoneyDragonpayState } from 'app/pages/AddMoney/Dragonpay/slice/types';
 import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice/types';
 import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 import { DashboardState } from 'app/pages/DashboardPage/slice/types';
@@ -40,10 +41,13 @@ export interface RootState {
   profileBronze?: ProfileBronzeState;
   profileSilver?: ProfileSilverState;
   notifications?: NotificationsState;
+  addMoneyDragonpay: AddMoneyDragonpayState;
+
   helpCenter?: any;
   transactionHistory?: TransactionHistoryState;
   changePassword?: ChangePasswordState;
   changePin?: ChangePinState;
   dashboard?: DashboardState;
+  sendToBank?: any;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

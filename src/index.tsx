@@ -14,6 +14,9 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import FontFaceObserver from 'fontfaceobserver';
 
+// error boundary
+import ErrorBoundary from './utils/errorBoundary';
+
 // font awesome library
 import 'utils/faLibrary';
 
@@ -49,7 +52,9 @@ ReactDOM.render(
     <HelmetProvider>
       <React.StrictMode>
         <BrowserRouter basename={publicURL !== '' ? publicURL : undefined}>
-          <App />
+          <ErrorBoundary>
+            <App />
+          </ErrorBoundary>
         </BrowserRouter>
       </React.StrictMode>
     </HelmetProvider>
