@@ -1,5 +1,6 @@
 /**
  * Sidebar Component
+ * @prop {object}   flags       Feature flags for enabling/disabling
  *
  * NOTE: the svg files here maybe moved into the assets if this will be used in other components
  */
@@ -37,7 +38,7 @@ import NavButton from './NavButton';
 import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
 import LogoutWrapper from './LogoutWrapper';
 
-export default function Sidebar() {
+export default function Sidebar({ flags }: { flags?: {} }) {
   const history = useHistory();
   const profile: any = useSelector(selectUser);
   const loginName: string = useSelector(selectLoggedInName);

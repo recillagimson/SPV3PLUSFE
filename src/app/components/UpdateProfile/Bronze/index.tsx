@@ -35,11 +35,7 @@ import ListItemText from 'app/components/List/ListItemText';
 
 import VerifyOTP from 'app/components/VerifyOTP';
 
-import {
-  deleteCookie,
-  validateEmail,
-  validatePhone,
-} from 'app/components/Helpers';
+import { deleteCookie } from 'app/components/Helpers';
 
 /** selectors */
 import {
@@ -95,8 +91,8 @@ export default function UserProfileForm({
     error: false,
   });
   const [lastName, setLastName] = React.useState({ value: '', error: false });
-  const [mobile, setMobile] = React.useState({ value: '', error: false });
-  const [email, setEmail] = React.useState({ value: '', error: false });
+  // const [mobile, setMobile] = React.useState({ value: '', error: false });
+  // const [email, setEmail] = React.useState({ value: '', error: false });
   const [birthDate, setBirthDate] = React.useState({
     year: '',
     month: '',

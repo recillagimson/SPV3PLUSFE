@@ -15,10 +15,15 @@ const firebaseConfig = {
   measurementId: 'G-P7NPG9SCFK',
 };
 
-console.log('initializing');
-firebase.initializeApp(firebaseConfig);
+// initialize firebase onetime
+if (firebase.apps.length === 0) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+// enable if we will integrate the analytics
 // firebase.analytics();
 
-// remote config
-export const remoteConfig = firebase.remoteConfig();
-remoteConfig.settings.minimumFetchIntervalMillis = 3600;
+const remoteConfig = firebase.remoteConfig();
+remoteConfig.settings.minimumFetchIntervalMillis = 3600; // set minimum interval
+
+export { firebase, remoteConfig };

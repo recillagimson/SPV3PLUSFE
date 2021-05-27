@@ -1,12 +1,11 @@
-import { call, select, takeLatest, put, delay } from 'redux-saga/effects';
+import { call, select } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
 import { selectClientToken } from './selectors';
-import { getRequestPassphrase, getResponsePassphrase } from './saga';
-import { appActions as actions } from '.';
+import { getResponsePassphrase } from './saga';
 
 /**
  * Collection on API calls for references

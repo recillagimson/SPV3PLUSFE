@@ -77,6 +77,16 @@ import {
 import { AddMoney } from 'app/pages/AddMoney';
 import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
 
+// default flags for features
+const defaultFlags = {
+  add_money_dragon_pay_enabled: false,
+  buy_load_enabled: false,
+  send_money_enabled: false,
+  send_money_via_qr_enabled: false,
+  send_to_bank_ubp_enabled: false,
+  pay_bills_enabled: false,
+};
+
 export function App() {
   const { i18n } = useTranslation();
   // const location = useLocation();
@@ -85,10 +95,12 @@ export function App() {
   // sample usage of slice (react redux)
   const { actions } = useAppSaga();
   const dispatch = useDispatch();
-  // const user = useSelector(selectUser);
+
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isSessionExpired = useSelector(selectSessionExpired);
   const isBlankPage = useSelector(selectIsBlankPage);
+
+  const [flags, setFlags] = React.useState(defaultFlags);
 
   React.useEffect(() => {
     // const path: string | boolean = location ? location.pathname : '/dashboard';
@@ -135,9 +147,14 @@ export function App() {
         dispatch(actions.getLoadReferences());
       }, 2000);
     }
+
+    return () => {
+      clearInterval();
+    };
   }, []);
 
   React.useEffect(() => {
+    /** enable this for FB customer chat if we are going to use this */
     // if (
     //   isAuthenticated &&
     //   process.env.PUBLIC_URL !== '' && // @ts-ignore
@@ -145,17 +162,33 @@ export function App() {
     // ) {
     //   loadFbAsync(); // load fb
     // }
+
+    // remote config
     if (isAuthenticated) {
-      // const paths = remoteConfig.getAll();
-      remoteConfig
-        .fetchAndActivate()
-        .then(() => {
-          const paths = remoteConfig.getAll();
-          console.log(paths);
-        })
-        .catch(er => console.log(er));
+      setInterval(getRemoteConfigValues, 300000); // 5 mins interval
     }
   }, [isAuthenticated]);
+
+  const getRemoteConfigValues = () => {
+    remoteConfig
+      .fetchAndActivate()
+      .then(() => {
+        return remoteConfig.getAll();
+      })
+      .then(remoteFlags => {
+        const newFlags = {
+          ...flags,
+        };
+
+        for (const [key, config] of Object.entries(remoteFlags)) {
+          newFlags[key] = config.asBoolean();
+        }
+        window['spFlags'] = newFlags || {};
+
+        setFlags(newFlags);
+      })
+      .catch(err => console.warn(err));
+  };
 
   const onClickSessionExpired = () => {
     // const publicURL = process.env.PUBLIC_URL || '';
@@ -166,6 +199,7 @@ export function App() {
     dispatch(actions.getIsSessionExpired(false));
   };
 
+  // FB Customer Chat
   const loadFbAsync = () => {
     var chatbox: any = document.getElementById('fb-customer-chat');
     chatbox.setAttribute('page_id', '100608264934915');
@@ -246,7 +280,12 @@ export function App() {
               component={UpdateProfileVerificationPage}
             />
             <Route path="/500" component={Page500} />
-            <PrivateRoute path="/dashboard" component={DashboardPage} />
+            <PrivateRoute
+              path="/dashboard"
+              render={(
+                props: JSX.IntrinsicAttributes & { flags?: {} | undefined },
+              ) => <DashboardPage flags={flags} {...props} />}
+            />
             <Route path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
