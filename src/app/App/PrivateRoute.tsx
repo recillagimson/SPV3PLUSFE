@@ -9,15 +9,18 @@ import { useSelector } from 'react-redux';
 
 import { selectIsAuthenticated } from './slice/selectors';
 
-export default function PrivateRoute({ ...rest }) {
+export default function PrivateRoute({ component: Component, ...rest }) {
   // check if user is logged in
   let isAuthenticated = useSelector(selectIsAuthenticated);
 
   // return the proper path
   // if user is logged in, render the page else redirect to "/"
-  if (!isAuthenticated) {
-    return <Redirect to="/" />;
-  }
-
-  return <Route {...rest} />;
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        isAuthenticated ? <Component {...props} /> : <Redirect to="/" />
+      }
+    />
+  );
 }

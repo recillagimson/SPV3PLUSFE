@@ -35,13 +35,19 @@ import NavButton from './NavButton';
 /** selectors, actions */
 // import { UserProfileState } from 'types/Default';
 // import { appActions } from 'app/App/slice';
-import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
+import {
+  selectLoggedInName,
+  selectUser,
+  selectUserTier,
+} from 'app/App/slice/selectors';
 import LogoutWrapper from './LogoutWrapper';
 
-export default function Sidebar({ flags }: { flags?: {} }) {
+export default function Sidebar() {
   const history = useHistory();
   const profile: any = useSelector(selectUser);
   const loginName: string = useSelector(selectLoggedInName);
+  const tier: any = useSelector(selectUserTier);
+  const flags = window['spFlags'];
 
   const [isLogout, setIsLogout] = React.useState(false);
   const [fakeLoading, setFakeLoading] = React.useState(false);
@@ -124,16 +130,28 @@ export default function Sidebar({ flags }: { flags?: {} }) {
             Home
           </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton as={NavLink} to="/generateqr">
-            <QRCodeIcon />
-            QR Code
-          </NavButton>
+          {flags && flags.send_money_via_qr_enabled ? (
+            <NavButton as={NavLink} to="/generateqr">
+              <QRCodeIcon />
+              QR Code
+            </NavButton>
+          ) : (
+            <NavButton>
+              <QRCodeIcon />
+              QR Code
+            </NavButton>
+          )}
+
           {/* <NavButton as={NavLink} to="/dashboard">
             <AccountIcon />
             Account Verification
           </NavButton> */}
           {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton onClick={() => alert('Feature coming soon')}>
+          <NavButton
+            as="a"
+            href="https://www.facebook.com/SquidPay/"
+            target="_blank"
+          >
             <PromosIcon />
             Promos
           </NavButton>
@@ -158,7 +176,7 @@ export default function Sidebar({ flags }: { flags?: {} }) {
           </NavButton>
         </Navigation>
         <div className="logout">
-          <NavButton onClick={() => setIsLogout(prev => !prev)} fullWidth>
+          <NavButton onClick={() => setIsLogout(prev => !prev)}>
             <LogoutIcon />
             Log Out
           </NavButton>

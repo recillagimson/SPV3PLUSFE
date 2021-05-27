@@ -13,6 +13,8 @@ import { Switch, Route, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { remoteConfig } from 'utils/firebase';
+import SessionTimeout from 'utils/useSession';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
@@ -148,9 +150,9 @@ export function App() {
       }, 2000);
     }
 
-    return () => {
-      clearInterval();
-    };
+    // return () => {
+    //   window.clearInterval(0);
+    // };
   }, []);
 
   React.useEffect(() => {
@@ -165,7 +167,8 @@ export function App() {
 
     // remote config
     if (isAuthenticated) {
-      setInterval(getRemoteConfigValues, 300000); // 5 mins interval
+      getRemoteConfigValues();
+      // window.setInterval(getRemoteConfigValues, 300000); // 5 mins interval
     }
   }, [isAuthenticated]);
 
@@ -194,9 +197,9 @@ export function App() {
     // const publicURL = process.env.PUBLIC_URL || '';
 
     // window.location.replace(`${publicURL}/`);
+    // dispatch(actions.getIsAuthenticated(false));
+    // dispatch(actions.getIsSessionExpired(false));
     doSignOut();
-    dispatch(actions.getIsAuthenticated(false));
-    dispatch(actions.getIsSessionExpired(false));
   };
 
   // FB Customer Chat
@@ -280,13 +283,8 @@ export function App() {
               component={UpdateProfileVerificationPage}
             />
             <Route path="/500" component={Page500} />
-            <PrivateRoute
-              path="/dashboard"
-              render={(
-                props: JSX.IntrinsicAttributes & { flags?: {} | undefined },
-              ) => <DashboardPage flags={flags} {...props} />}
-            />
-            <Route path="/sendmoney" component={SendMoney} />
+            <PrivateRoute path="/dashboard" component={DashboardPage} />
+            <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
@@ -373,6 +371,7 @@ export function App() {
         </div>
       </Dialog>
       <GlobalStyle />
+      {isAuthenticated && <SessionTimeout idle={3000000} />}
       {/*  FB Root */}
       <div id="fb-root"></div>
       <div id="fb-customer-chat" className="fb-customerchat" />

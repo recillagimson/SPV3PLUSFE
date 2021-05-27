@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DateTime } from 'luxon';
 
+import Loading from 'app/components/Loading';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 import Button from 'app/components/Elements/Button';
@@ -14,11 +15,12 @@ import Grid from 'app/components/Elements/Grid';
 import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
-import H5 from 'app/components/Elements/H5';
+// import H5 from 'app/components/Elements/H5';
 
-import PromosDeals from 'app/components/PromosDeals';
+// import PromosDeals from 'app/components/PromosDeals';
 
 import { numberCommas } from 'app/components/Helpers';
+import { TierIDs } from 'app/components/Helpers/Tiers';
 
 /** svg icons */
 import AddMoney from 'app/components/Assets/AddMoney';
@@ -28,7 +30,7 @@ import PayBills from 'app/components/Assets/PayBills';
 import BuyLoad from 'app/components/Assets/BuyLoad';
 import QRCode from 'app/components/Assets/QRCode';
 import QuickGuide from 'app/components/Assets/QuickGuide';
-import Others from 'app/components/Assets/Others';
+// import Others from 'app/components/Assets/Others';
 import NewsUpdate from 'app/components/Assets/NewsUpdate';
 
 import Balance from './Balance';
@@ -36,21 +38,23 @@ import ButtonFlexWrapper from './ButtonFlex';
 import DashboardButton from './Button';
 
 /** selectors */
+import { selectUser } from 'app/App/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
-  selectError,
+  // selectError,
   selectData,
   selectTransactionData,
 } from './slice/selectors';
-import Loading from 'app/components/Loading';
 
 export function DashboardPage() {
   const history = useHistory();
   const dispatch = useDispatch();
   const { actions } = useContainerSaga();
+  const user: any = useSelector(selectUser);
+
   const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
+  // const error: any = useSelector(selectError);
   const dashData: any = useSelector(selectData);
   const transactionData: any = useSelector(selectTransactionData);
   const flags: any = window['spFlags'];
@@ -105,6 +109,16 @@ export function DashboardPage() {
         </ListItem>
       );
     });
+  }
+
+  let isBronze = false;
+  if (
+    user &&
+    user.user_account &&
+    user.user_account.tier_id &&
+    user.user_account.tier_id !== ''
+  ) {
+    isBronze = user.user_account.tier_id === TierIDs.bronze;
   }
 
   return (
@@ -163,28 +177,20 @@ export function DashboardPage() {
       </Grid>
 
       <ButtonFlexWrapper>
-        <DashboardButton
-          onClick={() => {
-            alert('Feature coming soon');
-            // history.push('/addmoney');
-          }}
-        >
+        <DashboardButton onClick={() => history.push('/add-money')}>
           <AddMoney />
           Add Money
         </DashboardButton>
         <DashboardButton
           onClick={() => history.push('/sendmoney')}
-          disabled={flags && !flags.send_money_enabled}
+          disabled={(flags && !flags.send_money_enabled) || isBronze}
         >
           <SendMoney />
           Send Money
         </DashboardButton>
         <DashboardButton
-          onClick={() => {
-            alert('Feature coming soon');
-            // history.push('/onlinebank');
-          }}
-          disabled={flags && !flags.send_to_bank_ubp_enabled}
+          onClick={() => history.push('/send-to-bank')}
+          disabled={(flags && !flags.send_to_bank_ubp_enabled) || isBronze}
         >
           <SendToBank />
           Send To Bank
@@ -224,10 +230,10 @@ export function DashboardPage() {
         </DashboardButton>
       </ButtonFlexWrapper>
 
-      <div style={{ padding: '20px 0' }}>
+      {/* <div style={{ padding: '20px 0' }}>
         <H5>Promos and Deals</H5>
         <PromosDeals />
-      </div>
+      </div> */}
       {/* <div>
         <Box
           title="Sample Container for Box UI"
