@@ -13,8 +13,37 @@ const Wrapper = styled.section`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 60px);
+  margin-top: 30px;
+  margin-bottom: 30px;
+  /* min-height: calc(100vh - 60px); */
 
+  .product-list {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #e7eaf3;
+    padding: 15px 15px;
+    cursor: pointer;
+    border-radius: ${StyleConstants.BORDER_RADIUS};
+
+    &:hover {
+      background-color: #e7eaf3;
+    }
+
+    &:first-child {
+      border-top: 1px solid #e7eaf3;
+    }
+  }
+
+  .review-details {
+    p {
+      margin: 5px 0;
+    }
+  }
+
+  .active {
+    background-color: #e7eaf3;
+  }
+  /* 
   .grid {
     padding: 1em 1.50em;
     border: 1px solid #efefefff;
@@ -27,10 +56,9 @@ const Wrapper = styled.section`
     img {
       border: 2px solid #efefefff;
     }
-  }
+  } */
 
-
-  .pills {
+  /* .pills {
     cursor: pointer;
     white-space: nowrap;
     width: 99%;
@@ -50,10 +78,10 @@ const Wrapper = styled.section`
     font-size: 15px;
     margin-bottom: 5px;
     color: #536372ff;
-  }
+  } */
 
   /* This style will appear after clicking promo */
-  .selected-promo{
+  /* .selected-promo{
     border-left: 3px solid #E0AC3BFF;
     padding: 10px 10px 5px;
     position: relative;
@@ -69,10 +97,10 @@ const Wrapper = styled.section`
         color: #A9B1B8FF;
       }
     }
-  }
+  } */
 
   /* This style is the buttons under Regular Load Category */
-  .regular-load-btn {
+  /* .regular-load-btn {
     background-color: #f0f0f0ff;
     border-radius: 50%;
     display: flex;
@@ -96,9 +124,9 @@ const Wrapper = styled.section`
 
   .logoContainer{
     margin: 0 60px 20px;
-  }
+  } */
 
-  .dialog{
+  /* .dialog{
     .bg-lightgold{
       margin: 5px 0;
       padding: 20px 10px;
@@ -150,9 +178,9 @@ const Wrapper = styled.section`
       text-align: center;
       font-size: 11px;
     }
-  }
+  } */
 
-  }
+  /* } */
 `;
 
 export default Wrapper;

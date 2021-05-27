@@ -191,7 +191,7 @@ export function DashboardPage() {
           <PayBills />
           Pay Bills
         </DashboardButton>
-        <DashboardButton onClick={() => alert('Feature coming soon')}>
+        <DashboardButton onClick={() => history.push('/buyload')}>
           <BuyLoad />
           Buy Load
         </DashboardButton>

@@ -7,6 +7,7 @@ import { RegisterState } from 'app/pages/RegisterPage/slice/types';
 import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
 import { SendMoneyState } from 'app/pages/SendMoney/slice/types';
 import { GenerateQRState } from 'app/pages/GenerateQR/slice/types';
+import { BuyLoadState } from 'app/pages/BuyLoadPage/slice/types';
 import { ProfileState } from 'app/pages/ProfilePage/slice/types';
 import { NotificationsState } from 'app/pages/Notification/slice/types';
 import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice/types';
@@ -33,6 +34,7 @@ export interface RootState {
   updatePassword?: UpdatePasswordState;
   sendMoney?: SendMoneyState;
   generateQR?: GenerateQRState;
+  buyLoad?: BuyLoadState;
   profile?: ProfileState;
   updateProfile?: ProfileState;
   profileBronze?: ProfileBronzeState;

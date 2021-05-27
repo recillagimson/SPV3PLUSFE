@@ -42,7 +42,7 @@ import { AddMoneyViaBPI } from 'app/pages/AddMoneyViaBPIPage/Loadable';
 import { ScanQR } from 'app/pages/ScanQR/Loadable';
 // import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
-import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
+import { BuyLoad } from 'app/pages/BuyLoadPage/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import {
   TransactionHistoryPage,
