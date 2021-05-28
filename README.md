@@ -41,3 +41,12 @@ Start Coding!
 3. Transaction History
 4. Send Money (Squid to Squid)
 5. Update Profile (Bronze/Silver and Up) and Change Avatar
+6. Add Money via Dragonpay
+7. Send To Bank (Instapay and Pesonet)
+8. Generate QR Code
+9. Account Security (Change Password and Change PIN)
+10. News and Inquiry (Link to FB)
+11. Promos and Deals (Link to FB)
+12. Merchant Inquiry
+13. Help Center
+14. Contact Us
