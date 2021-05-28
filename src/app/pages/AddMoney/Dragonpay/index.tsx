@@ -127,7 +127,7 @@ export function Dragonpay() {
 
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <img
-              src="/banks/dragonpay.png"
+              src={`${process.env.PUBLIC_URL}/banks/dragonpay.png`}
               alt="dragonpay"
               width="auto"
               height="auto"

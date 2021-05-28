@@ -35,18 +35,13 @@ import NavButton from './NavButton';
 /** selectors, actions */
 // import { UserProfileState } from 'types/Default';
 // import { appActions } from 'app/App/slice';
-import {
-  selectLoggedInName,
-  selectUser,
-  selectUserTier,
-} from 'app/App/slice/selectors';
+import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
 import LogoutWrapper from './LogoutWrapper';
 
 export default function Sidebar() {
   const history = useHistory();
   const profile: any = useSelector(selectUser);
   const loginName: string = useSelector(selectLoggedInName);
-  const tier: any = useSelector(selectUserTier);
   const flags = window['spFlags'];
 
   const [isLogout, setIsLogout] = React.useState(false);
