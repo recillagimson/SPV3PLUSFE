@@ -1,7 +1,8 @@
 import React from 'react';
-import Button from 'app/components/Elements/Button';
 import styled, { keyframes } from 'styled-components/macro';
 import IframeComm from 'react-iframe-comm';
+import AddMoneyStatus from '../AddMoneyStatus';
+import Button from 'app/components/Elements/Button';
 
 const revealAnimation = keyframes`
     from { opacity: 0; }
@@ -26,7 +27,7 @@ const ModalBody = styled.div`
 export default function AddMoneyFrame(props) {
   const { urlLink, onClick, title } = props;
   const frame = React.useRef(null);
-  const [currentUrl, setCurrentUrl] = React.useState(null);
+  const [status, setStatus] = React.useState('');
   const [save, setSave] = React.useState(false);
 
   const attributes = {
@@ -36,52 +37,66 @@ export default function AddMoneyFrame(props) {
     title: title,
   };
 
-  const postMessageData = 'hello iframe';
-
-  // parent received a message from iframe
-  const onReceiveMessage = e => {
-    console.log('onReceiveMessage', e);
-  };
-
   // iframe has loaded
   const onReady = e => {
     if (canAccessIFrame(frame.current)) {
-      console.log('true');
+      setSave(true);
     }
   };
 
   React.useEffect(() => {
     if (save) {
       const currentIframe: any = frame.current;
-      setCurrentUrl(currentIframe.src);
+      const urlParams = new URLSearchParams(
+        currentIframe._frame.contentWindow.location.search,
+      );
+      const statusParam = urlParams.get('status');
+      setStatus(statusCodeHandler(statusParam));
     }
   }, [save]);
 
   React.useEffect(() => {
-    if (currentUrl) {
+    if (status) {
       setSave(false);
     }
-  }, [currentUrl]);
+  }, [status]);
 
-  const iframeHandler = e => {
-    if (!save) {
-      setSave(true);
+  // S - SUCCESS
+  // F - FAILED
+  // P - PENDING
+  // U - PENDING
+  // R - FAILED
+  // K - FAILED
+  // V - FAILED
+  // A - FAILED
+
+  const statusCodeHandler = status => {
+    switch (status) {
+      case 'P':
+      case 'U':
+        return 'pending';
+      case 'F':
+      case 'R':
+      case 'K':
+      case 'V':
+      case 'A':
+        return 'failed';
+      case 'S':
+        return 'success';
+      default:
+        return 'failed';
     }
   };
 
-  function canAccessIFrame(iframe) {
-    var html = null;
+  const canAccessIFrame = iframe => {
     try {
-      // deal with older browsers
-      console.log('iframe', iframe._frame.contentWindow);
-      var doc = iframe.contentDocument || iframe.contentWindow.document;
-      html = doc.body.innerHTML;
+      console.log('iframe', iframe._frame.contentWindow.location.search);
+      return true;
     } catch (err) {
       console.log(err);
+      return false;
     }
-
-    return html !== null;
-  }
+  };
 
   return (
     <ModalBody>
@@ -96,22 +111,26 @@ export default function AddMoneyFrame(props) {
           justifyContent: 'center',
         }}
       >
-        <IframeComm
-          ref={frame}
-          attributes={attributes}
-          postMessageData={postMessageData}
-          handleReady={onReady}
-          handleReceiveMessage={onReceiveMessage}
-        />
-        <Button
-          size="large"
-          color="primary"
-          variant="contained"
-          style={{ width: '380px', marginTop: '25px' }}
-          onClick={onClick}
-        >
-          Close
-        </Button>
+        {status ? (
+          <AddMoneyStatus success={status} onClick={onClick} />
+        ) : (
+          <>
+            <IframeComm
+              ref={frame}
+              attributes={attributes}
+              handleReady={onReady}
+            />
+            <Button
+              size="large"
+              color="primary"
+              variant="contained"
+              style={{ width: '380px', marginTop: '25px' }}
+              onClick={onClick}
+            >
+              Close
+            </Button>
+          </>
+        )}
       </div>
     </ModalBody>
   );
