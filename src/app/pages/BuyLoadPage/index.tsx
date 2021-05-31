@@ -80,6 +80,8 @@ export function BuyLoad() {
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [isActive, setIsActive] = React.useState({ value: '' });
 
+  const [category, setCategory] = React.useState('Regular');
+
   const [validateApiMsg, setValidateApiMsg] = React.useState({
     msg: '',
     error: false,
@@ -204,8 +206,7 @@ export function BuyLoad() {
             }
             if (i === 402) {
               setValidateApiMsg({
-                msg:
-                  'Transaction denied due to insuffiecient Squidpay Balance.',
+                msg: 'Transaction denied due to insufficient Squidpay Balance.',
                 error: true,
               });
             }
@@ -258,8 +259,7 @@ export function BuyLoad() {
             }
             if (i === 402) {
               setPayApiMsg({
-                msg:
-                  'Transaction denied due to insuffiecient Squidpay Balance.',
+                msg: 'Transaction denied due to insufficient Squidpay Balance.',
                 error: true,
               });
             }
@@ -369,6 +369,132 @@ export function BuyLoad() {
               </Flex>
               <H5 className="text-center">{mobile.value}</H5>
               <br />
+              {success[0].provider === 'SMART' && (
+                <div className="pills">
+                  <Scrollbars style={{ height: 50 }}>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      size="medium"
+                      variant={
+                        category === 'Regular' ? 'contained' : 'outlined'
+                      }
+                      onClick={() => setCategory('Regular')}
+                    >
+                      Regular
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      size="medium"
+                      variant={
+                        category === 'Broadband' ? 'contained' : 'outlined'
+                      }
+                      onClick={() => setCategory('Broadband')}
+                    >
+                      Broadband
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      size="medium"
+                      variant={
+                        category === 'Call & Text' ? 'contained' : 'outlined'
+                      }
+                      onClick={() => setCategory('Call & Text')}
+                    >
+                      Call & Text
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      size="medium"
+                      variant={
+                        category === 'Utility' ? 'contained' : 'outlined'
+                      }
+                      onClick={() => setCategory('Utility')}
+                    >
+                      Utility
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      size="medium"
+                      variant={category === 'PayTV' ? 'contained' : 'outlined'}
+                      onClick={() => setCategory('PayTV')}
+                    >
+                      PayTV
+                    </Button>
+                  </Scrollbars>
+                </div>
+              )}
+              {success[0].provider === 'GLOBE' && (
+                <div className="pills">
+                  <Scrollbars style={{ height: 50 }}>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      size="medium"
+                      variant={
+                        category === 'Regular' ? 'contained' : 'outlined'
+                      }
+                      onClick={() => setCategory('Regular')}
+                    >
+                      Regular
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      size="medium"
+                      variant={
+                        category === 'Broadband' ? 'contained' : 'outlined'
+                      }
+                      onClick={() => setCategory('Broadband')}
+                    >
+                      Broadband
+                    </Button>
+                  </Scrollbars>
+                </div>
+              )}
+              {success[0].provider === 'SUN' && (
+                <div className="pills">
+                  <Scrollbars style={{ height: 50 }}>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      size="medium"
+                      variant={
+                        category === 'Regular' ? 'contained' : 'outlined'
+                      }
+                      onClick={() => setCategory('Regular')}
+                    >
+                      Regular
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      size="medium"
+                      variant={
+                        category === 'Broadband' ? 'contained' : 'outlined'
+                      }
+                      onClick={() => setCategory('Broadband')}
+                    >
+                      Broadband
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      size="medium"
+                      variant={
+                        category === 'Call & Text' ? 'contained' : 'outlined'
+                      }
+                      onClick={() => setCategory('Call & Text')}
+                    >
+                      Call & Text
+                    </Button>
+                  </Scrollbars>
+                </div>
+              )}
 
               <section>
                 <Scrollbars style={{ height: 200 }}>
@@ -377,13 +503,6 @@ export function BuyLoad() {
                     .sort((a, b) => (a.denomination > b.denomination ? 1 : -1))
                     .map(promo => (
                       <div
-                        className={
-                          isActive.value === ''
-                            ? 'product-list'
-                            : isActive.value === promo.productCode
-                            ? 'active product-list'
-                            : 'product-list'
-                        }
                         onClick={() => {
                           setSelectedProduct({
                             productCode: promo.productCode,
@@ -394,8 +513,22 @@ export function BuyLoad() {
                           setIsActive({ value: promo.productCode });
                         }}
                       >
-                        <div>{promo.description}</div>
-                        <div>PHP {promo.denomination}.00</div>
+                        {category === promo.category ? (
+                          <div
+                            className={
+                              isActive.value === ''
+                                ? 'product-list'
+                                : isActive.value === promo.productCode
+                                ? 'active product-list'
+                                : 'product-list'
+                            }
+                          >
+                            <div>{promo.description}</div>
+                            <div>PHP {promo.denomination}.00</div>
+                          </div>
+                        ) : (
+                          ''
+                        )}
                       </div>
                     ))}
                 </Scrollbars>

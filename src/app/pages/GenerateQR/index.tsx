@@ -24,6 +24,7 @@ import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
 // From this folder
 import Wrapper from './Wrapper';
 
+import BSPLogo from 'logo/bsp.png';
 /** slice */
 import { useContainerSaga } from './slice';
 import { selectLoading, selectError, selectData } from './slice/selectors';
@@ -169,14 +170,14 @@ export function GenerateQR() {
                     value={success.id}
                     size="200"
                     id="QRCode"
-                    // imageSettings={{
-                    //   src: 'https://static.zpao.com/favicon.png',
-                    //   x: null,
-                    //   y: null,
-                    //   height: 24,
-                    //   width: 24,
-                    //   excavate: true,
-                    // }}
+                    imageSettings={{
+                      src: 'logo/bsp.png',
+                      x: null,
+                      y: null,
+                      height: 40,
+                      width: 40,
+                      // excavate: true,
+                    }}
                   />
                 </Flex>
                 <br />
