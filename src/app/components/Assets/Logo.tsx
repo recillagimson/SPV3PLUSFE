@@ -34,10 +34,7 @@ export default function Logo(props: LogoProps) {
       margin={props.margin || undefined}
       className="logo"
     >
-      <img
-        src={`${process.env.PUBLIC_URL || ''}/img/SPLogo.png`}
-        alt="SquidPay logo"
-      />
+      <img src="/img/SPLogo.png" alt="SquidPay logo" />
     </Wrapper>
   );
 }

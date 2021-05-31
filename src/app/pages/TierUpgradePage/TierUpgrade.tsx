@@ -12,6 +12,7 @@ import SilverProfile from 'app/components/UpdateProfile/Silver';
 import { TierIDs } from 'app/components/Helpers/Tiers';
 
 import { TierRequirements } from './Requirements';
+import PrimaryIDs from 'app/components/Tier/PrimaryID';
 
 export function TierUpgradePage() {
   const history = useHistory();
@@ -19,6 +20,7 @@ export function TierUpgradePage() {
 
   const [showRequirement, setShowRequirement] = React.useState(true);
   const [showProfile, setShowProfile] = React.useState(false);
+  const [showPrimaryID, setShowPrimaryID] = React.useState(false);
   const [tier, setTier] = React.useState({
     name: '',
     id: '',
@@ -36,7 +38,7 @@ export function TierUpgradePage() {
   const gotoNext = () => {
     setShowRequirement(prev => !prev);
     if (tier.id === TierIDs.silver) {
-      setShowProfile(prev => !prev);
+      setShowPrimaryID(prev => !prev);
     }
   };
 
@@ -75,6 +77,13 @@ export function TierUpgradePage() {
             />
           )}
         </Box>
+      )}
+
+      {showPrimaryID && (
+        <PrimaryIDs
+          tierID={tier ? tier.id : ''}
+          onSuccess={() => alert('success')}
+        />
       )}
 
       {showProfile && (

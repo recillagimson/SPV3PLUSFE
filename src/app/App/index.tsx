@@ -13,7 +13,7 @@ import { Switch, Route, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { remoteConfig } from 'utils/firebase';
-import SessionTimeout from 'utils/useSession';
+import IdleTimer from 'utils/useIdleTime';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
@@ -81,12 +81,12 @@ import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
 
 // default flags for features
 const defaultFlags = {
-  add_money_dragon_pay_enabled: false,
-  buy_load_enabled: false,
-  send_money_enabled: false,
-  send_money_via_qr_enabled: false,
-  send_to_bank_ubp_enabled: false,
-  pay_bills_enabled: false,
+  add_money_dragon_pay_enabled: true,
+  buy_load_enabled: true,
+  send_money_enabled: true,
+  send_money_via_qr_enabled: true,
+  send_to_bank_ubp_enabled: true,
+  pay_bills_enabled: true,
 };
 
 export function App() {
@@ -136,7 +136,7 @@ export function App() {
 
       history.push('/dashboard');
 
-      // if (process.env.PUBLIC_URL !== '') {
+      // if (process.env.NODE_ENV === 'production') {
       //   loadFbAsync(); // load fb
       // }
     } else if (forceUpdate) {
@@ -159,7 +159,7 @@ export function App() {
     /** enable this for FB customer chat if we are going to use this */
     // if (
     //   isAuthenticated &&
-    //   process.env.PUBLIC_URL !== '' && // @ts-ignore
+    //   process.env.NODE_ENV === 'production' && // @ts-ignore
     //   !window.fbAsyncInit
     // ) {
     //   loadFbAsync(); // load fb
@@ -194,38 +194,36 @@ export function App() {
   };
 
   const onClickSessionExpired = () => {
-    // const publicURL = process.env.PUBLIC_URL || '';
-
-    // window.location.replace(`${publicURL}/`);
+    // window.location.replace('/');
     // dispatch(actions.getIsAuthenticated(false));
     // dispatch(actions.getIsSessionExpired(false));
     doSignOut();
   };
 
-  // FB Customer Chat
-  const loadFbAsync = () => {
-    var chatbox: any = document.getElementById('fb-customer-chat');
-    chatbox.setAttribute('page_id', '100608264934915');
-    chatbox.setAttribute('attribution', 'biz_inbox');
-    // @ts-ignore
-    window.fbAsyncInit = function () {
-      // @ts-ignore
-      FB.init({
-        xfbml: true,
-        version: 'v10.0',
-      });
-    };
+  /** Enable if FB Chat will be use, do not delete */
+  // const loadFbAsync = () => {
+  //   var chatbox: any = document.getElementById('fb-customer-chat');
+  //   chatbox.setAttribute('page_id', '100608264934915');
+  //   chatbox.setAttribute('attribution', 'biz_inbox');
+  //   // @ts-ignore
+  //   window.fbAsyncInit = function () {
+  //     // @ts-ignore
+  //     FB.init({
+  //       xfbml: true,
+  //       version: 'v10.0',
+  //     });
+  //   };
 
-    (function (d, s, id) {
-      var js,
-        fjs: any = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s);
-      js.id = id;
-      js.src = '//connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
-      fjs.parentNode.insertBefore(js, fjs);
-    })(document, 'script', 'facebook-jssdk');
-  };
+  //   (function (d, s, id) {
+  //     var js,
+  //       fjs: any = d.getElementsByTagName(s)[0];
+  //     if (d.getElementById(id)) return;
+  //     js = d.createElement(s);
+  //     js.id = id;
+  //     js.src = '//connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+  //     fjs.parentNode.insertBefore(js, fjs);
+  //   })(document, 'script', 'facebook-jssdk');
+  // };
 
   return (
     <>
@@ -371,10 +369,13 @@ export function App() {
         </div>
       </Dialog>
       <GlobalStyle />
-      {isAuthenticated && <SessionTimeout idle={3000000} />}
-      {/*  FB Root */}
-      <div id="fb-root"></div>
-      <div id="fb-customer-chat" className="fb-customerchat" />
+
+      {/* Idle Timer */}
+      {isAuthenticated && <IdleTimer idle={process.env.IDLE_TIME || 3000000} />}
+
+      {/*  FB element containers */}
+      {/* <div id="fb-root"></div>
+      <div id="fb-customer-chat" className="fb-customerchat" /> */}
     </>
   );
 }

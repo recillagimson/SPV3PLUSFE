@@ -117,8 +117,7 @@ export function doSignOut() {
 
   // set a delay, in the component where this will be called, set a loading indicator to delay the logout
   setTimeout(() => {
-    const publicURL = process.env.PUBLIC_URL || '';
-    window.location.replace(`${publicURL}/`);
+    window.location.replace('/');
   }, 800);
 }
 

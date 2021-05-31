@@ -4,12 +4,9 @@
  */
 import * as React from 'react';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
-import IconButton from 'app/components/Elements/IconButton';
 
 export default function UserDetailsList({ profile, refs, isBronze }) {
   let country = '-';

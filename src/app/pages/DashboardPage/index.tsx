@@ -112,14 +112,14 @@ export function DashboardPage() {
   }
 
   let isBronze = false;
-  if (
-    user &&
-    user.user_account &&
-    user.user_account.tier_id &&
-    user.user_account.tier_id !== ''
-  ) {
-    isBronze = user.user_account.tier_id === TierIDs.bronze;
-  }
+  // if (
+  //   user &&
+  //   user.user_account &&
+  //   user.user_account.tier_id &&
+  //   user.user_account.tier_id !== ''
+  // ) {
+  //   isBronze = user.user_account.tier_id === TierIDs.bronze;
+  // }
 
   return (
     <ProtectedContent>

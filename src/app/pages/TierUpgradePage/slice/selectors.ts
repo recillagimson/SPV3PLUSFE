@@ -4,7 +4,7 @@ import { RootState } from 'types';
 import { initialState } from '.';
 
 // First select the relevant part from the state
-const selectDomain = (state: RootState) => state.changePin || initialState;
+const selectDomain = (state: RootState) => state.tierUpgrade || initialState;
 
 export const selectData = createSelector(
   [selectDomain],

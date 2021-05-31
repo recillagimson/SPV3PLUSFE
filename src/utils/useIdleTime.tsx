@@ -7,7 +7,11 @@ import { useDispatch } from 'react-redux';
 
 import { appActions } from 'app/App/slice';
 
-export default function SessionTimeout({ idle = 300000 }: { idle?: number }) {
+export default function IdleTimer({
+  idle = 300000,
+}: {
+  idle?: number | string;
+}) {
   const dispatch = useDispatch();
 
   let startTimerInterval = React.useRef<any>();
@@ -16,7 +20,7 @@ export default function SessionTimeout({ idle = 300000 }: { idle?: number }) {
     ['click', 'load', 'scroll'].forEach(event => {
       window.addEventListener(event, onResetTimer);
     });
-
+    // run our timer after resetting it
     onSetTimeout();
 
     return () => {
@@ -26,9 +30,10 @@ export default function SessionTimeout({ idle = 300000 }: { idle?: number }) {
   }, []);
 
   const onSetTimeout = () => {
+    const timer = typeof idle === 'string' ? parseInt(idle) : idle;
     startTimerInterval.current = setTimeout(() => {
       dispatch(appActions.getIsSessionExpired(true));
-    }, idle);
+    }, timer);
   };
 
   const onResetTimer = () => {

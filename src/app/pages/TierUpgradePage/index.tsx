@@ -11,7 +11,6 @@ import { Tiers } from 'app/components/Helpers/Tiers';
 /** selector */
 import { selectUserTier } from 'app/App/slice/selectors';
 import { useContainerSaga } from './slice';
-import { selectLoading, selectError, selectData } from './slice/selectors';
 
 export function TiersPage() {
   const { actions } = useContainerSaga();
@@ -19,16 +18,8 @@ export function TiersPage() {
   const history = useHistory();
   const currentTier: any = useSelector(selectUserTier);
 
-  const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
-  const idData: any = useSelector(selectData);
-
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());
-
-    return () => {
-      dispatch(actions.getFetchReset());
-    };
   }, [actions, dispatch]);
 
   return (
