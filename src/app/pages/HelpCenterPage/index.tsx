@@ -55,6 +55,7 @@ export function HelpCenterPage() {
           </ListItem>
           <ListItem flex>
             <ListItemButton
+              as="a"
               onClick={() => history.push('/terms-and-condition')}
               style={{
                 flexGrow: 1,
