@@ -75,6 +75,7 @@ import {
 import { usePrevious } from 'app/components/Helpers/Hooks';
 import { AddMoney } from 'app/pages/AddMoney';
 import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
+import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent';
 import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/indext';
 
 export function App() {
@@ -254,9 +255,15 @@ export function App() {
             />
             <PrivateRoute
               exact
+              path="/privacypolicy"
+              component={DataPrivacyConsent}
+            />
+            <PrivateRoute
+              exact
               path="/terms-and-condition"
               component={TermsAndConditionConsent}
             />
+
             {/* Not found page should be the last entry for this <Switch /> container */}
             <Route component={NotFoundPage} />
           </Switch>
