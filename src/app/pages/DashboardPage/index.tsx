@@ -203,7 +203,7 @@ export function DashboardPage() {
           Pay Bills
         </DashboardButton>
         <DashboardButton
-          onClick={() => alert('Feature coming soon')}
+          onClick={() => history.push('/buyload')}
           disabled={flags && !flags.buy_load_enabled}
         >
           <BuyLoad />

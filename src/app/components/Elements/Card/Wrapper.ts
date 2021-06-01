@@ -10,7 +10,7 @@ const sizes = {
 };
 
 const Wrapper = styled.div<Props>`
-  width: ${p => (p.size ? sizes[p.size] : '100%')};
+  width: ${p => (p.size ? sizes[p.size] : '95%')};
   border: 1px solid #fff;
   border-radius: 5px;
   display: flex;

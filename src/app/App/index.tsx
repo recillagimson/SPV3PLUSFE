@@ -39,9 +39,12 @@ import { RegisterPage } from 'app/pages/RegisterPage/Loadable';
 import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
+import { AddMoneyViaBPI } from 'app/pages/AddMoneyViaBPIPage/Loadable';
+
+import { ScanQR } from 'app/pages/ScanQR/Loadable';
 // import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
-import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
+import { BuyLoad } from 'app/pages/BuyLoadPage/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import {
   TransactionHistoryPage,
@@ -78,6 +81,8 @@ import {
 // import { usePrevious } from 'app/components/Helpers/Hooks';
 import { AddMoney } from 'app/pages/AddMoney';
 import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
+import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent';
+import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/indext';
 
 // default flags for features
 const defaultFlags = {
@@ -284,6 +289,7 @@ export function App() {
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
+            <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
             <PrivateRoute path="/profile" component={UserProfilePage} />
@@ -341,6 +347,16 @@ export function App() {
               exact
               path="/tiers/upgrade"
               component={TierUpgradePage}
+            />
+            <PrivateRoute
+              exact
+              path="/privacypolicy"
+              component={DataPrivacyConsent}
+            />
+            <PrivateRoute
+              exact
+              path="/terms-and-condition"
+              component={TermsAndConditionConsent}
             />
 
             {/* Not found page should be the last entry for this <Switch /> container */}

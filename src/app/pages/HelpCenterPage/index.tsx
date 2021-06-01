@@ -45,9 +45,7 @@ export function HelpCenterPage() {
           </ListItem>
           <ListItem flex>
             <ListItemButton
-              as="a"
-              href="https://squidpay.ph/privacypolicy"
-              target="_blank"
+              onClick={() => history.push('/privacypolicy')}
               style={{
                 flexGrow: 1,
               }}
@@ -58,8 +56,7 @@ export function HelpCenterPage() {
           <ListItem flex>
             <ListItemButton
               as="a"
-              href="https://squidpay.ph/tac"
-              target="_blank"
+              onClick={() => history.push('/terms-and-condition')}
               style={{
                 flexGrow: 1,
               }}
