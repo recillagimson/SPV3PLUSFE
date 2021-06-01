@@ -33,6 +33,7 @@ import {
   faPhone,
   faIdCard,
   faSearch,
+  faUpload,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -64,4 +65,5 @@ library.add(
   faPhone,
   faIdCard,
   faSearch,
+  faUpload,
 );

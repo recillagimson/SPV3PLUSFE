@@ -38,7 +38,10 @@ export function OnlineBank() {
               <div className="parent">
                 <div className="image">
                   <Ratio size="1x1" fit="contain" radius="8px">
-                    <img src="/banks/bpi.png" alt="Bank Logo" />
+                    <img
+                      src={`${process.env.PUBLIC_URL}/banks/bpi.png`}
+                      alt="Bank Logo"
+                    />
                   </Ratio>
                 </div>
                 <div className="details">
@@ -61,55 +64,10 @@ export function OnlineBank() {
               <div className="parent">
                 <div className="image">
                   <Ratio size="1x1" fit="contain" radius="8px">
-                    <img src="/banks/landbank.png" alt="Bank Logo" />
-                  </Ratio>
-                </div>
-                <div className="details">
-                  <p>
-                    Account No: <span> 1234 4567 8910 112</span>
-                  </p>
-                  <p>
-                    Account Name: <span>Juan Dela Cruz</span>
-                  </p>
-                  <p>
-                    Branch: <span>Ortigas</span>
-                  </p>
-                  <p>
-                    Swift Code: <span>12341</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col">
-              <div className="parent">
-                <div className="image">
-                  <Ratio size="1x1" fit="contain" radius="8px">
-                    <img src="/banks/pnb.png" alt="Bank Logo" />
-                  </Ratio>
-                </div>
-                <div className="details">
-                  <p>
-                    Account No: <span> 1234 4567 8910 112</span>
-                  </p>
-                  <p>
-                    Account Name: <span>Juan Dela Cruz</span>
-                  </p>
-                  <p>
-                    Branch: <span>Ortigas</span>
-                  </p>
-                  <p>
-                    Swift Code: <span>12341</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col">
-              <div className="parent">
-                <div className="image">
-                  <Ratio size="1x1" fit="contain" radius="8px">
-                    <img src="/banks/metrobank.png" alt="Bank Logo" />
+                    <img
+                      src={`${process.env.PUBLIC_URL}/banks/landbank.png`}
+                      alt="Bank Logo"
+                    />
                   </Ratio>
                 </div>
                 <div className="details">
@@ -134,7 +92,10 @@ export function OnlineBank() {
               <div className="parent">
                 <div className="image">
                   <Ratio size="1x1" fit="contain" radius="8px">
-                    <img src="/banks/eastwest.png" alt="Bank Logo" />
+                    <img
+                      src={`${process.env.PUBLIC_URL}/banks/pnb.png`}
+                      alt="Bank Logo"
+                    />
                   </Ratio>
                 </div>
                 <div className="details">
@@ -157,7 +118,64 @@ export function OnlineBank() {
               <div className="parent">
                 <div className="image">
                   <Ratio size="1x1" fit="contain" radius="8px">
-                    <img src="/banks/hsbc.png" alt="Bank Logo" />
+                    <img
+                      src={`${process.env.PUBLIC_URL}/banks/metrobank.png`}
+                      alt="Bank Logo"
+                    />
+                  </Ratio>
+                </div>
+                <div className="details">
+                  <p>
+                    Account No: <span> 1234 4567 8910 112</span>
+                  </p>
+                  <p>
+                    Account Name: <span>Juan Dela Cruz</span>
+                  </p>
+                  <p>
+                    Branch: <span>Ortigas</span>
+                  </p>
+                  <p>
+                    Swift Code: <span>12341</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              <div className="parent">
+                <div className="image">
+                  <Ratio size="1x1" fit="contain" radius="8px">
+                    <img
+                      src={`${process.env.PUBLIC_URL}/banks/eastwest.png`}
+                      alt="Bank Logo"
+                    />
+                  </Ratio>
+                </div>
+                <div className="details">
+                  <p>
+                    Account No: <span> 1234 4567 8910 112</span>
+                  </p>
+                  <p>
+                    Account Name: <span>Juan Dela Cruz</span>
+                  </p>
+                  <p>
+                    Branch: <span>Ortigas</span>
+                  </p>
+                  <p>
+                    Swift Code: <span>12341</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col">
+              <div className="parent">
+                <div className="image">
+                  <Ratio size="1x1" fit="contain" radius="8px">
+                    <img
+                      src={`${process.env.PUBLIC_URL}/banks/hsbc.png`}
+                      alt="Bank Logo"
+                    />
                   </Ratio>
                 </div>
                 <div className="details">

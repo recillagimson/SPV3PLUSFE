@@ -19,7 +19,7 @@ export default function AddMoneyStatus(props) {
       {success === 'success' ? (
         <>
           <img
-            src="/img/SPLogo.png"
+            src={`${process.env.PUBLIC_URL}/img/SPLogo.png`}
             alt="SquidPay"
             className="sp-logo"
             width="150px"

@@ -41,7 +41,6 @@ import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
 import { AddMoneyViaBPI } from 'app/pages/AddMoneyViaBPIPage/Loadable';
 
-import { ScanQR } from 'app/pages/ScanQR/Loadable';
 // import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoadPage/Loadable';

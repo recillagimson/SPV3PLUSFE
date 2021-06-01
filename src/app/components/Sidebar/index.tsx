@@ -82,7 +82,11 @@ export default function Sidebar() {
   return (
     <>
       <Wrapper id="sidebarNavigation">
-        <img src="/img/SPLogo.png" alt="SquidPay" className="sp-logo" />
+        <img
+          src={`${process.env.PUBLIC_URL}/img/SPLogo.png`}
+          alt="SquidPay"
+          className="sp-logo"
+        />
         <div className="user-info" role="presentation" onClick={gotoProfile}>
           <Avatar
             image={

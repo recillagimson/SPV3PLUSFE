@@ -18,6 +18,7 @@ import ListItemButton from 'app/components/List/ListItemButton';
 import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
 import Input from 'app/components/Elements/Input';
 import Button from 'app/components/Elements/Button';
+import Dropzone from 'app/components/Dropzone';
 
 /** slices */
 import { useContainerSaga } from 'app/pages/TierUpgradePage/slice';
@@ -25,6 +26,7 @@ import {
   selectLoading,
   selectData,
 } from 'app/pages/TierUpgradePage/slice/selectors';
+import ErrorMsg from '../Elements/ErrorMsg';
 
 type PrimaryIDsComponentProps = {
   tierID: string;
@@ -42,8 +44,10 @@ export default function PrimaryIDsComponent({
   const data: any = useSelector(selectData);
 
   const [id, setID] = React.useState('');
+  const [idNumber, setIDNumber] = React.useState({ value: '', error: false });
   const [showIDSelection, setShowIDSelection] = React.useState(true);
   const [showIDInput, setShowIDInput] = React.useState(false);
+  const [showUpload, setShowUpload] = React.useState(false);
 
   React.useEffect(() => {
     if (data && Object.keys(data).length > 0 && data.primary.length === 0) {
@@ -55,6 +59,19 @@ export default function PrimaryIDsComponent({
     setShowIDInput(prev => !prev);
     setShowIDSelection(prev => !prev);
     setID(typeID);
+  };
+
+  const onValidateIDInput = () => {
+    let hasError = false;
+    if (idNumber.value === '') {
+      hasError = true;
+      setIDNumber({ ...idNumber, error: true });
+    }
+
+    if (!hasError) {
+      setShowUpload(true);
+      setShowIDInput(false);
+    }
   };
 
   // populate id
@@ -91,6 +108,7 @@ export default function PrimaryIDsComponent({
           <List divider>{items}</List>
         </Box>
       )}
+
       {showIDInput && (
         <Box
           title="ID Number"
@@ -107,7 +125,12 @@ export default function PrimaryIDsComponent({
               >
                 Cancel
               </Button>
-              <Button variant="contained" color="primary" size="large">
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => onValidateIDInput()}
+              >
                 Next
               </Button>
             </>
@@ -115,8 +138,57 @@ export default function PrimaryIDsComponent({
         >
           <InputIconWrapper left>
             <FontAwesomeIcon icon="id-card" className="icon" />
-            <Input type="text" value="1111" />
+            <Input
+              type="text"
+              value={idNumber.value}
+              onChange={e =>
+                setIDNumber({ value: e.currentTarget.value, error: false })
+              }
+              error={idNumber.error}
+              placeholder="Enter ID Number"
+            />
           </InputIconWrapper>
+          {idNumber.error && (
+            <ErrorMsg formError>Please enter ID Number</ErrorMsg>
+          )}
+        </Box>
+      )}
+
+      {showUpload && (
+        <Box
+          title="ID Number"
+          titleBorder
+          withPadding
+          footerAlign="right"
+          footer={
+            <>
+              <Button
+                variant="outlined"
+                color="secondary"
+                size="large"
+                onClick={() => {
+                  setShowIDInput(true);
+                  setShowUpload(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button variant="contained" color="primary" size="large">
+                Next
+              </Button>
+            </>
+          }
+        >
+          <Dropzone onSelectFiles={files => console.log(files)} />
+          <Note>Government ID</Note>
+          <Note>
+            - Must show all corners of the ID
+            <br />
+            - Must show front and back details of the ID
+            <br />
+            - Max file size: 1MB (1024kb)
+            <br />- Formats accepted: JPG, PNG and PDF
+          </Note>
         </Box>
       )}
     </>
