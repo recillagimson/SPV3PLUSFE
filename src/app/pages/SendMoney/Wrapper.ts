@@ -2,12 +2,6 @@ import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
 const Wrapper = styled.section`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 0 50px;
-  /* min-height: calc(100vh - 60px); */
-
   small {
     display: block;
     color: #526372;
