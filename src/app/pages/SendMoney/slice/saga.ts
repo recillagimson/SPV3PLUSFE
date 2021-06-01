@@ -82,7 +82,7 @@ function* validateSendMoney() {
       yield put(actions.getValidateError(newError));
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
-      yield put(actions.getFetchReset());
+      yield put(actions.getValidateReset());
     } else {
       yield put(actions.getValidateError(err));
     }
@@ -143,7 +143,7 @@ function* getSendMoney() {
       }
     } else {
       yield put(
-        actions.getValidateError({
+        actions.getFetchError({
           error: true,
           message: 'An error has occured.',
         }),
@@ -156,12 +156,12 @@ function* getSendMoney() {
         code: 422,
         ...body,
       };
-      yield put(actions.getValidateError(newError));
+      yield put(actions.getFetchError(newError));
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getValidateReset());
     } else {
-      yield put(actions.getValidateError(err));
+      yield put(actions.getFetchError(err));
     }
   }
 }
@@ -215,7 +215,7 @@ function* generateCode() {
       }
     } else {
       yield put(
-        actions.getValidateError({
+        actions.getGenerateError({
           error: true,
           message: 'An error has occured.',
         }),
