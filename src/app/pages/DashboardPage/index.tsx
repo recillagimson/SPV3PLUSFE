@@ -164,8 +164,8 @@ export function DashboardPage() {
       <ButtonFlexWrapper>
         <DashboardButton
           onClick={() => {
-            alert('Feature coming soon');
-            // history.push('/addmoney');
+            // alert('Feature coming soon');
+            history.push('/addmoneyviabpi');
           }}
         >
           <AddMoney />
@@ -188,7 +188,7 @@ export function DashboardPage() {
           <PayBills />
           Pay Bills
         </DashboardButton>
-        <DashboardButton onClick={() => alert('Feature coming soon')}>
+        <DashboardButton onClick={() => history.push('/buyload')}>
           <BuyLoad />
           Buy Load
         </DashboardButton>

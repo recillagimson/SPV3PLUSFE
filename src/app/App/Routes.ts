@@ -12,7 +12,7 @@ import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
-import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
+import { BuyLoad } from 'app/pages/BuyLoadPage/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 
 type RouteProps = {

@@ -37,9 +37,12 @@ import { RegisterPage } from 'app/pages/RegisterPage/Loadable';
 import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
+import { AddMoneyViaBPI } from 'app/pages/AddMoneyViaBPIPage/Loadable';
+
+import { ScanQR } from 'app/pages/ScanQR/Loadable';
 // import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
-import { BuyLoad } from 'app/pages/BuyLoad/Loadable';
+import { BuyLoad } from 'app/pages/BuyLoadPage/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import {
   TransactionHistoryPage,
@@ -202,6 +205,7 @@ export function App() {
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <Route path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
+            <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
             <PrivateRoute path="/profile" component={UserProfilePage} />
