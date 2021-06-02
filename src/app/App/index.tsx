@@ -55,6 +55,7 @@ import { UpdateProfileVerificationPage } from 'app/pages/UpdateProfileVerificati
 import { ContactUsPage } from 'app/pages/ContactUsPage/Loadable';
 import { ChatSupportPage } from 'app/pages/ChatSupportPage/Loadable';
 import { MerchantInquiryPage } from 'app/pages/MerchantInquiry/Loadable';
+import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 
@@ -251,6 +252,7 @@ export function App() {
               path="/merchant-inquiry"
               component={MerchantInquiryPage}
             />
+            <PrivateRoute exact path="/pay-bills" component={PayBillsPage} />
 
             {/* Not found page should be the last entry for this <Switch /> container */}
             <Route component={NotFoundPage} />

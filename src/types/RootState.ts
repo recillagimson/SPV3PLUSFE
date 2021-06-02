@@ -14,6 +14,7 @@ import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice
 import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 import { DashboardState } from 'app/pages/DashboardPage/slice/types';
 import { TransactionHistoryState } from 'app/pages/TransactionHistoryPage/slice/types';
+import { PayBillsState } from 'app/pages/PayBillsPage/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -47,5 +48,6 @@ export interface RootState {
   changePin?: ChangePinState;
   dashboard?: DashboardState;
   sendToBank?: any;
+  payBills?: PayBillsState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

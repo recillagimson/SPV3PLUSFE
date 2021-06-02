@@ -184,7 +184,7 @@ export function DashboardPage() {
           <SendToBank />
           Send To Bank
         </DashboardButton>
-        <DashboardButton onClick={() => alert('Feature coming soon')}>
+        <DashboardButton onClick={() => history.push('/pay-bills')}>
           <PayBills />
           Pay Bills
         </DashboardButton>
