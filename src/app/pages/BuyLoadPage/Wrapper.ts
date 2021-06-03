@@ -10,13 +10,6 @@ const valueDescription = css`
 `;
 
 const Wrapper = styled.section`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  /* min-height: calc(100vh - 60px); */
-
   .product-list {
     display: flex;
     justify-content: space-between;

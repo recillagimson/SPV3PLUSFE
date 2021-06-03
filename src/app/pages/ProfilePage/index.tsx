@@ -30,6 +30,9 @@ import { selectLoading, selectError, selectData } from './slice/selectors';
 
 import UserInfo from './UserInfo';
 import UserInfoList from './UserDetails';
+import UserUpdateName from './UserUpdateName';
+import UserUpdateBirthdate from './UserUpdateBirthdate';
+
 import Button from 'app/components/Elements/Button';
 import { appActions } from 'app/App/slice';
 // import ProfileForm from './ProfileForm';
@@ -50,6 +53,8 @@ export function UserProfilePage() {
   const [showUploadAvatar, setShowUploadAvatar] = React.useState(false);
   const [selectedAvatar, setSelectedAvatar] = React.useState<any>(false);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
+
+  const [showUpdateName, setShowUpdateName] = React.useState(true);
 
   React.useEffect(
     () => () => {
@@ -204,6 +209,16 @@ export function UserProfilePage() {
         <title>Profile</title>
       </Helmet>
 
+      {showUpdateName && (
+        <>
+          <UserUpdateName
+            firstName={profile.first_name}
+            middleName={profile.middle_name}
+            lastName={profile.last_name}
+          />
+          <UserUpdateBirthdate birthDate={profile.birth_date} />
+        </>
+      )}
       {showProfile && (
         <Box title="User Profile" titleBorder>
           <div style={{ padding: '20px 25px' }}>
