@@ -1,12 +1,11 @@
-import { call, select, takeLatest, put, delay } from 'redux-saga/effects';
+import { call, select, delay } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
 import { selectClientToken } from './selectors';
-import { getRequestPassphrase, getResponsePassphrase } from './saga';
-import { appActions as actions } from '.';
+import { getResponsePassphrase } from './saga';
 
 /**
  * Collection on API calls for references
@@ -15,6 +14,7 @@ import { appActions as actions } from '.';
  *       if error is encountered, return a null or false value;
  */
 export function* getMaritalStatus() {
+  yield delay(500);
   const token = yield select(selectClientToken);
   const requestURL = `${process.env.REACT_APP_API_URL}/marital_status`;
 
@@ -52,6 +52,7 @@ export function* getMaritalStatus() {
 }
 
 export function* getNatureOfWork() {
+  yield delay(500);
   const token = yield select(selectClientToken);
   const requestURL = `${process.env.REACT_APP_API_URL}/nature_of_work`;
 
@@ -89,6 +90,7 @@ export function* getNatureOfWork() {
 }
 
 export function* getNationalities() {
+  yield delay(500);
   const token = yield select(selectClientToken);
   const requestURL = `${process.env.REACT_APP_API_URL}/nationality`;
 
@@ -126,6 +128,7 @@ export function* getNationalities() {
 }
 
 export function* getCountries() {
+  yield delay(500);
   const token = yield select(selectClientToken);
   const requestURL = `${process.env.REACT_APP_API_URL}/country`;
 
@@ -163,6 +166,7 @@ export function* getCountries() {
 }
 
 export function* getSignUpHost() {
+  yield delay(500);
   const token = yield select(selectClientToken);
   const requestURL = `${process.env.REACT_APP_API_URL}/signup_host`;
 
@@ -200,6 +204,7 @@ export function* getSignUpHost() {
 }
 
 export function* getCurrencies() {
+  yield delay(500);
   const token = yield select(selectClientToken);
   const requestURL = `${process.env.REACT_APP_API_URL}/currency`;
 
@@ -237,6 +242,7 @@ export function* getCurrencies() {
 }
 
 export function* getSourceOfFunds() {
+  yield delay(500);
   const token = yield select(selectClientToken);
   const requestURL = `${process.env.REACT_APP_API_URL}/source_of_fund`;
 

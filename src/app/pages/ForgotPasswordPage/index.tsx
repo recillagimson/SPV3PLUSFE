@@ -242,9 +242,8 @@ export function ForgotPasswordPage() {
   const gotoLogin = () => {
     setEmail({ value: '', error: false });
     setMobile({ value: '', error: false });
-    const publicURL = process.env.PUBLIC_URL || '';
 
-    window.location.replace(`${publicURL}/`);
+    window.location.replace('/');
   };
 
   return (

@@ -4,6 +4,7 @@ import { request } from 'utils/request';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
+import { appActions } from 'app/App/slice';
 import { selectUserToken } from 'app/App/slice/selectors';
 import {
   getRequestPassphrase,
@@ -79,6 +80,9 @@ function* validateSendMoney() {
         ...body,
       };
       yield put(actions.getValidateError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getValidateReset());
     } else {
       yield put(actions.getValidateError(err));
     }
@@ -139,7 +143,7 @@ function* getSendMoney() {
       }
     } else {
       yield put(
-        actions.getValidateError({
+        actions.getFetchError({
           error: true,
           message: 'An error has occured.',
         }),
@@ -153,6 +157,9 @@ function* getSendMoney() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getValidateReset());
     } else {
       yield put(actions.getFetchError(err));
     }
@@ -208,7 +215,7 @@ function* generateCode() {
       }
     } else {
       yield put(
-        actions.getValidateError({
+        actions.getGenerateError({
           error: true,
           message: 'An error has occured.',
         }),
@@ -222,6 +229,9 @@ function* generateCode() {
         ...body,
       };
       yield put(actions.getGenerateError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getGenerateReset());
     } else {
       yield put(actions.getGenerateError(err));
     }

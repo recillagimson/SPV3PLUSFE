@@ -35,7 +35,11 @@ export default function ReceiptComponent({
     <Wrapper>
       <div className="dialog-container">
         <div className="logo-container">
-          <img src="./img/SPLogo.png" alt="SquidPay" className="logo" />
+          <img
+            src={`${process.env.PUBLIC_URL}/img/SPLogo.png`}
+            alt="SquidPay"
+            className="logo"
+          />
         </div>
         <div className="bg-lightgold">
           <div style={{ padding: '0px 10px' }}>
@@ -55,7 +59,7 @@ export default function ReceiptComponent({
             </section>
             <div className="logo-container">
               <img
-                src="./img/SPLogo.png"
+                src={`${process.env.PUBLIC_URL}/img/SPLogo.png`}
                 alt="SquidPay"
                 style={{ width: '75%', margin: 'auto', display: 'block' }}
               />

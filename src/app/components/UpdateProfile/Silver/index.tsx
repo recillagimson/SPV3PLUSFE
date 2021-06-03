@@ -6,6 +6,7 @@
  *
  * @prop  {function}  onCancel        Callback when user cancelled the update
  * @prop  {function}  onSuccess       Callback when user successfully updated the profile
+ * @prop  {boolean}   isTierUpgrade   if defined, will show a different success message
  */
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -50,13 +51,16 @@ import {
   selectOTPError,
   selectOTPData,
 } from './slice/selectors';
+import { validatePhone } from 'app/components/Helpers';
 
 export default function UserProfileForm({
   onCancel,
   onSuccess,
+  isTierUpgrade,
 }: {
   onCancel: () => void;
   onSuccess: () => void;
+  isTierUpgrade?: boolean;
 }) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
@@ -203,10 +207,34 @@ export default function UserProfileForm({
     }
 
     if (refs && Object.keys(refs).length > 0) {
-      setIsLoading(false);
+      let loadRef = false;
 
-      if (profile && Object.keys(profile).length > 0) {
-        writeProfileDetails(profile);
+      if (!refs.maritalStatus || Object.keys(refs.maritalStatus).length === 0) {
+        loadRef = true;
+      }
+      if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
+        loadRef = true;
+      }
+      if (!refs.countries || Object.keys(refs.countries).length === 0) {
+        loadRef = true;
+      }
+      if (!refs.sourceOfFunds || Object.keys(refs.sourceOfFunds).length === 0) {
+        loadRef = true;
+      }
+      if (!refs.natureOfWork || Object.keys(refs.natureOfWork).length === 0) {
+        loadRef = true;
+      }
+
+      if (loadRef) {
+        dispatch(appActions.getLoadReferences());
+      }
+
+      if (!loadRef) {
+        setIsLoading(false);
+
+        if (profile && Object.keys(profile).length > 0) {
+          writeProfileDetails(profile);
+        }
       }
     }
   }, [refs, profile]);
@@ -344,11 +372,11 @@ export default function UserProfileForm({
       error: false,
     });
     setPlaceOfBirth({
-      value: prof.place_of_birth,
+      value: prof.place_of_birth || '',
       error: false,
     });
     setMothersMaidenName({
-      value: prof.mother_maidenname,
+      value: prof.mother_maidenname || '',
       error: false,
     });
     const mI = refs.maritalStatus.findIndex(
@@ -447,6 +475,21 @@ export default function UserProfileForm({
       setNationality({ ...nationality, error: true });
     }
 
+    if (placeOfBirth.value === '') {
+      hasError = true;
+      setPlaceOfBirth({ ...placeOfBirth, error: true });
+    }
+
+    if (mothersMaidenName.value === '') {
+      hasError = true;
+      setMothersMaidenName({ ...mothersMaidenName, error: true });
+    }
+
+    if (marital.value === '') {
+      hasError = true;
+      setMarital({ ...marital, error: true });
+    }
+
     if (houseNo.value === '') {
       hasError = true;
       setHouseNo({ ...city, error: true });
@@ -487,7 +530,11 @@ export default function UserProfileForm({
       }
     }
 
-    // others for nature of work and source of funds
+    // others for nature of work and source of funds, occupation, employer
+    if (natureOfWork.value === '') {
+      hasError = true;
+      setNatureOfWork({ ...natureOfWork, error: true });
+    }
     if (
       natureOfWork.value !== '' &&
       refs.natureOfWork[parseInt(natureOfWork.value)].id ===
@@ -497,6 +544,11 @@ export default function UserProfileForm({
       hasError = true;
       setNatureOfWork({ ...natureOfWork, error: true });
     }
+
+    if (sourceOfFunds.value === '') {
+      hasError = true;
+      setSourceOfFunds({ ...sourceOfFunds, error: true });
+    }
     if (
       sourceOfFunds.value !== '' &&
       refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
@@ -505,6 +557,24 @@ export default function UserProfileForm({
     ) {
       hasError = true;
       setSourceOfFunds({ ...sourceOfFunds, error: true });
+    }
+
+    if (occupation.value === '') {
+      hasError = true;
+      setOccupation({ ...occupation, error: true });
+    }
+
+    if (employer.value === '') {
+      hasError = true;
+      setEmployer({ ...employer, error: true });
+    }
+
+    if (
+      contactNo.value === '' ||
+      (contactNo.value !== '' && !validatePhone(contactNo.value))
+    ) {
+      hasError = true;
+      setContactNo({ ...contactNo, error: true });
     }
 
     if (!hasError) {
@@ -777,7 +847,7 @@ export default function UserProfileForm({
                   placeholder="Place of birth"
                 />
                 {placeOfBirth.error && (
-                  <ErrorMsg formError>Last Name is required.</ErrorMsg>
+                  <ErrorMsg formError>Place of birth is required.</ErrorMsg>
                 )}
               </div>
             </Field>
@@ -793,7 +863,7 @@ export default function UserProfileForm({
                     })
                   }
                   className={mothersMaidenName.error ? 'error' : undefined}
-                  placeholder="Place of birth"
+                  placeholder="Mothers maiden name"
                 />
                 {mothersMaidenName.error && (
                   <ErrorMsg formError>Mothers maiden name required.</ErrorMsg>
@@ -985,7 +1055,7 @@ export default function UserProfileForm({
 
             <H5>Contact Info</H5>
             <Field flex>
-              <Label>Home Phone Number</Label>
+              <Label>Mobile Number</Label>
               <div style={{ flexGrow: 1 }}>
                 <Input
                   value={contactNo.value}
@@ -993,10 +1063,14 @@ export default function UserProfileForm({
                     setContactNo({ value: e.currentTarget.value, error: false })
                   }
                   className={contactNo.error ? 'error' : undefined}
-                  placeholder="Home phone number"
+                  placeholder="Mobile number"
                 />
                 {contactNo.error && (
-                  <ErrorMsg formError>Enter your home phone number</ErrorMsg>
+                  <ErrorMsg formError>
+                    {contactNo.value === ''
+                      ? 'Enter your mobile number'
+                      : 'The mobile number is invalid. Use the format 09 + 9 digit mobile number.'}
+                  </ErrorMsg>
                 )}
               </div>
             </Field>
@@ -1106,31 +1180,41 @@ export default function UserProfileForm({
             </Field>
             <Field flex>
               <Label>Occupation</Label>
-              <Input
-                value={occupation.value}
-                onChange={e =>
-                  setOccupation({
-                    value: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={occupation.error ? 'error' : undefined}
-                placeholder="Occupation"
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={occupation.value}
+                  onChange={e =>
+                    setOccupation({
+                      value: e.currentTarget.value,
+                      error: false,
+                    })
+                  }
+                  className={occupation.error ? 'error' : undefined}
+                  placeholder="Occupation"
+                />
+                {occupation.error && (
+                  <ErrorMsg formError>Enter your occupation</ErrorMsg>
+                )}
+              </div>
             </Field>
             <Field flex>
               <Label>Employer</Label>
-              <Input
-                value={employer.value}
-                onChange={e =>
-                  setEmployer({
-                    value: e.currentTarget.value,
-                    error: false,
-                  })
-                }
-                className={employer.error ? 'error' : undefined}
-                placeholder="Employer"
-              />
+              <div style={{ flexGrow: 1 }}>
+                <Input
+                  value={employer.value}
+                  onChange={e =>
+                    setEmployer({
+                      value: e.currentTarget.value,
+                      error: false,
+                    })
+                  }
+                  className={employer.error ? 'error' : undefined}
+                  placeholder="Employer"
+                />
+                {employer.error && (
+                  <ErrorMsg formError>Enter your employer</ErrorMsg>
+                )}
+              </div>
             </Field>
 
             <Flex alignItems="center" justifyContent="flex-end">
@@ -1466,8 +1550,14 @@ export default function UserProfileForm({
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
-          <H3 margin="15px 0 10px">Successfully updated!</H3>
-          <p>You have successfully updated your account information.</p>
+          <H3 margin="15px 0 10px">
+            {isTierUpgrade ? 'Request sent!' : 'Successfully updated!'}
+          </H3>
+          <p>
+            {isTierUpgrade
+              ? 'Awesome! We have received your request to update your account. We will review and verify your request within 24 hours.'
+              : 'You have successfully updated your account information.'}
+          </p>
           <Button
             fullWidth
             onClick={onCloseSuccessDialog}
