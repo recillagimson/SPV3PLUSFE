@@ -23,6 +23,7 @@ import {
 import UserInfo from './UserInfo';
 import UserInfoList from './UserDetails';
 import ChangeAvatar from './ChangeAvatar';
+
 // import ProfileForm from './ProfileForm';
 
 export function UserProfilePage() {
@@ -143,7 +144,6 @@ export function UserProfilePage() {
       <Helmet>
         <title>Profile</title>
       </Helmet>
-
       {showProfile && (
         <Box title="User Profile" titleBorder>
           <div style={{ padding: '20px 25px' }}>

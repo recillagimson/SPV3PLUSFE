@@ -1,4 +1,6 @@
 import styled from 'styled-components/macro';
+import { media } from 'styles/media';
+import { StyleConstants } from 'styles/StyleConstants';
 
 type Props = {
   size?: 'small' | 'medium';
@@ -10,12 +12,21 @@ const sizes = {
 };
 
 const Wrapper = styled.div<Props>`
-  width: ${p => (p.size ? sizes[p.size] : '95%')};
-  border: 1px solid #fff;
-  border-radius: 5px;
+  background-color: ${StyleConstants.WHITE};
+  border-radius: ${StyleConstants.BORDER_RADIUS};
+  margin: 0 auto 15px;
   display: flex;
-  flex-direction: column;
-  background-color: white;
+  align-items: flex-start;
+  justify-content: stretch;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  position: relative;
+
+  & > * {
+    flex: 0 0 100%;
+  }
+
   .title {
     font-weight: bold;
     padding: 20px 20px;
@@ -29,6 +40,14 @@ const Wrapper = styled.div<Props>`
     border-top: 1px solid #eee;
     padding: 15px 20px;
   }
+
+  ${media.medium`
+    max-width: 930px;
+  `}
+
+  ${media.large`
+    max-width: 950px;
+  `}
 `;
 
 export default Wrapper;
