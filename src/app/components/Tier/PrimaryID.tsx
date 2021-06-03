@@ -33,7 +33,7 @@ import IDUploadFile from './IDUploadFile';
 
 type PrimaryIDsComponentProps = {
   tierID: string;
-  onSuccess: () => void;
+  onSuccess: (bool: boolean) => void;
 };
 
 export default function PrimaryIDsComponent({
@@ -63,6 +63,9 @@ export default function PrimaryIDsComponent({
     setShowIDInput(prev => !prev);
     setShowIDSelection(prev => !prev);
     setID(typeID);
+    if (typeID === '') {
+      setIDNumber({ value: '', error: false });
+    }
   };
 
   const onValidateIDInput = () => {
@@ -84,7 +87,7 @@ export default function PrimaryIDsComponent({
 
   const onSuccessUpload = () => {
     setFiles(false);
-    onSuccess();
+    onSuccess(true);
   };
 
   // populate id
@@ -118,7 +121,7 @@ export default function PrimaryIDsComponent({
                 variant="contained"
                 color="primary"
                 size="large"
-                onClick={() => onSuccess()}
+                onClick={() => onSuccess(false)}
               >
                 I don't have a Primary ID
               </Button>
@@ -204,7 +207,7 @@ export default function PrimaryIDsComponent({
               >
                 Previous
               </Button>
-              <Button variant="contained" color="primary" size="large">
+              <Button variant="contained" color="primary" size="large" disabled>
                 Next
               </Button>
             </>

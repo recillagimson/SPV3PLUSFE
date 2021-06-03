@@ -27,6 +27,7 @@ export default function SilverUpgradeComponent() {
   const [showPrimaryID, setShowPrimaryID] = React.useState(false);
   const [showSecondaryID, setShowSecondaryID] = React.useState(false);
   const [showSelfie, setShowSelfie] = React.useState(false);
+  const [fromPrimary, setFromPrimary] = React.useState(true);
   const [tier, setTier] = React.useState({
     name: '',
     id: '',
@@ -84,9 +85,14 @@ export default function SilverUpgradeComponent() {
       {showPrimaryID && (
         <PrimaryIDs
           tierID={tier ? tier.id : ''}
-          onSuccess={() => {
+          onSuccess={bool => {
             setShowPrimaryID(false);
-            setShowSecondaryID(true);
+            setFromPrimary(true);
+            if (bool) {
+              setShowSelfie(true);
+            } else {
+              setShowSecondaryID(true);
+            }
           }}
         />
       )}
@@ -97,6 +103,7 @@ export default function SilverUpgradeComponent() {
           onSuccess={() => {
             setShowSecondaryID(false);
             setShowSelfie(true);
+            setFromPrimary(false);
           }}
           onBack={() => {
             setShowSecondaryID(false);
@@ -114,7 +121,12 @@ export default function SilverUpgradeComponent() {
           }}
           onBack={() => {
             setShowSelfie(false);
-            setShowRequirement(true);
+            if (fromPrimary) {
+              setShowPrimaryID(true);
+            }
+            if (!fromPrimary) {
+              setShowSecondaryID(true);
+            }
           }}
         />
       )}
@@ -122,7 +134,11 @@ export default function SilverUpgradeComponent() {
       {showProfile && (
         <SilverProfile
           onSuccess={() => history.push('/tiers')}
-          onCancel={gotoNext}
+          onCancel={() => {
+            setShowProfile(false);
+            setShowRequirement(true);
+          }}
+          isTierUpgrade
         />
       )}
     </>

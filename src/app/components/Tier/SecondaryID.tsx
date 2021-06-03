@@ -85,6 +85,7 @@ export default function SecondaryIDsComponent({
 
     if (typeID === '') {
       setID([]);
+      setIDNumber({ value: '', error: false });
     }
   };
 
@@ -267,7 +268,7 @@ export default function SecondaryIDsComponent({
               >
                 Previous
               </Button>
-              <Button variant="contained" color="primary" size="large">
+              <Button variant="contained" color="primary" size="large" disabled>
                 Next
               </Button>
             </>

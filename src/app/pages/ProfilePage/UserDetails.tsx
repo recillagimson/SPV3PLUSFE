@@ -7,8 +7,18 @@ import * as React from 'react';
 import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
+import UserUpdateMobile from './UserUpdateMobile';
+import UserUpdateEmail from './UserUpdateEmail';
+import UserUpdateBirthdate from './UserUpdateBirthdate';
+import UserUpdateName from './UserUpdateName';
 
 export default function UserDetailsList({ profile, refs, isBronze }) {
+  const [showList, setShowList] = React.useState(true);
+  const [showName, setShowName] = React.useState(false);
+  const [showBirthday, setShowBirthday] = React.useState(false);
+  const [showMobile, setShowMobile] = React.useState(false);
+  const [showEmail, setShowEmail] = React.useState(false);
+
   let country = '-';
   let nationality = '-';
   let marital = '-';
@@ -70,189 +80,247 @@ export default function UserDetailsList({ profile, refs, isBronze }) {
   }
 
   return (
-    <List divider>
-      {/* <ListItem flex>
-        <ListItemText
-          label="Mobile Number"
-          primary="0917xxxx"
-          style={{
-            flexGrow: 1,
-          }}
-        />
-        <IconButton onClick={() => alert('clicked')}>
-          <FontAwesomeIcon icon="chevron-right" />
-        </IconButton>
-      </ListItem> */}
-      <ListItem flex>
-        <ListItemText
-          label="Nationality"
-          primary={profile ? refs.nationalities[nationality].description : '-'}
-          style={{
-            flexGrow: 1,
-          }}
-        />
-      </ListItem>
-      <ListItem flex>
-        <ListItemText
-          label="Date of Birth"
-          primary={profile ? bdate : '-'}
-          style={{
-            flexGrow: 1,
-          }}
-        />
-      </ListItem>
-
-      {!isBronze && (
-        <>
+    <>
+      {showList && (
+        <List divider>
           <ListItem flex>
             <ListItemText
-              label="Place of Birth"
-              primary={profile.place_of_birth}
+              role="presentation"
+              onClick={() => {
+                setShowList(false);
+                setShowMobile(true);
+              }}
+              label="Mobile Number"
+              primary={profile.mobile_number || '-'}
               style={{
                 flexGrow: 1,
               }}
+              icon
             />
           </ListItem>
           <ListItem flex>
             <ListItemText
-              label="Mothers Maiden Name"
-              primary={profile.mother_maidenname}
+              role="presentation"
+              onClick={() => {
+                setShowList(false);
+                setShowEmail(true);
+              }}
+              label="Email"
+              primary={profile.email || ''}
               style={{
                 flexGrow: 1,
               }}
+              icon
             />
           </ListItem>
           <ListItem flex>
             <ListItemText
-              label="Marital Status"
-              primary={refs.maritalStatus[parseInt(marital)].description}
-              style={{
-                flexGrow: 1,
+              role="presentation"
+              onClick={() => {
+                setShowList(false);
+                setShowName(true);
               }}
-            />
-          </ListItem>
-        </>
-      )}
-      {showGuardianFields && (
-        <>
-          <ListItem flex>
-            <ListItemText
-              label="Guardian's Name"
-              primary={profile && profile.guardian_name}
-              style={{
-                flexGrow: 1,
-              }}
-            />
-          </ListItem>
-          <ListItem flex>
-            <ListItemText
-              label="Guardian's Mobile Number"
-              primary={profile && profile.guardian_mobile_number}
-              style={{
-                flexGrow: 1,
-              }}
-            />
-          </ListItem>
-          <ListItem flex>
-            <ListItemText
-              label="Parent/Guardian Consent"
+              label="Name"
               primary={
-                profile && Boolean(profile.is_accept_parental_consent)
-                  ? 'Yes'
-                  : 'No'
+                `${profile.first_name} ${profile.middle_name} ${profile.last_name}` ||
+                ''
+              }
+              style={{
+                flexGrow: 1,
+              }}
+              icon
+            />
+          </ListItem>
+          <ListItem flex>
+            <ListItemText
+              role="presentation"
+              onClick={() => {
+                setShowList(false);
+                setShowBirthday(true);
+              }}
+              label="Date of Birth"
+              primary={profile ? bdate : '-'}
+              style={{
+                flexGrow: 1,
+              }}
+              icon
+            />
+          </ListItem>
+          <ListItem flex>
+            <ListItemText
+              label="Nationality"
+              primary={
+                profile ? refs.nationalities[nationality].description : '-'
               }
               style={{
                 flexGrow: 1,
               }}
             />
           </ListItem>
-        </>
+
+          {!isBronze && (
+            <>
+              <ListItem flex>
+                <ListItemText
+                  label="Place of Birth"
+                  primary={profile.place_of_birth}
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+              <ListItem flex>
+                <ListItemText
+                  label="Mothers Maiden Name"
+                  primary={profile.mother_maidenname}
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+              <ListItem flex>
+                <ListItemText
+                  label="Marital Status"
+                  primary={refs.maritalStatus[parseInt(marital)].description}
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+            </>
+          )}
+          {showGuardianFields && (
+            <>
+              <ListItem flex>
+                <ListItemText
+                  label="Guardian's Name"
+                  primary={profile && profile.guardian_name}
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+              <ListItem flex>
+                <ListItemText
+                  label="Guardian's Mobile Number"
+                  primary={profile && profile.guardian_mobile_number}
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+              <ListItem flex>
+                <ListItemText
+                  label="Parent/Guardian Consent"
+                  primary={
+                    profile && Boolean(profile.is_accept_parental_consent)
+                      ? 'Yes'
+                      : 'No'
+                  }
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+            </>
+          )}
+          <ListItem flex>
+            <ListItemText
+              label="Country"
+              primary={profile ? refs.countries[country].description : '-'}
+              style={{
+                flexGrow: 1,
+              }}
+            />
+          </ListItem>
+          <ListItem flex>
+            <ListItemText
+              label="Address"
+              primary={profile ? `${profile.house_no_street}` : '-'}
+              style={{
+                flexGrow: 1,
+              }}
+            />
+          </ListItem>
+          <ListItem flex>
+            <ListItemText
+              label="Province / State"
+              primary={profile ? profile.province_state : '-'}
+              style={{
+                flexGrow: 1,
+              }}
+            />
+          </ListItem>
+          <ListItem flex>
+            <ListItemText
+              label="City"
+              primary={profile ? profile.city : '-'}
+              style={{
+                flexGrow: 1,
+              }}
+            />
+          </ListItem>
+          <ListItem flex>
+            <ListItemText
+              label="Postal Code"
+              primary={profile ? profile.postal_code : '-'}
+              style={{
+                flexGrow: 1,
+              }}
+            />
+          </ListItem>
+          {!isBronze && (
+            <>
+              <ListItem flex>
+                <ListItemText
+                  label="Nature of Work"
+                  primary={profile ? natureOfWork : '-'}
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+              <ListItem flex>
+                <ListItemText
+                  label="Source of Funds"
+                  primary={profile ? sourceOfFunds : '-'}
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+              <ListItem flex>
+                <ListItemText
+                  label="Occupation"
+                  primary={profile ? profile.occupation : '-'}
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+              <ListItem flex>
+                <ListItemText
+                  label="Employer"
+                  primary={profile ? profile.employer : '-'}
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+            </>
+          )}
+        </List>
       )}
-      <ListItem flex>
-        <ListItemText
-          label="Country"
-          primary={profile ? refs.countries[country].description : '-'}
-          style={{
-            flexGrow: 1,
-          }}
+      {showMobile && <UserUpdateMobile mobile={profile.mobile_number || ''} />}
+      {showEmail && <UserUpdateEmail email={profile.email || ''} />}
+      {showName && (
+        <UserUpdateName
+          firstName={profile.first_name || ''}
+          middleName={profile.middle_name || ''}
+          lastName={profile.last_name || ''}
         />
-      </ListItem>
-      <ListItem flex>
-        <ListItemText
-          label="Address"
-          primary={profile ? `${profile.house_no_street}` : '-'}
-          style={{
-            flexGrow: 1,
-          }}
-        />
-      </ListItem>
-      <ListItem flex>
-        <ListItemText
-          label="Province / State"
-          primary={profile ? profile.province_state : '-'}
-          style={{
-            flexGrow: 1,
-          }}
-        />
-      </ListItem>
-      <ListItem flex>
-        <ListItemText
-          label="City"
-          primary={profile ? profile.city : '-'}
-          style={{
-            flexGrow: 1,
-          }}
-        />
-      </ListItem>
-      <ListItem flex>
-        <ListItemText
-          label="Postal Code"
-          primary={profile ? profile.postal_code : '-'}
-          style={{
-            flexGrow: 1,
-          }}
-        />
-      </ListItem>
-      {!isBronze && (
-        <>
-          <ListItem flex>
-            <ListItemText
-              label="Nature of Work"
-              primary={profile ? natureOfWork : '-'}
-              style={{
-                flexGrow: 1,
-              }}
-            />
-          </ListItem>
-          <ListItem flex>
-            <ListItemText
-              label="Source of Funds"
-              primary={profile ? sourceOfFunds : '-'}
-              style={{
-                flexGrow: 1,
-              }}
-            />
-          </ListItem>
-          <ListItem flex>
-            <ListItemText
-              label="Occupation"
-              primary={profile ? profile.occupation : '-'}
-              style={{
-                flexGrow: 1,
-              }}
-            />
-          </ListItem>
-          <ListItem flex>
-            <ListItemText
-              label="Employer"
-              primary={profile ? profile.employer : '-'}
-              style={{
-                flexGrow: 1,
-              }}
-            />
-          </ListItem>
-        </>
       )}
-    </List>
+      {showBirthday && <UserUpdateBirthdate birthDate={profile.birth_date} />}
+    </>
   );
 }

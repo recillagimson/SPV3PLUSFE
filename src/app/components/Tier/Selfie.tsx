@@ -58,7 +58,7 @@ export default function SelfieComponent({
             >
               Previous
             </Button>
-            <Button variant="contained" color="primary" size="large">
+            <Button variant="contained" color="primary" size="large" disabled>
               Next
             </Button>
           </>

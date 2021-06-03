@@ -136,7 +136,7 @@ export function App() {
         dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
         dispatch(dashboardAction.getFetchLoading());
-      }, 1500);
+      }, 2000);
 
       history.push('/dashboard');
 
@@ -151,7 +151,7 @@ export function App() {
 
       setTimeout(() => {
         dispatch(actions.getLoadReferences());
-      }, 1500);
+      }, 2000);
     }
   }, []);
 
