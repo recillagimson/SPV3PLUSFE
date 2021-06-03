@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useLocation, useHistory } from 'react-router-dom';
 
-import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 import H5 from 'app/components/Elements/H5';
 import TierRequirementList from 'app/components/Tier/TierRequirementList';
@@ -20,7 +18,7 @@ import Selfie from 'app/components/Tier/Selfie';
  * Silver Upgrade Page
  * Will walk to all the process of upgrade to silver
  */
-export default function SilverUpgradePage() {
+export default function SilverUpgradeComponent() {
   const history = useHistory();
   const location: any = useLocation();
 
@@ -56,11 +54,7 @@ export default function SilverUpgradePage() {
   }
 
   return (
-    <ProtectedContent>
-      <Helmet>
-        <title>Upgrade [Tier]</title>
-      </Helmet>
-
+    <>
       {showRequirement && (
         <Box
           title={tier.name}
@@ -131,6 +125,6 @@ export default function SilverUpgradePage() {
           onCancel={gotoNext}
         />
       )}
-    </ProtectedContent>
+    </>
   );
 }

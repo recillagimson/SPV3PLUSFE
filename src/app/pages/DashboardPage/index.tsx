@@ -126,7 +126,7 @@ export function DashboardPage() {
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
-      {loading && <Loading position="fixed" />}
+      {loading && <Loading position="absolute" />}
 
       <Grid columns="35% 1fr" gap="30px">
         <Box

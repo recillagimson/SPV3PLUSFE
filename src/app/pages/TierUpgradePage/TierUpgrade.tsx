@@ -8,6 +8,8 @@ import { TierIDs } from 'app/components/Helpers/Tiers';
 
 import { TierRequirements } from './Requirements';
 import SilverUpgrade from './SilverUpgrade';
+import GoldUpgrade from './GoldUpgrade';
+import PlatinumUpgrade from './PlatinumUpgrade';
 
 export function TierUpgradePage() {
   const location: any = useLocation();
@@ -26,11 +28,6 @@ export function TierUpgradePage() {
     }
   }, [location]);
 
-  let idx = -1;
-  if (tier && tier.id !== '') {
-    idx = TierRequirements.findIndex(j => j.id === tier.id);
-  }
-
   return (
     <ProtectedContent>
       <Helmet>
@@ -38,6 +35,10 @@ export function TierUpgradePage() {
       </Helmet>
       {tier && tier.id !== '' && tier.id === TierIDs.silver && (
         <SilverUpgrade />
+      )}
+      {tier && tier.id !== '' && tier.id === TierIDs.gold && <GoldUpgrade />}
+      {tier && tier.id !== '' && tier.id === TierIDs.platinum && (
+        <PlatinumUpgrade />
       )}
     </ProtectedContent>
   );
