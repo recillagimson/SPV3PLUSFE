@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useLocation, useHistory } from 'react-router-dom';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
@@ -11,15 +12,23 @@ import SilverProfile from 'app/components/UpdateProfile/Silver';
 import { TierIDs } from 'app/components/Helpers/Tiers';
 
 import { TierRequirements } from './Requirements';
+import PrimaryIDs from 'app/components/Tier/PrimaryID';
+import SecondaryIDs from 'app/components/Tier/SecondaryID';
+import Selfie from 'app/components/Tier/Selfie';
 
 /**
- * Silver Upgrade Component
+ * Silver Upgrade Page
+ * Will walk to all the process of upgrade to silver
  */
-export function SilverUpgradeComponent() {
+export default function SilverUpgradePage() {
+  const history = useHistory();
   const location: any = useLocation();
 
   const [showRequirement, setShowRequirement] = React.useState(true);
   const [showProfile, setShowProfile] = React.useState(false);
+  const [showPrimaryID, setShowPrimaryID] = React.useState(false);
+  const [showSecondaryID, setShowSecondaryID] = React.useState(false);
+  const [showSelfie, setShowSelfie] = React.useState(false);
   const [tier, setTier] = React.useState({
     name: '',
     id: '',
@@ -37,7 +46,7 @@ export function SilverUpgradeComponent() {
   const gotoNext = () => {
     setShowRequirement(prev => !prev);
     if (tier.id === TierIDs.silver) {
-      setShowProfile(prev => !prev);
+      setShowPrimaryID(prev => !prev);
     }
   };
 
@@ -48,6 +57,10 @@ export function SilverUpgradeComponent() {
 
   return (
     <ProtectedContent>
+      <Helmet>
+        <title>Upgrade [Tier]</title>
+      </Helmet>
+
       {showRequirement && (
         <Box
           title={tier.name}
@@ -74,8 +87,49 @@ export function SilverUpgradeComponent() {
         </Box>
       )}
 
+      {showPrimaryID && (
+        <PrimaryIDs
+          tierID={tier ? tier.id : ''}
+          onSuccess={() => {
+            setShowPrimaryID(false);
+            setShowSecondaryID(true);
+          }}
+        />
+      )}
+
+      {showSecondaryID && (
+        <SecondaryIDs
+          tierID={tier ? tier.id : ''}
+          onSuccess={() => {
+            setShowSecondaryID(false);
+            setShowSelfie(true);
+          }}
+          onBack={() => {
+            setShowSecondaryID(false);
+            setShowRequirement(true);
+          }}
+        />
+      )}
+
+      {showSelfie && (
+        <Selfie
+          tierID={tier ? tier.id : ''}
+          onSuccess={() => {
+            setShowSelfie(false);
+            setShowProfile(true);
+          }}
+          onBack={() => {
+            setShowSelfie(false);
+            setShowRequirement(true);
+          }}
+        />
+      )}
+
       {showProfile && (
-        <SilverProfile onSuccess={() => alert('success')} onCancel={gotoNext} />
+        <SilverProfile
+          onSuccess={() => history.push('/tiers')}
+          onCancel={gotoNext}
+        />
       )}
     </ProtectedContent>
   );

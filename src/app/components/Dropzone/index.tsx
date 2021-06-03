@@ -22,7 +22,10 @@ export default function Dropzone({ onSelectFiles }: DropzoneProps) {
   const [showLoading, setShowLoading] = React.useState(false);
   const fileRef = React.useRef<any>(null);
 
-  const onDropFiles = e => {
+  const onDropFiles = (e: {
+    preventDefault: () => void;
+    dataTransfer: { files: any };
+  }) => {
     if (e && e.preventDefault) e.preventDefault();
 
     setShowLoading(true);
@@ -34,7 +37,7 @@ export default function Dropzone({ onSelectFiles }: DropzoneProps) {
     }, 1000);
   };
 
-  const selectFiles = e => {
+  const selectFiles = (e: { preventDefault: () => void }) => {
     if (e && e.preventDefault) e.preventDefault();
 
     if (fileRef && fileRef.current.files.length) {
@@ -48,11 +51,11 @@ export default function Dropzone({ onSelectFiles }: DropzoneProps) {
     }
   };
 
-  const onDragPreventDefault = e => {
+  const onDragPreventDefault = (e: { preventDefault: () => void }) => {
     if (e && e.preventDefault) e.preventDefault();
   };
 
-  const onClickToBrowse = e => {
+  const onClickToBrowse = (e: { preventDefault: () => void }) => {
     if (e && e.preventDefault) e.preventDefault();
     if (fileRef) {
       fileRef?.current.click();

@@ -1,7 +1,8 @@
 /**
- * This component will display an Primary ID list and Upload component
+ * This component will display an Secondary ID list and Upload component
  * @prop {string}   tierID        tierID
  * @prop {function} onSuccess     callback when user successfully uploaded an id
+ * @prop {function} onBack        callback when user click the back button in id selection
  */
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,6 +23,8 @@ import Dropzone from 'app/components/Dropzone';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 // import IDUploadList from 'app/components/Elements/IDUploadList';
 
+import { deleteCookie, setCookie } from 'app/components/Helpers';
+
 /** slices */
 import { useContainerSaga } from 'app/pages/TierUpgradePage/slice';
 import {
@@ -31,22 +34,25 @@ import {
 
 import IDUploadFile from './IDUploadFile';
 
-type PrimaryIDsComponentProps = {
+type SecondaryIDsComponentProps = {
   tierID: string;
   onSuccess: () => void;
+  onBack: () => void;
 };
 
-export default function PrimaryIDsComponent({
+export default function SecondaryIDsComponent({
   onSuccess,
   tierID,
-}: PrimaryIDsComponentProps) {
+  onBack,
+}: SecondaryIDsComponentProps) {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
 
   const loading = useSelector(selectLoading);
   const data: any = useSelector(selectData);
 
-  const [id, setID] = React.useState('');
+  const [idCount, setIDCount] = React.useState(0); // will record if user has uploaded two types of id
+  const [id, setID] = React.useState<{ id: string; current: boolean }[]>([]);
   const [idNumber, setIDNumber] = React.useState({ value: '', error: false });
   const [showIDSelection, setShowIDSelection] = React.useState(true);
   const [showIDInput, setShowIDInput] = React.useState(false);
@@ -54,7 +60,7 @@ export default function PrimaryIDsComponent({
   const [files, setFiles] = React.useState<any>(false);
 
   React.useEffect(() => {
-    if (data && Object.keys(data).length > 0 && data.primary.length === 0) {
+    if (data && Object.keys(data).length > 0 && data.secondary.length === 0) {
       dispatch(actions.getFetchLoading());
     }
   }, [actions, data, dispatch]);
@@ -62,7 +68,24 @@ export default function PrimaryIDsComponent({
   const toggleShowInput = (typeID: string) => {
     setShowIDInput(prev => !prev);
     setShowIDSelection(prev => !prev);
-    setID(typeID);
+    if (typeID !== '') {
+      if (id.length === 0) {
+        setID([{ id: typeID, current: true }]);
+        setIDCount(idCount + 1);
+      }
+
+      if (id.length === 1) {
+        const newIDs = [...id];
+        newIDs[0].current = false;
+        newIDs.push({ id: typeID, current: true });
+        setID(newIDs);
+        setIDCount(idCount + 1);
+      }
+    }
+
+    if (typeID === '') {
+      setID([]);
+    }
   };
 
   const onValidateIDInput = () => {
@@ -84,19 +107,56 @@ export default function PrimaryIDsComponent({
 
   const onSuccessUpload = () => {
     setFiles(false);
-    onSuccess();
+
+    if (idCount === 0 && id.length < 2) {
+      setCookie('spv_sec_count', idCount.toString());
+      setShowUpload(false);
+      setShowIDSelection(true);
+      setIDNumber({ value: '', error: false });
+    }
+    if (idCount === 1 && id.length < 2) {
+      setCookie('spv_sec_count', idCount.toString());
+      setShowUpload(false);
+      setShowIDSelection(true);
+      setIDNumber({ value: '', error: false });
+    }
+    if (id.length === 2) {
+      onSuccess();
+      deleteCookie('spv_sec_count');
+      setIDCount(0);
+    }
   };
+
+  const onGoBack = () => {
+    onBack();
+    setIDCount(0);
+    setID([]);
+    setIDNumber({ value: '', error: false });
+    setShowIDSelection(true);
+    setShowIDInput(false);
+    setShowUpload(false);
+  };
+
+  // currentID and idType
+  let idType = '';
+  const currentID: any = id.find(j => j.current);
+  if (currentID) {
+    idType = currentID.id;
+  }
 
   // populate id
   let items: React.ReactChild | undefined;
-  if (data && Object.keys(data).length > 0 && data.primary.length > 0) {
-    items = data.primary.map((p: any) => (
+  if (data && Object.keys(data).length > 0 && data.secondary.length > 0) {
+    items = data.secondary.map((p: any) => (
       <ListItem flex key={p.id}>
         <ListItemButton
           onClick={() => toggleShowInput(p.id)}
           style={{
             flexGrow: 1,
           }}
+          className={
+            id.findIndex(j => j.id === p.id) !== -1 ? 'active' : undefined
+          }
         >
           {p.type} <FontAwesomeIcon icon="chevron-right" />
         </ListItemButton>
@@ -107,7 +167,27 @@ export default function PrimaryIDsComponent({
   return (
     <>
       {showIDSelection && (
-        <Box title="Choose a Primary ID" titleBorder withPadding>
+        <Box
+          title="Choose a Secondary ID"
+          titleBorder
+          withPadding
+          footerAlign="right"
+          footer={
+            <>
+              <Button
+                variant="outlined"
+                color="secondary"
+                size="large"
+                onClick={onGoBack}
+              >
+                Back
+              </Button>
+              <Button variant="contained" color="primary" size="large">
+                Next
+              </Button>
+            </>
+          }
+        >
           <Note>
             Verify your account now to unlock more features and services! All
             you have to do is to submit a valid ID and either a proof of billing
@@ -115,7 +195,7 @@ export default function PrimaryIDsComponent({
           </Note>
           <H5 margin="10px 0 20px">
             <FontAwesomeIcon icon="id-card" />
-            Primary ID
+            Recommended ID
           </H5>
           {loading && <Loading />}
           <List divider>{items}</List>
@@ -198,9 +278,8 @@ export default function PrimaryIDsComponent({
             <IDUploadFile
               files={files}
               idNumber={idNumber.value}
-              idType={id}
+              idType={idType}
               onSuccess={onSuccessUpload}
-              isPrimary
             />
           )}
 

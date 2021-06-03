@@ -26,7 +26,7 @@ const Wrapper = styled.div<DialogWrapperProps>`
   width: 100%;
   height: 100%;
   background-color: ${StyleConstants.BLACK_TRANSPARENT_BG};
-  z-index: 1000;
+  z-index: 3000;
   display: flex;
   align-items: center;
   justify-content: center;

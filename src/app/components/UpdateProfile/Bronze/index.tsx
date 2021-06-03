@@ -172,10 +172,25 @@ export default function UserProfileForm({
     }
 
     if (refs && Object.keys(refs).length > 0) {
-      setIsLoading(false);
+      let loadRef = false;
 
-      if (profile && Object.keys(profile).length > 0) {
-        writeProfileDetails(profile);
+      if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
+        loadRef = true;
+      }
+      if (!refs.countries || Object.keys(refs.countries).length === 0) {
+        loadRef = true;
+      }
+
+      if (loadRef) {
+        dispatch(appActions.getLoadReferences());
+      }
+
+      if (!loadRef) {
+        setIsLoading(false);
+
+        if (profile && Object.keys(profile).length > 0) {
+          writeProfileDetails(profile);
+        }
       }
     }
   }, [refs, profile]);

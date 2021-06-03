@@ -106,7 +106,9 @@ class ErrorBoundary extends React.Component<Props, State> {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => window.location.replace('/')}
+              onClick={() =>
+                window.location.replace(`${process.env.PUBLIC_URL}/`)
+              }
               fullWidth
               size="large"
             >

@@ -15,9 +15,9 @@ import Grid from 'app/components/Elements/Grid';
 import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
-// import H5 from 'app/components/Elements/H5';
+import H5 from 'app/components/Elements/H5';
 
-// import PromosDeals from 'app/components/PromosDeals';
+import PromosDeals from 'app/components/PromosDeals';
 
 import { numberCommas } from 'app/components/Helpers';
 import { TierIDs } from 'app/components/Helpers/Tiers';
@@ -230,10 +230,10 @@ export function DashboardPage() {
         </DashboardButton>
       </ButtonFlexWrapper>
 
-      {/* <div style={{ padding: '20px 0' }}>
+      <div style={{ padding: '20px 0' }}>
         <H5>Promos and Deals</H5>
         <PromosDeals />
-      </div> */}
+      </div>
       {/* <div>
         <Box
           title="Sample Container for Box UI"

@@ -34,6 +34,7 @@ import {
   faIdCard,
   faSearch,
   faUpload,
+  faRedo,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -66,4 +67,5 @@ library.add(
   faIdCard,
   faSearch,
   faUpload,
+  faRedo,
 );

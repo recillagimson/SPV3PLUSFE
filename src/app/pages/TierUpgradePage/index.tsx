@@ -40,8 +40,8 @@ export function TiersPage() {
             history.push({
               pathname: '/tiers/upgrade',
               state: {
-                name: i.class,
-                id: i.id,
+                name: i.class, // name of selected tier
+                id: i.id, // record the ID of selected tier (silver, bronze, gold, platinum)
               },
             })
           }

@@ -46,6 +46,13 @@ export default function Sidebar() {
 
   const [isLogout, setIsLogout] = React.useState(false);
   const [fakeLoading, setFakeLoading] = React.useState(false);
+  const [avatar, setAvatar] = React.useState('');
+
+  React.useEffect(() => {
+    if (profile && profile.avatar_link && avatar === '') {
+      setAvatar(profile.avatar_link);
+    }
+  }, [avatar, profile]);
 
   const gotoProfile = () => {
     history.push('/profile');
@@ -88,14 +95,7 @@ export default function Sidebar() {
           className="sp-logo"
         />
         <div className="user-info" role="presentation" onClick={gotoProfile}>
-          <Avatar
-            image={
-              profile && profile.avatar_location
-                ? profile.avatar_location
-                : undefined
-            }
-            size="medium"
-          />
+          <Avatar image={avatar !== '' ? avatar : undefined} size="medium" />
           <div className="user-short-details">
             <p className="name">
               {typeof profile === 'object'

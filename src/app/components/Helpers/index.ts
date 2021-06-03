@@ -117,7 +117,7 @@ export function doSignOut() {
 
   // set a delay, in the component where this will be called, set a loading indicator to delay the logout
   setTimeout(() => {
-    window.location.replace('/');
+    window.location.replace(`${process.env.PUBLIC_URL}/`);
   }, 800);
 }
 
@@ -134,4 +134,16 @@ export function numberCommas(num: number | string = 0): string {
     .toFixed(2) // add a two digit
     .toString() // convert to string
     .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ','); // add commas
+}
+
+/**
+ * Convert File Size
+ */
+export function fileSize(size: number = 0) {
+  const fSize = typeof size === 'number' ? size : parseInt(size);
+  if (fSize === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(fSize) / Math.log(k));
+  return parseFloat((fSize / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }

@@ -136,7 +136,7 @@ export function App() {
         dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
         dispatch(dashboardAction.getFetchLoading());
-      }, 1000);
+      }, 1500);
 
       history.push('/dashboard');
 
@@ -151,12 +151,8 @@ export function App() {
 
       setTimeout(() => {
         dispatch(actions.getLoadReferences());
-      }, 2000);
+      }, 1500);
     }
-
-    // return () => {
-    //   window.clearInterval(0);
-    // };
   }, []);
 
   React.useEffect(() => {
