@@ -24,7 +24,10 @@ export default function UserUpdateBirthDateComponent({
   return (
     <Box title="Change Date of Birth" titleBorder>
       <div style={{ padding: '20px 25px' }}>
-        <p>For account maintenance, send us a request at support@squid.ph</p>
+        <p>
+          For account maintenance, send us a request at{' '}
+          {'support|squid.ph'.replace('|', '@')}
+        </p>
         <Field>
           <Label>Date of Birth</Label>
           <Input value={bdate} disabled />

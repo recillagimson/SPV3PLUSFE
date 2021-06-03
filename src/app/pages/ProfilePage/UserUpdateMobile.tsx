@@ -11,7 +11,7 @@ type UserInfoProps = {
 
 export default function UserUpdateMobileComponent({ mobile }: UserInfoProps) {
   return (
-    <Box title="Change Email Address" titleBorder>
+    <Box title="Change Mobile Number" titleBorder>
       <div style={{ padding: '20px 25px' }}>
         <p>
           For account maintenance, send us a request at{' '}

@@ -23,7 +23,10 @@ export default function UserUpdateNameComponent({
   return (
     <Box title="Change Name" titleBorder>
       <div style={{ padding: '20px 25px' }}>
-        <p>For account maintenance, send us a request at support@squid.ph</p>
+        <p>
+          For account maintenance, send us a request at{' '}
+          {'support|squid.ph'.replace('|', '@')}
+        </p>
         <Field>
           <Label>First Name</Label>
           <Input value={firstName} disabled />

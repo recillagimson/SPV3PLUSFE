@@ -21,8 +21,13 @@ import {
 } from 'app/App/slice/selectors';
 
 import UserInfo from './UserInfo';
-import UserInfoList from './UserDetails';
+import UserDetails from './UserDetails';
 import ChangeAvatar from './ChangeAvatar';
+
+import UserUpdateMobile from './UserUpdateMobile';
+import UserUpdateEmail from './UserUpdateEmail';
+import UserUpdateBirthdate from './UserUpdateBirthdate';
+import UserUpdateName from './UserUpdateName';
 
 // import ProfileForm from './ProfileForm';
 
@@ -36,6 +41,11 @@ export function UserProfilePage() {
   const [showUpdateProfile, setShowUpdateProfile] = React.useState(false);
   const [showUploadAvatar, setShowUploadAvatar] = React.useState(false);
   const [selectedAvatar, setSelectedAvatar] = React.useState<any>(false);
+
+  const [showName, setShowName] = React.useState(false);
+  const [showBirthday, setShowBirthday] = React.useState(false);
+  const [showMobile, setShowMobile] = React.useState(false);
+  const [showEmail, setShowEmail] = React.useState(false);
 
   React.useEffect(() => {
     if (refs && Object.keys(refs).length > 0) {
@@ -81,6 +91,24 @@ export function UserProfilePage() {
     setSelectedAvatar(false);
     setShowUploadAvatar(false);
     dispatch(appActions.getLoadUserProfile());
+  };
+
+  const onUpdateOtherFields = (
+    name: 'mobile' | 'email' | 'birthday' | 'name',
+  ) => {
+    if (name === 'mobile') {
+      setShowMobile(true);
+    }
+    if (name === 'email') {
+      setShowEmail(true);
+    }
+    if (name === 'birthday') {
+      setShowBirthday(true);
+    }
+    if (name === 'name') {
+      setShowName(true);
+    }
+    setShowProfile(false);
   };
 
   if (!profile || (refs && Object.keys(refs).length === 0)) {
@@ -157,10 +185,11 @@ export function UserProfilePage() {
               tier={`${tierName} Member`}
               onChangeAvatar={onChangeAvatar}
             />
-            <UserInfoList
+            <UserDetails
               profile={profile}
               refs={refs}
               isBronze={Boolean(tierID) && tierID === TierIDs.bronze}
+              onUpdate={onUpdateOtherFields}
             />
           </div>
         </Box>
@@ -171,6 +200,19 @@ export function UserProfilePage() {
           onSuccess={onSuccessUpload}
           selectedPhoto={selectedAvatar}
         />
+      )}
+
+      {showMobile && <UserUpdateMobile mobile={profile.mobile_number || '-'} />}
+      {showEmail && <UserUpdateEmail email={profile.email || '-'} />}
+      {showName && (
+        <UserUpdateName
+          firstName={profile.first_name || ''}
+          middleName={profile.middle_name || ''}
+          lastName={profile.last_name || ''}
+        />
+      )}
+      {showBirthday && (
+        <UserUpdateBirthdate birthDate={profile.birth_date || '-'} />
       )}
     </ProtectedContent>
   );
