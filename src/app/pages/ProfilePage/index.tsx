@@ -29,12 +29,38 @@ export function UserProfilePage() {
   const dispatch = useDispatch();
   const profile: any = useSelector(selectUser);
   const login = useSelector(selectLoggedInName);
-  const refs = useSelector(selectReferences);
+  const refs: any = useSelector(selectReferences);
 
   const [showProfile, setShowProfile] = React.useState(true);
   const [showUpdateProfile, setShowUpdateProfile] = React.useState(false);
   const [showUploadAvatar, setShowUploadAvatar] = React.useState(false);
   const [selectedAvatar, setSelectedAvatar] = React.useState<any>(false);
+
+  React.useEffect(() => {
+    if (refs && Object.keys(refs).length > 0) {
+      let loadRef = false;
+
+      if (!refs.maritalStatus || Object.keys(refs.maritalStatus).length === 0) {
+        loadRef = true;
+      }
+      if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
+        loadRef = true;
+      }
+      if (!refs.countries || Object.keys(refs.countries).length === 0) {
+        loadRef = true;
+      }
+      if (!refs.sourceOfFunds || Object.keys(refs.sourceOfFunds).length === 0) {
+        loadRef = true;
+      }
+      if (!refs.natureOfWork || Object.keys(refs.natureOfWork).length === 0) {
+        loadRef = true;
+      }
+
+      if (loadRef) {
+        dispatch(appActions.getLoadReferences());
+      }
+    }
+  }, [refs]);
 
   const onChangeAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;

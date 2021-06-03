@@ -107,7 +107,24 @@ export default function PrimaryIDsComponent({
   return (
     <>
       {showIDSelection && (
-        <Box title="Choose a Primary ID" titleBorder withPadding>
+        <Box
+          title="Choose a Primary ID"
+          titleBorder
+          withPadding
+          footerAlign="right"
+          footer={
+            items && (
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={() => onSuccess()}
+              >
+                I don't have a Primary ID
+              </Button>
+            )
+          }
+        >
           <Note>
             Verify your account now to unlock more features and services! All
             you have to do is to submit a valid ID and either a proof of billing

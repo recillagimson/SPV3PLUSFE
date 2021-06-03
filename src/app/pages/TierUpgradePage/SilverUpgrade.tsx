@@ -100,7 +100,7 @@ export default function SilverUpgradeComponent() {
           }}
           onBack={() => {
             setShowSecondaryID(false);
-            setShowRequirement(true);
+            setShowPrimaryID(true);
           }}
         />
       )}

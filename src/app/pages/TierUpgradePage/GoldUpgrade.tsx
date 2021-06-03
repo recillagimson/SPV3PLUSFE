@@ -19,7 +19,6 @@ import { selectUserToken } from 'app/App/slice/selectors';
  * Will walk to all the process of upgrade to silver
  */
 export default function GoldUpgradeComponent() {
-  const history = useHistory();
   const location: any = useLocation();
   const loggedInUser: any = useSelector(selectUserToken);
 

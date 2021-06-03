@@ -6,7 +6,6 @@ import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
 import { TierIDs } from 'app/components/Helpers/Tiers';
 
-import { TierRequirements } from './Requirements';
 import SilverUpgrade from './SilverUpgrade';
 import GoldUpgrade from './GoldUpgrade';
 import PlatinumUpgrade from './PlatinumUpgrade';
