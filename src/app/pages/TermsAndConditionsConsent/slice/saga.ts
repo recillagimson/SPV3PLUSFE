@@ -2,8 +2,7 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import { containerActions as actions } from '.';
 
 function* getTermsAndConditions() {
-  // const requestURL = 'https://squidpay.ph/tac';
-  const requestTest = 'http://192.168.88.234:5500/tac.html';
+  const requestURL = 'https://squidpay.ph/tac';
 
   const options = {
     method: 'GET',
@@ -14,7 +13,7 @@ function* getTermsAndConditions() {
   };
 
   try {
-    const apirequest = yield call(fetch, requestTest, options);
+    const apirequest = yield call(fetch, requestURL, options);
     const textResponse = yield apirequest.text();
     yield put(actions.getFetchSuccess(textResponse));
     return;
