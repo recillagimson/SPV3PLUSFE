@@ -16,6 +16,7 @@ import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 import { DashboardState } from 'app/pages/DashboardPage/slice/types';
 import { TransactionHistoryState } from 'app/pages/TransactionHistoryPage/slice/types';
 import { TierUpgradeState } from 'app/pages/TierUpgradePage/slice/types';
+import { SendToBankUBPState } from 'app/pages/SendToBankUBP/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -49,5 +50,6 @@ export interface RootState {
   dashboard?: DashboardState;
   tierUpgrade?: TierUpgradeState;
   sendToBank?: any;
+  sendToBankUBP: SendToBankUBPState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }
