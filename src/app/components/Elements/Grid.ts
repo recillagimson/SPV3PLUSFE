@@ -7,6 +7,7 @@ export type GridProps = {
   gap?: string;
   alignItems?: string;
   justifyItems?: string;
+  justifyContent?: string;
   margin?: string;
 };
 /**
@@ -16,6 +17,7 @@ export type GridProps = {
  * @prop {string} gap            Grid Gap CSS value, will be applied to grid-gap
  * @prop {string} alignItems     Grid align-items CSS value
  * @prop {string} justifyItems   Grid justify-items CSS value
+ * @prop {string} justifyContent   Grid justify-content CSS value
  */
 const Grid = styled.div<GridProps>`
   display: grid;
@@ -24,6 +26,7 @@ const Grid = styled.div<GridProps>`
   grid-gap: ${p => (p.gap ? p.gap : '0 0')};
   align-items: ${p => (p.alignItems ? p.alignItems : 'stretch')};
   justify-items: ${p => (p.justifyItems ? p.justifyItems : 'stretch')};
+  justify-content: ${p => (p.justifyContent ? p.justifyContent : 'normal')};
   margin: ${p => (p.margin ? p.margin : '0 0')};
 
   ${media.medium`
