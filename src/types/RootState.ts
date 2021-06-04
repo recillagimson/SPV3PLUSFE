@@ -14,7 +14,7 @@ import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice
 import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 import { DashboardState } from 'app/pages/DashboardPage/slice/types';
 import { TransactionHistoryState } from 'app/pages/TransactionHistoryPage/slice/types';
-
+import { TermsAndConditions } from 'app/pages/TermsAndConditionsConsent/slice/types';
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
 import { VerifyOTPState } from 'app/components/VerifyOTP/slice/types';
@@ -39,6 +39,7 @@ export interface RootState {
   profileBronze?: ProfileBronzeState;
   profileSilver?: ProfileSilverState;
   notifications?: NotificationsState;
+  termsAndConditions?: TermsAndConditions;
   addMoneyDragonpay: AddMoneyDragonpayState;
 
   helpCenter?: any;
