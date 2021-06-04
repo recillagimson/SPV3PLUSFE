@@ -2,18 +2,18 @@
 import * as React from 'react';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
-import Select from 'app/components/Elements/Select';
+// import Select from 'app/components/Elements/Select';
 import Loading from 'app/components/Loading';
 import { useSelector, useDispatch } from 'react-redux';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
   selectTermsAndConditionsData,
-  selectError,
+  // selectError,
 } from './slice/selectors';
 
 export function TermsAndConditionConsent() {
-  const [language, setLanguage] = React.useState('English');
+  // const [language, setLanguage] = React.useState('English');
   const dispatch = useDispatch();
   const { actions } = useContainerSaga();
   const loading = useSelector(selectLoading);
@@ -59,18 +59,18 @@ export function TermsAndConditionConsent() {
         title="Terms and Conditions"
         titleBorder
         withPadding
-        titleAction={
-          <Select
-            style={{ borderColor: 'transparent' }}
-            value={language}
-            onChange={e => {
-              setLanguage(e.currentTarget.value);
-            }}
-          >
-            <option value="English">English</option>
-            <option value="Filipino">Filipino</option>
-          </Select>
-        }
+        // titleAction={
+        //   <Select
+        //     style={{ borderColor: 'transparent' }}
+        //     value={language}
+        //     onChange={e => {
+        //       setLanguage(e.currentTarget.value);
+        //     }}
+        //   >
+        //     <option value="English">English</option>
+        //     <option value="Filipino">Filipino</option>
+        //   </Select>
+        // }
       >
         <div>{renderTC(parseTermsAndConditions)}</div>
       </Box>
