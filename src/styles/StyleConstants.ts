@@ -53,4 +53,5 @@ export const StyleConstants = Object.freeze({
   NEGATIVE: '#FF645E',
   POSITIVE: '#28A745',
   BOX_SHADOW: '0px 12px 15px rgba(140, 152, 164, 0.05)',
+  LIGHT_NEGATIVE: '#fdd1cf',
 });

@@ -284,6 +284,9 @@ export default function SecondaryIDsComponent({
             />
           )}
 
+          {/* <Note style={{ marginBottom: 10 }}>
+            Note: Invalid files won't be uploaded
+          </Note> */}
           <Note>Government ID</Note>
           <Note>
             - Must show all corners of the ID

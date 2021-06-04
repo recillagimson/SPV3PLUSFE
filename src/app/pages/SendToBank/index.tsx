@@ -357,7 +357,7 @@ export function SendToBank() {
                     Please select
                   </option>
                   {purposes?.map(d => (
-                    <option key={d.code} value={d.code}>
+                    <option key={d.code} value={d.description}>
                       {d.description}
                     </option>
                   ))}

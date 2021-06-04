@@ -20,6 +20,8 @@ type DropzoneProps = {
 
 export default function Dropzone({ onSelectFiles }: DropzoneProps) {
   const [showLoading, setShowLoading] = React.useState(false);
+  const [over, setOver] = React.useState(false);
+
   const fileRef = React.useRef<any>(null);
 
   const onDropFiles = (e: {
@@ -34,6 +36,7 @@ export default function Dropzone({ onSelectFiles }: DropzoneProps) {
     setTimeout(() => {
       onSelectFiles(files);
       setShowLoading(false);
+      setOver(false);
     }, 1000);
   };
 
@@ -53,6 +56,12 @@ export default function Dropzone({ onSelectFiles }: DropzoneProps) {
 
   const onDragPreventDefault = (e: { preventDefault: () => void }) => {
     if (e && e.preventDefault) e.preventDefault();
+    setOver(false);
+  };
+
+  const onDragOver = (e: { preventDefault: () => void }) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setOver(true);
   };
 
   const onClickToBrowse = (e: { preventDefault: () => void }) => {
@@ -66,8 +75,9 @@ export default function Dropzone({ onSelectFiles }: DropzoneProps) {
     <Wrapper
       onDrop={onDropFiles}
       onDragLeave={onDragPreventDefault}
-      onDragOver={onDragPreventDefault}
+      onDragOver={onDragOver}
       onDragEnter={onDragPreventDefault}
+      bg={over}
     >
       <input ref={fileRef} type="file" multiple onChange={selectFiles} />
       {showLoading && <Loading position="absolute" />}
