@@ -16,6 +16,7 @@ export const initialState: GlobalState = {
   userToken: '',
   isAuthenticated: false,
   token: '',
+  isUnauthenticated: false,
   isSessionExpired: false,
   isBlankPage: false,
   references: {},
@@ -61,6 +62,9 @@ const slice = createSlice({
     },
     getIsSessionExpired(state, action: PayloadAction<boolean>) {
       state.isSessionExpired = action.payload;
+    },
+    getIsUnauthenticated(state, action: PayloadAction<boolean>) {
+      state.isUnauthenticated = action.payload;
     },
     getIsBlankPage(state, action: PayloadAction<boolean>) {
       state.isBlankPage = action.payload;

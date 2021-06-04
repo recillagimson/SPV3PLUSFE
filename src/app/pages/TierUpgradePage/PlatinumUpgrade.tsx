@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import Box from 'app/components/Box';
 import H5 from 'app/components/Elements/H5';

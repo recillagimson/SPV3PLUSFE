@@ -27,7 +27,7 @@ const slice = createSlice({
       state.request = false;
       state.data = action.payload;
     },
-    getFetchError(state, action: PayloadAction<object>) {
+    getFetchError(state, action: PayloadAction<object | boolean>) {
       state.error = action.payload;
       state.loading = false;
     },

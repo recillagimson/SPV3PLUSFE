@@ -75,6 +75,19 @@ const Wrapper = styled.section<{ bg?: boolean }>`
         text-decoration: none;
       }
     }
+
+    .as-link {
+      padding: 0;
+      background-color: transparent;
+      border: 0;
+      cursor: pointer;
+      color: inherit;
+      text-decoration: underline;
+
+      &:hover {
+        color: #000;
+      }
+    }
   }
 
   .code {

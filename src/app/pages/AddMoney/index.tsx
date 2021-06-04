@@ -10,7 +10,7 @@ import ListItemText from 'app/components/List/ListItemText';
 export function AddMoney() {
   const history = useHistory();
   const flags = window['spFlags'];
-  console.log(flags);
+
   return (
     <ProtectedContent>
       <Box title="Web Banking" titleBorder withPadding>

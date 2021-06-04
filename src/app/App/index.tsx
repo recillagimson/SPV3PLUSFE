@@ -76,6 +76,7 @@ import {
   selectSessionExpired,
   selectIsAuthenticated,
   selectIsBlankPage,
+  setIsUnathenticated,
 } from './slice/selectors';
 // import { usePrevious } from 'app/components/Helpers/Hooks';
 import { AddMoney } from 'app/pages/AddMoney';
@@ -105,6 +106,7 @@ export function App() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isSessionExpired = useSelector(selectSessionExpired);
   const isBlankPage = useSelector(selectIsBlankPage);
+  const clientTokenExpired = useSelector(setIsUnathenticated); // use this only on users who hasn't logged in yet
 
   const [flags, setFlags] = React.useState(defaultFlags);
 
@@ -376,6 +378,26 @@ export function App() {
             color="primary"
           >
             Ok
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog show={clientTokenExpired} size="small">
+        <div className="text-center" style={{ padding: '25px' }}>
+          <CircleIndicator size="medium" color="primary">
+            <FontAwesomeIcon icon="stopwatch" />
+          </CircleIndicator>
+          <p style={{ margin: '15px 0 10px' }}>
+            <strong>Oops, Your session token has expired.</strong>
+          </p>
+          <p>Kindly refresh to the page to try again.</p>
+          <Button
+            fullWidth
+            onClick={onClickSessionExpired}
+            variant="contained"
+            color="primary"
+          >
+            Refresh
           </Button>
         </div>
       </Dialog>

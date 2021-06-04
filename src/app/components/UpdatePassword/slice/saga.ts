@@ -9,6 +9,7 @@ import { getRequestPassphrase } from 'app/App/slice/saga';
 
 import { selectRequest } from './selectors';
 import { componentActions as actions } from '.';
+import { appActions } from 'app/App/slice';
 
 /**
  * Global function for user data or other data
@@ -58,6 +59,9 @@ function* getUpdatePassword() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
+      yield put(actions.getFetchError(false));
     } else {
       yield put(actions.getFetchError(err));
     }

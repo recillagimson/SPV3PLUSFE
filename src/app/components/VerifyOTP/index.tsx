@@ -121,6 +121,19 @@ export default function VerifyOTPComponent({
           return i;
         });
       }
+      if (err.errors && !err.errors.error_code) {
+        let apiErrorMsg = '';
+        if (err.code && err.code.length > 0) {
+          apiErrorMsg += err.code.join('\n');
+        }
+        if (err.email && err.email.length > 0) {
+          apiErrorMsg += err.email.join('\n');
+        }
+        if (err.mobile_number && err.mobile_number.length > 0) {
+          apiErrorMsg += err.mobile_number.join('\n');
+        }
+        setApiError(apiErrorMsg);
+      }
     }
 
     if (!err.code && err.response && err.response.status !== 422) {

@@ -116,4 +116,10 @@ export const GlobalStyle = createGlobalStyle`
   .fw-bold{
     font-weight: bold;
   }
+
+  .iframe {
+    & body {
+      font-family: 'Museo Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+  }
 `;

@@ -41,6 +41,11 @@ export const selectIsAuthenticated = createSelector(
   subState => subState.isAuthenticated,
 );
 
+export const setIsUnathenticated = createSelector(
+  [selectDomain],
+  subState => subState.isUnauthenticated,
+);
+
 export const selectClientToken = createSelector(
   [selectDomain],
   subState => subState.token,

@@ -4,20 +4,17 @@
  */
 import * as React from 'react';
 
-import Box from 'app/components/Box';
-
-export default function PrivacyPolicy() {
+export default function TermsCondition() {
   return (
-    <Box title="Terms and Conditions" titleBorder withPadding>
-      <iframe
-        src="https://squidpay.ph/tac"
-        title="Terms and Conditions"
-        style={{
-          paddingTop: 30,
-          width: '100%',
-          height: '85vh',
-        }}
-      />
-    </Box>
+    <iframe
+      id="termsConditionFrame"
+      src="https://squidpay.ph/tac"
+      title="Terms and Conditions"
+      seamless
+      style={{
+        width: '100%',
+        height: '70vh',
+      }}
+    />
   );
 }

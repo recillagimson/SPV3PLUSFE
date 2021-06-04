@@ -80,23 +80,24 @@ export default function UpdatePasswordComponent({
         ) {
           apiError = error.errors.error_code.map(i => {
             if (i === 101 || i === 103) {
-              return `The ${
-                isEmail ? 'email' : 'mobile number'
-              } you have entered doesn't exists in our records. Please try again.`;
+              return `Account does not exists.`;
             }
             if (i === 102) {
               return `Your account is not yet verified. Please check your ${
                 isEmail ? 'email' : 'mobile number'
               } for verification process.`;
             }
-            if (i === 107) {
-              return `You cannot change your password yet at it hasn't reach it's 1 day minimum age.`;
-            }
-            if (i === 108) {
-              return `We encountered an error in processing your data. Please try again.`;
+            if (i === 105) {
+              return 'Your Account has been locked, Please contact Squidpay Support for assistance in unlocking your account.';
             }
             if (i === 106) {
               return 'Password has already been used.';
+            }
+            if (i === 107) {
+              return `Password cannot be changed for at least 1 day/s.`;
+            }
+            if (i === 108) {
+              return `We encountered an error in processing your data. Please try again.`;
             }
 
             return undefined;
