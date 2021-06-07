@@ -60,7 +60,6 @@ export function Dragonpay() {
       Object.keys(error).length !== 0 &&
       Object.values(error).length !== 0
     ) {
-      console.log(error);
       setShowModal({
         status: 'failed',
         show: true,

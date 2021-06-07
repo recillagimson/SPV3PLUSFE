@@ -174,9 +174,6 @@ export default function Sidebar() {
             Contact Us
           </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton as={NavLink} to="/send-to-bank-ubp">
-            Send to bank UBP
-          </NavButton>
         </Navigation>
         <div className="logout">
           <NavButton onClick={() => setIsLogout(prev => !prev)}>

@@ -256,7 +256,7 @@ export const DetailsWrapper = styled.div<{
 
 export const ImageLogoWrapper = styled.img`
   width: 225px !important;
-  margin-inline: -35px;
+  /* margin-inline: -35px; */
   margin-block-end: 15px;
   height: auto;
 `;

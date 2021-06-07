@@ -1,10 +1,10 @@
 import * as React from 'react';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
-import IconButton from 'app/components/Elements/IconButton';
+// import IconButton from 'app/components/Elements/IconButton';
 import NoNotification from './components/NoNotification';
 import NotificationMessage from './components/NotificationMessage';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useContainerSaga } from './slice';
 import Loading from 'app/components/Loading';
 import { selectLoading, selectNotifications } from './slice/selectors';
@@ -26,6 +26,7 @@ export function Notifications() {
     return () => {
       dispatch(actions.getFetchReset());
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
@@ -79,26 +80,26 @@ export function Notifications() {
       <Box
         title="Notifications"
         titleBorder
-        titleAction={
-          <>
-            {selectedNotif ? (
-              <IconButton>
-                <FontAwesomeIcon
-                  icon="trash"
-                  onClick={() => alert('Notification delete')}
-                />
-              </IconButton>
-            ) : (
-              <></>
-              // <IconButton>
-              //   <FontAwesomeIcon
-              //     icon="ellipsis-v"
-              //     onClick={() => alert('Notification click')}
-              //   />
-              // </IconButton>
-            )}
-          </>
-        }
+        // titleAction={
+        //   <>
+        //     {selectedNotif ? (
+        //       <IconButton>
+        //         <FontAwesomeIcon
+        //           icon="trash"
+        //           onClick={() => alert('Notification delete')}
+        //         />
+        //       </IconButton>
+        //     ) : (
+        //       <></>
+        //       <IconButton>
+        //         <FontAwesomeIcon
+        //           icon="ellipsis-v"
+        //           onClick={() => alert('Notification click')}
+        //         />
+        //       </IconButton>
+        //     )}
+        //   </>
+        // }
       >
         <div style={{ padding: '25px' }}>{renderNotif(notifications)}</div>
       </Box>

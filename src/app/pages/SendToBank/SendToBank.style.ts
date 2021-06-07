@@ -112,6 +112,7 @@ export const ContentImage = styled.img<{
 
 export const CTAWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
 `;
 
 export const SendCTA = styled.div`
@@ -121,6 +122,7 @@ export const SendCTA = styled.div`
   box-sizing: border-box;
   cursor: pointer;
   margin-right: 30px;
+  margin-bottom: 30px;
   height: 250px;
   width: 400px;
 
@@ -130,6 +132,10 @@ export const SendCTA = styled.div`
 
 export const SendCTAContent = styled.div`
   padding: 20px;
+
+  img {
+    width: 210px;
+  }
 `;
 
 export const CTAList = styled.ul`

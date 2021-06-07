@@ -20,7 +20,7 @@ import H5 from 'app/components/Elements/H5';
 import PromosDeals from 'app/components/PromosDeals';
 
 import { numberCommas } from 'app/components/Helpers';
-import { TierIDs } from 'app/components/Helpers/Tiers';
+// import { TierIDs } from 'app/components/Helpers/Tiers';
 
 /** svg icons */
 import AddMoney from 'app/components/Assets/AddMoney';
@@ -38,7 +38,7 @@ import ButtonFlexWrapper from './ButtonFlex';
 import DashboardButton from './Button';
 
 /** selectors */
-import { selectUser } from 'app/App/slice/selectors';
+// import { selectUser } from 'app/App/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
@@ -51,7 +51,7 @@ export function DashboardPage() {
   const history = useHistory();
   const dispatch = useDispatch();
   const { actions } = useContainerSaga();
-  const user: any = useSelector(selectUser);
+  // const user: any = useSelector(selectUser);
 
   const loading = useSelector(selectLoading);
   // const error: any = useSelector(selectError);

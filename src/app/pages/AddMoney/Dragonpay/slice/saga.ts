@@ -45,8 +45,6 @@ function* addMoney() {
   try {
     const apirequest = yield call(request, requestURL, options);
 
-    console.log({ apirequest });
-
     if (apirequest && apirequest.data) {
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,

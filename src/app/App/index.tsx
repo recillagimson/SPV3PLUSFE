@@ -320,7 +320,7 @@ export function App() {
             <PrivateRoute exact path="/send-to-bank" component={SendToBank} />
             <PrivateRoute
               exact
-              path="/send-to-bank-ubp"
+              path="/send-to-bank/ubp"
               component={SendToBankUBP}
             />
             <PrivateRoute exact path="/settings" component={SettingsPage} />

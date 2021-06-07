@@ -16,7 +16,7 @@ import { parseToNumber, numberWithCommas } from 'utils/common';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
-  selectError,
+  // selectError,
   selectTransactionHistoryData,
 } from './slice/selectors';
 import { transactionHistoryDefaultState } from './slice';
@@ -42,7 +42,7 @@ export function TransactionHistoryPage(props) {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
+  // const error: any = useSelector(selectError);
   const success: any = useSelector(selectTransactionHistoryData);
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());

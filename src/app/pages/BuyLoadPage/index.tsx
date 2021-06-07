@@ -31,7 +31,7 @@ import { regExMobile } from 'app/components/Helpers';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
-  selectError,
+  // selectError,
   selectData,
   selectValidateLoading,
   selectValidateData,
@@ -46,7 +46,7 @@ export function BuyLoad() {
   const dispatch = useDispatch();
 
   const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
+  // const error: any = useSelector(selectError);
   let success: any = useSelector(selectData);
 
   const validateLoading = useSelector(selectValidateLoading);
@@ -77,7 +77,7 @@ export function BuyLoad() {
   const [showProducts, setShowProducts] = React.useState(false);
   const [isReview, setIsReview] = React.useState(false);
 
-  const [isError, setIsError] = React.useState(false);
+  // const [isError, setIsError] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [isActive, setIsActive] = React.useState({ value: '' });
 
