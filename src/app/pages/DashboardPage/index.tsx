@@ -195,10 +195,7 @@ export function DashboardPage() {
           <SendToBank />
           Send To Bank
         </DashboardButton>
-        <DashboardButton
-          onClick={() => alert('Feature coming soon')}
-          disabled={flags && !flags.pay_bills_enabled}
-        >
+        <DashboardButton onClick={() => history.push('/pay-bills')}>
           <PayBills />
           Pay Bills
         </DashboardButton>
