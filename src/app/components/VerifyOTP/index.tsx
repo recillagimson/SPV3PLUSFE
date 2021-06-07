@@ -112,14 +112,14 @@ export default function VerifyOTPComponent({
         err.errors.error_code.map((i: number) => {
           if (i === 103 || i === 105 || i === 107) {
             setApiError(err.errors.payload);
-            return null;
+            return i;
           }
           if (i === 108 || i === 109) {
             setApiError(err.errors.message);
-            return null;
+            return i;
           }
+          return i;
         });
-        return null;
       }
     }
 

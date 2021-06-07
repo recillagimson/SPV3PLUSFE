@@ -30,7 +30,7 @@ export function Page500() {
         <meta name="description" content="500 - Server Error" />
       </Helmet>
       <Wrapper>
-        <img src="/img/500.png" alt="500" />
+        <img src={`${process.env.PUBLIC_URL}/img/500.png`} alt="500" />
 
         <Title>Oops, something went wrong</Title>
         <p>

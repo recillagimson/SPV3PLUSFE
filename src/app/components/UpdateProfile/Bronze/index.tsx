@@ -35,11 +35,7 @@ import ListItemText from 'app/components/List/ListItemText';
 
 import VerifyOTP from 'app/components/VerifyOTP';
 
-import {
-  deleteCookie,
-  validateEmail,
-  validatePhone,
-} from 'app/components/Helpers';
+import { deleteCookie } from 'app/components/Helpers';
 
 /** selectors */
 import {
@@ -95,8 +91,8 @@ export default function UserProfileForm({
     error: false,
   });
   const [lastName, setLastName] = React.useState({ value: '', error: false });
-  const [mobile, setMobile] = React.useState({ value: '', error: false });
-  const [email, setEmail] = React.useState({ value: '', error: false });
+  // const [mobile, setMobile] = React.useState({ value: '', error: false });
+  // const [email, setEmail] = React.useState({ value: '', error: false });
   const [birthDate, setBirthDate] = React.useState({
     year: '',
     month: '',
@@ -176,10 +172,25 @@ export default function UserProfileForm({
     }
 
     if (refs && Object.keys(refs).length > 0) {
-      setIsLoading(false);
+      let loadRef = false;
 
-      if (profile && Object.keys(profile).length > 0) {
-        writeProfileDetails(profile);
+      if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
+        loadRef = true;
+      }
+      if (!refs.countries || Object.keys(refs.countries).length === 0) {
+        loadRef = true;
+      }
+
+      if (loadRef) {
+        dispatch(appActions.getLoadReferences());
+      }
+
+      if (!loadRef) {
+        setIsLoading(false);
+
+        if (profile && Object.keys(profile).length > 0) {
+          writeProfileDetails(profile);
+        }
       }
     }
   }, [refs, profile]);

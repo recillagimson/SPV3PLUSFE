@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import { DateTime } from 'luxon';
 
+import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Loading from 'app/components/Loading';
 import H5 from 'app/components/Elements/H5';
 import Label from 'app/components/Elements/Label';
@@ -312,369 +313,375 @@ export function BuyLoad() {
 
   return (
     <>
-      <Helmet>
-        <title>Buy Load</title>
-      </Helmet>
-      {loading && <Loading position="absolute" />}
-      {validateLoading && <Loading position="absolute" />}
-      {payLoading && <Loading position="absolute" />}
+      <ProtectedContent>
+        <Helmet>
+          <title>Buy Load</title>
+        </Helmet>
+        {loading && <Loading position="absolute" />}
+        {validateLoading && <Loading position="absolute" />}
+        {payLoading && <Loading position="absolute" />}
 
-      <Wrapper>
-        <Card
-          title={!isReview ? 'Buy Load' : 'Review Load Purchase'}
-          size="medium"
-        >
-          {showForm && (
-            <>
-              <Field>
-                <Label>Mobile Number</Label>
-                <Input
-                  type="number"
-                  value={mobile.value}
-                  autoComplete="off"
-                  onChange={e =>
-                    setMobile({
-                      value: e.currentTarget.value,
-                      error: false,
-                      msg: '',
-                    })
-                  }
-                  error={mobile.error ? true : undefined}
-                />
-                {mobile.error && <ErrorMsg formError>{mobile.msg}</ErrorMsg>}
-              </Field>
-              <Flex justifyContent="flex-end">
-                <Button
-                  type="submit"
-                  color="primary"
-                  size="large"
-                  variant="contained"
-                  onClick={onSubmit}
-                  style={{ paddingLeft: '30px', paddingRight: '30px' }}
-                >
-                  Next
-                </Button>
-              </Flex>
-            </>
-          )}
-
-          {showProducts && success && (
-            <>
-              <Flex justifyContent="center">
-                <Avatar
-                  image=""
-                  size="medium"
-                  style={{ marginBottom: '10px' }}
-                />
-              </Flex>
-              <H5 className="text-center">{mobile.value}</H5>
-              <br />
-              {success[0].provider === 'SMART' && (
-                <div className="pills">
-                  <Scrollbars style={{ height: 50 }}>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      size="medium"
-                      variant={
-                        category === 'Regular' ? 'contained' : 'outlined'
-                      }
-                      onClick={() => setCategory('Regular')}
-                    >
-                      Regular
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      size="medium"
-                      variant={
-                        category === 'Broadband' ? 'contained' : 'outlined'
-                      }
-                      onClick={() => setCategory('Broadband')}
-                    >
-                      Broadband
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      size="medium"
-                      variant={
-                        category === 'Call & Text' ? 'contained' : 'outlined'
-                      }
-                      onClick={() => setCategory('Call & Text')}
-                    >
-                      Call & Text
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      size="medium"
-                      variant={
-                        category === 'Utility' ? 'contained' : 'outlined'
-                      }
-                      onClick={() => setCategory('Utility')}
-                    >
-                      Utility
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      size="medium"
-                      variant={category === 'PayTV' ? 'contained' : 'outlined'}
-                      onClick={() => setCategory('PayTV')}
-                    >
-                      PayTV
-                    </Button>
-                  </Scrollbars>
-                </div>
-              )}
-              {success[0].provider === 'GLOBE' && (
-                <div className="pills">
-                  <Scrollbars style={{ height: 50 }}>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      size="medium"
-                      variant={
-                        category === 'Regular' ? 'contained' : 'outlined'
-                      }
-                      onClick={() => setCategory('Regular')}
-                    >
-                      Regular
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      size="medium"
-                      variant={
-                        category === 'Broadband' ? 'contained' : 'outlined'
-                      }
-                      onClick={() => setCategory('Broadband')}
-                    >
-                      Broadband
-                    </Button>
-                  </Scrollbars>
-                </div>
-              )}
-              {success[0].provider === 'SUN' && (
-                <div className="pills">
-                  <Scrollbars style={{ height: 50 }}>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      size="medium"
-                      variant={
-                        category === 'Regular' ? 'contained' : 'outlined'
-                      }
-                      onClick={() => setCategory('Regular')}
-                    >
-                      Regular
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      size="medium"
-                      variant={
-                        category === 'Broadband' ? 'contained' : 'outlined'
-                      }
-                      onClick={() => setCategory('Broadband')}
-                    >
-                      Broadband
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      size="medium"
-                      variant={
-                        category === 'Call & Text' ? 'contained' : 'outlined'
-                      }
-                      onClick={() => setCategory('Call & Text')}
-                    >
-                      Call & Text
-                    </Button>
-                  </Scrollbars>
-                </div>
-              )}
-
-              <section>
-                <Scrollbars style={{ height: 200 }}>
-                  {success
-                    .slice()
-                    .sort((a, b) => (a.denomination > b.denomination ? 1 : -1))
-                    .map(promo => (
-                      <div
-                        onClick={() => {
-                          setSelectedProduct({
-                            productCode: promo.productCode,
-                            productName: promo.productCode,
-                            description: promo.description,
-                            amount: promo.denomination,
-                          });
-                          setIsActive({ value: promo.productCode });
-                        }}
-                      >
-                        {category === promo.category ? (
-                          <div
-                            className={
-                              isActive.value === ''
-                                ? 'product-list'
-                                : isActive.value === promo.productCode
-                                ? 'active product-list'
-                                : 'product-list'
-                            }
-                          >
-                            <div>{promo.description}</div>
-                            <div>PHP {promo.denomination}.00</div>
-                          </div>
-                        ) : (
-                          ''
-                        )}
-                      </div>
-                    ))}
-                </Scrollbars>
-                <br />
+        <Wrapper>
+          <Card
+            title={!isReview ? 'Buy Load' : 'Review Load Purchase'}
+            size="medium"
+          >
+            {showForm && (
+              <>
+                <Field>
+                  <Label>Mobile Number</Label>
+                  <Input
+                    type="number"
+                    value={mobile.value}
+                    autoComplete="off"
+                    onChange={e =>
+                      setMobile({
+                        value: e.currentTarget.value,
+                        error: false,
+                        msg: '',
+                      })
+                    }
+                    error={mobile.error ? true : undefined}
+                  />
+                  {mobile.error && <ErrorMsg formError>{mobile.msg}</ErrorMsg>}
+                </Field>
                 <Flex justifyContent="flex-end">
                   <Button
                     type="submit"
                     color="primary"
                     size="large"
                     variant="contained"
-                    onClick={OnClickValidate}
+                    onClick={onSubmit}
                     style={{ paddingLeft: '30px', paddingRight: '30px' }}
                   >
                     Next
                   </Button>
                 </Flex>
-              </section>
-            </>
-          )}
+              </>
+            )}
 
-          {isReview && !showProducts && selectedProduct.productCode !== '' && (
-            <>
-              <br />
-              <Grid columns="1fr 2fr 1fr">
-                <div></div>
-                <div>
-                  <Flex justifyContent="center">
-                    <Avatar
-                      image=""
-                      size="medium"
-                      style={{ marginBottom: '10px' }}
-                    />
+            {showProducts && success && (
+              <>
+                <Flex justifyContent="center">
+                  <Avatar
+                    image=""
+                    size="medium"
+                    style={{ marginBottom: '10px' }}
+                  />
+                </Flex>
+                <H5 className="text-center">{mobile.value}</H5>
+                <br />
+                {success[0].provider === 'SMART' && (
+                  <div className="pills">
+                    <Scrollbars style={{ height: 50 }}>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        size="medium"
+                        variant={
+                          category === 'Regular' ? 'contained' : 'outlined'
+                        }
+                        onClick={() => setCategory('Regular')}
+                      >
+                        Regular
+                      </Button>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        size="medium"
+                        variant={
+                          category === 'Broadband' ? 'contained' : 'outlined'
+                        }
+                        onClick={() => setCategory('Broadband')}
+                      >
+                        Broadband
+                      </Button>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        size="medium"
+                        variant={
+                          category === 'Call & Text' ? 'contained' : 'outlined'
+                        }
+                        onClick={() => setCategory('Call & Text')}
+                      >
+                        Call & Text
+                      </Button>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        size="medium"
+                        variant={
+                          category === 'Utility' ? 'contained' : 'outlined'
+                        }
+                        onClick={() => setCategory('Utility')}
+                      >
+                        Utility
+                      </Button>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        size="medium"
+                        variant={
+                          category === 'PayTV' ? 'contained' : 'outlined'
+                        }
+                        onClick={() => setCategory('PayTV')}
+                      >
+                        PayTV
+                      </Button>
+                    </Scrollbars>
+                  </div>
+                )}
+                {success[0].provider === 'GLOBE' && (
+                  <div className="pills">
+                    <Scrollbars style={{ height: 50 }}>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        size="medium"
+                        variant={
+                          category === 'Regular' ? 'contained' : 'outlined'
+                        }
+                        onClick={() => setCategory('Regular')}
+                      >
+                        Regular
+                      </Button>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        size="medium"
+                        variant={
+                          category === 'Broadband' ? 'contained' : 'outlined'
+                        }
+                        onClick={() => setCategory('Broadband')}
+                      >
+                        Broadband
+                      </Button>
+                    </Scrollbars>
+                  </div>
+                )}
+                {success[0].provider === 'SUN' && (
+                  <div className="pills">
+                    <Scrollbars style={{ height: 50 }}>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        size="medium"
+                        variant={
+                          category === 'Regular' ? 'contained' : 'outlined'
+                        }
+                        onClick={() => setCategory('Regular')}
+                      >
+                        Regular
+                      </Button>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        size="medium"
+                        variant={
+                          category === 'Broadband' ? 'contained' : 'outlined'
+                        }
+                        onClick={() => setCategory('Broadband')}
+                      >
+                        Broadband
+                      </Button>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        size="medium"
+                        variant={
+                          category === 'Call & Text' ? 'contained' : 'outlined'
+                        }
+                        onClick={() => setCategory('Call & Text')}
+                      >
+                        Call & Text
+                      </Button>
+                    </Scrollbars>
+                  </div>
+                )}
+
+                <section>
+                  <Scrollbars style={{ height: 200 }}>
+                    {success
+                      .slice()
+                      .sort((a, b) =>
+                        a.denomination > b.denomination ? 1 : -1,
+                      )
+                      .map(promo => (
+                        <div
+                          onClick={() => {
+                            setSelectedProduct({
+                              productCode: promo.productCode,
+                              productName: promo.productCode,
+                              description: promo.description,
+                              amount: promo.denomination,
+                            });
+                            setIsActive({ value: promo.productCode });
+                          }}
+                        >
+                          {category === promo.category ? (
+                            <div
+                              className={
+                                isActive.value === ''
+                                  ? 'product-list'
+                                  : isActive.value === promo.productCode
+                                  ? 'active product-list'
+                                  : 'product-list'
+                              }
+                            >
+                              <div>{promo.description}</div>
+                              <div>PHP {promo.denomination}.00</div>
+                            </div>
+                          ) : (
+                            ''
+                          )}
+                        </div>
+                      ))}
+                  </Scrollbars>
+                  <br />
+                  <Flex justifyContent="flex-end">
+                    <Button
+                      type="submit"
+                      color="primary"
+                      size="large"
+                      variant="contained"
+                      onClick={OnClickValidate}
+                      style={{ paddingLeft: '30px', paddingRight: '30px' }}
+                    >
+                      Next
+                    </Button>
                   </Flex>
-                  <H5 className="text-center">{mobile.value}</H5>
-                  <br />
-                  <section className="review-details">
-                    <Flex justifyContent="space-between">
-                      <p>Mobile Number</p>
-                      <p>{mobile.value}</p>
-                    </Flex>
-                    <Flex justifyContent="space-between">
-                      <p>Load</p>
-                      <p>{selectedProduct.productCode}</p>
-                    </Flex>
-                    <Flex justifyContent="space-between">
-                      <p>Amount</p>
-                      <p>PHP {selectedProduct.amount}.00</p>
-                    </Flex>
-                  </section>
-                  <br />
+                </section>
+              </>
+            )}
 
-                  <p className="text-center">Total Amount</p>
-                  <H5 className="text-center">
-                    PHP {selectedProduct.amount}.00
-                  </H5>
-                  <br />
-                  <p style={{ marginBottom: '5px' }}>Description</p>
-                  <small>{selectedProduct.description}</small>
-                  <br />
-                  <br />
-                  <br />
-                  <Button
-                    type="submit"
-                    color="primary"
-                    size="large"
-                    variant="contained"
-                    onClick={onClickPay}
-                    fullWidth={true}
-                  >
-                    Pay
-                  </Button>
-                </div>
-                <div></div>
-              </Grid>
-            </>
-          )}
+            {isReview && !showProducts && selectedProduct.productCode !== '' && (
+              <>
+                <br />
+                <Grid columns="1fr 2fr 1fr">
+                  <div></div>
+                  <div>
+                    <Flex justifyContent="center">
+                      <Avatar
+                        image=""
+                        size="medium"
+                        style={{ marginBottom: '10px' }}
+                      />
+                    </Flex>
+                    <H5 className="text-center">{mobile.value}</H5>
+                    <br />
+                    <section className="review-details">
+                      <Flex justifyContent="space-between">
+                        <p>Mobile Number</p>
+                        <p>{mobile.value}</p>
+                      </Flex>
+                      <Flex justifyContent="space-between">
+                        <p>Load</p>
+                        <p>{selectedProduct.productCode}</p>
+                      </Flex>
+                      <Flex justifyContent="space-between">
+                        <p>Amount</p>
+                        <p>PHP {selectedProduct.amount}.00</p>
+                      </Flex>
+                    </section>
+                    <br />
 
-          <Dialog show={validateApiMsg.error} size="xsmall">
-            <div style={{ margin: '20px', textAlign: 'center' }}>
-              <CircleIndicator size="medium" color="danger">
-                <FontAwesomeIcon icon="times" />
-              </CircleIndicator>
-              <H5 margin="10px 0 5px">Oops! Transaction Error</H5>
-              <small>{validateApiMsg.msg}</small>
-              <br />
-              <br />
-              <Button
-                fullWidth
-                onClick={onCloseValidateError}
-                variant="outlined"
-                size="medium"
+                    <p className="text-center">Total Amount</p>
+                    <H5 className="text-center">
+                      PHP {selectedProduct.amount}.00
+                    </H5>
+                    <br />
+                    <p style={{ marginBottom: '5px' }}>Description</p>
+                    <small>{selectedProduct.description}</small>
+                    <br />
+                    <br />
+                    <br />
+                    <Button
+                      type="submit"
+                      color="primary"
+                      size="large"
+                      variant="contained"
+                      onClick={onClickPay}
+                      fullWidth={true}
+                    >
+                      Pay
+                    </Button>
+                  </div>
+                  <div></div>
+                </Grid>
+              </>
+            )}
+
+            <Dialog show={validateApiMsg.error} size="xsmall">
+              <div style={{ margin: '20px', textAlign: 'center' }}>
+                <CircleIndicator size="medium" color="danger">
+                  <FontAwesomeIcon icon="times" />
+                </CircleIndicator>
+                <H5 margin="10px 0 5px">Oops! Transaction Error</H5>
+                <small>{validateApiMsg.msg}</small>
+                <br />
+                <br />
+                <Button
+                  fullWidth
+                  onClick={onCloseValidateError}
+                  variant="outlined"
+                  size="medium"
+                >
+                  Ok
+                </Button>
+              </div>
+            </Dialog>
+
+            <Dialog show={payApiMsg.error} size="xsmall">
+              <div style={{ margin: '20px', textAlign: 'center' }}>
+                <CircleIndicator size="medium" color="danger">
+                  <FontAwesomeIcon icon="times" />
+                </CircleIndicator>
+                <H5 margin="10px 0 5px">Oops! Transaction Error</H5>
+                <small>{payApiMsg.msg}</small>
+                <br />
+                <br />
+                <Button
+                  fullWidth
+                  onClick={onClosePayError}
+                  variant="outlined"
+                  size="medium"
+                >
+                  Ok
+                </Button>
+              </div>
+            </Dialog>
+
+            <Dialog show={isSuccess && paySuccess} size="xsmall">
+              <Receipt
+                title="Load purchase successful!"
+                total={paySuccess.amount + '.00'}
+                onClick={onCloseSuccessDialog}
+                date={humanReadable}
               >
-                Ok
-              </Button>
-            </div>
-          </Dialog>
-
-          <Dialog show={payApiMsg.error} size="xsmall">
-            <div style={{ margin: '20px', textAlign: 'center' }}>
-              <CircleIndicator size="medium" color="danger">
-                <FontAwesomeIcon icon="times" />
-              </CircleIndicator>
-              <H5 margin="10px 0 5px">Oops! Transaction Error</H5>
-              <small>{payApiMsg.msg}</small>
-              <br />
-              <br />
-              <Button
-                fullWidth
-                onClick={onClosePayError}
-                variant="outlined"
-                size="medium"
-              >
-                Ok
-              </Button>
-            </div>
-          </Dialog>
-
-          <Dialog show={isSuccess && paySuccess} size="xsmall">
-            <Receipt
-              title="Load purchase successful!"
-              total={paySuccess.amount + '.00'}
-              onClick={onCloseSuccessDialog}
-              date={humanReadable}
-            >
-              <Flex justifyContent="space-between">
-                <span>Mobile Number</span>
-                <span>
-                  {replaceFirst7(paySuccess.recipient_mobile_number || '')}
-                </span>
-              </Flex>
-              <Flex justifyContent="space-between">
-                <span>Load</span>
-                <span>{paySuccess.product_code}</span>
-              </Flex>
-              <Flex justifyContent="space-between">
-                <span>Amount</span>
-                <span>PHP {paySuccess.amount}.00</span>
-              </Flex>
-              <Flex justifyContent="space-between">
-                <span>Transaction Number</span>
-                <span>{paySuccess.transaction_number}</span>
-              </Flex>
-            </Receipt>
-          </Dialog>
-        </Card>
-      </Wrapper>
+                <Flex justifyContent="space-between">
+                  <span>Mobile Number</span>
+                  <span>
+                    {replaceFirst7(paySuccess.recipient_mobile_number || '')}
+                  </span>
+                </Flex>
+                <Flex justifyContent="space-between">
+                  <span>Load</span>
+                  <span>{paySuccess.product_code}</span>
+                </Flex>
+                <Flex justifyContent="space-between">
+                  <span>Amount</span>
+                  <span>PHP {paySuccess.amount}.00</span>
+                </Flex>
+                <Flex justifyContent="space-between">
+                  <span>Transaction Number</span>
+                  <span>{paySuccess.transaction_number}</span>
+                </Flex>
+              </Receipt>
+            </Dialog>
+          </Card>
+        </Wrapper>
+      </ProtectedContent>
     </>
   );
 }

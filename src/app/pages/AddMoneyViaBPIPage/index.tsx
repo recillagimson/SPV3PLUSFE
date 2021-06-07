@@ -140,7 +140,7 @@ export function AddMoneyViaBPI() {
         {/* {loading && <Loading position="absolute" />} */}
         <Card title="Online Bank" size="medium">
           <img
-            src="/logo/bpi.png"
+            src={`${process.env.PUBLIC_URL}/bpi.png`}
             alt="BPI Logo"
             style={{
               width: '150px',
@@ -201,7 +201,7 @@ export function AddMoneyViaBPI() {
             <Dialog show={isSuccess} size="xsmall">
               <div style={{ margin: '20px', textAlign: 'center' }}>
                 <img
-                  src="./img/SPLogo.png"
+                  src={`${process.env.PUBLIC_URL}/img/SPLogo.png`}
                   alt="SquidPay"
                   style={{ padding: '0 50px 30px', width: '100%' }}
                 />

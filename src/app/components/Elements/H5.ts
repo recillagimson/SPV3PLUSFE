@@ -13,6 +13,10 @@ const H5 = styled.h5<H5Props>`
   padding-bottom: ${p => (p.border ? `10px` : '0')};
   border-bottom: ${p =>
     p.border ? `1px solid ${StyleConstants.LIGHT_BORDER_COLOR}` : '0'};
+
+  svg {
+    margin-right: 10px;
+  }
 `;
 
 export default H5;

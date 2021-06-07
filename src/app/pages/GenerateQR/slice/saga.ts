@@ -4,6 +4,7 @@ import { request } from 'utils/request';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
+import { appActions } from 'app/App/slice';
 import { selectUserToken } from 'app/App/slice/selectors';
 import {
   getRequestPassphrase,
@@ -75,6 +76,9 @@ function* generateQR() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getFetchReset());
     } else {
       yield put(actions.getFetchError(err));
     }

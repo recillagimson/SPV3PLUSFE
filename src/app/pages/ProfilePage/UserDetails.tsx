@@ -4,14 +4,21 @@
  */
 import * as React from 'react';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
-import IconButton from 'app/components/Elements/IconButton';
 
-export default function UserDetailsList({ profile, refs, isBronze }) {
+export default function UserDetailsList({
+  profile,
+  refs,
+  isBronze,
+  onUpdate,
+}: {
+  profile: any;
+  refs: any;
+  isBronze?: boolean;
+  onUpdate: (name: 'mobile' | 'email' | 'birthday' | 'name') => void;
+}) {
   let country = '-';
   let nationality = '-';
   let marital = '-';
@@ -74,31 +81,61 @@ export default function UserDetailsList({ profile, refs, isBronze }) {
 
   return (
     <List divider>
-      {/* <ListItem flex>
-        <ListItemText
-          label="Mobile Number"
-          primary="0917xxxx"
-          style={{
-            flexGrow: 1,
-          }}
-        />
-        <IconButton onClick={() => alert('clicked')}>
-          <FontAwesomeIcon icon="chevron-right" />
-        </IconButton>
-      </ListItem> */}
       <ListItem flex>
         <ListItemText
-          label="Nationality"
-          primary={profile ? refs.nationalities[nationality].description : '-'}
+          role="presentation"
+          onClick={() => onUpdate('mobile')}
+          label="Mobile Number"
+          primary={profile.mobile_number || '-'}
           style={{
             flexGrow: 1,
           }}
+          icon
         />
       </ListItem>
       <ListItem flex>
         <ListItemText
+          role="presentation"
+          onClick={() => onUpdate('email')}
+          label="Email"
+          primary={profile.email || ''}
+          style={{
+            flexGrow: 1,
+          }}
+          icon
+        />
+      </ListItem>
+      <ListItem flex>
+        <ListItemText
+          role="presentation"
+          onClick={() => onUpdate('name')}
+          label="Name"
+          primary={
+            `${profile.first_name} ${profile.middle_name} ${profile.last_name}` ||
+            ''
+          }
+          style={{
+            flexGrow: 1,
+          }}
+          icon
+        />
+      </ListItem>
+      <ListItem flex>
+        <ListItemText
+          role="presentation"
+          onClick={() => onUpdate('birthday')}
           label="Date of Birth"
           primary={profile ? bdate : '-'}
+          style={{
+            flexGrow: 1,
+          }}
+          icon
+        />
+      </ListItem>
+      <ListItem flex>
+        <ListItemText
+          label="Nationality"
+          primary={profile ? refs.nationalities[nationality].description : '-'}
           style={{
             flexGrow: 1,
           }}

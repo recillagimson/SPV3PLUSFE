@@ -37,7 +37,7 @@ import {
 import { BillersState, BillerStateOptions } from './slice/types';
 
 // Helpers
-import { numberWithCommas, parseToNumber } from 'utils/common';
+import { numberWithCommas } from 'utils/common';
 import { numberCommas } from 'app/components/Helpers';
 import { CATEGORIES, getFormData } from './helpers';
 import { RENDER_FIELDS, RENDER_SELECT_ITEMS } from './fields';
@@ -462,7 +462,7 @@ export function PayBillsPage(props) {
           </S.FormWrapper>
         );
       case 3:
-        return renderReviewContainer(formData, 'payBillReview')
+        return renderReviewContainer(formData, 'payBillReview');
       default:
         return <React.Fragment />;
     }

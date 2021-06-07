@@ -34,6 +34,12 @@ const DashboardButton = styled.button`
   &:hover {
     background-color: ${StyleConstants.GRAY_BG};
   }
+
+  &:disabled {
+    background-color: ${StyleConstants.LIGHT_GRAY_BG};
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
 `;
 
 export default DashboardButton;

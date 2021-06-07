@@ -17,6 +17,7 @@ const Button = styled.button`
   align-items: center;
   position: relative;
 
+  &.active,
   &:hover {
     color: ${StyleConstants.GOLD};
   }

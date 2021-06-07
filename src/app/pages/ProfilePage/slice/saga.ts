@@ -5,10 +5,7 @@ import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
 import { selectUserToken } from 'app/App/slice/selectors';
-import {
-  getRequestPassphrase,
-  getResponsePassphrase,
-} from 'app/App/slice/saga';
+import { getResponsePassphrase } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
 import { selectRequest } from './selectors';

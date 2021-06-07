@@ -31,6 +31,10 @@ import {
   faCheckSquare,
   faCamera,
   faPhone,
+  faIdCard,
+  faSearch,
+  faUpload,
+  faRedo,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -60,4 +64,8 @@ library.add(
   faCheckSquare,
   faCamera,
   faPhone,
+  faIdCard,
+  faSearch,
+  faUpload,
+  faRedo,
 );

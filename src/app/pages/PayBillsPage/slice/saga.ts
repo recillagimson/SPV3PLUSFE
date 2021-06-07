@@ -188,7 +188,7 @@ function* createPayBills() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-      console.log('success create paybills', decryptData);
+
       yield put(actions.createPayBillsSuccess(decryptData));
     } else {
       yield put(

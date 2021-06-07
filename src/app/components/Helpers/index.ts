@@ -117,15 +117,33 @@ export function doSignOut() {
 
   // set a delay, in the component where this will be called, set a loading indicator to delay the logout
   setTimeout(() => {
-    const publicURL = process.env.PUBLIC_URL || '';
-    window.location.replace(`${publicURL}/`);
+    window.location.replace(`${process.env.PUBLIC_URL}/`);
   }, 800);
 }
 
 /**
  * Format number with commas
  * @param {number}  num       number to format
+ *
+ * @returns                   returns the formatted string number
  */
-export function numberCommas(num: number | string = 0) {
-  return num.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',');
+export function numberCommas(num: number | string = 0): string {
+  const n = typeof num === 'number' ? num.toString() : num;
+
+  return parseFloat(n)
+    .toFixed(2) // add a two digit
+    .toString() // convert to string
+    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ','); // add commas
+}
+
+/**
+ * Convert File Size
+ */
+export function fileSize(size: number = 0) {
+  const fSize = typeof size === 'number' ? size : parseInt(size);
+  if (fSize === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(fSize) / Math.log(k));
+  return parseFloat((fSize / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }

@@ -12,6 +12,8 @@ import { Helmet } from 'react-helmet-async';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { remoteConfig } from 'utils/firebase';
+import IdleTimer from 'utils/useIdleTime';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
@@ -39,7 +41,6 @@ import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
 import { AddMoneyViaBPI } from 'app/pages/AddMoneyViaBPIPage/Loadable';
 
-import { ScanQR } from 'app/pages/ScanQR/Loadable';
 // import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoadPage/Loadable';
@@ -48,8 +49,9 @@ import {
   TransactionHistoryPage,
   TransactionHistoryDetailsPage,
 } from 'app/pages/TransactionHistoryPage/Loadable';
-import { HelpCenterPage } from 'app/pages/HelpCenterPage/Loadable';
+import { HelpCenterPage, FAQPage } from 'app/pages/HelpCenterPage/Loadable';
 import { SendToBank } from 'app/pages/SendToBank/Loadable';
+import { SendToBankUBP } from 'app/pages/SendToBankUBP/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
 import { SettingsChangePinPage } from 'app/pages/SettingsPage/ChangePin/Loadable';
@@ -59,6 +61,7 @@ import { ContactUsPage } from 'app/pages/ContactUsPage/Loadable';
 import { ChatSupportPage } from 'app/pages/ChatSupportPage/Loadable';
 import { MerchantInquiryPage } from 'app/pages/MerchantInquiry/Loadable';
 import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
+import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 
@@ -76,11 +79,21 @@ import {
   selectIsAuthenticated,
   selectIsBlankPage,
 } from './slice/selectors';
-import { usePrevious } from 'app/components/Helpers/Hooks';
+// import { usePrevious } from 'app/components/Helpers/Hooks';
 import { AddMoney } from 'app/pages/AddMoney';
 import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
 import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent';
 import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/indext';
+
+// default flags for features
+const defaultFlags = {
+  add_money_dragon_pay_enabled: true,
+  buy_load_enabled: true,
+  send_money_enabled: true,
+  send_money_via_qr_enabled: true,
+  send_to_bank_ubp_enabled: true,
+  pay_bills_enabled: true,
+};
 
 export function App() {
   const { i18n } = useTranslation();
@@ -90,10 +103,12 @@ export function App() {
   // sample usage of slice (react redux)
   const { actions } = useAppSaga();
   const dispatch = useDispatch();
-  // const user = useSelector(selectUser);
+
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isSessionExpired = useSelector(selectSessionExpired);
   const isBlankPage = useSelector(selectIsBlankPage);
+
+  const [flags, setFlags] = React.useState(defaultFlags);
 
   React.useEffect(() => {
     // const path: string | boolean = location ? location.pathname : '/dashboard';
@@ -123,9 +138,13 @@ export function App() {
         dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
         dispatch(dashboardAction.getFetchLoading());
-      }, 1000);
+      }, 2000);
 
       history.push('/dashboard');
+
+      // if (process.env.NODE_ENV === 'production') {
+      //   loadFbAsync(); // load fb
+      // }
     } else if (forceUpdate) {
       dispatch(actions.getClientTokenLoading());
       history.push('/register/update-profile');
@@ -138,14 +157,75 @@ export function App() {
     }
   }, []);
 
-  const onClickSessionExpired = () => {
-    // const publicURL = process.env.PUBLIC_URL || '';
+  React.useEffect(() => {
+    /** enable this for FB customer chat if we are going to use this */
+    // if (
+    //   isAuthenticated &&
+    //   process.env.NODE_ENV === 'production' && // @ts-ignore
+    //   !window.fbAsyncInit
+    // ) {
+    //   loadFbAsync(); // load fb
+    // }
 
-    // window.location.replace(`${publicURL}/`);
-    doSignOut();
-    dispatch(actions.getIsAuthenticated(false));
-    dispatch(actions.getIsSessionExpired(false));
+    // remote config
+    if (isAuthenticated) {
+      getRemoteConfigValues();
+      // window.setInterval(getRemoteConfigValues, 300000); // 5 mins interval
+    }
+  }, [isAuthenticated]);
+
+  const getRemoteConfigValues = () => {
+    remoteConfig
+      .fetchAndActivate()
+      .then(() => {
+        return remoteConfig.getAll();
+      })
+      .then(remoteFlags => {
+        const newFlags = {
+          ...flags,
+        };
+
+        for (const [key, config] of Object.entries(remoteFlags)) {
+          newFlags[key] = config.asBoolean();
+        }
+        window['spFlags'] = newFlags || {};
+
+        setFlags(newFlags);
+      })
+      .catch(err => console.warn(err));
   };
+
+  const onClickSessionExpired = () => {
+    // window.location.replace('/');
+    // dispatch(actions.getIsAuthenticated(false));
+    // dispatch(actions.getIsSessionExpired(false));
+    doSignOut();
+  };
+
+  /** Enable if FB Chat will be use, do not delete */
+  // const loadFbAsync = () => {
+  //   var chatbox: any = document.getElementById('fb-customer-chat');
+  //   chatbox.setAttribute('page_id', '100608264934915');
+  //   chatbox.setAttribute('attribution', 'biz_inbox');
+  //   // @ts-ignore
+  //   window.fbAsyncInit = function () {
+  //     // @ts-ignore
+  //     FB.init({
+  //       xfbml: true,
+  //       version: 'v10.0',
+  //     });
+  //   };
+
+  //   (function (d, s, id) {
+  //     var js,
+  //       fjs: any = d.getElementsByTagName(s)[0];
+  //     if (d.getElementById(id)) return;
+  //     js = d.createElement(s);
+  //     js.id = id;
+  //     js.src = '//connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+  //     fjs.parentNode.insertBefore(js, fjs);
+  //   })(document, 'script', 'facebook-jssdk');
+  // };
 
   return (
     <>
@@ -204,7 +284,7 @@ export function App() {
             />
             <Route path="/500" component={Page500} />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
-            <Route path="/sendmoney" component={SendMoney} />
+            <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
             <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
@@ -235,7 +315,13 @@ export function App() {
               path="/help-center"
               component={HelpCenterPage}
             />
+            <PrivateRoute exact path="/help-center/faq" component={FAQPage} />
             <PrivateRoute exact path="/send-to-bank" component={SendToBank} />
+            <PrivateRoute
+              exact
+              path="/send-to-bank-ubp"
+              component={SendToBankUBP}
+            />
             <PrivateRoute exact path="/settings" component={SettingsPage} />
             <PrivateRoute
               exact
@@ -259,6 +345,12 @@ export function App() {
               component={MerchantInquiryPage}
             />
             <PrivateRoute exact path="/pay-bills" component={PayBillsPage} />
+            <PrivateRoute exact path="/tiers" component={TiersPage} />
+            <PrivateRoute
+              exact
+              path="/tiers/upgrade"
+              component={TierUpgradePage}
+            />
             <PrivateRoute
               exact
               path="/privacypolicy"
@@ -296,6 +388,13 @@ export function App() {
         </div>
       </Dialog>
       <GlobalStyle />
+
+      {/* Idle Timer */}
+      {isAuthenticated && <IdleTimer idle={process.env.IDLE_TIME || 3000000} />}
+
+      {/*  FB element containers */}
+      {/* <div id="fb-root"></div>
+      <div id="fb-customer-chat" className="fb-customerchat" /> */}
     </>
   );
 }
