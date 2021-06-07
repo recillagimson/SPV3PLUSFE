@@ -2,8 +2,6 @@ import * as React from 'react';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 import List from 'app/components/List';
@@ -13,7 +11,6 @@ import Button from 'app/components/Elements/Button';
 
 import H3 from 'app/components/Elements/H3';
 import Dialog from 'app/components/Dialog';
-import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Logo from 'app/components/Assets/Logo';
 
 import { selectUser } from 'app/App/slice/selectors';
@@ -28,7 +25,7 @@ export function AddMoney() {
 
   const onClickDragonpay = () => {
     if (user) {
-      if (!user.email || (user.email && user.email !== '')) {
+      if (!user.email || (user.email && user.email === '')) {
         setShowEmailUpdate(true);
       } else {
         history.push('/add-money/dragonpay');
