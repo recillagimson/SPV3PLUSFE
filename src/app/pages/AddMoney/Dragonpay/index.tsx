@@ -1,13 +1,16 @@
 import * as React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 import Button from 'app/components/Elements/Button';
 import Input from 'app/components/Elements/Input';
+import Loading from 'app/components/Loading';
+
+import { StyleConstants } from 'styles/StyleConstants';
 import AddMoneyModal from '../components/AddMoneyModal';
 import AddMoneyFrame from '../components/AddMoneyFrame';
-import Loading from 'app/components/Loading';
-import { StyleConstants } from 'styles/StyleConstants';
-import { useSelector, useDispatch } from 'react-redux';
+
 import { useContainerSaga } from './slice';
 import {
   selectLoading,

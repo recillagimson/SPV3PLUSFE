@@ -61,6 +61,7 @@ import { ContactUsPage } from 'app/pages/ContactUsPage/Loadable';
 import { ChatSupportPage } from 'app/pages/ChatSupportPage/Loadable';
 import { MerchantInquiryPage } from 'app/pages/MerchantInquiry/Loadable';
 import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
+import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 
@@ -290,7 +291,12 @@ export function App() {
             <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
-            <PrivateRoute path="/profile" component={UserProfilePage} />
+            <PrivateRoute exact path="/profile" component={UserProfilePage} />
+            <PrivateRoute
+              exact
+              path="/profile/update-email"
+              component={UpdateEmailPage}
+            />
             <PrivateRoute
               path={['/notifications/:id', '/notifications']}
               component={Notifications}
