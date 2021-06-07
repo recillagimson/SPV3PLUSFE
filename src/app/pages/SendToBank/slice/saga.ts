@@ -4,6 +4,7 @@ import { request } from 'utils/request';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
+import { appActions } from 'app/App/slice';
 import { selectUserToken } from 'app/App/slice/selectors';
 import {
   getRequestPassphrase,
@@ -64,6 +65,9 @@ function* getPurposes() {
         ...body,
       };
       yield put(actions.getPurposesError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getPurposesReset());
     } else {
       yield put(actions.getPurposesError(err));
     }
@@ -122,6 +126,9 @@ function* getBanks() {
         ...body,
       };
       yield put(actions.getBanksError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getBanksReset());
     } else {
       yield put(actions.getBanksError(err));
     }
@@ -190,6 +197,8 @@ function* validateSendToBank() {
         ...body,
       };
       yield put(actions.validateBankError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
     } else {
       yield put(actions.validateBankError(err));
     }
@@ -258,6 +267,8 @@ function* generateSendToBankOTP() {
         ...body,
       };
       yield put(actions.generateSendToBankOTPError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
     } else {
       yield put(actions.generateSendToBankOTPError(err));
     }
@@ -325,6 +336,8 @@ function* sendToBank() {
         ...body,
       };
       yield put(actions.sendToBankError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
     } else {
       yield put(actions.sendToBankError(err));
     }

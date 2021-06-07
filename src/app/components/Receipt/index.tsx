@@ -3,6 +3,7 @@
  * @prop {ReactNode}  children        This are the children inside this component wrapper ie: <Receipt>children</Receipt>
  * @prop {string}     total           total amount of transaction
  * @prop {string}     date            date and time og transaction
+ * @prop {boolean}    serviceFee      service fee of transaction
  * @prop {function}   onClick         function callback for close button
 
  */
@@ -18,6 +19,7 @@ type ReceiptProps = {
   children: React.ReactNode | React.ReactNodeArray;
   total: string;
   date: string;
+  serviceFee?: boolean;
   onClick?: () => void;
 };
 
@@ -26,18 +28,23 @@ export default function ReceiptComponent({
   children,
   total,
   date,
+  serviceFee,
   onClick,
 }: ReceiptProps) {
   return (
     <Wrapper>
       <div className="dialog-container">
         <div className="logo-container">
-          <img src="./img/SPLogo.png" alt="SquidPay" className="logo" />
+          <img
+            src={`${process.env.PUBLIC_URL}/img/SPLogo.png`}
+            alt="SquidPay"
+            className="logo"
+          />
         </div>
         <div className="bg-lightgold">
           <div style={{ padding: '0px 10px' }}>
             <section className="text-center">
-              <CircleIndicator size="large" color="primary">
+              <CircleIndicator size="medium" color="primary">
                 <FontAwesomeIcon icon="check" />
               </CircleIndicator>
               <p className="message">{title}</p>
@@ -48,13 +55,13 @@ export default function ReceiptComponent({
             <section className="total">
               <span>Total amount</span>
               <p>PHP {total}</p>
-              <span>Service Fee: PHP 0.00</span>
+              {serviceFee && <span>Service Fee: PHP 0.00</span>}
             </section>
             <div className="logo-container">
               <img
-                src="./img/SPLogo.png"
+                src={`${process.env.PUBLIC_URL}/img/SPLogo.png`}
                 alt="SquidPay"
-                style={{ width: '50%', margin: 'auto', display: 'block' }}
+                style={{ width: '75%', margin: 'auto', display: 'block' }}
               />
             </div>
             <section className="date">

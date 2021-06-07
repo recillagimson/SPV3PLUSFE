@@ -9,8 +9,8 @@
  * @prop {string}     tier          Current tier of user
  */
 import * as React from 'react';
-import styled from 'styled-components/macro';
 import { useHistory } from 'react-router-dom';
+import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -62,9 +62,7 @@ export default function UserInfoComponent({
     <Wrapper>
       <AvatarUpload
         onChange={onChangeAvatar}
-        image={
-          profile && profile.avatar_location ? profile.avatar_location : ''
-        }
+        image={profile && profile.avatar_link ? profile.avatar_link : ''}
       />
       <H2>
         {profile
@@ -76,8 +74,7 @@ export default function UserInfoComponent({
         <strong>{Boolean(tier) ? tier : '-'}</strong>{' '}
         <Button
           onClick={() => {
-            // history.push('/tier-upgrade');
-            alert('Under Development');
+            history.push('/tiers');
           }}
           color="secondary"
           variant="contained"

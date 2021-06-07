@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import ProtectedContent from 'app/components/Layouts/ProtectedContent';
+
 import Loading from 'app/components/Loading';
 import H1 from 'app/components/Elements/H1';
 import H2 from 'app/components/Elements/H2';
@@ -309,6 +311,20 @@ export function SendMoney() {
                 error: true,
               });
             }
+            if (i === 405) {
+              setValidateApiMsg({
+                msg: 'Oh No! You have exceeded your monthly limit.',
+                code: '405',
+                error: true,
+              });
+            }
+            if (i === 409) {
+              setValidateApiMsg({
+                msg: 'Receiver Transaction Limit reached.',
+                code: '409',
+                error: true,
+              });
+            }
           });
         }
       }
@@ -359,151 +375,164 @@ export function SendMoney() {
 
   return (
     <>
-      <Helmet>
-        <title>Send Money</title>
-      </Helmet>
+      <ProtectedContent>
+        <Helmet>
+          <title>Send Money</title>
+        </Helmet>
 
-      <Wrapper>
-        {validateLoading && <Loading position="absolute" />}
-        {generateLoading && <Loading position="absolute" />}
-        {loading && <Loading position="absolute" />}
+        <Wrapper>
+          {validateLoading && <Loading position="absolute" />}
+          {generateLoading && <Loading position="absolute" />}
+          {loading && <Loading position="absolute" />}
 
-        <Card
-          title={
-            isReview
-              ? 'Review Send Money'
-              : isVerification
-              ? '4-Digit One Time PIN'
-              : 'Send Money'
-          }
-          footer={!isVerification && !isReview ? action : undefined}
-          // footer={!isReview ? action : undefined}
-          size="medium"
-        >
-          {!isReview && !isVerification && (
-            <>
-              <Field>
-                <Label>Send to</Label>
-                <Input
-                  type="text"
-                  placeholder="Email or Mobile No."
-                  value={email.value}
-                  autoComplete="off"
-                  onChange={e =>
-                    setEmail({
-                      value: e.currentTarget.value,
-                      error: false,
-                      msg: '',
-                    })
-                  }
-                  error={
-                    validateApiMsg.code === '103' ||
-                    validateApiMsg.code === '301' ||
-                    validateApiMsg.code === '404'
-                      ? true
-                      : undefined
-                  }
-                />
-                {email.error && <ErrorMsg formError>* {email.msg}</ErrorMsg>}
-
-                {/* API Error Message */}
-                {validateApiMsg.code === '103' && !email.error && (
-                  <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
-                )}
-
-                {validateApiMsg.code === '301' && !email.error && (
-                  <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
-                )}
-
-                {validateApiMsg.code === '404' && !email.error && (
-                  <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
-                )}
-              </Field>
-              <Field>
-                <Label>Amount</Label>
-                <InputTextWrapper>
+          <Card
+            title={
+              isReview
+                ? 'Review Send Money'
+                : isVerification
+                ? '4-Digit One Time PIN'
+                : 'Send Money'
+            }
+            footer={!isVerification && !isReview ? action : undefined}
+            // footer={!isReview ? action : undefined}
+            size="medium"
+          >
+            {!isReview && !isVerification && (
+              <>
+                <Field>
+                  <Label>Send to</Label>
                   <Input
-                    type="number"
-                    min="1"
-                    placeholder="0.00"
-                    value={amount.value}
+                    type="text"
+                    placeholder="Email or Mobile No."
+                    value={email.value}
                     autoComplete="off"
                     onChange={e =>
-                      setAmount({ value: e.currentTarget.value, error: false })
+                      setEmail({
+                        value: e.currentTarget.value,
+                        error: false,
+                        msg: '',
+                      })
                     }
-                    error={validateApiMsg.code === '402' ? true : undefined}
+                    error={
+                      validateApiMsg.code === '103' ||
+                      validateApiMsg.code === '301' ||
+                      validateApiMsg.code === '404' ||
+                      validateApiMsg.code === '405' ||
+                      validateApiMsg.code === '409'
+                        ? true
+                        : undefined
+                    }
                   />
-                  {/* <small>
-                  Your daily limit is 20,000 PHP and monthly limit is 100,000
-                  PHP
-                </small> */}
-                  <span>PHP</span>
-                </InputTextWrapper>
-                {amount.error && (
-                  <ErrorMsg formError>* Invalid Amount</ErrorMsg>
-                )}
+                  {email.error && <ErrorMsg formError>* {email.msg}</ErrorMsg>}
 
-                {/* API Error Message */}
-                {validateApiMsg.code === '402' && !amount.error && (
-                  <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
-                )}
-              </Field>
+                  {/* API Error Message */}
+                  {validateApiMsg.code === '103' && !email.error && (
+                    <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                  )}
 
-              <Field>
-                <Label>Message (Optional)</Label>
-                <Textarea
-                  value={message.value}
-                  autoComplete="off"
-                  onChange={e =>
-                    setMessage({ value: e.currentTarget.value, error: false })
-                  }
-                  maxLength={64}
-                ></Textarea>
-                <small>{message.value.length}/64</small>
-              </Field>
-            </>
-          )}
+                  {validateApiMsg.code === '301' && !email.error && (
+                    <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                  )}
 
-          {isVerification && (
-            <div className="verification">
-              <Grid container justify="center">
-                <Grid item md={8}>
-                  <Flex justifyContent="center">
-                    <Field>
-                      <div className="text-center">
-                        <CircleIndicator size="large">
-                          <FontAwesomeIcon icon="lock" />
-                        </CircleIndicator>
-                        <H1 className="text-center" margin="20px 0 8px">
-                          Enter 4-Digit one time PIN
-                        </H1>
+                  {validateApiMsg.code === '404' && !email.error && (
+                    <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                  )}
 
-                        <p>
-                          The one time pin code has been sent to your mobile
-                          number
-                        </p>
-                      </div>
-                      {/* <PinInput
+                  {validateApiMsg.code === '405' && !email.error && (
+                    <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                  )}
+
+                  {validateApiMsg.code === '409' && !email.error && (
+                    <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                  )}
+                </Field>
+                <Field>
+                  <Label>Amount</Label>
+                  <InputTextWrapper>
+                    <Input
+                      type="number"
+                      min="1"
+                      placeholder="0.00"
+                      value={amount.value}
+                      autoComplete="off"
+                      onChange={e =>
+                        setAmount({
+                          value: e.currentTarget.value,
+                          error: false,
+                        })
+                      }
+                      error={validateApiMsg.code === '402' ? true : undefined}
+                    />
+
+                    <span>PHP</span>
+                  </InputTextWrapper>
+                  {amount.error && (
+                    <ErrorMsg formError>* Invalid Amount</ErrorMsg>
+                  )}
+
+                  {/* API Error Message */}
+                  {validateApiMsg.code === '402' && !amount.error && (
+                    <ErrorMsg formError>{validateApiMsg.msg}</ErrorMsg>
+                  )}
+                </Field>
+
+                <Field>
+                  <Label>Message (Optional)</Label>
+                  <Textarea
+                    value={message.value}
+                    autoComplete="off"
+                    onChange={e =>
+                      setMessage({ value: e.currentTarget.value, error: false })
+                    }
+                    maxLength={64}
+                  ></Textarea>
+                  <small>{message.value.length}/64</small>
+                </Field>
+              </>
+            )}
+
+            {isVerification && (
+              <div className="verification">
+                <Grid container justify="center">
+                  <Grid item md={8}>
+                    <Flex justifyContent="center">
+                      <Field>
+                        <div className="text-center">
+                          <CircleIndicator size="large">
+                            <FontAwesomeIcon icon="lock" />
+                          </CircleIndicator>
+                          <H1 className="text-center" margin="20px 0 8px">
+                            Enter 4-Digit one time PIN
+                          </H1>
+
+                          <p>
+                            The one time pin code has been sent to your mobile
+                            number
+                          </p>
+                        </div>
+                        {/* <PinInput
                         length={4}
                         onChange={p => setOTP({ value: p, error: false })}
                         value={otp.value}
                         isValid={!otp.error}
                       /> */}
-                      <VerifyOTP
-                        onSuccess={onCodeVerified}
-                        apiURL="/auth/verify/otp"
-                        otpType="send_money"
-                      />
+                        <VerifyOTP
+                          onSuccess={onCodeVerified}
+                          apiURL="/auth/verify/otp"
+                          otpType="send_money"
+                        />
 
-                      <Field className="text-center" margin="20px 0 10px">
-                        Need a new code?{' '}
-                        <button className="link" onClick={resendOTP}>
-                          <span style={{ color: '#E0AC3B' }}>Resend Code</span>
-                        </button>
+                        <Field className="text-center" margin="20px 0 10px">
+                          Need a new code?{' '}
+                          <button className="link" onClick={resendOTP}>
+                            <span style={{ color: '#E0AC3B' }}>
+                              Resend Code
+                            </span>
+                          </button>
+                        </Field>
                       </Field>
-                    </Field>
-                  </Flex>
-                  {/* <p className="text-center">Please enter your pin code</p>
+                    </Flex>
+                    {/* <p className="text-center">Please enter your pin code</p>
                   {otp.error && <ErrorMsg formError>* Error</ErrorMsg>}
                   <Button
                     type="button"
@@ -519,74 +548,74 @@ export function SendMoney() {
                   <br />
                   <small className="text-center">Forgot your pin code?</small>
                   <br /> */}
-                </Grid>
-              </Grid>
-            </div>
-          )}
-
-          {isReview && !resendOTPCode && (
-            <>
-              <div className="review-send-money">
-                <Grid container justify="center" spacing={3}>
-                  <Grid item xs={12} md={8}>
-                    <Avatar
-                      image={validateSuccess.selfie_location}
-                      size="medium"
-                    />
-                    <p className="email">{validateSuccess.first_name}</p>
-                    <p className="number">{email.value}</p>
-
-                    <br />
-                    <Grid container>
-                      <Grid item xs={6} className="item">
-                        <span className="name">Amount</span>
-                      </Grid>
-                      <Grid item xs={6} className="item">
-                        <span className="value">
-                          {' '}
-                          PHP{' '}
-                          {Number.isInteger(validateSuccess.amount)
-                            ? validateSuccess.amount + '.00'
-                            : validateSuccess.amount}
-                        </span>
-                      </Grid>
-                      <Grid item xs={6} className="item">
-                        <span className="name">Message</span>
-                      </Grid>
-                      <Grid item xs={6} className="item">
-                        <span className="value">
-                          {message.value ? message.value : '...'}
-                        </span>
-                      </Grid>
-                    </Grid>
-                    <br />
-                    <br />
-                    <p>Total amount</p>
-                    <H3 className="total-amount">
-                      PHP{' '}
-                      {Number.isInteger(validateSuccess.amount)
-                        ? validateSuccess.amount + '.00'
-                        : validateSuccess.amount}
-                    </H3>
-                    <br />
-                    <Button
-                      type="submit"
-                      onClick={generateOTP}
-                      color="primary"
-                      size="large"
-                      variant="contained"
-                      fullWidth={true}
-                      className="mb-3"
-                    >
-                      SEND MONEY
-                    </Button>
                   </Grid>
                 </Grid>
               </div>
-            </>
-          )}
+            )}
 
-          {/* {apiErrorMsg && (
+            {isReview && !resendOTPCode && (
+              <>
+                <div className="review-send-money">
+                  <Grid container justify="center" spacing={3}>
+                    <Grid item xs={12} md={8}>
+                      <Avatar
+                        image={validateSuccess.selfie_location}
+                        size="medium"
+                      />
+                      <p className="email">{validateSuccess.first_name}</p>
+                      <p className="number">{email.value}</p>
+
+                      <br />
+                      <Grid container>
+                        <Grid item xs={6} className="item">
+                          <span className="name">Amount</span>
+                        </Grid>
+                        <Grid item xs={6} className="item">
+                          <span className="value">
+                            {' '}
+                            PHP{' '}
+                            {Number.isInteger(validateSuccess.amount)
+                              ? validateSuccess.amount + '.00'
+                              : validateSuccess.amount}
+                          </span>
+                        </Grid>
+                        <Grid item xs={6} className="item">
+                          <span className="name">Message</span>
+                        </Grid>
+                        <Grid item xs={6} className="item">
+                          <span className="value">
+                            {message.value ? message.value : '...'}
+                          </span>
+                        </Grid>
+                      </Grid>
+                      <br />
+                      <br />
+                      <p>Total amount</p>
+                      <H3 className="total-amount">
+                        PHP{' '}
+                        {Number.isInteger(validateSuccess.amount)
+                          ? validateSuccess.amount + '.00'
+                          : validateSuccess.amount}
+                      </H3>
+                      <br />
+                      <Button
+                        type="submit"
+                        onClick={generateOTP}
+                        color="primary"
+                        size="large"
+                        variant="contained"
+                        fullWidth={true}
+                        className="mb-3"
+                      >
+                        SEND MONEY
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </div>
+              </>
+            )}
+
+            {/* {apiErrorMsg && (
             <>
               <Dialog show={success} size="small">
                 <div className="text-center">
@@ -607,7 +636,7 @@ export function SendMoney() {
               </Dialog>
             </>
           )} */}
-          {/* <Dialog show={success} size="small">
+            {/* <Dialog show={success} size="small">
             <div className="text-center">
               <CircleIndicator size="medium" color="primary">
                 <FontAwesomeIcon icon="check" />
@@ -624,51 +653,52 @@ export function SendMoney() {
               </Button>
             </div>
           </Dialog> */}
-          {/* fsdkjjgdlk */}
+            {/* fsdkjjgdlk */}
 
-          <Dialog show={isSuccess} size="small">
-            <Receipt
-              title="Money successfully sent to"
-              total={success.total_amount}
-              onClick={onCloseSuccessDialog}
-              date={humanReadable}
-            >
-              <Grid container>
-                <Grid item xs={6}>
-                  <span className="description">Name</span>
+            <Dialog show={isSuccess} size="small">
+              <Receipt
+                title="Money successfully sent to"
+                total={success.total_amount}
+                onClick={onCloseSuccessDialog}
+                date={humanReadable}
+              >
+                <Grid container>
+                  <Grid item xs={6}>
+                    <span className="description">Name</span>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <span className="value">
+                      {success.first_name} {success.last_name}
+                    </span>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <span className="description">
+                      {isEmail ? 'Email address' : 'Mobile number'}
+                    </span>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <span className="value">
+                      {isEmail ? success.email : success.mobile_number}
+                    </span>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <span className="description">Message </span>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <span className="value">{success.message}</span>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <span className="description">Transaction Number</span>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <span className="value">{success.reference_number}</span>
+                  </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                  <span className="value">
-                    {success.first_name} {success.last_name}
-                  </span>
-                </Grid>
-                <Grid item xs={6}>
-                  <span className="description">
-                    {isEmail ? 'Email address' : 'Mobile number'}
-                  </span>
-                </Grid>
-                <Grid item xs={6}>
-                  <span className="value">
-                    {isEmail ? success.email : success.mobile_number}
-                  </span>
-                </Grid>
-                <Grid item xs={6}>
-                  <span className="description">Message </span>
-                </Grid>
-                <Grid item xs={6}>
-                  <span className="value">{success.message}</span>
-                </Grid>
-                <Grid item xs={6}>
-                  <span className="description">Transaction Number</span>
-                </Grid>
-                <Grid item xs={6}>
-                  <span className="value">{success.reference_number}</span>
-                </Grid>
-              </Grid>
-            </Receipt>
-          </Dialog>
-        </Card>
-      </Wrapper>
+              </Receipt>
+            </Dialog>
+          </Card>
+        </Wrapper>
+      </ProtectedContent>
     </>
   );
 }

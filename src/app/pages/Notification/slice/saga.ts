@@ -2,6 +2,7 @@ import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { request } from 'utils/request';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 import { PassphraseState } from 'types/Default';
+import { appActions } from 'app/App/slice';
 import { selectUserToken } from 'app/App/slice/selectors';
 import { containerActions as actions } from '.';
 import { getResponsePassphrase } from 'app/App/slice/saga';
@@ -45,6 +46,9 @@ function* getNotifications() {
       };
 
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getFetchReset());
     } else {
       yield put(actions.getFetchError(err));
     }

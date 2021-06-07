@@ -1,5 +1,6 @@
 /**
  * Sidebar Component
+ * @prop {object}   flags       Feature flags for enabling/disabling
  *
  * NOTE: the svg files here maybe moved into the assets if this will be used in other components
  */
@@ -41,9 +42,17 @@ export default function Sidebar() {
   const history = useHistory();
   const profile: any = useSelector(selectUser);
   const loginName: string = useSelector(selectLoggedInName);
+  const flags = window['spFlags'];
 
   const [isLogout, setIsLogout] = React.useState(false);
   const [fakeLoading, setFakeLoading] = React.useState(false);
+  const [avatar, setAvatar] = React.useState('');
+
+  React.useEffect(() => {
+    if (profile && profile.avatar_link && avatar === '') {
+      setAvatar(profile.avatar_link);
+    }
+  }, [avatar, profile]);
 
   const gotoProfile = () => {
     history.push('/profile');
@@ -54,9 +63,8 @@ export default function Sidebar() {
   ) => {
     if (e && e.stopPropagation) e.stopPropagation(); // stop propagation of click into the parent element
 
-    alert('Feature coming soon');
     // enable once tier upgrade is ready
-    // history.push('/tier-upgrade');
+    history.push('/tiers');
   };
 
   const onLogout = () => {
@@ -87,10 +95,7 @@ export default function Sidebar() {
           className="sp-logo"
         />
         <div className="user-info" role="presentation" onClick={gotoProfile}>
-          <Avatar
-            // image="https://source.unsplash.com/random/120x120"
-            size="medium"
-          />
+          <Avatar image={avatar !== '' ? avatar : undefined} size="medium" />
           <div className="user-short-details">
             <p className="name">
               {typeof profile === 'object'
@@ -120,16 +125,28 @@ export default function Sidebar() {
             Home
           </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton as={NavLink} to="/generateqr">
-            <QRCodeIcon />
-            QR Code
-          </NavButton>
+          {flags && flags.send_money_via_qr_enabled ? (
+            <NavButton as={NavLink} to="/generateqr">
+              <QRCodeIcon />
+              QR Code
+            </NavButton>
+          ) : (
+            <NavButton>
+              <QRCodeIcon />
+              QR Code
+            </NavButton>
+          )}
+
           {/* <NavButton as={NavLink} to="/dashboard">
             <AccountIcon />
             Account Verification
           </NavButton> */}
           {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton onClick={() => alert('Feature coming soon')}>
+          <NavButton
+            as="a"
+            href="https://www.facebook.com/SquidPay/"
+            target="_blank"
+          >
             <PromosIcon />
             Promos
           </NavButton>
@@ -152,9 +169,13 @@ export default function Sidebar() {
             <ContactUsIcon />
             Contact Us
           </NavButton>
+          {/* <NavButton as={NavLink} to="/dashboard"> */}
+          <NavButton as={NavLink} to="/send-to-bank-ubp">
+            Send to bank UBP
+          </NavButton>
         </Navigation>
         <div className="logout">
-          <NavButton onClick={() => setIsLogout(prev => !prev)} fullWidth>
+          <NavButton onClick={() => setIsLogout(prev => !prev)}>
             <LogoutIcon />
             Log Out
           </NavButton>

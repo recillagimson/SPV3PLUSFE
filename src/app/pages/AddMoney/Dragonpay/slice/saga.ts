@@ -2,6 +2,8 @@ import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { request } from 'utils/request';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 import { PassphraseState } from 'types/Default';
+
+import { appActions } from 'app/App/slice';
 import { selectUserToken } from 'app/App/slice/selectors';
 import { containerActions as actions } from './';
 import {
@@ -62,9 +64,13 @@ function* addMoney() {
       return;
     }
   } catch (err) {
-    console.log({ err });
-    const errMessage = errorHandler(err);
-    yield put(actions.getFetchError(errMessage));
+    if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getFetchReset());
+    } else {
+      const errMessage = errorHandler(err);
+      yield put(actions.getFetchError(errMessage));
+    }
   }
 }
 

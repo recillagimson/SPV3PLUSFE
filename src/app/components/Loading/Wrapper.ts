@@ -23,7 +23,7 @@ const Wrapper = styled.div<Props>`
     right: 0;
     bottom: 0;
     background-color: ${p.invert ? 'rgba(0,0,0,.2)' : 'rgba(255,255,255,.4)'};
-    z-index: 2000;
+    z-index: ${p.position === 'absolute' ? '999' : '2000'};
   `}
 
   img {

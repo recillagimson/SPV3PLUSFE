@@ -7,7 +7,6 @@ import styled from 'styled-components/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import FormElementStyle from './FormElementsStyle';
-import { StyleConstants } from 'styles/StyleConstants';
 
 const Wrapper = styled.div<{ full?: boolean }>`
   width: ${p => (p.full ? '100%' : 'auto')};

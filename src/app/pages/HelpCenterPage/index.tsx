@@ -16,14 +16,14 @@ export function HelpCenterPage() {
   return (
     <ProtectedContent>
       <Helmet>
-        <title>Settings</title>
+        <title>Help Center</title>
       </Helmet>
 
       <Box title="Help Center" titleBorder withPadding>
         <List divider bordertop>
           <ListItem flex>
             <ListItemButton
-              onClick={() => alert('Feature coming soon')}
+              onClick={() => history.push('/help-center/faq')}
               style={{
                 flexGrow: 1,
               }}
@@ -33,7 +33,9 @@ export function HelpCenterPage() {
           </ListItem>
           <ListItem flex>
             <ListItemButton
-              onClick={() => history.push('/chat-support')}
+              as="a"
+              href="https://www.facebook.com/messages/t/100608264934915"
+              target="_blank"
               style={{
                 flexGrow: 1,
               }}
@@ -46,6 +48,7 @@ export function HelpCenterPage() {
               as="a"
               href="https://squidpay.ph/privacypolicy"
               target="_blank"
+              // onClick={() => history.push('/privacypolicy')}
               style={{
                 flexGrow: 1,
               }}
@@ -58,6 +61,7 @@ export function HelpCenterPage() {
               as="a"
               href="https://squidpay.ph/tac"
               target="_blank"
+              // onClick={() => history.push('/terms-and-condition')}
               style={{
                 flexGrow: 1,
               }}

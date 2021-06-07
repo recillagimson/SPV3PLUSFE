@@ -5,12 +5,9 @@
 import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
-const NavButton = styled.button<{ icon?: string; fullWidth?: boolean }>`
+const NavButton = styled.button`
   border: 0;
   background-color: transparent;
-  background-image: ${p => (p.icon ? p.icon : 'none')};
-  background-repeat: no-repeat;
-  background-size: auto 100%;
   padding: 5px 3px;
   margin-top: 20px;
   display: flex;
@@ -44,6 +41,11 @@ const NavButton = styled.button<{ icon?: string; fullWidth?: boolean }>`
     svg {
       opacity: 0.8;
     }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
   }
 `;
 

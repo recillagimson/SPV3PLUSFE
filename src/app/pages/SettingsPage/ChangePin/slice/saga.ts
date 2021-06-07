@@ -58,7 +58,7 @@ function* getChangePassword() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-      console.log(decryptData);
+
       if (decryptData) {
         yield put(actions.getFetchSuccess(true));
       }

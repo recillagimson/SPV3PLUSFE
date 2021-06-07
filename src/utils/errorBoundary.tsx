@@ -41,6 +41,7 @@ const Wrapper = styled.div`
         max-height: 250px;
         overflow-y: auto;
         margin: 5px 0;
+        white-space: pre-wrap;
       }
     }
   }
@@ -69,7 +70,6 @@ class ErrorBoundary extends React.Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.log(errorInfo);
     this.setState({
       error: error,
       errorInfo: errorInfo,
@@ -106,7 +106,9 @@ class ErrorBoundary extends React.Component<Props, State> {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => window.location.replace('/')}
+              onClick={() =>
+                window.location.replace(`${process.env.PUBLIC_URL}/`)
+              }
               fullWidth
               size="large"
             >

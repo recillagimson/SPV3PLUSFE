@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DateTime } from 'luxon';
 
+import Loading from 'app/components/Loading';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 import Button from 'app/components/Elements/Button';
@@ -19,6 +20,7 @@ import H5 from 'app/components/Elements/H5';
 import PromosDeals from 'app/components/PromosDeals';
 
 import { numberCommas } from 'app/components/Helpers';
+import { TierIDs } from 'app/components/Helpers/Tiers';
 
 /** svg icons */
 import AddMoney from 'app/components/Assets/AddMoney';
@@ -28,7 +30,7 @@ import PayBills from 'app/components/Assets/PayBills';
 import BuyLoad from 'app/components/Assets/BuyLoad';
 import QRCode from 'app/components/Assets/QRCode';
 import QuickGuide from 'app/components/Assets/QuickGuide';
-import Others from 'app/components/Assets/Others';
+// import Others from 'app/components/Assets/Others';
 import NewsUpdate from 'app/components/Assets/NewsUpdate';
 
 import Balance from './Balance';
@@ -36,23 +38,26 @@ import ButtonFlexWrapper from './ButtonFlex';
 import DashboardButton from './Button';
 
 /** selectors */
+import { selectUser } from 'app/App/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
-  selectError,
+  // selectError,
   selectData,
   selectTransactionData,
 } from './slice/selectors';
-import Loading from 'app/components/Loading';
 
 export function DashboardPage() {
   const history = useHistory();
   const dispatch = useDispatch();
   const { actions } = useContainerSaga();
+  const user: any = useSelector(selectUser);
+
   const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
+  // const error: any = useSelector(selectError);
   const dashData: any = useSelector(selectData);
   const transactionData: any = useSelector(selectTransactionData);
+  const flags: any = window['spFlags'];
 
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());
@@ -106,12 +111,22 @@ export function DashboardPage() {
     });
   }
 
+  let isBronze = false;
+  // if (
+  //   user &&
+  //   user.user_account &&
+  //   user.user_account.tier_id &&
+  //   user.user_account.tier_id !== ''
+  // ) {
+  //   isBronze = user.user_account.tier_id === TierIDs.bronze;
+  // }
+
   return (
     <ProtectedContent>
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
-      {loading && <Loading position="fixed" />}
+      {loading && <Loading position="absolute" />}
 
       <Grid columns="35% 1fr" gap="30px">
         <Box
@@ -162,37 +177,39 @@ export function DashboardPage() {
       </Grid>
 
       <ButtonFlexWrapper>
-        <DashboardButton
-          onClick={() => {
-            alert('Feature coming soon');
-            // history.push('/addmoney');
-          }}
-        >
+        <DashboardButton onClick={() => history.push('/add-money')}>
           <AddMoney />
           Add Money
         </DashboardButton>
-        <DashboardButton onClick={() => history.push('/sendmoney')}>
+        <DashboardButton
+          onClick={() => history.push('/sendmoney')}
+          disabled={(flags && !flags.send_money_enabled) || isBronze}
+        >
           <SendMoney />
           Send Money
         </DashboardButton>
         <DashboardButton
-          onClick={() => {
-            alert('Feature coming soon');
-            // history.push('/onlinebank');
-          }}
+          onClick={() => history.push('/send-to-bank')}
+          disabled={(flags && !flags.send_to_bank_ubp_enabled) || isBronze}
         >
           <SendToBank />
           Send To Bank
         </DashboardButton>
-        <DashboardButton onClick={() => alert('Feature coming soon')}>
+        <DashboardButton onClick={() => history.push('/pay-bills')}>
           <PayBills />
           Pay Bills
         </DashboardButton>
-        <DashboardButton onClick={() => alert('Feature coming soon')}>
+        <DashboardButton
+          onClick={() => history.push('/buyload')}
+          disabled={flags && !flags.buy_load_enabled}
+        >
           <BuyLoad />
           Buy Load
         </DashboardButton>
-        <DashboardButton onClick={() => history.push('/generateqr')}>
+        <DashboardButton
+          onClick={() => history.push('/generateqr')}
+          disabled={flags && !flags.send_money_via_qr_enabled}
+        >
           <QRCode />
           QR Code
         </DashboardButton>
