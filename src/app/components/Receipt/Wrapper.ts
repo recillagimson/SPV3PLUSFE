@@ -35,6 +35,10 @@ const Wrapper = styled.div`
           ${valueDescription}
           text-align: right;
         }
+        p,
+        span {
+          ${valueDescription}
+        }
       }
 
       .total {

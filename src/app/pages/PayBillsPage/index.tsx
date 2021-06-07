@@ -1,7 +1,13 @@
 import * as React from 'react';
+import { useHistory } from 'react-router-dom';
+import { DateTime } from 'luxon';
+
 // import moment from 'moment';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
+
+// get our fontawesome imports
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 // Components
 import ComponentLoading from 'app/components/ComponentLoading';
@@ -11,6 +17,10 @@ import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
 import Select from 'app/components/Elements/Select';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import H3 from 'app/components/Elements/H3';
+import Dialog from 'app/components/Dialog';
+import Logo from 'app/components/Assets/Logo';
 
 /** slice */
 import { selectData } from 'app/pages/DashboardPage/slice/selectors';
@@ -22,29 +32,39 @@ import {
   selectBillers,
   selectBillerCode,
   selectValidatedBiller,
+  selectCreatedPayBills,
 } from './slice/selectors';
 import { BillersState, BillerStateOptions } from './slice/types';
 
 // Helpers
+import { numberWithCommas, parseToNumber } from 'utils/common';
 import { numberCommas } from 'app/components/Helpers';
-import { CATEGORIES } from './helpers';
+import { CATEGORIES, getFormData } from './helpers';
 import { RENDER_FIELDS, RENDER_SELECT_ITEMS } from './fields';
+
+// Assets
+import WrapperCuttedCornerBottom from 'app/components/Assets/WrapperCuttedCornerBottom.svg';
+import WrapperCuttedCornerTop from 'app/components/Assets/WrapperCuttedCornerTop.svg';
 
 // Styles
 import * as S from './PayBills.style';
 
 export function PayBillsPage(props) {
+  const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
+  const apiErrors: any = useSelector(selectError);
   const dashData: any = useSelector(selectData);
   const billers: any = useSelector(selectBillers);
   const billerCode: string = useSelector(selectBillerCode);
   const validatedBiller: any = useSelector(selectValidatedBiller);
+  const createdPayBills: any = useSelector(selectCreatedPayBills);
   const [steps, setSteps] = React.useState(0);
   const [selectedBillers, setSelectedBillers] = React.useState([]);
   const [filteredBillers, setSelectedFilteredBillers] = React.useState([]);
+  const [isDialogErrorOpen, setDialogError] = React.useState(false);
+  const [isDialogSuccessOpen, setDialogSuccess] = React.useState(false);
 
   let balanceInfo = '000.00';
   if (dashData && dashData.balance_info) {
@@ -53,15 +73,22 @@ export function PayBillsPage(props) {
     );
   }
 
-  const initialFormData = {};
+  const initialFormData: any = {};
 
   const [formData, setFormData] = React.useState(initialFormData);
   const [formErrors, setFormErrors] = React.useState(initialFormData);
 
   React.useEffect(() => {
+    dispatch(actions.clear()); // Clear all the data
     setSteps(0); // Reset in first step the pay bills page
     setFormData(initialFormData); // Reset in default state the forms
+    setFormErrors(initialFormData); // Reset in error state
     dispatch(actions.getBillersLoading());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      setSteps(0);
+      dispatch(actions.clear());
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -69,14 +96,124 @@ export function PayBillsPage(props) {
     if (Object.keys(validatedBiller).length) {
       setSteps(steps + 1);
     }
-  }, [steps, validatedBiller]);
+
+    if (apiErrors && apiErrors?.errors?.error_code?.length) {
+      const transactionFailed = apiErrors?.errors?.error_code?.find(
+        errorCode => errorCode === 151,
+      );
+
+      if (transactionFailed) setDialogError(true);
+    }
+
+    if (apiErrors && apiErrors?.provider_error?.length) {
+      if (apiErrors?.provider_error[0].status !== 400) {
+        const providerErr = Object.keys(apiErrors?.provider_error[0]?.errors);
+        if (providerErr.length) {
+          const errors = {};
+          providerErr.map(err => {
+            const error = apiErrors?.provider_error[0]?.errors[err];
+            errors[err] = error[0]?.message;
+            return err;
+          });
+
+          setFormErrors({ ...formErrors, ...errors });
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [apiErrors, validatedBiller]);
+
+  // Success created pay bills
+  React.useEffect(() => {
+    if (Object.keys(createdPayBills).length) {
+      setDialogSuccess(true);
+      setSteps(3);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createdPayBills]);
+
+  const renderReviewContainer = (data: any, type?: string) => {
+    const selectedBiller = billers?.find(biller => biller.code === billerCode);
+    const firstChar = selectedBiller?.name.charAt(0);
+    const isSuccessReview = type === 'successReview';
+
+    const date = DateTime.fromISO(data?.created_at);
+    const monthDateYearTime = date.toLocaleString(DateTime.DATETIME_MED);
+
+    return (
+      <S.ReviewContainer width={isSuccessReview ? 'unset' : '400px'}>
+        <CircleIndicator size="medium" color="primary">
+          {isSuccessReview ? <FontAwesomeIcon icon="check" /> : firstChar}
+        </CircleIndicator>
+        <h3 className="review-title">
+          {isSuccessReview ? 'Transaction successful!' : selectedBiller?.name}
+        </h3>
+        <S.ReviewListItem>
+          <p>Account Name</p>
+          <p>{data.account_name || 'None'}</p>
+        </S.ReviewListItem>
+        <S.ReviewListItem>
+          <p>Account Number</p>
+          <p>{data.account_number || data.referenceNumber || 'None'}</p>
+        </S.ReviewListItem>
+        <S.ReviewListItem>
+          <p>Reference Number</p>
+          <p>{data.reference_number || data.referenceNumber || 'None'}</p>
+        </S.ReviewListItem>
+        <S.ReviewListItem>
+          <p>Amount</p>
+          <p>PHP {numberWithCommas(data.amount)}</p>
+        </S.ReviewListItem>
+        <S.ReviewListItem>
+          <p>Send Receipt To</p>
+          <p>{data.send_receipt_to || 'None'}</p>
+        </S.ReviewListItem>
+        <S.ReviewListItem>
+          <p>Message</p>
+          <p>{data.message || 'None'}</p>
+        </S.ReviewListItem>
+        {isSuccessReview && (
+          <S.ReviewListItem>
+            <p>Transaction Number</p>
+            <p>{data.transaction_number || 'None'}</p>
+          </S.ReviewListItem>
+        )}
+        <S.ReviewTotal>
+          <p className="total-description">Total amount</p>
+          <p className="total-amount">PHP {numberWithCommas(data?.amount)}</p>
+          <p className="service-fees">
+            Service Fee: PHP {numberWithCommas(validatedBiller?.serviceFee)}
+          </p>
+          <p className="other-fees">
+            Other Charges: PHP {numberWithCommas(validatedBiller?.otherCharges)}
+          </p>
+          {isSuccessReview ? (
+            <React.Fragment>
+              <Logo size="small" />
+              <p className="date">{monthDateYearTime}</p>
+            </React.Fragment>
+          ) : (
+            <Button
+              size="large"
+              color="primary"
+              variant="contained"
+              onClick={() => dispatch(actions.createPayBillsLoading())}
+            >
+              Pay Bill
+            </Button>
+          )}
+        </S.ReviewTotal>
+      </S.ReviewContainer>
+    );
+  };
 
   const selectCategory = (category?: string) => {
     const filtered = billers.filter(
       (biller: BillersState) =>
-        biller.category.toLowerCase() === category?.toLowerCase(),
+        biller.category.toLowerCase() === category?.toLowerCase() &&
+        biller.active === '1',
     );
-    console.log('filtered', filtered);
+
     setSelectedBillers(filtered);
     setSelectedFilteredBillers(filtered);
     setSteps(1);
@@ -122,14 +259,17 @@ export function PayBillsPage(props) {
     e.preventDefault();
 
     if (!validate(formData)) {
-      dispatch(actions.validatePayBillsLoading(formData));
+      const payload = getFormData(formData, billerCode);
+      dispatch(actions.validatePayBillsLoading(payload));
     }
   };
 
   const activeCategories = () => {
     const filteredCategories = CATEGORIES.map(cat => {
       const isActive = !!billers?.find(
-        biller => biller.category.toLowerCase() === cat.value.toLowerCase(),
+        biller =>
+          biller.category.toLowerCase() === cat.value.toLowerCase() &&
+          biller.active === '1',
       );
 
       return {
@@ -173,7 +313,6 @@ export function PayBillsPage(props) {
               <S.BillersListItem
                 key={biller.code}
                 onClick={() => {
-                  console.log('biller code', biller.code);
                   // Clear form data
                   setFormData(initialFormData);
                   setFormErrors(initialFormData);
@@ -262,14 +401,14 @@ export function PayBillsPage(props) {
                           onChange={onChangeFormData}
                           placeholder={field.placeholder}
                         />
-                        <S.FieldSubtext>
-                          Available balance: PHP {balanceInfo}
-                        </S.FieldSubtext>
                         {formErrors[field.name] && (
                           <ErrorMsg formError>
                             {formErrors[field.name]}
                           </ErrorMsg>
                         )}
+                        <S.FieldSubtext>
+                          Available balance: PHP {balanceInfo}
+                        </S.FieldSubtext>
                       </Field>
                     );
                   default:
@@ -322,6 +461,8 @@ export function PayBillsPage(props) {
             </S.FormFooter>
           </S.FormWrapper>
         );
+      case 3:
+        return renderReviewContainer(formData, 'payBillReview')
       default:
         return <React.Fragment />;
     }
@@ -364,6 +505,66 @@ export function PayBillsPage(props) {
         <ComponentLoading isLoading={loading}>
           <S.WrapperContent>{renderView(steps)}</S.WrapperContent>
         </ComponentLoading>
+        {/* show success Dialog */}
+        <Dialog show={isDialogSuccessOpen} size="small">
+          <S.DetailsWrapper padding="15px">
+            <Logo size="medium" />
+            <S.SuccessWrapper>
+              <S.CuttedImageWrapper
+                src={WrapperCuttedCornerTop}
+                alt="Squid pay"
+              />
+              {renderReviewContainer(createdPayBills, 'successReview')}
+              <S.CuttedImageWrapper
+                src={WrapperCuttedCornerBottom}
+                alt="Squid pay"
+              />
+            </S.SuccessWrapper>
+            <div className="text-center">
+              <Button
+                size="medium"
+                color="primary"
+                variant="contained"
+                onClick={() => {
+                  setDialogError(false);
+                  dispatch(actions.clear());
+                  history.push('/dashboard');
+                }}
+                fullWidth
+              >
+                Close
+              </Button>
+              <S.ConfirmationMessage>
+                "You will receive a sms notification for your confirmed
+                transaction".
+              </S.ConfirmationMessage>
+            </div>
+          </S.DetailsWrapper>
+        </Dialog>
+        {/* show error Dialog */}
+        <Dialog show={isDialogErrorOpen} size="small">
+          <S.DetailsWrapper padding="15px">
+            <div className="text-center">
+              <CircleIndicator size="medium" color="danger">
+                <FontAwesomeIcon icon="times" />
+              </CircleIndicator>
+              <H3 margin="15px 0 10px">Oops! System Error</H3>
+              <Button
+                fullWidth
+                onClick={() => {
+                  setDialogError(false);
+                  dispatch(actions.clear());
+                  history.push('/dashboard');
+                }}
+                variant="outlined"
+                color="secondary"
+                size="large"
+              >
+                Ok
+              </Button>
+            </div>
+          </S.DetailsWrapper>
+        </Dialog>
       </S.Wrapper>
     </>
   );

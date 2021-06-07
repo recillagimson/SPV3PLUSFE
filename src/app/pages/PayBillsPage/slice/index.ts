@@ -12,6 +12,7 @@ export const initialState: ContainerState = {
   billerCode: '',
   formData: {},
   validatePayBills: {},
+  createdPayBills: {},
 };
 
 const slice = createSlice({
@@ -52,6 +53,25 @@ const slice = createSlice({
     validatePayBillsError(state, action: PayloadAction<ErrorState>) {
       state.error = action.payload;
       state.loading = false;
+    },
+    createPayBillsLoading(state) {
+      state.loading = true;
+      state.error = {};
+    },
+    createPayBillsSuccess(state, action: PayloadAction<object>) {
+      state.loading = false;
+      state.createdPayBills = action.payload;
+    },
+    createPayBillsError(state, action: PayloadAction<ErrorState>) {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    clear(state) {
+      state.error = {};
+      state.loading = false;
+      state.validatePayBills = {};
+      state.createdPayBills = {};
+      state.formData = {};
     },
   },
 });

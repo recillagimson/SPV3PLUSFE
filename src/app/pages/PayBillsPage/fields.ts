@@ -1,5 +1,5 @@
 export const RENDER_SELECT_ITEMS = name => {
-  switch (name) {
+  switch (name.toLowerCase()) {
     case 'pldt6_service':
       return [
         {
@@ -15,7 +15,7 @@ export const RENDER_SELECT_ITEMS = name => {
           label: 'PLDT Ultera',
         },
       ];
-    case 'smart_product':
+    case 'smart_otherinfo.product':
       return [
         {
           value: 'c',
@@ -39,7 +39,7 @@ export const RENDER_SELECT_ITEMS = name => {
       ];
     case 'sss01_platform_type':
     case 'sss02_platform_type':
-    case 'sss03_platform_type':
+    case 'sss03_otherinfo.platformtype':
       return [
         {
           value: 'OTC',
@@ -89,6 +89,55 @@ export const RENDER_SELECT_ITEMS = name => {
           label: 'Salary Loan Early Renewal Program (SLERP)',
         },
       ];
+    case 'unbnk_service':
+      return [
+        {
+          value: 'Master Card',
+          label: 'Mastercard',
+        },
+        {
+          value: 'Visa',
+          label: 'Visa',
+        },
+      ];
+    case 'admsn_otherinfo.paymenttype':
+      return [
+        {
+          value: 'B2',
+          label: 'Old Accounts',
+        },
+        {
+          value: 'DP',
+          label: 'Down Payment',
+        },
+        {
+          value: 'PT',
+          label: 'Prelim Term',
+        },
+        {
+          value: 'MT',
+          label: 'Mid Term',
+        },
+        {
+          value: 'FT',
+          label: 'Final Term',
+        },
+      ];
+    case 'admsn_otherinfo.term':
+      return [
+        {
+          value: '1',
+          label: 'First Sem',
+        },
+        {
+          value: '2',
+          label: 'Second Sem',
+        },
+        {
+          value: '3',
+          label: 'Summer',
+        },
+      ];
     default:
       return [];
   }
@@ -106,8 +155,8 @@ export const RENDER_FIELDS = code => {
         {
           label: 'Account Number',
           type: 'text',
-          name: 'account_number',
-          placeholder: '0000-0000-0000',
+          name: 'referenceNumber',
+          placeholder: '',
           required: true,
         },
         {
@@ -124,7 +173,7 @@ export const RENDER_FIELDS = code => {
           label: 'Account Number',
           type: 'text',
           name: 'account_number',
-          placeholder: '0000-0000-0000',
+          placeholder: '',
           required: true,
         },
         {
@@ -156,7 +205,7 @@ export const RENDER_FIELDS = code => {
           label: 'Account Number',
           type: 'text',
           name: 'account_number',
-          placeholder: '0000-0000-0000',
+          placeholder: '',
           required: true,
         },
         {
@@ -180,7 +229,7 @@ export const RENDER_FIELDS = code => {
           label: 'Account Number',
           type: 'text',
           name: 'account_number',
-          placeholder: '0000-0000-0000',
+          placeholder: '',
           required: true,
         },
         {
@@ -217,7 +266,7 @@ export const RENDER_FIELDS = code => {
         {
           label: 'Policy Number (reference number)',
           type: 'text',
-          name: 'policy_number',
+          name: 'referenceNumber',
           placeholder: '',
           required: true,
         },
@@ -231,14 +280,14 @@ export const RENDER_FIELDS = code => {
         {
           label: 'Account Name',
           type: 'text',
-          name: 'account_name',
+          name: 'otherInfo.AccountName',
           placeholder: '',
           required: true,
         },
         {
           label: 'Due Date',
           type: 'text',
-          name: 'due_date',
+          name: 'otherInfo.DueDate',
           placeholder: '',
           required: true,
         },
@@ -249,7 +298,7 @@ export const RENDER_FIELDS = code => {
           label: 'Account Number',
           type: 'text',
           name: 'account_number',
-          placeholder: '0000-0000-0000',
+          placeholder: '',
           required: true,
         },
         {
@@ -280,7 +329,7 @@ export const RENDER_FIELDS = code => {
           label: 'Account Number',
           type: 'text',
           name: 'account_number',
-          placeholder: '0000-0000-0000',
+          placeholder: '',
           required: true,
         },
         {
@@ -310,8 +359,8 @@ export const RENDER_FIELDS = code => {
         {
           label: 'Account Number',
           type: 'text',
-          name: 'account_number',
-          placeholder: '0000-0000-0000',
+          name: 'referenceNumber',
+          placeholder: '',
           required: true,
         },
         {
@@ -324,21 +373,21 @@ export const RENDER_FIELDS = code => {
         {
           label: 'Product',
           type: 'select',
-          name: 'product',
+          name: 'otherInfo.Product',
           placeholder: '',
           required: true,
         },
         {
           label: 'Telephone Number',
           type: 'text',
-          name: 'telephone_number',
+          name: 'otherInfo.TelephoneNumber',
           placeholder: '',
           required: true,
         },
         {
           label: 'Service Reference No',
           type: 'text',
-          name: 'service_reference_no',
+          name: 'otherInfo.ServiceReferenceNo',
           placeholder: '',
           required: true,
         },
@@ -445,56 +494,56 @@ export const RENDER_FIELDS = code => {
         {
           label: 'Payor Type',
           type: 'select',
-          name: 'payment_type',
+          name: 'otherInfo.PayorType',
           placeholder: '',
           required: true,
         },
         {
           label: 'Rel Type',
           type: 'text',
-          name: 'rel_type',
+          name: 'otherInfo.RelType',
           placeholder: '',
           required: true,
         },
         {
           label: 'Loan Account No.',
           type: 'text',
-          name: 'loan_account_no',
+          name: 'otherInfo.LoanAccountNo',
           placeholder: '',
           required: true,
         },
         {
           label: 'Company Name',
           type: 'text',
-          name: 'company_name',
+          name: 'otherInfo.CompanyName',
           placeholder: '',
           required: true,
         },
         {
           label: 'Last Name',
           type: 'text',
-          name: 'last_name',
+          name: 'otherInfo.LastName',
           placeholder: '',
           required: true,
         },
         {
           label: 'First Name',
           type: 'text',
-          name: 'first_name',
+          name: 'otherInfo.FirstName',
           placeholder: '',
           required: true,
         },
         {
           label: 'Middle Initial',
           type: 'text',
-          name: 'middle_initial',
+          name: 'otherInfo.MI',
           placeholder: '',
           required: true,
         },
         {
           label: 'Platform Type',
           type: 'select',
-          name: 'platform_type',
+          name: 'otherInfo.PlatformType',
           placeholder: '',
           required: true,
         },
@@ -537,6 +586,235 @@ export const RENDER_FIELDS = code => {
           required: true,
         },
       ];
+    case 'MBCCC':
+    case 'BPI00':
+      return [
+        {
+          label: 'Account Number',
+          type: 'text',
+          name: 'referenceNumber',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Amount',
+          type: 'number',
+          name: 'amount',
+          placeholder: 'PHP 0.00',
+          required: true,
+        },
+        {
+          label: 'Customer name',
+          type: 'text',
+          name: 'otherInfo.ConsName',
+          placeholder: '',
+          required: true,
+        },
+      ];
+    case 'BNKRD':
+      return [
+        {
+          label: 'Account Number',
+          type: 'text',
+          name: 'referenceNumber',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Amount',
+          type: 'number',
+          name: 'amount',
+          placeholder: 'PHP 0.00',
+          required: true,
+        },
+        {
+          label: 'Account name',
+          type: 'text',
+          name: 'otherInfo.AccountName',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Bill Date',
+          type: 'text',
+          name: 'otherInfo.BillDate',
+          placeholder: '',
+          required: true,
+        },
+      ];
+    case 'UNBNK':
+      return [
+        {
+          label: 'Account Number',
+          type: 'text',
+          name: 'referenceNumber',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Amount',
+          type: 'number',
+          name: 'amount',
+          placeholder: 'PHP 0.00',
+          required: true,
+        },
+        {
+          label: 'Service',
+          type: 'select',
+          name: 'otherInfo.Service',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Customer name',
+          type: 'text',
+          name: 'otherInfo.ConsName',
+          placeholder: '',
+          required: true,
+        },
+      ];
+    case 'ADMSN':
+      return [
+        {
+          label: 'Student Number',
+          type: 'text',
+          name: 'referenceNumber',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Amount',
+          type: 'number',
+          name: 'amount',
+          placeholder: 'PHP 0.00',
+          required: true,
+        },
+        {
+          label: 'Last Name',
+          type: 'text',
+          name: 'otherInfo.LastName',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'First Name',
+          type: 'text',
+          name: 'otherInfo.FirstName',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Middle Name',
+          type: 'text',
+          name: 'otherInfo.MiddleName',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Payment Type',
+          type: 'select',
+          name: 'otherInfo.PaymentType',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Course',
+          type: 'text',
+          name: 'otherInfo.Course',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Total Assessment',
+          type: 'text',
+          name: 'otherInfo.TotalAssessment',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'School Year',
+          type: 'text',
+          name: 'otherInfo.SchoolYear',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Term',
+          type: 'select',
+          name: 'otherInfo.Term',
+          placeholder: '',
+          required: true,
+        },
+      ];
+    case 'UBNK4':
+      return [
+        {
+          label: 'Student Number',
+          type: 'text',
+          name: 'referenceNumber',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Amount',
+          type: 'number',
+          name: 'amount',
+          placeholder: 'PHP 0.00',
+          required: true,
+        },
+        {
+          label: 'Student Name',
+          type: 'text',
+          name: 'otherInfo.StudentName',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Branch',
+          type: 'text',
+          name: 'otherInfo.Branch',
+          placeholder: '',
+          required: true,
+        },
+      ];
+    case 'ASLNK':
+      return [
+        {
+          label: 'Student Number',
+          type: 'text',
+          name: 'referenceNumber',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Amount',
+          type: 'number',
+          name: 'amount',
+          placeholder: 'PHP 0.00',
+          required: true,
+        },
+        {
+          label: 'Last Name',
+          type: 'text',
+          name: 'otherInfo.LastName',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'First Name',
+          type: 'text',
+          name: 'otherInfo.FirstName',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Middle Name',
+          type: 'text',
+          name: 'otherInfo.MiddleName',
+          placeholder: '',
+          required: true,
+        },
+      ];
     default:
       return [
         {
@@ -550,7 +828,7 @@ export const RENDER_FIELDS = code => {
           label: 'Account Number',
           type: 'text',
           name: 'account_number',
-          placeholder: '0000-0000-0000',
+          placeholder: '',
           required: true,
         },
         {

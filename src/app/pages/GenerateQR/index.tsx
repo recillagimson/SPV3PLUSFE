@@ -24,6 +24,7 @@ import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
 // From this folder
 import Wrapper from './Wrapper';
 
+import BSPLogo from 'logo/bsp.png';
 /** slice */
 import { useContainerSaga } from './slice';
 import { selectLoading, selectError, selectData } from './slice/selectors';
@@ -69,13 +70,21 @@ export function GenerateQR() {
     // Check amount if it's valid
     if (amount.value === '') {
       error = true;
-      setAmount({ ...amount, error: true, errormsg: 'Cannot be empty' });
+      setAmount({
+        ...amount,
+        error: true,
+        errormsg: 'Oops! This field cannot be empty.',
+      });
     }
 
     // Check amount if it's less than
     if (parseFloat(amount.value) <= 0) {
       error = true;
-      setAmount({ ...amount, error: true, errormsg: 'Invalid Amount' });
+      setAmount({
+        ...amount,
+        error: true,
+        errormsg: 'You entered invalid amount.',
+      });
     }
 
     if (!error) {
@@ -116,7 +125,7 @@ export function GenerateQR() {
                 <Label>Enter Amount</Label>
                 <InputTextWrapper>
                   <Input
-                    type="text"
+                    type="number"
                     placeholder="0.00"
                     value={amount.value}
                     autoComplete="off"
@@ -133,7 +142,7 @@ export function GenerateQR() {
 
                 {amount.error && (
                   <>
-                    <ErrorMsg formError>*{amount.errormsg}</ErrorMsg>
+                    <ErrorMsg formError>{amount.errormsg}</ErrorMsg>
                   </>
                 )}
 
@@ -157,7 +166,19 @@ export function GenerateQR() {
             {isSuccess && (
               <>
                 <Flex justifyContent="center">
-                  <QRCode value={success.id} size="200" id="QRCode" />
+                  <QRCode
+                    value={success.id}
+                    size="200"
+                    id="QRCode"
+                    imageSettings={{
+                      src: 'logo/bsp.png',
+                      x: null,
+                      y: null,
+                      height: 40,
+                      width: 40,
+                      // excavate: true,
+                    }}
+                  />
                 </Flex>
                 <br />
 

@@ -10,86 +10,27 @@ import {
   getResponsePassphrase,
 } from 'app/App/slice/saga';
 
+import { containerActions as actions } from '.';
 import {
-  selectBillerCode,
-  selectFormData,
-  selectValidatedBiller,
+  selectRequest,
+  selectValidateRequest,
+  selectPayRequest,
 } from './selectors';
 
-import { containerActions as actions } from '.';
-
-/**
- * GET List of Billers
- */
-function* getBillers() {
+function* getLoadProducts() {
   yield delay(500);
   const token = yield select(selectUserToken);
+  const payload = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/pay/bills`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/buy/load/products`;
 
-  const options = {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token.access_token}`,
-    },
-  };
-
-  try {
-    const apirequest = yield call(request, requestURL, options);
-    if (apirequest) {
-      // request decryption passphrase
-      let decryptPhrase: PassphraseState = yield call(
-        getResponsePassphrase,
-        apirequest.data.id,
-      );
-
-      // decrypt payload data
-      // function returns the parsed string
-      let decryptData = spdCrypto.decrypt(
-        apirequest.data.payload,
-        decryptPhrase.passPhrase,
-      );
-
-      yield put(actions.getBillersSuccess(decryptData?.data));
-    } else {
-      yield put(
-        actions.getBillersError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
-    }
-  } catch (err) {
-    // special case, check the 422 for invalid data (account already exists)
-    if (err && err.response && err.response.status === 422) {
-      const body = yield err.response.json();
-      const newError = {
-        code: 422,
-        ...body,
-      };
-      yield put(actions.getBillersError(newError));
-    } else {
-      yield put(actions.getBillersError(err));
-    }
-  }
-}
-
-// Validate Pay Billers
-function* validatePaybills() {
-  yield delay(500);
-  const token = yield select(selectUserToken);
-  const billerCode = yield select(selectBillerCode);
-  const formData = yield select(selectFormData);
-  const referenceNumber = formData?.account_number || formData?.referenceNumber;
-  const requestURL = `${process.env.REACT_APP_API_URL}/pay/bills/validate/account/${billerCode}/${referenceNumber}`;
   let encryptPayload: string = '';
+
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
 
   if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
     encryptPayload = spdCrypto.encrypt(
-      JSON.stringify(formData),
+      JSON.stringify(payload),
       requestPhrase.passPhrase,
     );
   }
@@ -114,51 +55,50 @@ function* validatePaybills() {
       );
 
       // decrypt payload data
-      // function returns the parsed string
       let decryptData = spdCrypto.decrypt(
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
 
-      yield put(actions.validatePayBillsSuccess(decryptData));
+      if (decryptData) {
+        yield put(actions.getFetchSuccess(decryptData));
+      }
     } else {
       yield put(
-        actions.validatePayBillsError({
+        actions.getFetchError({
           error: true,
           message: 'An error has occured.',
         }),
       );
     }
   } catch (err) {
-    // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
         code: 422,
         ...body,
       };
-      yield put(actions.validatePayBillsError(newError));
+      yield put(actions.getFetchError(newError));
     } else {
-      yield put(actions.validatePayBillsError(err));
+      yield put(actions.getFetchError(err));
     }
   }
 }
 
-// Validate Pay Billers
-function* createPayBills() {
+function* validateBuyLoad() {
   yield delay(500);
   const token = yield select(selectUserToken);
-  const billerCode = yield select(selectBillerCode);
-  const validatedBiller = yield select(selectValidatedBiller);
-  const requestURL = `${process.env.REACT_APP_API_URL}/pay/bills/create/payment/${billerCode}`;
+  const payload = yield select(selectValidateRequest);
+
+  const requestURL = `${process.env.REACT_APP_API_URL}/buy/load/validate`;
+
   let encryptPayload: string = '';
+
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
 
   if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
     encryptPayload = spdCrypto.encrypt(
-      JSON.stringify({
-        validationNumber: validatedBiller.validationNumber,
-      }),
+      JSON.stringify(payload),
       requestPhrase.passPhrase,
     );
   }
@@ -183,32 +123,100 @@ function* createPayBills() {
       );
 
       // decrypt payload data
-      // function returns the parsed string
       let decryptData = spdCrypto.decrypt(
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-      console.log('success create paybills', decryptData);
-      yield put(actions.createPayBillsSuccess(decryptData));
+
+      if (decryptData) {
+        yield put(actions.getValidateSuccess(true));
+      }
     } else {
       yield put(
-        actions.createPayBillsError({
+        actions.getValidateError({
           error: true,
           message: 'An error has occured.',
         }),
       );
     }
   } catch (err) {
-    // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
         code: 422,
         ...body,
       };
-      yield put(actions.createPayBillsError(newError));
+      yield put(actions.getValidateError(newError));
     } else {
-      yield put(actions.createPayBillsError(err));
+      yield put(actions.getValidateError(err));
+    }
+  }
+}
+
+function* payLoad() {
+  yield delay(500);
+  const token = yield select(selectUserToken);
+  const payload = yield select(selectPayRequest);
+
+  const requestURL = `${process.env.REACT_APP_API_URL}/buy/load`;
+
+  let encryptPayload: string = '';
+
+  let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
+
+  if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
+    encryptPayload = spdCrypto.encrypt(
+      JSON.stringify(payload),
+      requestPhrase.passPhrase,
+    );
+  }
+
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token.access_token}`,
+    },
+    body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
+  };
+
+  try {
+    const apirequest = yield call(request, requestURL, options);
+    if (apirequest) {
+      // request decryption passphrase
+      let decryptPhrase: PassphraseState = yield call(
+        getResponsePassphrase,
+        apirequest.data.id,
+      );
+
+      // decrypt payload data
+      let decryptData = spdCrypto.decrypt(
+        apirequest.data.payload,
+        decryptPhrase.passPhrase,
+      );
+
+      if (decryptData) {
+        yield put(actions.getPaySuccess(decryptData));
+      }
+    } else {
+      yield put(
+        actions.getPayError({
+          error: true,
+          message: 'An error has occured.',
+        }),
+      );
+    }
+  } catch (err) {
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.getPayError(newError));
+    } else {
+      yield put(actions.getPayError(err));
     }
   }
 }
@@ -221,7 +229,8 @@ export function* containerSaga() {
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
-  yield takeLatest(actions.getBillersLoading.type, getBillers);
-  yield takeLatest(actions.validatePayBillsLoading.type, validatePaybills);
-  yield takeLatest(actions.createPayBillsLoading.type, createPayBills);
+
+  yield takeLatest(actions.getFetchLoading.type, getLoadProducts);
+  yield takeLatest(actions.getValidateLoading.type, validateBuyLoad);
+  yield takeLatest(actions.getPayLoading.type, payLoad);
 }

@@ -35,3 +35,8 @@ export const selectValidatedBiller = createSelector(
   [selectDomain],
   subState => subState.validatePayBills,
 );
+
+export const selectCreatedPayBills = createSelector(
+  [selectDomain],
+  subState => subState.createdPayBills,
+);

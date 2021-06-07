@@ -10,6 +10,7 @@ export interface PayBillsState {
   billerCode: string;
   formData: object;
   validatePayBills: object;
+  createdPayBills: object;
 }
 
 export interface BillersState {
