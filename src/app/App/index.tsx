@@ -51,6 +51,7 @@ import {
 } from 'app/pages/TransactionHistoryPage/Loadable';
 import { HelpCenterPage, FAQPage } from 'app/pages/HelpCenterPage/Loadable';
 import { SendToBank } from 'app/pages/SendToBank/Loadable';
+import { SendToBankUBP } from 'app/pages/SendToBankUBP/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
 import { SettingsChangePasswordPage } from 'app/pages/SettingsPage/ChangePassword/Loadable';
 import { SettingsChangePinPage } from 'app/pages/SettingsPage/ChangePin/Loadable';
@@ -317,6 +318,11 @@ export function App() {
             />
             <PrivateRoute exact path="/help-center/faq" component={FAQPage} />
             <PrivateRoute exact path="/send-to-bank" component={SendToBank} />
+            <PrivateRoute
+              exact
+              path="/send-to-bank-ubp"
+              component={SendToBankUBP}
+            />
             <PrivateRoute exact path="/settings" component={SettingsPage} />
             <PrivateRoute
               exact
