@@ -16,7 +16,7 @@ import Selfie from 'app/components/Tier/Selfie';
 
 /**
  * Silver Upgrade Page
- * Will walk to all the process of upgrade to silver
+ * Will walk to all the process of upgrading to silver
  */
 export default function SilverUpgradeComponent() {
   const history = useHistory();
@@ -32,6 +32,8 @@ export default function SilverUpgradeComponent() {
     name: '',
     id: '',
   });
+  const [photoID, setPhotoID] = React.useState<string[]>([]);
+  const [selfieID, setSelfieID] = React.useState<string[]>([]);
 
   React.useEffect(() => {
     if (location && location.state && Object.keys(location.state).length > 0) {
@@ -85,7 +87,8 @@ export default function SilverUpgradeComponent() {
       {showPrimaryID && (
         <PrimaryIDs
           tierID={tier ? tier.id : ''}
-          onSuccess={bool => {
+          onSuccess={(bool: boolean, ids: string[]) => {
+            setPhotoID(ids);
             setShowPrimaryID(false);
             setFromPrimary(true);
             if (bool) {
@@ -100,7 +103,8 @@ export default function SilverUpgradeComponent() {
       {showSecondaryID && (
         <SecondaryIDs
           tierID={tier ? tier.id : ''}
-          onSuccess={() => {
+          onSuccess={(ids: string[]) => {
+            setPhotoID(ids);
             setShowSecondaryID(false);
             setShowSelfie(true);
             setFromPrimary(false);
@@ -115,7 +119,8 @@ export default function SilverUpgradeComponent() {
       {showSelfie && (
         <Selfie
           tierID={tier ? tier.id : ''}
-          onSuccess={() => {
+          onSuccess={(ids: string[]) => {
+            setSelfieID(ids);
             setShowSelfie(false);
             setShowProfile(true);
           }}
@@ -139,6 +144,8 @@ export default function SilverUpgradeComponent() {
             setShowRequirement(true);
           }}
           isTierUpgrade
+          idPhotoID={photoID}
+          selfieID={selfieID}
         />
       )}
     </>

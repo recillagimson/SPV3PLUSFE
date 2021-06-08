@@ -24,8 +24,11 @@ import H3 from 'app/components/Elements/H3';
 
 import { fileSize } from 'app/components/Helpers';
 
-import { selectUserToken } from 'app/App/slice/selectors';
+import { selectClientToken, selectUserToken } from 'app/App/slice/selectors';
 import { appActions } from 'app/App/slice';
+import { PassphraseState } from 'types/Default';
+import { getResponsePassphrase } from './helpers';
+import spdCrypto from '../Helpers/EncyptDecrypt';
 
 const animate = keyframes`
    0% {
@@ -98,17 +101,18 @@ export default function IDUploadListComponent({
   files: any;
   idType?: string;
   idNumber?: string;
-  onSuccess: () => void;
+  onSuccess: (ids: string[]) => void;
   isPrimary?: boolean;
 }) {
   const dispatch = useDispatch();
   const token: any = useSelector(selectUserToken);
+  const clientToken: any = useSelector(selectClientToken);
 
   const [arrayFiles, setArrayFiles] = React.useState<{}[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
-
+  const [success, setSuccess] = React.useState<boolean>(false);
+  const [responseData, setResponseData] = React.useState<{}[]>([]);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
 
   React.useEffect(() => {
@@ -149,6 +153,17 @@ export default function IDUploadListComponent({
       const resp = await req.json();
 
       if (resp && resp.data) {
+        let decryptPhrase: PassphraseState = await getResponsePassphrase(
+          resp.data.id,
+          clientToken,
+        );
+
+        // decrypt payload data
+        let decryptData = await spdCrypto.decrypt(
+          resp.data.payload,
+          decryptPhrase.passPhrase,
+        );
+        setResponseData(decryptData);
         setSuccess(true);
       }
       setLoading(false);
@@ -197,13 +212,19 @@ export default function IDUploadListComponent({
     setError(true);
 
     if (refresh) {
-      onSuccess();
+      const ids: string[] = [];
+      if (responseData && responseData.length > 0) {
+        responseData.map((j: any) => ids.push(j.id));
+      }
+
+      onSuccess(ids);
       setSuccess(false);
       setArrayFiles([]);
+      setResponseData([]);
     }
   };
 
-  let items;
+  let items: {} | null | undefined;
   if (arrayFiles && arrayFiles.length) {
     items = arrayFiles.map((i: any) => (
       <Wrapper key={i.name}>

@@ -1,5 +1,3 @@
-import { createImmediatelyInvokedArrowFunction } from 'typescript';
-
 /**
  * small helpers specific to upload or tier only
  */
@@ -29,3 +27,36 @@ export const createFile = (file: any) => {
     lastModified: file.lastModified,
   });
 };
+
+/**
+ * helper for requesting a response passphrase
+ */
+/**
+ * Get a response passphrase for decryption
+ * @param {string}  id    request passphrase id
+ * @return                Returns the result from the api call
+ */
+export async function getResponsePassphrase(
+  id: string,
+  token: { access_token: string },
+) {
+  const requestURL = `${process.env.REACT_APP_API_URL}/payloads/${id}/key`;
+
+  const options = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'content-type': 'application/json',
+      Authorization: `Bearer ${token.access_token}`,
+    },
+  };
+
+  try {
+    const apirequest = await fetch(requestURL, options);
+    const response = await apirequest.json();
+
+    return response;
+  } catch (err) {
+    return false;
+  }
+}

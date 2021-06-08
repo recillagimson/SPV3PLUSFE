@@ -36,7 +36,7 @@ import IDUploadFile from './IDUploadFile';
 
 type SecondaryIDsComponentProps = {
   tierID: string;
-  onSuccess: () => void;
+  onSuccess: (ids: string[]) => void;
   onBack: () => void;
 };
 
@@ -106,7 +106,7 @@ export default function SecondaryIDsComponent({
     setFiles(files);
   };
 
-  const onSuccessUpload = () => {
+  const onSuccessUpload = (ids: string[] = []) => {
     setFiles(false);
 
     if (idCount === 0 && id.length < 2) {
@@ -122,7 +122,7 @@ export default function SecondaryIDsComponent({
       setIDNumber({ value: '', error: false });
     }
     if (id.length === 2) {
-      onSuccess();
+      onSuccess(ids);
       deleteCookie('spv_sec_count');
       setIDCount(0);
     }

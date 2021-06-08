@@ -33,7 +33,7 @@ import IDUploadFile from './IDUploadFile';
 
 type PrimaryIDsComponentProps = {
   tierID: string;
-  onSuccess: (bool: boolean) => void;
+  onSuccess: (bool: boolean, ids: string[]) => void;
 };
 
 export default function PrimaryIDsComponent({
@@ -85,9 +85,9 @@ export default function PrimaryIDsComponent({
     setFiles(files);
   };
 
-  const onSuccessUpload = () => {
+  const onSuccessUpload = (ids: string[] = []) => {
     setFiles(false);
-    onSuccess(true);
+    onSuccess(true, ids);
   };
 
   // populate id
@@ -121,7 +121,7 @@ export default function PrimaryIDsComponent({
                 variant="contained"
                 color="primary"
                 size="large"
-                onClick={() => onSuccess(false)}
+                onClick={() => onSuccess(false, [])}
               >
                 I don't have a Primary ID
               </Button>

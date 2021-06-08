@@ -53,15 +53,21 @@ import {
 } from './slice/selectors';
 import { validatePhone } from 'app/components/Helpers';
 
+type UserProfileFormProps = {
+  onCancel: () => void;
+  onSuccess: () => void;
+  isTierUpgrade?: boolean;
+  idPhotoID?: string[];
+  selfieID?: string[];
+};
+
 export default function UserProfileForm({
   onCancel,
   onSuccess,
   isTierUpgrade,
-}: {
-  onCancel: () => void;
-  onSuccess: () => void;
-  isTierUpgrade?: boolean;
-}) {
+  idPhotoID,
+  selfieID,
+}: UserProfileFormProps) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
   const refs: any = useSelector(selectReferences);
@@ -644,6 +650,8 @@ export default function UserProfileForm({
       encoded_source_of_fund: sourceOfFunds.encoded,
       occupation: occupation.value,
       employer: employer.value,
+      id_photos_ids: isTierUpgrade ? idPhotoID : undefined,
+      id_selfie_ids: isTierUpgrade ? selfieID : undefined,
     };
     dispatch(actions.getFetchLoading(data));
   };
