@@ -5,55 +5,55 @@ import Box from 'app/components/Box';
 // import Select from 'app/components/Elements/Select';
 import TermsCondition from 'app/components/TermsCondition';
 
-import Loading from 'app/components/Loading';
-import { useSelector, useDispatch } from 'react-redux';
-import { useContainerSaga } from './slice';
-import {
-  selectLoading,
-  selectTermsAndConditionsData,
-  // selectError,
-} from './slice/selectors';
+// import Loading from 'app/components/Loading';
+// import { useSelector, useDispatch } from 'react-redux';
+// import { useContainerSaga } from './slice';
+// import {
+//   selectLoading,
+//   selectTermsAndConditionsData,
+//   // selectError,
+// } from './slice/selectors';
 
 export function TermsAndConditionConsent() {
   // const [language, setLanguage] = React.useState('English');
-  const dispatch = useDispatch();
-  const { actions } = useContainerSaga();
-  const loading = useSelector(selectLoading);
-  const termsAndConditions = useSelector(selectTermsAndConditionsData);
-  const [
-    parseTermsAndConditions,
-    setParseTermsAndConditions,
-  ] = React.useState();
+  // const dispatch = useDispatch();
+  // const { actions } = useContainerSaga();
+  // const loading = useSelector(selectLoading);
+  // const termsAndConditions = useSelector(selectTermsAndConditionsData);
+  // const [
+  //   parseTermsAndConditions,
+  //   setParseTermsAndConditions,
+  // ] = React.useState();
 
-  React.useEffect(() => {
-    dispatch(actions.getFetchLoading());
-    return () => {
-      dispatch(actions.getFetchReset());
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   dispatch(actions.getFetchLoading());
+  //   return () => {
+  //     dispatch(actions.getFetchReset());
+  //   };
+  // }, []);
 
-  React.useEffect(() => {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(termsAndConditions, 'text/html');
-    if (doc.querySelector('body')?.textContent !== 'null') {
-      const parse: any = doc.querySelector('body')?.innerHTML;
-      setParseTermsAndConditions(parse);
-    }
-  }, [termsAndConditions]);
+  // React.useEffect(() => {
+  //   const parser = new DOMParser();
+  //   const doc = parser.parseFromString(termsAndConditions, 'text/html');
+  //   if (doc.querySelector('body')?.textContent !== 'null') {
+  //     const parse: any = doc.querySelector('body')?.innerHTML;
+  //     setParseTermsAndConditions(parse);
+  //   }
+  // }, [termsAndConditions]);
 
-  const renderTC = (parseTermsAndConditions: any) => {
-    if (loading) {
-      return <Loading />;
-    }
+  // const renderTC = (parseTermsAndConditions: any) => {
+  //   if (loading) {
+  //     return <Loading />;
+  //   }
 
-    if (parseTermsAndConditions) {
-      return (
-        <div
-          dangerouslySetInnerHTML={{ __html: parseTermsAndConditions }}
-        ></div>
-      );
-    }
-  };
+  //   if (parseTermsAndConditions) {
+  //     return (
+  //       <div
+  //         dangerouslySetInnerHTML={{ __html: parseTermsAndConditions }}
+  //       ></div>
+  //     );
+  //   }
+  // };
 
   return (
     <ProtectedContent>
@@ -74,7 +74,8 @@ export function TermsAndConditionConsent() {
         //   </Select>
         // }
       >
-        <div>{renderTC(parseTermsAndConditions)}</div>
+        {/* <div>{renderTC(parseTermsAndConditions)}</div> */}
+        <TermsCondition />
       </Box>
     </ProtectedContent>
   );
