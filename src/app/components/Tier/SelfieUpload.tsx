@@ -205,11 +205,9 @@ export default function SelfieUploadComponent({
 
     if (refresh) {
       let ids: string[] = [];
-      console.log(responseData);
       if (responseData && Object.keys(responseData).length > 0) {
         ids = [responseData['id'] || ''];
       }
-      console.log(ids);
       onSuccess(ids);
       setSuccess(false);
       setArrayFiles([]);

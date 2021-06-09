@@ -19,7 +19,6 @@ import ListItemButton from 'app/components/List/ListItemButton';
 import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
 import Input from 'app/components/Elements/Input';
 import Button from 'app/components/Elements/Button';
-import Dropzone from 'app/components/Dropzone';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 // import IDUploadList from 'app/components/Elements/IDUploadList';
 
@@ -57,7 +56,6 @@ export default function SecondaryIDsComponent({
   const [showIDSelection, setShowIDSelection] = React.useState(true);
   const [showIDInput, setShowIDInput] = React.useState(false);
   const [showUpload, setShowUpload] = React.useState(false);
-  const [files, setFiles] = React.useState<any>(false);
 
   React.useEffect(() => {
     if (data && Object.keys(data).length > 0 && data.secondary.length === 0) {
@@ -102,13 +100,7 @@ export default function SecondaryIDsComponent({
     }
   };
 
-  const onSelectFiles = (files: any) => {
-    setFiles(files);
-  };
-
   const onSuccessUpload = (ids: string[] = []) => {
-    setFiles(false);
-
     if (idCount === 0 && id.length < 2) {
       setCookie('spv_sec_count', idCount.toString());
       setShowUpload(false);
@@ -249,54 +241,16 @@ export default function SecondaryIDsComponent({
       )}
 
       {showUpload && (
-        <Box
-          title="ID Number"
-          titleBorder
-          withPadding
-          footerAlign="right"
-          footer={
-            <>
-              <Button
-                variant="outlined"
-                color="secondary"
-                size="large"
-                onClick={() => {
-                  setShowIDInput(true);
-                  setShowUpload(false);
-                  setFiles(false);
-                }}
-              >
-                Previous
-              </Button>
-              <Button variant="contained" color="primary" size="large" disabled>
-                Next
-              </Button>
-            </>
-          }
-        >
-          <Dropzone onSelectFiles={onSelectFiles} />
-          {files && files.length && (
-            <IDUploadFile
-              files={files}
-              idNumber={idNumber.value}
-              idType={idType}
-              onSuccess={onSuccessUpload}
-            />
-          )}
-
-          {/* <Note style={{ marginBottom: 10 }}>
-            Note: Invalid files won't be uploaded
-          </Note> */}
-          <Note>Government ID</Note>
-          <Note>
-            - Must show all corners of the ID
-            <br />
-            - Must show front and back details of the ID
-            <br />
-            - Max file size: 1MB (1024kb)
-            <br />- Formats accepted: JPG, PNG and PDF
-          </Note>
-        </Box>
+        <IDUploadFile
+          title="Upload Secondary ID"
+          idNumber={idNumber.value}
+          idType={idType}
+          onSuccess={onSuccessUpload}
+          onPrevious={() => {
+            setShowIDInput(true);
+            setShowUpload(false);
+          }}
+        />
       )}
     </>
   );

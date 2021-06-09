@@ -63,6 +63,10 @@ import { MerchantInquiryPage } from 'app/pages/MerchantInquiry/Loadable';
 import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
 import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
 import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
+import { AddMoney } from 'app/pages/AddMoney/Loadable';
+import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
+import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent/Loadable';
+import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 
@@ -82,10 +86,6 @@ import {
   setIsUnathenticated,
 } from './slice/selectors';
 // import { usePrevious } from 'app/components/Helpers/Hooks';
-import { AddMoney } from 'app/pages/AddMoney';
-import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
-import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent';
-import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/indext';
 
 // default flags for features
 const defaultFlags = {

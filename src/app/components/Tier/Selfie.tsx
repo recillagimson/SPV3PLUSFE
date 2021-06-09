@@ -38,7 +38,6 @@ export default function SelfieComponent({
   const onSuccessUpload = (ids: string[] = []) => {
     setFiles(false);
     // return success to parent component with the ids
-    console.log(ids);
     onSuccess(ids);
   };
 
@@ -65,7 +64,10 @@ export default function SelfieComponent({
           </>
         }
       >
-        <Dropzone onSelectFiles={onSelectFiles} />
+        <Dropzone
+          onSelectFiles={onSelectFiles}
+          message="Drag and drop image here"
+        />
         {files && files.length && (
           <SelfieUpload files={files} onSuccess={onSuccessUpload} />
         )}

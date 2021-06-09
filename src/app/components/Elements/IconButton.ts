@@ -56,6 +56,11 @@ const IconButton = styled.button<IconButtonProps>`
   svg {
     margin-left: 1px;
   }
+
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 export default IconButton;

@@ -82,7 +82,6 @@ export function UpdateEmailPage() {
   );
 
   React.useEffect(() => {
-    console.log(location);
     if (location && location.state && location.state !== '') {
       setFromPath(location.state || '/dashboard');
     }

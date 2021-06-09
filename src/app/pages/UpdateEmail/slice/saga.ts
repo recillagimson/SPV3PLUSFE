@@ -76,7 +76,7 @@ function* getValidateEmail() {
   yield delay(500);
   const token = yield select(selectUserToken);
   const payload = yield select(selectValidateRequest);
-  console.log(payload);
+
   const requestURL = `${process.env.REACT_APP_API_URL}/user/email/validate`;
 
   let encryptPayload: string = '';

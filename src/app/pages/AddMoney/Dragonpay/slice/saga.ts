@@ -56,8 +56,6 @@ function* addMoney() {
         decryptPhrase.passPhrase,
       );
 
-      // console.log({ decryptData });
-
       yield put(actions.getFetchSuccess(decryptData));
       return;
     }
