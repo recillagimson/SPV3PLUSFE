@@ -127,6 +127,7 @@ export function UserProfilePage() {
   let tierName = '';
   let tierID = '';
   if (
+    Tiers &&
     profile &&
     profile.user_account &&
     profile.user_account.tier_id &&

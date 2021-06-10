@@ -15,8 +15,11 @@ import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice
 import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 import { DashboardState } from 'app/pages/DashboardPage/slice/types';
 import { TransactionHistoryState } from 'app/pages/TransactionHistoryPage/slice/types';
+import { PayBillsState } from 'app/pages/PayBillsPage/slice/types';
 import { TierUpgradeState } from 'app/pages/TierUpgradePage/slice/types';
 import { SendToBankUBPState } from 'app/pages/SendToBankUBP/slice/types';
+import { UpdateEmailState } from 'app/pages/UpdateEmail/slice/types';
+import { TermsAndConditions } from 'app/pages/TermsAndConditionsConsent/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -43,6 +46,7 @@ export interface RootState {
   profileBronze?: ProfileBronzeState;
   profileSilver?: ProfileSilverState;
   notifications?: NotificationsState;
+  termsAndConditions?: TermsAndConditions;
   addMoneyDragonpay: AddMoneyDragonpayState;
   transactionHistory?: TransactionHistoryState;
   changePassword?: ChangePasswordState;
@@ -50,6 +54,8 @@ export interface RootState {
   dashboard?: DashboardState;
   tierUpgrade?: TierUpgradeState;
   sendToBank?: any;
-  sendToBankUBP: SendToBankUBPState;
+  sendToBankUBP?: SendToBankUBPState;
+  updateEmail?: UpdateEmailState;
+  payBills?: PayBillsState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

@@ -92,6 +92,7 @@ export default function AddMoneyFrame(props) {
     try {
       console.log('iframe', iframe._frame.contentWindow.location.search);
       return true;
+      // eslint-disable-next-line no-unreachable
     } catch (err) {
       console.log(err);
       return false;

@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /**
  * Upload List UI
- * @prop {}         files     file list to be uploaded
- * @prop {size}     number    file size
- * @prop {string}   idType    idType id retrieve from the API
- * @prop {function} onSuccess return the index if upload is successfull
+ * @prop {string}   title       title
+ * @prop {size}     number      id number inputted by the user
+ * @prop {string}   idType      idType id retrieve from the API
+ * @prop {function} onSuccess   return the index if upload is successfull
+ * @prop {function} onPrevious  callback when user click the previous button
  * @prop {boolean}  isPrimary
  */
 import * as React from 'react';
@@ -21,11 +22,17 @@ import Button from 'app/components/Elements/Button';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Logo from 'app/components/Assets/Logo';
 import H3 from 'app/components/Elements/H3';
+import Box from 'app/components/Box';
+import Note from 'app/components/Elements/Note';
+import Dropzone from 'app/components/Dropzone';
 
 import { fileSize } from 'app/components/Helpers';
 
-import { selectUserToken } from 'app/App/slice/selectors';
+import { selectClientToken, selectUserToken } from 'app/App/slice/selectors';
 import { appActions } from 'app/App/slice';
+import { PassphraseState } from 'types/Default';
+import { getResponsePassphrase } from './helpers';
+import spdCrypto from '../Helpers/EncyptDecrypt';
 
 const animate = keyframes`
    0% {
@@ -75,60 +82,112 @@ const Wrapper = styled.div`
       display: block;
       position: relative;
       height: 8px;
-      width: 100%;
+      width: 0;
       border-radius: ${StyleConstants.BORDER_RADIUS};
 
       &.animate {
+        width: 100%;
         animation-name: ${animate};
         animation-duration: 1.5s;
         animation-iteration-count: infinite;
         animation-timing-function: ease-in-out;
       }
+
+      &.success {
+        width: 100%;
+      }
     }
   }
 `;
 
+const dt = new DataTransfer();
+
 export default function IDUploadListComponent({
-  files,
+  title,
   idType,
   idNumber,
   onSuccess,
+  onPrevious,
   isPrimary,
 }: {
-  files: any;
+  title: string;
   idType?: string;
   idNumber?: string;
-  onSuccess: () => void;
+  onSuccess: (ids: string[]) => void;
+  onPrevious: () => void;
   isPrimary?: boolean;
 }) {
   const dispatch = useDispatch();
   const token: any = useSelector(selectUserToken);
+  const clientToken: any = useSelector(selectClientToken);
 
-  const [arrayFiles, setArrayFiles] = React.useState<{}[]>([]);
+  const [arrayFiles, setArrayFiles] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
-
+  const [success, setSuccess] = React.useState<boolean>(false);
+  const [responseData, setResponseData] = React.useState<{}[]>([]);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
 
   React.useEffect(() => {
+    return () => {
+      dt.clearData();
+    };
+  }, []);
+
+  const onSelectFiles = (files: any) => {
     if (files && files.length > 0) {
-      setArrayFiles([...files]);
-      uploadFile();
+      const newFiles: any[] = [...arrayFiles];
+
+      // loop through the drop files and check if already exists on our array,
+      // if it exists, skip the file
+      Object.keys(files).forEach(i => {
+        const isExists = arrayFiles.findIndex(
+          j => j.name === files[i].name && j.size === files[i].size,
+        );
+
+        if (isExists === -1) {
+          newFiles.push(files[i]);
+          dt.items.add(files[i]);
+        }
+      });
+      setArrayFiles(newFiles);
+      // uploadFile();
     }
-  }, [files]);
+  };
+
+  // delete file based on index
+  const onDeleteFile = (i: number) => {
+    const newArray = [...arrayFiles];
+    const oldFiles = dt.files;
+
+    dt.clearData();
+
+    Object.keys(oldFiles).forEach(f => {
+      if (
+        oldFiles[f].name !== newArray[i].name &&
+        oldFiles[f].size !== newArray[i].size
+      ) {
+        dt.items.add(oldFiles[f]);
+      }
+    });
+    newArray.splice(i, 1);
+
+    setArrayFiles(newArray);
+  };
 
   const uploadFile = async () => {
     setError(false);
     setLoading(true);
+
+    const dtFiles = dt.files;
 
     const fileData = new FormData();
     fileData.append('id_type_id', idType || '');
     if (idNumber) {
       fileData.append('id_number', idNumber);
     }
-    Object.keys(files).forEach((i: any) => {
-      fileData.append('id_photos[]', files[i]);
+    Object.keys(dtFiles).forEach((i: any) => {
+      fileData.append('id_photos[]', dtFiles[i]);
     });
 
     const options = {
@@ -149,6 +208,17 @@ export default function IDUploadListComponent({
       const resp = await req.json();
 
       if (resp && resp.data) {
+        let decryptPhrase: PassphraseState = await getResponsePassphrase(
+          resp.data.id,
+          clientToken,
+        );
+
+        // decrypt payload data
+        let decryptData = await spdCrypto.decrypt(
+          resp.data.payload,
+          decryptPhrase.passPhrase,
+        );
+        setResponseData(decryptData);
         setSuccess(true);
       }
       setLoading(false);
@@ -175,8 +245,17 @@ export default function IDUploadListComponent({
 
     if (err.code && err.code === 422) {
       if (err.errors && !err.errors.error_code) {
-        if (err.errors.selfie_photo && err.errors.selfie_photo.length > 0) {
-          apiError += err.errors.selfie_photo.join('\n');
+        if (err.errors.id_type_id && err.errors.id_type_id.length > 0) {
+          apiError += err.errors.id_type_id.join('\n');
+        }
+        if (err.errors.id_number && err.errors.id_number.length > 0) {
+          apiError += err.errors.id_number.join('\n');
+        }
+        if (err.errors.id_number && err.errors.id_number.length > 0) {
+          apiError += err.errors.id_number.join('\n');
+        }
+        if (err.errors.id_photos['0'] && err.errors.id_photos['0'].length > 0) {
+          apiError += `\nFile must be jpeg, png or pdf and must not be greated than 1024kb (1mb).`;
         }
       }
       setApiErrorMsg(apiError || '');
@@ -197,23 +276,32 @@ export default function IDUploadListComponent({
     setError(true);
 
     if (refresh) {
-      onSuccess();
+      const ids: string[] = [];
+      if (responseData && responseData.length > 0) {
+        responseData.map((j: any) => ids.push(j.id));
+      }
+
+      onSuccess(ids);
       setSuccess(false);
       setArrayFiles([]);
+      setResponseData([]);
+      dt.clearData();
     }
   };
 
-  let items;
+  let items: {} | null | undefined;
   if (arrayFiles && arrayFiles.length) {
-    items = arrayFiles.map((i: any) => (
-      <Wrapper key={i.name}>
+    items = arrayFiles.map((f: any, i: number) => (
+      <Wrapper key={f.name}>
         <img src={imgIcon} alt="" />
         <div className="file-info">
-          <span>{i.name}</span>
-          <small>{fileSize(i.size)}</small>
+          <span>{f.name}</span>
+          <small>{fileSize(f.size)}</small>
           <p className="loader">
             <span
-              className={loading ? 'animate load' : 'load'}
+              className={
+                loading ? 'animate load' : success ? 'success load' : 'load'
+              }
               style={{
                 backgroundColor: error
                   ? StyleConstants.NEGATIVE
@@ -225,11 +313,10 @@ export default function IDUploadListComponent({
         <IconButton
           size="small"
           className="btn-file-stat"
-          onClick={error ? () => uploadFile() : undefined}
+          onClick={() => onDeleteFile(i)}
+          disabled={loading}
         >
-          <FontAwesomeIcon
-            icon={error ? 'redo' : success ? 'check' : 'times'}
-          />
+          <FontAwesomeIcon icon={success ? 'check' : 'times'} />
         </IconButton>
       </Wrapper>
     ));
@@ -237,7 +324,53 @@ export default function IDUploadListComponent({
 
   return (
     <div>
-      {items}
+      <Box
+        title={title}
+        titleBorder
+        withPadding
+        footerAlign="right"
+        footer={
+          <>
+            <Button
+              variant="outlined"
+              color="secondary"
+              size="large"
+              onClick={() => onPrevious()}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={uploadFile}
+              disabled={arrayFiles.length < 2}
+            >
+              Upload
+            </Button>
+          </>
+        }
+      >
+        <Dropzone
+          onSelectFiles={onSelectFiles}
+          message="Drag and drop both front and back side of your ID"
+        />
+        {items}
+
+        {/* <Note style={{ marginBottom: 10 }}>
+            Note: Invalid files won't be uploaded
+          </Note> */}
+        <Note>Government ID</Note>
+        <Note>
+          - Must show all corners of the ID
+          <br />
+          - Must show front and back details of the ID
+          <br />
+          - Max file size: 1MB (1024kb)
+          <br />- Formats accepted: JPG, PNG and PDF
+        </Note>
+      </Box>
+
       <Dialog show={Boolean(apiErrorMsg)} size="small">
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>
           <Logo size="small" margin="0 0 30px" />

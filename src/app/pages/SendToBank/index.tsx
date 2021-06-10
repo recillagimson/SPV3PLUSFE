@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-
+import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 // get our fontawesome imports
@@ -51,6 +51,7 @@ import InstapayLogo from 'app/components/Assets/instapay.svg';
 import PesonetLogo from 'app/components/Assets/pesonet.svg';
 
 export function SendToBank() {
+  const history = useHistory();
   const [steps, setSteps] = React.useState(0);
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
@@ -228,7 +229,11 @@ export function SendToBank() {
               {BANK_TRANSACTION_TYPE.map((cta, i) => (
                 <S.SendCTA
                   key={i}
-                  onClick={() => _handleSelectBankTransactionType(cta.id)}
+                  onClick={
+                    cta.onClick
+                      ? () => history.push('/send-to-bank/ubp')
+                      : () => _handleSelectBankTransactionType(cta.id)
+                  }
                 >
                   <S.SendCTAContent>
                     <p>{cta.header}</p>
@@ -357,7 +362,7 @@ export function SendToBank() {
                     Please select
                   </option>
                   {purposes?.map(d => (
-                    <option key={d.code} value={d.code}>
+                    <option key={d.code} value={d.description}>
                       {d.description}
                     </option>
                   ))}

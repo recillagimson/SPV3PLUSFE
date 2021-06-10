@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -10,24 +10,24 @@ import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
 import Loading from 'app/components/Loading';
 import H1 from 'app/components/Elements/H1';
-import H2 from 'app/components/Elements/H2';
+// import H2 from 'app/components/Elements/H2';
 import H3 from 'app/components/Elements/H3';
-import H5 from 'app/components/Elements/H5';
+// import H5 from 'app/components/Elements/H5';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
 import Dialog from 'app/components/Dialog';
-import A from 'app/components/Elements/A';
+// import A from 'app/components/Elements/A';
 import Avatar from 'app/components/Elements/Avatar';
 import Flex from 'app/components/Elements/Flex';
 import Textarea from 'app/components/Elements/Textarea';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
-import Ratio from 'app/components/Elements/Ratio';
+// import Ratio from 'app/components/Elements/Ratio';
 import InputTextWrapper from 'app/components/Elements/InputTextWrapper';
-import IconButton from 'app/components/Elements/IconButton';
-import PinInput from 'app/components/Elements/PinInput';
+// import IconButton from 'app/components/Elements/IconButton';
+// import PinInput from 'app/components/Elements/PinInput';
 import Card from 'app/components/Elements/Card/Card';
 import VerifyOTP from 'app/components/VerifyOTP';
 
@@ -55,7 +55,7 @@ import {
   selectValidateError,
   selectValidateLoading,
   selectGenerateData,
-  selectGenerateError,
+  // selectGenerateError,
   selectGenerateLoading,
 } from './slice/selectors';
 

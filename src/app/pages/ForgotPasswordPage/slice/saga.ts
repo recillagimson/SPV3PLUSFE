@@ -9,6 +9,7 @@ import { getRequestPassphrase } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
 import { selectRequest } from './selectors';
+import { appActions } from 'app/App/slice';
 
 /**
  * ForgotPassword
@@ -55,6 +56,9 @@ function* getForgotPassword() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
+      yield put(actions.getFetchError({}));
     } else {
       yield put(actions.getFetchError(err));
     }

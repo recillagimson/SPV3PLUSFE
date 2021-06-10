@@ -16,10 +16,13 @@ import Wrapper from './Wrapper';
 
 type DropzoneProps = {
   onSelectFiles: (files: any) => void;
+  message: string;
 };
 
-export default function Dropzone({ onSelectFiles }: DropzoneProps) {
+export default function Dropzone({ onSelectFiles, message }: DropzoneProps) {
   const [showLoading, setShowLoading] = React.useState(false);
+  const [over, setOver] = React.useState(false);
+
   const fileRef = React.useRef<any>(null);
 
   const onDropFiles = (e: {
@@ -34,6 +37,7 @@ export default function Dropzone({ onSelectFiles }: DropzoneProps) {
     setTimeout(() => {
       onSelectFiles(files);
       setShowLoading(false);
+      setOver(false);
     }, 1000);
   };
 
@@ -53,6 +57,12 @@ export default function Dropzone({ onSelectFiles }: DropzoneProps) {
 
   const onDragPreventDefault = (e: { preventDefault: () => void }) => {
     if (e && e.preventDefault) e.preventDefault();
+    setOver(false);
+  };
+
+  const onDragOver = (e: { preventDefault: () => void }) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setOver(true);
   };
 
   const onClickToBrowse = (e: { preventDefault: () => void }) => {
@@ -66,14 +76,21 @@ export default function Dropzone({ onSelectFiles }: DropzoneProps) {
     <Wrapper
       onDrop={onDropFiles}
       onDragLeave={onDragPreventDefault}
-      onDragOver={onDragPreventDefault}
+      onDragOver={onDragOver}
       onDragEnter={onDragPreventDefault}
+      bg={over}
     >
-      <input ref={fileRef} type="file" multiple onChange={selectFiles} />
+      <input
+        ref={fileRef}
+        type="file"
+        multiple
+        onChange={selectFiles}
+        accept=".jpg, .png, .pdf"
+      />
       {showLoading && <Loading position="absolute" />}
       <FontAwesomeIcon icon="upload" />
       <p>
-        Drag and drop image here
+        {message}
         <br />
         or{' '}
         <button className="btn-upload" onClick={onClickToBrowse}>

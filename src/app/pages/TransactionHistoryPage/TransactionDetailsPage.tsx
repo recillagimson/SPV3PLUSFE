@@ -15,7 +15,7 @@ import { parseToNumber, numberWithCommas } from 'utils/common';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
-  selectError,
+  // selectError,
   selectTransactionHistoryDetailsData,
 } from './slice/selectors';
 
@@ -42,7 +42,7 @@ function TransactionHistoryDetailsPage(props) {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
+  // const error: any = useSelector(selectError);
   const transactionHistoryDetailsData = useSelector(
     selectTransactionHistoryDetailsData,
   );

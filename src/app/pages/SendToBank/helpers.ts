@@ -1,6 +1,7 @@
 // Assets
 import InstapayLogo from 'app/components/Assets/instapay.svg';
 import PesonetLogo from 'app/components/Assets/pesonet.svg';
+import UBPImageTextLogo from 'app/components/Assets/ubp-logo-text.png';
 
 export const initialFormData = {
   bank_code: '',
@@ -39,5 +40,16 @@ export const BANK_TRANSACTION_TYPE = [
       'Transfers made before the 12:30 PM cut off are processed within the same banking day.',
       'Transactions after cut off or on holidays are processed the next banking day.',
     ],
+  },
+  {
+    id: 'ubpdirect',
+    header: 'Receive Instantly',
+    icon: UBPImageTextLogo,
+    items: [
+      'Use your Bank Account',
+      'Transaction limit is PHP 50,000',
+      'Trasnfer is real- time',
+    ],
+    onClick: true,
   },
 ];

@@ -1,13 +1,13 @@
 import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
-import { css } from 'styled-components/macro';
+// import { css } from 'styled-components/macro';
 
-const valueDescription = css`
-  font-size: 13px;
-  display: block;
-  margin: 5px 0px;
-  font-weight: 500;
-`;
+// const valueDescription = css`
+//   font-size: 13px;
+//   display: block;
+//   margin: 5px 0px;
+//   font-weight: 500;
+// `;
 
 const Wrapper = styled.section`
   .product-list {

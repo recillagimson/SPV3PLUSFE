@@ -54,6 +54,7 @@ export function LoginPage() {
   // api related error
   const [isError, setIsError] = React.useState(false);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
+  const [errorCode, setErrorCode] = React.useState(0);
 
   // show resend
   const [resendDialog, setResendDialog] = React.useState(false);
@@ -105,6 +106,7 @@ export function LoginPage() {
               return 'You are attempting to login from an untrusted client. Please check your internet connection';
             }
             if (i === 105) {
+              setErrorCode(105);
               return 'Your Account has been locked, Please contact Squidpay Support for assistance in unlocking your account.';
             }
             return undefined;
@@ -430,8 +432,10 @@ export function LoginPage() {
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="times" />
           </CircleIndicator>
-          <H3 margin="15px 0 10px">Login Error</H3>
-          <p>{apiErrorMsg}</p>
+          <H3 margin="15px 0 20px">
+            {errorCode === 105 ? 'Account is Locked.' : 'Login Failed'}
+          </H3>
+          <p style={{ marginBottom: 20 }}>{apiErrorMsg}</p>
           <Button
             fullWidth
             onClick={onCloseDialog}

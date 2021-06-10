@@ -12,6 +12,7 @@ import {
 
 import { containerActions as actions } from '.';
 import { selectFormData } from './selectors';
+import { appActions } from 'app/App/slice';
 
 /**
  * Register
@@ -79,6 +80,8 @@ function* validateSendToBankUBP() {
         ...body,
       };
       yield put(actions.validateBankError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
     } else {
       yield put(actions.validateBankError(err));
     }
@@ -147,6 +150,8 @@ function* generateSendToBankOTP() {
         ...body,
       };
       yield put(actions.generateSendToBankOTPError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
     } else {
       yield put(actions.generateSendToBankOTPError(err));
     }
@@ -213,6 +218,8 @@ function* sendToBank() {
         ...body,
       };
       yield put(actions.sendToBankError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
     } else {
       yield put(actions.sendToBankError(err));
     }

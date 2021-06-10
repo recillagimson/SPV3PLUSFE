@@ -192,6 +192,18 @@ export function SettingsChangePasswordPage() {
         ) {
           apiError += err.errors.new_password_confirmation.join('\n');
         }
+        if (
+          err.errors.password_confirmation &&
+          err.errors.password_confirmation.length > 0
+        ) {
+          apiError += err.errors.password_confirmation.join('\n');
+        }
+        if (err.errors.email && err.errors.email.length > 0) {
+          apiError += err.errors.email.join('\n');
+        }
+        if (err.errors.mobile_number && err.errors.mobile_number.length > 0) {
+          apiError += err.errors.mobile_number.join('\n');
+        }
 
         setPassError(apiError);
         return;

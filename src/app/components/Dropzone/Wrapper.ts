@@ -4,7 +4,9 @@ import { StyleConstants } from 'styles/StyleConstants';
 /**
  * Dropzone UI Wrapper
  */
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ bg?: boolean }>`
+  background-color: ${p =>
+    p.bg ? StyleConstants.LIGHT_GRAY_BG : 'transparent'};
   border-radius: ${StyleConstants.BORDER_RADIUS};
   border: 2px dashed ${StyleConstants.GOLD};
   width: 100%;

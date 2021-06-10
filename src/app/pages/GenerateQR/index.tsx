@@ -25,16 +25,17 @@ import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
 // From this folder
 import Wrapper from './Wrapper';
 
-import BSPLogo from 'logo/bsp.png';
 /** slice */
 import { useContainerSaga } from './slice';
-import { selectLoading, selectError, selectData } from './slice/selectors';
+import { selectLoading, selectData } from './slice/selectors';
+import { numberCommas } from 'app/components/Helpers';
+
 export function GenerateQR() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
 
   const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
+  // const error: any = useSelector(selectError);
   const success: any = useSelector(selectData);
 
   const profile: boolean | UserProfileState = useSelector(selectUser);
@@ -52,6 +53,7 @@ export function GenerateQR() {
     const pngUrl = canvas
       .toDataURL('image/png')
       .replace('image/png', 'image/octet-stream');
+
     let downloadLink = document.createElement('a');
     downloadLink.href = pngUrl;
     downloadLink.download = 'QRCode.png';
@@ -170,15 +172,18 @@ export function GenerateQR() {
                   <Flex justifyContent="center">
                     <QRCode
                       value={success.id}
-                      size="200"
+                      size={220}
                       id="QRCode"
                       imageSettings={{
-                        src: 'logo/bsp.png',
+                        src: `${process.env.PUBLIC_URL}/logo/bsp.png`,
                         x: null,
                         y: null,
                         height: 40,
                         width: 40,
                         // excavate: true,
+                      }}
+                      style={{
+                        padding: 10,
                       }}
                     />
                   </Flex>
@@ -203,8 +208,8 @@ export function GenerateQR() {
                     <div>Amount Requested</div>
                     <div>
                       PHP{' '}
-                      {Number.isInteger(parseFloat(amount.value))
-                        ? amount.value + '.00'
+                      {amount.value !== ''
+                        ? numberCommas(amount.value)
                         : amount.value}
                     </div>
                   </Grid>

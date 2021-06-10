@@ -60,7 +60,13 @@ import { UpdateProfileVerificationPage } from 'app/pages/UpdateProfileVerificati
 import { ContactUsPage } from 'app/pages/ContactUsPage/Loadable';
 import { ChatSupportPage } from 'app/pages/ChatSupportPage/Loadable';
 import { MerchantInquiryPage } from 'app/pages/MerchantInquiry/Loadable';
+import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
 import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
+import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
+import { AddMoney } from 'app/pages/AddMoney/Loadable';
+import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
+import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent/Loadable';
+import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 
@@ -77,12 +83,9 @@ import {
   selectSessionExpired,
   selectIsAuthenticated,
   selectIsBlankPage,
+  setIsUnathenticated,
 } from './slice/selectors';
 // import { usePrevious } from 'app/components/Helpers/Hooks';
-import { AddMoney } from 'app/pages/AddMoney';
-import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
-import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent';
-import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/indext';
 
 // default flags for features
 const defaultFlags = {
@@ -106,6 +109,7 @@ export function App() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isSessionExpired = useSelector(selectSessionExpired);
   const isBlankPage = useSelector(selectIsBlankPage);
+  const clientTokenExpired = useSelector(setIsUnathenticated); // use this only on users who hasn't logged in yet
 
   const [flags, setFlags] = React.useState(defaultFlags);
 
@@ -288,7 +292,12 @@ export function App() {
             <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
-            <PrivateRoute path="/profile" component={UserProfilePage} />
+            <PrivateRoute exact path="/profile" component={UserProfilePage} />
+            <PrivateRoute
+              exact
+              path="/profile/update-email"
+              component={UpdateEmailPage}
+            />
             <PrivateRoute
               path={['/notifications/:id', '/notifications']}
               component={Notifications}
@@ -318,7 +327,7 @@ export function App() {
             <PrivateRoute exact path="/send-to-bank" component={SendToBank} />
             <PrivateRoute
               exact
-              path="/send-to-bank-ubp"
+              path="/send-to-bank/ubp"
               component={SendToBankUBP}
             />
             <PrivateRoute exact path="/settings" component={SettingsPage} />
@@ -343,6 +352,7 @@ export function App() {
               path="/merchant-inquiry"
               component={MerchantInquiryPage}
             />
+            <PrivateRoute exact path="/pay-bills" component={PayBillsPage} />
             <PrivateRoute exact path="/tiers" component={TiersPage} />
             <PrivateRoute
               exact
@@ -382,6 +392,26 @@ export function App() {
             color="primary"
           >
             Ok
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog show={clientTokenExpired} size="small">
+        <div className="text-center" style={{ padding: '25px' }}>
+          <CircleIndicator size="medium" color="primary">
+            <FontAwesomeIcon icon="stopwatch" />
+          </CircleIndicator>
+          <p style={{ margin: '15px 0 10px' }}>
+            <strong>Oops, Your session token has expired.</strong>
+          </p>
+          <p>Kindly refresh to the page to try again.</p>
+          <Button
+            fullWidth
+            onClick={onClickSessionExpired}
+            variant="contained"
+            color="primary"
+          >
+            Refresh
           </Button>
         </div>
       </Dialog>

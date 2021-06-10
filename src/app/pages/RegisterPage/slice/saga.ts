@@ -16,6 +16,7 @@ import {
   selectValidateRequest,
   selectResendCodeRequest,
 } from './selectors';
+import { appActions } from 'app/App/slice';
 
 /**
  * Register
@@ -83,6 +84,9 @@ function* getRegisterAccount() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
+      yield put(actions.getFetchError({}));
     } else {
       yield put(actions.getFetchError(err));
     }
@@ -154,6 +158,9 @@ function* getValidateFields() {
         ...body,
       };
       yield put(actions.getValidateError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
+      yield put(actions.getValidateError({}));
     } else {
       yield put(actions.getValidateError(err));
     }
@@ -215,6 +222,9 @@ function* getResendActivationCode() {
         ...body,
       };
       yield put(actions.getResendCodeError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
+      yield put(actions.getResendCodeError({}));
     } else {
       yield put(actions.getResendCodeError(err));
     }
