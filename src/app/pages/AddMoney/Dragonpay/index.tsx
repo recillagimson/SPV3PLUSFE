@@ -7,6 +7,8 @@ import Button from 'app/components/Elements/Button';
 import Input from 'app/components/Elements/Input';
 import Loading from 'app/components/Loading';
 
+import { numberCommas } from 'app/components/Helpers';
+
 import { StyleConstants } from 'styles/StyleConstants';
 import AddMoneyModal from '../components/AddMoneyModal';
 import AddMoneyFrame from '../components/AddMoneyFrame';
@@ -17,6 +19,8 @@ import {
   selectAddMoneyDragonpay,
   selectError,
 } from './slice/selectors';
+import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
+import { containerActions as dashActions } from 'app/pages/DashboardPage/slice';
 
 export function Dragonpay() {
   const inputEl: any = React.useRef(null);
@@ -34,6 +38,7 @@ export function Dragonpay() {
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
+  const dashData: any = useSelector(selectDashData);
   const addMoneyDragonpay = useSelector(selectAddMoneyDragonpay);
 
   function handlerSubmitMoney() {
@@ -49,6 +54,7 @@ export function Dragonpay() {
 
   function handlerCloseModal() {
     dispatch(actions.getFetchReset());
+    dispatch(dashActions.getFetchLoading());
     setShowModal({ status: '', show: false });
   }
 
@@ -86,6 +92,11 @@ export function Dragonpay() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  let balanceInfo = '000.00';
+  if (dashData && dashData.balance_info) {
+    balanceInfo = numberCommas(dashData.balance_info.available_balance);
+  }
 
   return (
     <ProtectedContent>
@@ -161,7 +172,7 @@ export function Dragonpay() {
               </span>
             ) : (
               <span style={{ fontSize: '12px', fontWeight: 'lighter' }}>
-                Available Balance PHP xxx.xx
+                Available Balance PHP {balanceInfo}
               </span>
             )}
           </div>

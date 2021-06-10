@@ -9,7 +9,6 @@ export default function AddMoneyStatus(props) {
       style={{
         borderRadius: '10px',
         background: 'white',
-        padding: '24px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

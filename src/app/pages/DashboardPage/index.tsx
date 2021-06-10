@@ -66,9 +66,7 @@ export function DashboardPage() {
 
   let balanceInfo = '000.00';
   if (dashData && dashData.balance_info) {
-    balanceInfo = numberCommas(
-      parseFloat(dashData.balance_info.available_balance).toFixed(2),
-    );
+    balanceInfo = numberCommas(dashData.balance_info.available_balance);
   }
 
   let transactionItems: React.ReactNode | undefined = (
