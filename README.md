@@ -34,19 +34,42 @@ Start Coding!
 
 1. Route might be changed to accommodate services on each tier
 
+---
+
 ### Release notes
 
-1. Login / Registration / Forgot Password Modules
-2. Notifications
-3. Transaction History
-4. Send Money (Squid to Squid)
-5. Update Profile (Bronze/Silver and Up) and Change Avatar
-6. Add Money via Dragonpay
-7. Send To Bank (Instapay and Pesonet)
-8. Generate QR Code
-9. Account Security (Change Password and Change PIN)
-10. News and Inquiry (Link to FB)
-11. Promos and Deals (Link to FB)
-12. Merchant Inquiry
-13. Help Center
-14. Contact Us
+- Login / Registration / Forgot Password Modules
+  - Update Profile of first time user
+- Notifications
+- Transaction History
+- Send Money (Squid to Squid)
+- Update Profile
+  - Change Avatar
+  - Update Full Name, Email, Mobile and Birthdate Contact Support Notification
+- Add Money via Dragonpay
+  - Update Email if none exists before using Dragonpay
+- Send To Bank (Instapay, Pesonet and UBP Direct)
+- Generate QR Code
+- Account Security (Change Password and Change PIN)
+- Paybills
+  - SMART
+  - MECOR
+  - MWCOM
+  - MWSN
+  - RFID1
+  - ETRIP
+  - PRULI
+  - SSS03
+- Buy Load
+- Tier Upgrade
+  - Silver with ID and Selfie
+  - Gold & Platinum Contact Support Notification
+- News and Inquiry (Link to SquidPay Facebook Page)
+- Promos and Deals (Link to SquidPay Facebook Page)
+- Merchant Inquiry
+- Help Center
+  - FAQ
+  - Chat Support (Link to SquidPay Messenger)
+  - Privacy Policy
+  - Terms and Conditions
+- Contact Us

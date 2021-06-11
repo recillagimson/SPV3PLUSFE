@@ -162,13 +162,13 @@ export function App() {
 
   React.useEffect(() => {
     /** enable this for FB customer chat if we are going to use this */
-    // if (
-    //   isAuthenticated &&
-    //   process.env.NODE_ENV === 'production' && // @ts-ignore
-    //   !window.fbAsyncInit
-    // ) {
-    //   loadFbAsync(); // load fb
-    // }
+    if (
+      isAuthenticated &&
+      process.env.NODE_ENV === 'production' && // @ts-ignore
+      !window.fbAsyncInit
+    ) {
+      loadFbAsync(); // load fb
+    }
 
     // remote config
     if (isAuthenticated) {
@@ -206,29 +206,29 @@ export function App() {
   };
 
   /** Enable if FB Chat will be use, do not delete */
-  // const loadFbAsync = () => {
-  //   var chatbox: any = document.getElementById('fb-customer-chat');
-  //   chatbox.setAttribute('page_id', '100608264934915');
-  //   chatbox.setAttribute('attribution', 'biz_inbox');
-  //   // @ts-ignore
-  //   window.fbAsyncInit = function () {
-  //     // @ts-ignore
-  //     FB.init({
-  //       xfbml: true,
-  //       version: 'v10.0',
-  //     });
-  //   };
+  const loadFbAsync = () => {
+    var chatbox: any = document.getElementById('fb-customer-chat');
+    chatbox.setAttribute('page_id', '100608264934915');
+    chatbox.setAttribute('attribution', 'biz_inbox');
+    // @ts-ignore
+    window.fbAsyncInit = function () {
+      // @ts-ignore
+      FB.init({
+        xfbml: true,
+        version: 'v10.0',
+      });
+    };
 
-  //   (function (d, s, id) {
-  //     var js,
-  //       fjs: any = d.getElementsByTagName(s)[0];
-  //     if (d.getElementById(id)) return;
-  //     js = d.createElement(s);
-  //     js.id = id;
-  //     js.src = '//connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
-  //     fjs.parentNode.insertBefore(js, fjs);
-  //   })(document, 'script', 'facebook-jssdk');
-  // };
+    (function (d, s, id) {
+      var js,
+        fjs: any = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s);
+      js.id = id;
+      js.src = '//connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+      fjs.parentNode.insertBefore(js, fjs);
+    })(document, 'script', 'facebook-jssdk');
+  };
 
   return (
     <>
@@ -421,8 +421,8 @@ export function App() {
       {isAuthenticated && <IdleTimer idle={process.env.IDLE_TIME || 3000000} />}
 
       {/*  FB element containers */}
-      {/* <div id="fb-root"></div>
-      <div id="fb-customer-chat" className="fb-customerchat" /> */}
+      <div id="fb-root"></div>
+      <div id="fb-customer-chat" className="fb-customerchat" />
     </>
   );
 }
