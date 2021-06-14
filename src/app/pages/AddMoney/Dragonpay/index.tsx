@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 import Button from 'app/components/Elements/Button';
 import Input from 'app/components/Elements/Input';
 import Loading from 'app/components/Loading';
-import Logo from 'app/components/Assets/Logo';
-import Dialog from 'app/components/Dialog';
-import CircleIndicator from 'app/components/Elements/CircleIndicator';
-import H3 from 'app/components/Elements/H3';
+// import Logo from 'app/components/Assets/Logo';
+// import Dialog from 'app/components/Dialog';
+// import CircleIndicator from 'app/components/Elements/CircleIndicator';
+// import H3 from 'app/components/Elements/H3';
 
 import { numberCommas } from 'app/components/Helpers';
 
@@ -67,12 +67,12 @@ export function Dragonpay() {
   }
 
   function handlerCloseFrame(url) {
-    console.log(url);
-    window.open(
-      url,
-      'dragonpay',
-      'scrollbars=no,resizable=no,toolbar=no,menubar=no,width=720,height=560',
-    );
+    // console.log(url);
+    // window.open(
+    //   url,
+    //   'dragonpay',
+    //   'scrollbars=no,resizable=no,toolbar=no,menubar=no,width=720,height=560',
+    // );
     dispatch(actions.getFetchReset());
     setShowIframe({ show: false, url: '' });
   }
@@ -176,15 +176,15 @@ export function Dragonpay() {
       {showModal.show && (
         <AddMoneyModal success={showModal.status} onClick={handlerCloseModal} />
       )}
-      {/* {showIframe.show && (
+      {showIframe.show && (
         <AddMoneyFrame
           urlLink={showIframe.url}
           title="Dragonpay"
           onClick={handlerCloseFrame}
         />
-      )} */}
+      )}
 
-      <Dialog show={showIframe.show} size="small">
+      {/* <Dialog show={showIframe.show} size="small">
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>
           <Logo size="small" margin="0 0 30px" />
           <CircleIndicator size="medium" color="primary">
@@ -204,7 +204,7 @@ export function Dragonpay() {
             Ok
           </Button>
         </div>
-      </Dialog>
+      </Dialog> */}
     </ProtectedContent>
   );
 }
