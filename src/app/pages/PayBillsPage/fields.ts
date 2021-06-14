@@ -51,7 +51,7 @@ export const RENDER_SELECT_ITEMS = name => {
         },
       ];
     case 'sss02_payment_type':
-    case 'sss03_payment_type':
+    case 'sss03_otherinfo.payortype':
       return [
         {
           value: 'I',
@@ -361,14 +361,14 @@ export const RENDER_FIELDS = code => {
           type: 'text',
           name: 'referenceNumber',
           placeholder: '',
-          required: true,
+          required: false,
         },
         {
           label: 'Amount',
           type: 'number',
           name: 'amount',
           placeholder: 'PHP 0.00',
-          required: true,
+          required: false,
         },
         {
           label: 'Product',
@@ -389,7 +389,7 @@ export const RENDER_FIELDS = code => {
           type: 'text',
           name: 'otherInfo.ServiceReferenceNo',
           placeholder: '',
-          required: true,
+          required: false,
         },
       ];
     case 'SSS01':

@@ -93,10 +93,6 @@ export function PayBillsPage(props) {
   }, []);
 
   React.useEffect(() => {
-    if (Object.keys(validatedBiller).length) {
-      setSteps(steps + 1);
-    }
-
     if (apiErrors && apiErrors?.errors?.error_code?.length) {
       const transactionFailed = apiErrors?.errors?.error_code?.find(
         errorCode => errorCode === 151,
@@ -121,16 +117,20 @@ export function PayBillsPage(props) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [apiErrors, validatedBiller]);
+  }, [apiErrors]);
 
   // Success created pay bills
   React.useEffect(() => {
+    if (Object.keys(validatedBiller).length) {
+      setSteps(steps + 1);
+    }
+
     if (Object.keys(createdPayBills).length) {
       setDialogSuccess(true);
       setSteps(3);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createdPayBills]);
+  }, [createdPayBills, validatedBiller]);
 
   const renderReviewContainer = (data: any, type?: string) => {
     const selectedBiller = billers?.find(biller => biller.code === billerCode);

@@ -24,7 +24,7 @@ export const CATEGORIES = [
     label: 'Electric Utility',
   },
   {
-    value: 'tolls',
+    value: 'toll',
     icon: Toll,
     isActive: true,
     label: 'Toll',
