@@ -1,15 +1,22 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 import Button from 'app/components/Elements/Button';
 import Input from 'app/components/Elements/Input';
 import Loading from 'app/components/Loading';
+import Logo from 'app/components/Assets/Logo';
+import Dialog from 'app/components/Dialog';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import H3 from 'app/components/Elements/H3';
 
 import { numberCommas } from 'app/components/Helpers';
 
 import { StyleConstants } from 'styles/StyleConstants';
+
+// dragonpay own component
 import AddMoneyModal from '../components/AddMoneyModal';
 import AddMoneyFrame from '../components/AddMoneyFrame';
 
@@ -21,6 +28,7 @@ import {
 } from './slice/selectors';
 import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
 import { containerActions as dashActions } from 'app/pages/DashboardPage/slice';
+import Label from 'app/components/Elements/Label';
 
 export function Dragonpay() {
   const inputEl: any = React.useRef(null);
@@ -58,7 +66,13 @@ export function Dragonpay() {
     setShowModal({ status: '', show: false });
   }
 
-  function handlerCloseFrame() {
+  function handlerCloseFrame(url) {
+    console.log(url);
+    window.open(
+      url,
+      'dragonpay',
+      'scrollbars=no,resizable=no,toolbar=no,menubar=no,width=720,height=560',
+    );
     dispatch(actions.getFetchReset());
     setShowIframe({ show: false, url: '' });
   }
@@ -116,81 +130,81 @@ export function Dragonpay() {
           </Button>
         }
         footerAlign="right"
+        withPadding
       >
-        <div
-          style={{
-            padding: '25px',
-            position: 'relative',
-          }}
-        >
-          {loading && (
-            <div
+        {loading && <Loading position="absolute" />}
+
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <img
+            src={`${process.env.PUBLIC_URL}/banks/dragonpay.png`}
+            alt="dragonpay"
+            width="auto"
+            height="auto"
+            style={{ margin: 'auto' }}
+          />
+        </div>
+        <div>
+          <Label htmlFor="amount">Amount</Label>
+          <Input
+            ref={inputEl}
+            id="amount"
+            placeholder="PHP 0.00"
+            type="number"
+            hidespinner={true}
+            onChange={() => setErrorMessage('')}
+            style={{
+              borderColor:
+                errorMessage && `${StyleConstants.BUTTONS.danger.main}`,
+            }}
+          />
+          {errorMessage.length ? (
+            <span
               style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                height: '300px',
-                width: '100%',
-                background: 'white',
+                fontSize: '12px',
+                color: `${StyleConstants.BUTTONS.danger.main}`,
               }}
             >
-              <Loading />
-            </div>
+              {errorMessage}
+            </span>
+          ) : (
+            <span style={{ fontSize: '12px', fontWeight: 'lighter' }}>
+              Available Balance PHP {balanceInfo}
+            </span>
           )}
-
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <img
-              src={`${process.env.PUBLIC_URL}/banks/dragonpay.png`}
-              alt="dragonpay"
-              width="auto"
-              height="auto"
-              style={{ margin: 'auto' }}
-            />
-          </div>
-          <div>
-            <label htmlFor="amount">Amount</label>
-            <Input
-              ref={inputEl}
-              id="amount"
-              placeholder="PHP 0.00"
-              type="number"
-              hidespinner={true}
-              onChange={() => setErrorMessage('')}
-              style={{
-                borderColor:
-                  errorMessage && `${StyleConstants.BUTTONS.danger.main}`,
-              }}
-            />
-            {errorMessage.length ? (
-              <span
-                style={{
-                  fontSize: '12px',
-                  color: `${StyleConstants.BUTTONS.danger.main}`,
-                }}
-              >
-                {errorMessage}
-              </span>
-            ) : (
-              <span style={{ fontSize: '12px', fontWeight: 'lighter' }}>
-                Available Balance PHP {balanceInfo}
-              </span>
-            )}
-          </div>
         </div>
-        {showModal.show && (
-          <AddMoneyModal
-            success={showModal.status}
-            onClick={handlerCloseModal}
-          />
-        )}
-        {showIframe.show && (
-          <AddMoneyFrame
-            urlLink={showIframe.url}
-            title="Dragonpay"
-            onClick={handlerCloseFrame}
-          />
-        )}
       </Box>
+      {showModal.show && (
+        <AddMoneyModal success={showModal.status} onClick={handlerCloseModal} />
+      )}
+      {/* {showIframe.show && (
+        <AddMoneyFrame
+          urlLink={showIframe.url}
+          title="Dragonpay"
+          onClick={handlerCloseFrame}
+        />
+      )} */}
+
+      <Dialog show={showIframe.show} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <Logo size="small" margin="0 0 30px" />
+          <CircleIndicator size="medium" color="primary">
+            <FontAwesomeIcon icon="check" />
+          </CircleIndicator>
+          <H3 margin="15px 0 30px">
+            When you click Ok, you will be redirected to the Dragonpay page
+          </H3>
+
+          <Button
+            fullWidth
+            onClick={() => handlerCloseFrame(showIframe.url)}
+            variant="contained"
+            color="primary"
+            size="large"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
     </ProtectedContent>
   );
 }
