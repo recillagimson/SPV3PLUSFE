@@ -16,6 +16,9 @@ import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
 import Select from 'app/components/Elements/Select';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
+import List from 'app/components/List';
+import ListItem from 'app/components/List/ListItem';
+import ListItemText from 'app/components/List/ListItemText';
 
 import { VerifyOTPPage } from './VerifyPage';
 
@@ -255,17 +258,21 @@ export function SendToBank() {
       case 1:
         return (
           <S.Wrapper>
-            <S.List>
+            <List divider bordertop>
               {banks?.map((d: any) => (
-                <S.ListItem key={d.code}>
-                  <S.ItemTitle>{d.bank}</S.ItemTitle>
-                  <FontAwesomeIcon
-                    icon="chevron-right"
+                <ListItem flex key={d.code}>
+                  <ListItemText
+                    role="presentation"
                     onClick={() => _handleSelectBankData(d)}
+                    primary={d.bank}
+                    style={{
+                      flexGrow: 1,
+                    }}
+                    icon
                   />
-                </S.ListItem>
+                </ListItem>
               ))}
-            </S.List>
+            </List>
           </S.Wrapper>
         );
       case 2:
