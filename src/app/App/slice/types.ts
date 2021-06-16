@@ -14,6 +14,7 @@ export interface GlobalState {
   token: TokenState | string;
   isSessionExpired: boolean;
   isBlankPage: boolean;
+  isServerError: boolean;
   references: {};
   tier: {} | boolean;
 }

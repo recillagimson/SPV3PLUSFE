@@ -17,7 +17,7 @@ import { numberCommas } from 'app/components/Helpers';
 import { StyleConstants } from 'styles/StyleConstants';
 
 // dragonpay own component
-import AddMoneyModal from '../components/AddMoneyModal';
+// import AddMoneyModal from '../components/AddMoneyModal';
 // import AddMoneyFrame from '../components/AddMoneyFrame';
 
 import { useContainerSaga } from './slice';
@@ -32,15 +32,17 @@ import Label from 'app/components/Elements/Label';
 
 export function Dragonpay() {
   const inputEl: any = React.useRef(null);
-  const [showModal, setShowModal] = React.useState({
-    status: '',
-    show: false,
-  });
+  // const [showModal, setShowModal] = React.useState({
+  //   status: '',
+  //   show: false,
+  // });
   const [showIframe, setShowIframe] = React.useState({
     show: false,
     url: '',
   });
   const [errorMessage, setErrorMessage] = React.useState('');
+  const [apiError, setApiError] = React.useState(false);
+  const [apiErrorMsg, setApiErrorMsg] = React.useState('');
 
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
@@ -48,6 +50,8 @@ export function Dragonpay() {
   const error: any = useSelector(selectError);
   const dashData: any = useSelector(selectDashData);
   const addMoneyDragonpay = useSelector(selectAddMoneyDragonpay);
+
+  let windowObjectReference: Window | null = null;
 
   function handlerSubmitMoney() {
     if (inputEl) {
@@ -61,32 +65,33 @@ export function Dragonpay() {
   }
 
   function handlerCloseModal() {
+    // setShowModal({ status: '', show: false });
+    setApiError(false);
+    setApiErrorMsg('');
     dispatch(actions.getFetchReset());
     dispatch(dashActions.getFetchLoading());
-    setShowModal({ status: '', show: false });
   }
 
   function handlerCloseFrame(url) {
-    // console.log(url);
-    window.open(
-      url,
-      'dragonpay',
-      'scrollbars=no,resizable=no,toolbar=no,menubar=no,width=720,height=560',
-    );
+    if (windowObjectReference === null) {
+      windowObjectReference = window.open(
+        url,
+        'dragonpay',
+        'scrollbars=no,resizable=no,toolbar=no,menubar=no,width=720,height=560,left=200,top=200',
+      );
+    }
     dispatch(actions.getFetchReset());
     setShowIframe({ show: false, url: '' });
   }
 
   React.useEffect(() => {
-    if (
-      error &&
-      Object.keys(error).length !== 0 &&
-      Object.values(error).length !== 0
-    ) {
-      setShowModal({
-        status: 'failed',
-        show: true,
-      });
+    if (error && Object.keys(error).length > 0) {
+      // setShowModal({
+      //   status: 'failed',
+      //   show: true,
+      // });
+      // setApiError(true);
+      onApiError(error);
     }
 
     if (addMoneyDragonpay) {
@@ -98,6 +103,7 @@ export function Dragonpay() {
         inputEl.current.value = '';
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, addMoneyDragonpay]);
 
   React.useEffect(() => {
@@ -106,6 +112,34 @@ export function Dragonpay() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const onApiError = (err: any) => {
+    let apiError = '';
+    if (err.code && err.code === 422) {
+      if (
+        err.errors &&
+        err.errors.error_code &&
+        err.errors.error_code.length > 0
+      ) {
+        const i405 = err.errors.error_code.findIndex(j => j === 405);
+        if (i405 !== -1) {
+          apiError = err.errors.message.join('\n');
+        }
+      }
+      setApiErrorMsg(apiError || '');
+      setApiError(true);
+    }
+    if (error.code && error.code !== 422) {
+      apiError = error.response.statusText;
+      setApiErrorMsg(apiError || '');
+      setApiError(true);
+    }
+    if (!error.response && (!error.code || error.code !== 422)) {
+      apiError = error.message;
+      setApiErrorMsg(apiError || '');
+      setApiError(true);
+    }
+  };
 
   let balanceInfo = '000.00';
   if (dashData && dashData.balance_info) {
@@ -173,9 +207,9 @@ export function Dragonpay() {
           )}
         </div>
       </Box>
-      {showModal.show && (
+      {/* {showModal.show && (
         <AddMoneyModal success={showModal.status} onClick={handlerCloseModal} />
-      )}
+      )} */}
       {/* {showIframe.show && (
         <AddMoneyFrame
           urlLink={showIframe.url}
@@ -183,6 +217,26 @@ export function Dragonpay() {
           onClick={handlerCloseFrame}
         />
       )} */}
+
+      <Dialog show={apiError} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <Logo size="small" margin="0 0 30px" />
+          <CircleIndicator size="medium" color="danger">
+            <FontAwesomeIcon icon="times" />
+          </CircleIndicator>
+          <H3 margin="15px 0 30px">{apiErrorMsg}</H3>
+
+          <Button
+            fullWidth
+            onClick={handlerCloseModal}
+            variant="contained"
+            color="primary"
+            size="large"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
 
       <Dialog show={showIframe.show} size="small">
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>

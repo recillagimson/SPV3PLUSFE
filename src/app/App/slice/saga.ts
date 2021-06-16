@@ -70,6 +70,7 @@ export function* getRequestToken() {
  * @return                 Returns the result from the api call
  */
 export function* getRequestPassphrase() {
+  yield delay(500);
   let token: any;
 
   // check if we have a cookie set
@@ -112,6 +113,7 @@ export function* getRequestPassphrase() {
  * @return                Returns the result from the api call
  */
 export function* getResponsePassphrase(id: string) {
+  yield delay(500);
   const token = yield select(selectClientToken);
   const requestURL = `${process.env.REACT_APP_API_URL}/payloads/${id}/key`;
 

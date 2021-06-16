@@ -4,7 +4,7 @@
  */
 import * as React from 'react';
 import { useLocation } from 'react-router';
-import { request } from 'utils/request';
+// import { request } from 'utils/request';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -13,15 +13,15 @@ import Logo from 'app/components/Assets/Logo';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import H3 from 'app/components/Elements/H3';
 
-import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
+// import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { selectUserToken } from './slice/selectors';
-import { getRequestPassphrase } from './slice/saga';
+// import { getRequestPassphrase } from './slice/saga';
 import Loading from 'app/components/Loading';
 
 const Wrapper = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 60px);
   background-color: #fff;
   display: flex;
   align-items: center;
@@ -43,7 +43,7 @@ export default function SuccessPostback() {
   React.useEffect(() => {
     const params = location ? location.search : '';
     console.log(params, token);
-
+    /*
     const passParams = async () => {
       setLoading(true);
       let encryptedPayload = '';
@@ -76,9 +76,12 @@ export default function SuccessPostback() {
         setLoading(false);
       }
     };
+    */
 
     if (params && params !== '') {
-      passParams();
+      // passParams();
+      setSuccess(true);
+      setLoading(false);
     }
 
     if (!params || (params && params === '')) {
