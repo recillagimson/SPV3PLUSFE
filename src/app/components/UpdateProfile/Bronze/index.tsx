@@ -286,7 +286,7 @@ export default function UserProfileForm({
       setApiErrorMsg(apiError || '');
       setIsError(true);
     }
-    if (error.code && error.code !== 422) {
+    if (error.response || (error.code && error.code !== 422)) {
       apiError = error.response.statusText;
       setApiErrorMsg(apiError || '');
       setIsError(true);

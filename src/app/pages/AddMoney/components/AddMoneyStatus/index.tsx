@@ -13,6 +13,7 @@ export default function AddMoneyStatus(props) {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        padding: '20px 10px',
       }}
     >
       {success === 'success' ? (

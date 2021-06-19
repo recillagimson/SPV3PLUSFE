@@ -10,7 +10,7 @@ import {
   getResponsePassphrase,
   getRequestPassphrase,
 } from 'app/App/slice/saga';
-import { errorHandler } from './errorHandle';
+// import { errorHandler } from './errorHandle';
 import { selectAmount } from './selectors';
 
 function* addMoney() {
@@ -60,12 +60,18 @@ function* addMoney() {
       return;
     }
   } catch (err) {
-    if (err && err.response && err.response.status === 401) {
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getFetchReset());
     } else {
-      const errMessage = errorHandler(err);
-      yield put(actions.getFetchError(errMessage));
+      yield put(actions.getFetchError(err));
     }
   }
 }

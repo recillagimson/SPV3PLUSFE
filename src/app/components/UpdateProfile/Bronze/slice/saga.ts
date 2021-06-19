@@ -64,7 +64,7 @@ function* getUpdateProfile() {
       yield put(actions.getFetchSuccess(decryptData));
     }
   } catch (err) {
-    // special case, check the 422 for invalid data (account already exists)
+    // check the 422 errors
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
@@ -72,6 +72,9 @@ function* getUpdateProfile() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getFetchReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getFetchReset());

@@ -13,11 +13,18 @@ import Wrapper from 'app/components/Layouts/AuthWrapper';
 import UpdateProfile from 'app/components/UpdateProfile/Bronze';
 
 import { appActions } from 'app/App/slice';
-import { deleteCookie, doSignOut } from 'app/components/Helpers';
+import { deleteCookie, doSignOut, getCookie } from 'app/components/Helpers';
 
 export function UpdateProfileVerificationPage() {
   const history = useHistory();
   const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    const isForce = getCookie('spv_uat_f');
+    if (!isForce) {
+      window.location.replace('/');
+    }
+  }, []);
 
   const onCancelUpdate = () => {
     deleteCookie('spv_uat_f');

@@ -17,6 +17,7 @@ import {
 } from './selectors';
 
 import { containerActions as actions } from '.';
+import { appActions } from 'app/App/slice';
 
 /**
  * GET List of Billers
@@ -70,6 +71,9 @@ function* getBillers() {
         ...body,
       };
       yield put(actions.getBillersError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getBillersError({}));
     } else {
       yield put(actions.getBillersError(err));
     }
@@ -138,6 +142,9 @@ function* validatePaybills() {
         ...body,
       };
       yield put(actions.validatePayBillsError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.validatePayBillsError({}));
     } else {
       yield put(actions.validatePayBillsError(err));
     }
@@ -207,6 +214,9 @@ function* createPayBills() {
         ...body,
       };
       yield put(actions.createPayBillsError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.createPayBillsError({}));
     } else {
       yield put(actions.createPayBillsError(err));
     }

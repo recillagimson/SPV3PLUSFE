@@ -75,3 +75,8 @@ export const selectUserTier = createSelector(
   [selectDomain],
   subState => subState.tier,
 );
+
+export const selectIsServerError = createSelector(
+  [selectDomain],
+  subState => subState.isServerError,
+);

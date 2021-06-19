@@ -1,31 +1,40 @@
 /**
  * Avatar styled components
  * @prop {string}   image       the image for the avatar
- * @prop {string}   size        string enum ('small' | 'medium' | 'large') default: medium
+ * @prop {string}   size        string enum ('small' | 'medium' | 'large' | 'xxlarge') default: medium
  */
 import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
 type Props = {
   image?: string;
-  size?: 'small' | 'medium' | 'large' | 'xlarge';
+  size?: 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge';
 };
 
 const sizes = {
-  small: '45px',
-  medium: '65px',
-  large: '110px',
-  xlarge: '210px',
+  small: '24px',
+  medium: '32px',
+  large: '48px',
+  xlarge: '64px',
+  xxlarge: '88px',
+};
+
+const fontSize = {
+  small: '12px',
+  medium: '16px',
+  large: '20px',
+  xlarge: '28px',
+  xxlarge: '40px',
 };
 
 const Avatar = styled.span<Props>`
   display: inline-block;
   vertical-align: middle;
   border-radius: 200px;
-  min-width: ${p => (p.size ? sizes[p.size] : '80px')};
-  min-height: ${p => (p.size ? sizes[p.size] : '80px')};
-  width: ${p => (p.size ? sizes[p.size] : '80px')};
-  height: ${p => (p.size ? sizes[p.size] : '80px')};
+  min-width: ${p => (p.size ? sizes[p.size] : '104px')};
+  min-height: ${p => (p.size ? sizes[p.size] : '104px')};
+  width: ${p => (p.size ? sizes[p.size] : '104px')};
+  height: ${p => (p.size ? sizes[p.size] : '104px')};
   background-image: ${p =>
     p.image
       ? `url(${p.image})`
@@ -34,6 +43,7 @@ const Avatar = styled.span<Props>`
   background-repeat: no-repeat;
   background-position: center;
   background-size: ${p => (p.image ? 'cover' : '50% auto')};
+  font-size: ${p => (p.size ? fontSize[p.size] : '1rem')};
 `;
 
 export default Avatar;

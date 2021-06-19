@@ -19,6 +19,7 @@ export const initialState: GlobalState = {
   isUnauthenticated: false,
   isSessionExpired: false,
   isBlankPage: false,
+  isServerError: false,
   references: {},
   tier: false,
 };
@@ -68,6 +69,9 @@ const slice = createSlice({
     },
     getIsBlankPage(state, action: PayloadAction<boolean>) {
       state.isBlankPage = action.payload;
+    },
+    getIsServerError(state, action: PayloadAction<boolean>) {
+      state.isServerError = action.payload;
     },
     getLoadReferences() {}, // an action only to dispatch retrieving of references
     getReferences(state, action: PayloadAction<object>) {

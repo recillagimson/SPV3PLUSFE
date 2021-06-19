@@ -85,6 +85,7 @@ import {
   selectIsAuthenticated,
   selectIsBlankPage,
   setIsUnathenticated,
+  selectIsServerError,
 } from './slice/selectors';
 // import { usePrevious } from 'app/components/Helpers/Hooks';
 
@@ -110,6 +111,7 @@ export function App() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isSessionExpired = useSelector(selectSessionExpired);
   const isBlankPage = useSelector(selectIsBlankPage);
+  const isServerError = useSelector(selectIsServerError);
   const clientTokenExpired = useSelector(setIsUnathenticated); // use this only on users who hasn't logged in yet
 
   const [flags, setFlags] = React.useState(defaultFlags);
@@ -177,6 +179,13 @@ export function App() {
       // window.setInterval(getRemoteConfigValues, 300000); // 5 mins interval
     }
   }, [isAuthenticated]);
+
+  React.useEffect(() => {
+    if (isServerError) {
+      history.push('/error');
+      dispatch(actions.getIsServerError(false));
+    }
+  }, [isServerError]);
 
   const getRemoteConfigValues = () => {
     remoteConfig
@@ -381,6 +390,7 @@ export function App() {
               component={SuccessPostBack}
             />
             {/* Not found page should be the last entry for this <Switch /> container */}
+            <Route path="/error" component={Page500} />
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}
