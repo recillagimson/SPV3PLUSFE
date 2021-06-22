@@ -172,18 +172,16 @@ export function GenerateQR() {
                   <Flex justifyContent="center">
                     <QRCode
                       value={success.id}
-                      size={220}
+                      size={225}
                       id="QRCode"
+                      includeMargin
                       imageSettings={{
-                        src: `${process.env.PUBLIC_URL}/logo/bsp.png`,
+                        src: `${process.env.PUBLIC_URL}/img/qrph.png`,
                         x: null,
                         y: null,
-                        height: 40,
-                        width: 40,
-                        // excavate: true,
-                      }}
-                      style={{
-                        padding: 10,
+                        height: 36,
+                        width: 36,
+                        excavate: true,
                       }}
                     />
                   </Flex>
@@ -196,7 +194,7 @@ export function GenerateQR() {
                         : ''}
                     </H3>
                     <p style={{ margin: '0 0 20px' }}>
-                      {replaceFirst7(loginName)}
+                      {loginName && replaceFirst7(loginName)}
                     </p>
                   </span>
                   <Grid

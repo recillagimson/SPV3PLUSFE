@@ -13,10 +13,10 @@ type Props = {
 
 const sizes = {
   small: '24px',
-  medium: '32px',
-  large: '48px',
-  xlarge: '64px',
-  xxlarge: '88px',
+  medium: '48px',
+  large: '64px',
+  xlarge: '104px',
+  xxlarge: '215px',
 };
 
 const fontSize = {
@@ -31,10 +31,10 @@ const Avatar = styled.span<Props>`
   display: inline-block;
   vertical-align: middle;
   border-radius: 200px;
-  min-width: ${p => (p.size ? sizes[p.size] : '104px')};
-  min-height: ${p => (p.size ? sizes[p.size] : '104px')};
-  width: ${p => (p.size ? sizes[p.size] : '104px')};
-  height: ${p => (p.size ? sizes[p.size] : '104px')};
+  min-width: ${p => (p.size ? sizes[p.size] : '48px')};
+  min-height: ${p => (p.size ? sizes[p.size] : '48px')};
+  width: ${p => (p.size ? sizes[p.size] : '48px')};
+  height: ${p => (p.size ? sizes[p.size] : '48px')};
   background-image: ${p =>
     p.image
       ? `url(${p.image})`

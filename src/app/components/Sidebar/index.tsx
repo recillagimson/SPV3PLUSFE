@@ -99,7 +99,7 @@ export default function Sidebar() {
           className="sp-logo"
         />
         <div className="user-info" role="presentation" onClick={gotoProfile}>
-          <Avatar image={avatar !== '' ? avatar : undefined} size="medium" />
+          <Avatar image={avatar !== '' ? avatar : undefined} size="large" />
           <div className="user-short-details">
             <p className="name">
               {typeof profile === 'object'
