@@ -90,7 +90,7 @@ export default function TermsCondition({ scroll }: { scroll?: boolean }) {
       loading="lazy"
       style={{
         width: '100%',
-        minHeight: '70vh',
+        minHeight: 'calc(100vh - 300px)',
       }}
     />
     // <Wrapper dangerouslySetInnerHTML={{ __html: data }} />
