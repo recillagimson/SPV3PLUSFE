@@ -13,7 +13,7 @@ export default function PrivacyPolicy() {
       seamless
       style={{
         width: '100%',
-        minHeight: '70vh',
+        minHeight: 'calc(100vh - 300px)',
       }}
     />
   );
