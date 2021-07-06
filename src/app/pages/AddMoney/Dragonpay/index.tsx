@@ -129,7 +129,13 @@ export function Dragonpay() {
       setApiErrorMsg(apiError || '');
       setApiError(true);
     }
-    if (error.code && error.code !== 422) {
+    if (err.code && err.code === 500) {
+      setApiErrorMsg(
+        'Oops! We are having problem connecting to Dragonpay. Please try again later.',
+      );
+      setApiError(true);
+    }
+    if (error.code && (error.code !== 422 || error.code !== 500)) {
       apiError = error.response.statusText;
       setApiErrorMsg(apiError || '');
       setApiError(true);

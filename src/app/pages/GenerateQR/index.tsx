@@ -56,7 +56,7 @@ export function GenerateQR() {
 
     let downloadLink = document.createElement('a');
     downloadLink.href = pngUrl;
-    downloadLink.download = 'QRCode.png';
+    downloadLink.download = `${amount.value}-qrcode.png`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
@@ -132,6 +132,7 @@ export function GenerateQR() {
                       type="number"
                       placeholder="0.00"
                       value={amount.value}
+                      min={0}
                       autoComplete="off"
                       onChange={e =>
                         setAmount({
@@ -140,6 +141,7 @@ export function GenerateQR() {
                           errormsg: '',
                         })
                       }
+                      hidespinner
                     />
                     <span>PHP</span>
                   </InputTextWrapper>
@@ -172,15 +174,13 @@ export function GenerateQR() {
                   <Flex justifyContent="center">
                     <QRCode
                       value={success.id}
-                      size={225}
+                      size={200}
                       id="QRCode"
                       includeMargin
                       imageSettings={{
                         src: `${process.env.PUBLIC_URL}/img/qrph.png`,
                         x: null,
                         y: null,
-                        height: 36,
-                        width: 36,
                         excavate: true,
                       }}
                     />
