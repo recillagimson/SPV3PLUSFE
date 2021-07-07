@@ -65,6 +65,7 @@ export function PayBillsPage(props) {
   const [filteredBillers, setSelectedFilteredBillers] = React.useState([]);
   const [isDialogErrorOpen, setDialogError] = React.useState(false);
   const [isDialogSuccessOpen, setDialogSuccess] = React.useState(false);
+  const isMECOR = billerCode === 'MECOR';
 
   let balanceInfo = '000.00';
   if (dashData && dashData.balance_info) {
@@ -132,6 +133,79 @@ export function PayBillsPage(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createdPayBills, validatedBiller]);
 
+  const renderList = (successReview: boolean, isMecor: boolean, data: any) => {
+    if (isMecor && successReview) {
+      return (
+        <React.Fragment>
+          <S.ReviewListItem>
+            <p>Account Name</p>
+            <p>{data.account_name || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Customer Account Number</p>
+            <p>{data.account_number || data.referenceNumber || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Reference Number</p>
+            <p>{data.reference_number || data.referenceNumber || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Amount</p>
+            <p>PHP {numberWithCommas(data.amount)}</p>
+          </S.ReviewListItem>
+        </React.Fragment>
+      );
+    } else if (isMecor) {
+      return (
+        <React.Fragment>
+          <S.ReviewListItem>
+            <p>Customer Account Number</p>
+            <p>{data.account_number || data.referenceNumber || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Amount</p>
+            <p>PHP {numberWithCommas(data.amount)}</p>
+          </S.ReviewListItem>
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <React.Fragment>
+          <S.ReviewListItem>
+            <p>Account Name</p>
+            <p>{data.account_name || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Account Number</p>
+            <p>{data.account_number || data.referenceNumber || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Reference Number</p>
+            <p>{data.reference_number || data.referenceNumber || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Amount</p>
+            <p>PHP {numberWithCommas(data.amount)}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Send Receipt To</p>
+            <p>{data.send_receipt_to || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Message</p>
+            <p>{data.message || 'None'}</p>
+          </S.ReviewListItem>
+          {successReview && (
+            <S.ReviewListItem>
+              <p>Transaction Number</p>
+              <p>{data.transaction_number || 'None'}</p>
+            </S.ReviewListItem>
+          )}
+        </React.Fragment>
+      );
+    }
+  };
+
   const renderReviewContainer = (data: any, type?: string) => {
     const selectedBiller = billers?.find(biller => biller.code === billerCode);
     const firstChar = selectedBiller?.name.charAt(0);
@@ -148,36 +222,13 @@ export function PayBillsPage(props) {
         <h3 className="review-title">
           {isSuccessReview ? 'Transaction successful!' : selectedBiller?.name}
         </h3>
-        <S.ReviewListItem>
-          <p>Account Name</p>
-          <p>{data.account_name || 'None'}</p>
-        </S.ReviewListItem>
-        <S.ReviewListItem>
-          <p>Account Number</p>
-          <p>{data.account_number || data.referenceNumber || 'None'}</p>
-        </S.ReviewListItem>
-        <S.ReviewListItem>
-          <p>Reference Number</p>
-          <p>{data.reference_number || data.referenceNumber || 'None'}</p>
-        </S.ReviewListItem>
-        <S.ReviewListItem>
-          <p>Amount</p>
-          <p>PHP {numberWithCommas(data.amount)}</p>
-        </S.ReviewListItem>
-        <S.ReviewListItem>
-          <p>Send Receipt To</p>
-          <p>{data.send_receipt_to || 'None'}</p>
-        </S.ReviewListItem>
-        <S.ReviewListItem>
-          <p>Message</p>
-          <p>{data.message || 'None'}</p>
-        </S.ReviewListItem>
-        {isSuccessReview && (
-          <S.ReviewListItem>
-            <p>Transaction Number</p>
-            <p>{data.transaction_number || 'None'}</p>
-          </S.ReviewListItem>
+        {isMECOR && isSuccessReview && (
+          <p className="mecor-message">
+            "Sweet! We have received your MERALCO bill payment and are currently
+            processing it. Thank you. Have a great day ahead!"
+          </p>
         )}
+        {renderList(isSuccessReview, isMECOR, data)}
         <S.ReviewTotal>
           <p className="total-description">Total amount</p>
           <p className="total-amount">PHP {numberWithCommas(data?.amount)}</p>
@@ -436,6 +487,22 @@ export function PayBillsPage(props) {
                 }
               }
             })}
+            {isMECOR && (
+              <S.NoteWrapper>
+                <p className="important">
+                  IMPORTANT NOTE:
+                  <span>
+                    To avoid inconvenience, please input the exact amount of
+                    your total billing amount due and settle before your due
+                    date.
+                  </span>
+                </p>
+                <p>
+                  Please review to ensure that the details are correct before
+                  you proceed.
+                </p>
+              </S.NoteWrapper>
+            )}
             <S.FormFooter>
               <Button
                 size="medium"
