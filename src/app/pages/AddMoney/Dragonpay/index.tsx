@@ -135,13 +135,13 @@ export function Dragonpay() {
       );
       setApiError(true);
     }
-    if (error.code && (error.code !== 422 || error.code !== 500)) {
-      apiError = error.response.statusText;
+    if (err.response && !err.code) {
+      apiError = err.response.statusText;
       setApiErrorMsg(apiError || '');
       setApiError(true);
     }
-    if (!error.response && (!error.code || error.code !== 422)) {
-      apiError = error.message;
+    if (!err.response && !err.code) {
+      apiError = err.message;
       setApiErrorMsg(apiError || '');
       setApiError(true);
     }
