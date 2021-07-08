@@ -317,3 +317,22 @@ export const NoteWrapper = styled.div`
     margin-bottom: 20px;
   }
 `;
+
+export const DialogActions = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    margin-top: 20px;
+
+    &:first-child {
+      margin-right: 25px;
+    }
+  }
+`;
+
+export const DisconnectionMessage = styled.p`
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+`;

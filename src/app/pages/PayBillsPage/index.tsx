@@ -64,7 +64,12 @@ export function PayBillsPage(props) {
   const [selectedBillers, setSelectedBillers] = React.useState([]);
   const [filteredBillers, setSelectedFilteredBillers] = React.useState([]);
   const [isDialogErrorOpen, setDialogError] = React.useState(false);
-  const [isDialogSuccessOpen, setDialogSuccess] = React.useState(false);
+  const [isDialogSuccessOpen, setDialogSuccess] = React.useState<boolean>(
+    false,
+  );
+  const [isDisconnectionDialogOpen, setDisconnectionDialog] = React.useState<
+    string
+  >('');
   const isMECOR = billerCode === 'MECOR';
 
   let balanceInfo = '000.00';
@@ -93,17 +98,31 @@ export function PayBillsPage(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Handles API errors
   React.useEffect(() => {
     if (apiErrors && apiErrors?.errors?.error_code?.length) {
       const transactionFailed = apiErrors?.errors?.error_code?.find(
         errorCode => errorCode === 151,
       );
 
+      if (apiErrors && apiErrors?.code === 422) {
+        const provider_error =
+          apiErrors?.provider_error.length && apiErrors?.provider_error[0].data;
+        const payloadForMECOR: any = {
+          validationNumber: provider_error.validationNumber,
+        };
+        dispatch(actions.validatePayBillsSuccess(payloadForMECOR));
+        setDisconnectionDialog(provider_error?.message);
+      }
+
       if (transactionFailed) setDialogError(true);
     }
 
     if (apiErrors && apiErrors?.provider_error?.length) {
-      if (apiErrors?.provider_error[0].status !== 400) {
+      if (
+        apiErrors?.provider_error[0].status !== 400 &&
+        apiErrors?.code !== 422
+      ) {
         const providerErr = Object.keys(apiErrors?.provider_error[0]?.errors);
         if (providerErr.length) {
           const errors = {};
@@ -605,6 +624,45 @@ export function PayBillsPage(props) {
                 "You will receive a sms notification for your confirmed
                 transaction".
               </S.ConfirmationMessage>
+            </div>
+          </S.DetailsWrapper>
+        </Dialog>
+        {/* MECOR Disconnection Dialog */}
+        <Dialog show={!!isDisconnectionDialogOpen} size="small">
+          <S.DetailsWrapper padding="15px">
+            <div className="text-center">
+              <CircleIndicator size="medium" color="primary">
+                <FontAwesomeIcon icon="check" />
+              </CircleIndicator>
+              <H3 margin="15px 0 10px">Heads up!</H3>
+              <S.DisconnectionMessage>
+                {isDisconnectionDialogOpen}
+              </S.DisconnectionMessage>
+              <S.DialogActions>
+                <Button
+                  fullWidth
+                  onClick={() => {
+                    setDisconnectionDialog('');
+                    setSteps(3);
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                >
+                  I agree
+                </Button>
+                <Button
+                  fullWidth
+                  onClick={() => {
+                    setDisconnectionDialog('');
+                  }}
+                  variant="outlined"
+                  color="default"
+                  size="large"
+                >
+                  Cancel
+                </Button>
+              </S.DialogActions>
             </div>
           </S.DetailsWrapper>
         </Dialog>
