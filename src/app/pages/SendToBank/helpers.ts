@@ -3,27 +3,35 @@ import InstapayLogo from 'app/components/Assets/instapay.svg';
 import PesonetLogo from 'app/components/Assets/pesonet.svg';
 import UBPImageTextLogo from 'app/components/Assets/ubp-logo-text.png';
 
-export const initialFormData = {
+export const getInitialFormData = (type: 'instapay' | 'pesonet') => ({
   bank_code: '',
   bank_name: '',
   account_number: '',
-  account_name: '',
+  ...(type === 'pesonet' && { account_name: '' }),
+  ...(type === 'instapay' && {
+    recipient_first_name: '',
+    recipient_last_name: '',
+  }),
   amount: '',
   purpose: '',
   other_purpose: '',
   send_receipt_to: '',
-};
+});
 
-export const initialformErrors = {
+export const getInitialformErrors = (type: 'instapay' | 'pesonet') => ({
   bank_code: '',
   bank_name: '',
   account_number: '',
-  account_name: '',
+  ...(type === 'pesonet' && { account_name: '' }),
+  ...(type === 'instapay' && {
+    recipient_first_name: '',
+    recipient_last_name: '',
+  }),
   amount: '',
   purpose: '',
   other_purpose: '',
   send_receipt_to: '',
-};
+});
 
 export const BANK_TRANSACTION_TYPE = [
   {
