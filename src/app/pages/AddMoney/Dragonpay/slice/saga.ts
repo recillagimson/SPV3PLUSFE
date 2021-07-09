@@ -60,10 +60,14 @@ function* addMoney() {
       return;
     }
   } catch (err) {
-    if (err && err.response && err.response.status === 422) {
+    if (
+      err &&
+      err.response &&
+      (err.response.status === 422 || err.response.status === 500)
+    ) {
       const body = yield err.response.json();
       const newError = {
-        code: 422,
+        code: err.response.status,
         ...body,
       };
       yield put(actions.getFetchError(newError));
