@@ -28,7 +28,7 @@ import {
   selectLoading,
   selectError,
   selectBanks,
-  // selectPurposes,
+  selectPurposes,
   selectBankTransactionType,
   selectValidateTransaction,
 } from './slice/selectors';
@@ -37,10 +37,9 @@ import { BankState } from './slice/types';
 
 // Helpers
 import {
-  getInitialFormData,
-  getInitialformErrors,
+  initialFormData,
+  initialformErrors,
   BANK_TRANSACTION_TYPE,
-  TRANSACTION_PURPOSES,
 } from './helpers';
 
 // Utils
@@ -62,17 +61,9 @@ export function SendToBank() {
   const loading = useSelector(selectLoading);
   const apiErrors: any = useSelector(selectError);
   const banks = useSelector(selectBanks);
-  // const purposes = useSelector(selectPurposes);
+  const purposes = useSelector(selectPurposes);
   const bankTransactionType = useSelector(selectBankTransactionType);
   const validateTransaction = useSelector(selectValidateTransaction);
-
-  const initialFormData = React.useMemo(() => {
-    return getInitialFormData(bankTransactionType);
-  }, [bankTransactionType]);
-
-  const initialformErrors = React.useMemo(() => {
-    return getInitialformErrors(bankTransactionType);
-  }, [bankTransactionType]);
 
   const [formData, setFormData] = React.useState(initialFormData);
   const [formErrors, setFormErrors] = React.useState(initialformErrors);
@@ -82,7 +73,7 @@ export function SendToBank() {
   );
 
   React.useEffect(() => {
-    // dispatch(actions.getPurposesLoading());
+    dispatch(actions.getPurposesLoading());
     dispatch(actions.resetTransaction());
   }, []);
 
@@ -120,6 +111,10 @@ export function SendToBank() {
       errors.account_number = 'This is a required field.';
     }
 
+    if (formData.account_name === '') {
+      errors.account_name = 'This is a required field.';
+    }
+
     if (formData.amount === '') {
       errors.amount = 'This is a required field.';
     }
@@ -128,31 +123,8 @@ export function SendToBank() {
       errors.purpose = 'This is a required field.';
     }
 
-    if (formData.purpose === 'Others' && formData.other_purpose === '') {
-      errors.other_purpose =
-        'You have selected Other. Please enter other purpose';
-    }
-
     if (!validateEmail(formData.send_receipt_to)) {
       errors.send_receipt_to = 'This is a required field and a valid email.';
-    }
-
-    switch (bankTransactionType) {
-      case 'pesonet':
-        if (formData.account_name === '') {
-          errors.account_name = 'This is a required field.';
-        }
-        break;
-      case 'instapay':
-        if (formData.recipient_first_name === '') {
-          errors.recipient_first_name = 'This is a required field.';
-        }
-        if (formData.recipient_last_name === '') {
-          errors.recipient_last_name = 'This is a required field.';
-        }
-        break;
-      default:
-        break;
     }
 
     const hasFormErrors = !!Object.keys(errors).filter(err => err !== '')
@@ -223,11 +195,7 @@ export function SendToBank() {
         </S.ReviewListItem>
         <S.ReviewListItem>
           <p>Account Name</p>
-          <p>
-            {bankTransactionType === 'instapay'
-              ? `${formData.recipient_first_name} ${formData.recipient_last_name}`
-              : formData.account_name}
-          </p>
+          <p>{formData.account_name}</p>
         </S.ReviewListItem>
         <S.ReviewListItem>
           <p>Amount</p>
@@ -245,84 +213,13 @@ export function SendToBank() {
             </S.ReviewListItem>
           </React.Fragment>
         ) : (
-          <>
-            <S.ReviewListItem>
-              <p>Purpose</p>
-              <p>{formData.purpose}</p>
-            </S.ReviewListItem>
-            {formData.purpose === 'Others' && (
-              <S.ReviewListItem>
-                <p>Other Purpose</p>
-                <p>{formData.other_purpose}</p>
-              </S.ReviewListItem>
-            )}
-          </>
+          <S.ReviewListItem>
+            <p>Purpose</p>
+            <p>{formData.purpose}</p>
+          </S.ReviewListItem>
         )}
       </S.ReviewContainer>
     );
-  };
-
-  const dynamicStep = (bankTransactionType: string) => {
-    switch (bankTransactionType) {
-      case 'pesonet':
-        return (
-          <Field>
-            <Label>
-              Account Name <i>*</i>
-            </Label>
-            <Input
-              required
-              type="text"
-              name="account_name"
-              value={formData.account_name}
-              maxLength={150}
-              onChange={_handleChangeFormFieldValues}
-            />
-            {formErrors.account_name && (
-              <ErrorMsg formError>{formErrors.account_name}</ErrorMsg>
-            )}
-          </Field>
-        );
-      case 'instapay':
-        return (
-          <>
-            <Field>
-              <Label>
-                First Name <i>*</i>
-              </Label>
-              <Input
-                required
-                type="text"
-                name="recipient_first_name"
-                value={formData.recipient_first_name}
-                maxLength={150}
-                onChange={_handleChangeFormFieldValues}
-              />
-              {formErrors.recipient_first_name && (
-                <ErrorMsg formError>{formErrors.recipient_first_name}</ErrorMsg>
-              )}
-            </Field>
-            <Field>
-              <Label>
-                Last Name <i>*</i>
-              </Label>
-              <Input
-                required
-                type="text"
-                name="recipient_last_name"
-                value={formData.recipient_last_name}
-                maxLength={150}
-                onChange={_handleChangeFormFieldValues}
-              />
-              {formErrors.recipient_last_name && (
-                <ErrorMsg formError>{formErrors.recipient_last_name}</ErrorMsg>
-              )}
-            </Field>
-          </>
-        );
-      default:
-        return null;
-    }
   };
 
   const renderSteps = (step: number) => {
@@ -400,13 +297,27 @@ export function SendToBank() {
                   value={formData.amount}
                   onChange={_handleChangeFormFieldValues}
                   placeholder="PHP 0.00"
-                  min={0}
                 />
                 {formErrors.amount && (
                   <ErrorMsg formError>{formErrors.amount}</ErrorMsg>
                 )}
               </Field>
-              {dynamicStep(bankTransactionType)}
+              <Field>
+                <Label>
+                  Account Name <i>*</i>
+                </Label>
+                <Input
+                  required
+                  type="text"
+                  name="account_name"
+                  value={formData.account_name}
+                  maxLength={150}
+                  onChange={_handleChangeFormFieldValues}
+                />
+                {formErrors.account_name && (
+                  <ErrorMsg formError>{formErrors.account_name}</ErrorMsg>
+                )}
+              </Field>
               <Field>
                 <Label>
                   Account Number <i>*</i>
@@ -457,31 +368,14 @@ export function SendToBank() {
                   <option value="" disabled>
                     Please select
                   </option>
-                  {/* Changed to static transaction purposes, no API needed as per BE - changed by habs */}
-                  {TRANSACTION_PURPOSES?.map(d => (
+                  {purposes?.map(d => (
                     <option key={d.code} value={d.description}>
                       {d.description}
                     </option>
                   ))}
                 </Select>
-                {/* Added field if user selected others */}
-                {formData.purpose && formData.purpose === 'Others' && (
-                  <Input
-                    required
-                    type="text"
-                    name="other_purpose"
-                    value={formData.other_purpose}
-                    onChange={_handleChangeFormFieldValues}
-                    placeholder="Enter other purpose"
-                    className={formErrors.other_purpose ? 'error' : undefined}
-                    style={{ marginTop: 5 }}
-                  />
-                )}
                 {formErrors.purpose && (
                   <ErrorMsg formError>{formErrors.purpose}</ErrorMsg>
-                )}
-                {formErrors.other_purpose && (
-                  <ErrorMsg formError>{formErrors.other_purpose}</ErrorMsg>
                 )}
               </Field>
               <S.FormFooter>

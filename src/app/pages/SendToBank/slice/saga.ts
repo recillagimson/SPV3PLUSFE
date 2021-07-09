@@ -81,8 +81,7 @@ function* getBanks() {
   yield delay(500);
   const token = yield select(selectUserToken);
   const bankTransactionType = yield select(selectBankTransactionType);
-  const vendor = bankTransactionType === 'instapay' ? 'secbank' : 'ubp';
-  const requestURL = `${process.env.REACT_APP_API_URL}/send2bank/${vendor}-${bankTransactionType}/banks`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/send2bank/ubp-${bankTransactionType}/banks`;
 
   const options = {
     method: 'GET',
@@ -142,8 +141,7 @@ function* validateSendToBank() {
   const token = yield select(selectUserToken);
   const bankTransactionType = yield select(selectBankTransactionType);
   const formData = yield select(selectFormData);
-  const vendor = bankTransactionType === 'instapay' ? 'secbank' : 'ubp';
-  const requestURL = `${process.env.REACT_APP_API_URL}/send2bank/${vendor}-${bankTransactionType}/validate`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/send2bank/ubp-${bankTransactionType}/validate`;
 
   let encryptPayload: string = '';
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
@@ -283,8 +281,7 @@ function* sendToBank() {
   const token = yield select(selectUserToken);
   const bankTransactionType = yield select(selectBankTransactionType);
   const formData = yield select(selectFormData);
-  const vendor = bankTransactionType === 'instapay' ? 'secbank' : 'ubp';
-  const requestURL = `${process.env.REACT_APP_API_URL}/send2bank/${vendor}-${bankTransactionType}`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/send2bank/ubp-${bankTransactionType}`;
 
   let encryptPayload: string = '';
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
