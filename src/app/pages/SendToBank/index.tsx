@@ -28,7 +28,7 @@ import {
   selectLoading,
   selectError,
   selectBanks,
-  selectPurposes,
+  // selectPurposes,
   selectBankTransactionType,
   selectValidateTransaction,
 } from './slice/selectors';
@@ -40,6 +40,7 @@ import {
   getInitialFormData,
   getInitialformErrors,
   BANK_TRANSACTION_TYPE,
+  TRANSACTION_PURPOSES,
 } from './helpers';
 
 // Utils
@@ -61,7 +62,7 @@ export function SendToBank() {
   const loading = useSelector(selectLoading);
   const apiErrors: any = useSelector(selectError);
   const banks = useSelector(selectBanks);
-  const purposes = useSelector(selectPurposes);
+  // const purposes = useSelector(selectPurposes);
   const bankTransactionType = useSelector(selectBankTransactionType);
   const validateTransaction = useSelector(selectValidateTransaction);
 
@@ -77,11 +78,11 @@ export function SendToBank() {
   const [formErrors, setFormErrors] = React.useState(initialformErrors);
 
   const calculateTotalAmount = parseToNumber(
-    parseFloat(formData.amount) + validateTransaction?.service_fee,
+    parseFloat(formData.amount) + parseFloat(validateTransaction?.service_fee),
   );
 
   React.useEffect(() => {
-    dispatch(actions.getPurposesLoading());
+    // dispatch(actions.getPurposesLoading());
     dispatch(actions.resetTransaction());
   }, []);
 
@@ -125,6 +126,11 @@ export function SendToBank() {
 
     if (formData.purpose === '') {
       errors.purpose = 'This is a required field.';
+    }
+
+    if (formData.purpose === 'Others' && formData.other_purpose === '') {
+      errors.other_purpose =
+        'You have selected Other. Please enter other purpose';
     }
 
     if (!validateEmail(formData.send_receipt_to)) {
@@ -217,7 +223,11 @@ export function SendToBank() {
         </S.ReviewListItem>
         <S.ReviewListItem>
           <p>Account Name</p>
-          <p>{formData.account_name}</p>
+          <p>
+            {bankTransactionType === 'instapay'
+              ? `${formData.recipient_first_name} ${formData.recipient_last_name}`
+              : formData.account_name}
+          </p>
         </S.ReviewListItem>
         <S.ReviewListItem>
           <p>Amount</p>
@@ -235,10 +245,18 @@ export function SendToBank() {
             </S.ReviewListItem>
           </React.Fragment>
         ) : (
-          <S.ReviewListItem>
-            <p>Purpose</p>
-            <p>{formData.purpose}</p>
-          </S.ReviewListItem>
+          <>
+            <S.ReviewListItem>
+              <p>Purpose</p>
+              <p>{formData.purpose}</p>
+            </S.ReviewListItem>
+            {formData.purpose === 'Others' && (
+              <S.ReviewListItem>
+                <p>Other Purpose</p>
+                <p>{formData.other_purpose}</p>
+              </S.ReviewListItem>
+            )}
+          </>
         )}
       </S.ReviewContainer>
     );
@@ -276,7 +294,7 @@ export function SendToBank() {
                 required
                 type="text"
                 name="recipient_first_name"
-                value={formData?.recipient_first_name}
+                value={formData.recipient_first_name}
                 maxLength={150}
                 onChange={_handleChangeFormFieldValues}
               />
@@ -382,6 +400,7 @@ export function SendToBank() {
                   value={formData.amount}
                   onChange={_handleChangeFormFieldValues}
                   placeholder="PHP 0.00"
+                  min={0}
                 />
                 {formErrors.amount && (
                   <ErrorMsg formError>{formErrors.amount}</ErrorMsg>
@@ -438,14 +457,31 @@ export function SendToBank() {
                   <option value="" disabled>
                     Please select
                   </option>
-                  {purposes?.map(d => (
+                  {/* Changed to static transaction purposes, no API needed as per BE - changed by habs */}
+                  {TRANSACTION_PURPOSES?.map(d => (
                     <option key={d.code} value={d.description}>
                       {d.description}
                     </option>
                   ))}
                 </Select>
+                {/* Added field if user selected others */}
+                {formData.purpose && formData.purpose === 'Others' && (
+                  <Input
+                    required
+                    type="text"
+                    name="other_purpose"
+                    value={formData.other_purpose}
+                    onChange={_handleChangeFormFieldValues}
+                    placeholder="Enter other purpose"
+                    className={formErrors.other_purpose ? 'error' : undefined}
+                    style={{ marginTop: 5 }}
+                  />
+                )}
                 {formErrors.purpose && (
                   <ErrorMsg formError>{formErrors.purpose}</ErrorMsg>
+                )}
+                {formErrors.other_purpose && (
+                  <ErrorMsg formError>{formErrors.other_purpose}</ErrorMsg>
                 )}
               </Field>
               <S.FormFooter>

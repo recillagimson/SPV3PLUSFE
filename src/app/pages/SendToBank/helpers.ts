@@ -61,3 +61,22 @@ export const BANK_TRANSACTION_TYPE = [
     onClick: true,
   },
 ];
+
+export const TRANSACTION_PURPOSES = [
+  {
+    code: 1,
+    description: 'Fund Transfer',
+  },
+  {
+    code: 2,
+    description: 'Donation',
+  },
+  {
+    code: 3,
+    description: 'Payment',
+  },
+  {
+    code: 4,
+    description: 'Others',
+  },
+];
