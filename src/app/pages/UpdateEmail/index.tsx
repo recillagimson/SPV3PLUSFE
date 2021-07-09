@@ -104,10 +104,10 @@ export function UpdateEmailPage() {
       setShowForm(false);
       setShowVerify(true);
       setTimeout(() => {
-        const data = {
-          otp_type: 'update_email',
-        };
-        dispatch(actions.getResendLoading(data));
+        // const data = {
+        //   otp_type: 'update_email',
+        // };
+        // dispatch(actions.getResendLoading(data));
         dispatch(actions.getValidateReset());
       }, 200);
     }
@@ -192,8 +192,12 @@ export function UpdateEmailPage() {
   };
 
   const onResendCode = () => {
+    // const data = {
+    //   otp_type: 'update_email',
+    // };
+    // dispatch(actions.getResendLoading(data));
     const data = {
-      otp_type: 'update_email',
+      email: email.value,
     };
     dispatch(actions.getResendLoading(data));
   };
