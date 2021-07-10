@@ -117,6 +117,7 @@ export default function OTP() {
           onSuccess={() => {
             dispatch(actions.sendToBankLoading());
           }}
+          isUserToken
         />
         <p className="resend-code">
           Need a new code?{' '}

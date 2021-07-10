@@ -37,7 +37,9 @@ export function UserProfilePage() {
   const login = useSelector(selectLoggedInName);
   const refs: any = useSelector(selectReferences);
 
-  const [showProfile, setShowProfile] = React.useState(true);
+  const [loading, setLoading] = React.useState(true);
+
+  const [showProfile, setShowProfile] = React.useState(false);
   const [showUpdateProfile, setShowUpdateProfile] = React.useState(false);
   const [showUploadAvatar, setShowUploadAvatar] = React.useState(false);
   const [selectedAvatar, setSelectedAvatar] = React.useState<any>(false);
@@ -48,9 +50,17 @@ export function UserProfilePage() {
   const [showEmail, setShowEmail] = React.useState(false);
 
   React.useEffect(() => {
-    if (refs && Object.keys(refs).length > 0) {
+    // let's manually retrieve the references
+    if (!refs || Object.keys(refs).length === 0) {
+      dispatch(appActions.getLoadReferences());
+    }
+
+    if (refs && Object.keys(refs).length > 0 && profile) {
       let loadRef = false;
 
+      // double check every references
+      // TODO: on refactor, separate the retrieval of references in saga
+      //       so user can continue and we will only just load the missing references
       if (!refs.maritalStatus || Object.keys(refs.maritalStatus).length === 0) {
         loadRef = true;
       }
@@ -69,6 +79,12 @@ export function UserProfilePage() {
 
       if (loadRef) {
         dispatch(appActions.getLoadReferences());
+      }
+
+      // all references exists continue on edit profile
+      if (!loadRef) {
+        setLoading(false);
+        setShowProfile(true);
       }
     }
   }, [refs]);
@@ -110,19 +126,6 @@ export function UserProfilePage() {
     }
     setShowProfile(false);
   };
-
-  if (!profile || (refs && Object.keys(refs).length === 0)) {
-    return (
-      <ProtectedContent>
-        <Helmet>
-          <title>Profile</title>
-        </Helmet>
-        <Box title="User Profile" titleBorder withPadding>
-          <Loading />
-        </Box>
-      </ProtectedContent>
-    );
-  }
 
   let tierName = '';
   let tierID = '';
@@ -173,6 +176,11 @@ export function UserProfilePage() {
       <Helmet>
         <title>Profile</title>
       </Helmet>
+      {loading && (
+        <Box title="User Profile" titleBorder withPadding>
+          <Loading position="relative" />
+        </Box>
+      )}
       {showProfile && (
         <Box title="User Profile" titleBorder>
           <div style={{ padding: '20px 25px' }}>

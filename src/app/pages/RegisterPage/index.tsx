@@ -528,7 +528,7 @@ export function RegisterPage() {
                     onClick={() => setShowPass(prev => !prev)}
                     tabIndex={-1}
                   >
-                    <FontAwesomeIcon icon={showPass ? 'eye-slash' : 'eye'} />
+                    <FontAwesomeIcon icon={!showPass ? 'eye-slash' : 'eye'} />
                   </IconButton>
                 </InputIconWrapper>
 
@@ -563,7 +563,9 @@ export function RegisterPage() {
                     onClick={() => setShowConfirm(prev => !prev)}
                     tabIndex={-1}
                   >
-                    <FontAwesomeIcon icon={showConfirm ? 'eye-slash' : 'eye'} />
+                    <FontAwesomeIcon
+                      icon={!showConfirm ? 'eye-slash' : 'eye'}
+                    />
                   </IconButton>
                 </InputIconWrapper>
 
@@ -802,7 +804,7 @@ export function RegisterPage() {
       </Dialog>
 
       <Dialog show={resendDialog} size="small">
-        <div className="text-center">
+        <div className="text-center" style={{ padding: 20 }}>
           <CircleIndicator
             size="medium"
             color={resendSuccess ? 'primary' : 'danger'}

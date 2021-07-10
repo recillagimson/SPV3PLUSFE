@@ -1323,7 +1323,7 @@ export default function UserProfileForm({
               <ListItemText
                 label="Marital Status"
                 primary={
-                  refs.countries[parseInt(marital.value, 10)].description
+                  refs.maritalStatus[parseInt(marital.value, 10)].description
                 }
                 style={{
                   flexGrow: 1,
@@ -1507,6 +1507,7 @@ export default function UserProfileForm({
               apiURL="/auth/verify/otp"
               otpType="update_profile"
               onSuccess={onSubmit}
+              isUserToken
             />
 
             <Field className="text-center f-small" margin="20px 0 10px">

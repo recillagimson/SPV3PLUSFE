@@ -412,7 +412,7 @@ export function ForgotPasswordPage() {
       </div>
 
       <Dialog show={isError} size="small">
-        <div className="text-center">
+        <div className="text-center" style={{ padding: 20 }}>
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="times" />
           </CircleIndicator>

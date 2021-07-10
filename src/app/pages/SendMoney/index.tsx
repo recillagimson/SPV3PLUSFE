@@ -520,6 +520,7 @@ export function SendMoney() {
                           onSuccess={onCodeVerified}
                           apiURL="/auth/verify/otp"
                           otpType="send_money"
+                          isUserToken
                         />
 
                         <Field className="text-center" margin="20px 0 10px">
@@ -560,7 +561,7 @@ export function SendMoney() {
                     <Grid item xs={12} md={8}>
                       <Avatar
                         image={validateSuccess.selfie_location}
-                        size="medium"
+                        size="large"
                       />
                       <p className="email">{validateSuccess.first_name}</p>
                       <p className="number">{email.value}</p>

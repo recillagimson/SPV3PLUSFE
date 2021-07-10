@@ -255,7 +255,7 @@ export default function UpdatePasswordComponent({
             onClick={() => setShowPass(prev => !prev)}
             tabIndex={-1}
           >
-            <FontAwesomeIcon icon={showPass ? 'eye-slash' : 'eye'} />
+            <FontAwesomeIcon icon={!showPass ? 'eye-slash' : 'eye'} />
           </IconButton>
         </InputIconWrapper>
         {newPass.error && (
@@ -281,7 +281,7 @@ export default function UpdatePasswordComponent({
             onClick={() => setShowConfirmPass(prev => !prev)}
             tabIndex={-1}
           >
-            <FontAwesomeIcon icon={showConfirmPass ? 'eye-slash' : 'eye'} />
+            <FontAwesomeIcon icon={!showConfirmPass ? 'eye-slash' : 'eye'} />
           </IconButton>
         </InputIconWrapper>
         {confirmPass.error && (
