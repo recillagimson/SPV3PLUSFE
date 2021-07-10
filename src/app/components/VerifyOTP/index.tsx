@@ -8,6 +8,7 @@
  * @prop {string}     apiURL        pass the API endpoint ie: /auth/verify/password
  * @prop {string}     otpType       otp type ie: send_money
  *                                  NOTE: do not include the /api in the endpoint
+ * @prop {boolean}    isUserToken   True/false to use user token instead of client token
  */
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -69,6 +70,8 @@ type VerifyOTPComponentProps = {
   apiURL: string;
   /** Where the OTP will be use */
   otpType?: string;
+  /** If to use user token instead of client token */
+  isUserToken?: boolean;
 };
 export default function VerifyOTPComponent({
   isEmail,
@@ -76,6 +79,7 @@ export default function VerifyOTPComponent({
   onSuccess,
   apiURL,
   otpType,
+  isUserToken,
 }: VerifyOTPComponentProps) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
@@ -165,6 +169,7 @@ export default function VerifyOTPComponent({
     if (!error) {
       const data = {
         url: apiURL,
+        isUser: isUserToken,
         body: {
           // code_type: codeType ? codeType : 'password_recovery',
           mobile_number: viaValue && !isEmail ? viaValue : undefined,

@@ -533,6 +533,7 @@ export function SettingsChangePasswordPage() {
             <VerifyOTP
               onSuccess={onSubmitPassword}
               apiURL="/user/password/verify"
+              isUserToken
             />
 
             <Field className="text-center f-small" margin="20px 0 10px">

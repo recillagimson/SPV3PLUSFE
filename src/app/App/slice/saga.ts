@@ -186,7 +186,7 @@ export function* getLoggedInUserProfile() {
  * Retrieve the necessary references for use in the app
  */
 export function* getUserReferences() {
-  yield delay(500);
+  yield delay(1000);
   let refs = {};
 
   const maritalStatus = yield call(getMaritalStatus);

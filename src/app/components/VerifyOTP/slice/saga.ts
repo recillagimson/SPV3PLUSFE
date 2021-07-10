@@ -5,7 +5,7 @@ import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
 import { appActions } from 'app/App/slice';
-import { selectClientToken } from 'app/App/slice/selectors';
+import { selectClientToken, selectUserToken } from 'app/App/slice/selectors';
 import { getRequestPassphrase } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
@@ -17,8 +17,13 @@ import { selectRequest } from './selectors';
 function* getVerifyCode() {
   yield delay(500);
 
-  const token = yield select(selectClientToken);
+  const clientToken = yield select(selectClientToken);
+  const userToken = yield select(selectUserToken);
   const payload = yield select(selectRequest);
+
+  const token = payload.isUser
+    ? userToken.access_token
+    : clientToken.access_token;
 
   const requestURL = `${process.env.REACT_APP_API_URL}${payload.url}`;
 
@@ -38,7 +43,7 @@ function* getVerifyCode() {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token.access_token}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
   };

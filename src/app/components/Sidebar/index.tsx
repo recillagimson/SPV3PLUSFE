@@ -52,7 +52,11 @@ export default function Sidebar() {
   const previousAvatar = usePrevious(profile ? profile.avatar_link : '');
 
   React.useEffect(() => {
-    if (profile && profile.avatar_link && avatar !== previousAvatar) {
+    if (
+      profile &&
+      profile.avatar_link &&
+      profile.avatar_link !== previousAvatar
+    ) {
       setAvatar(profile.avatar_link);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

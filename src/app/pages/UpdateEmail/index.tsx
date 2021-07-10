@@ -304,6 +304,7 @@ export function UpdateEmailPage() {
               onSuccess={onCodeVerified}
               otpType="update_email"
               apiURL="/auth/verify/otp"
+              isUserToken
             />
 
             <Field className="text-center f-small" margin="20px 0 10px">

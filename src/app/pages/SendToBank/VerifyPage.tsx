@@ -139,6 +139,7 @@ export function VerifyOTPPage(props) {
           apiURL="/auth/verify/otp"
           otpType="send2bank"
           onSuccess={() => dispatch(actions.sendToBankLoading())}
+          isUserToken
         />
         <p className="resend-code">
           Need a new code?{' '}
