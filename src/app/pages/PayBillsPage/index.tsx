@@ -39,7 +39,13 @@ import { BillersState, BillerStateOptions } from './slice/types';
 // Helpers
 import { numberWithCommas } from 'utils/common';
 import { numberCommas } from 'app/components/Helpers';
-import { CATEGORIES, getFormData } from './helpers';
+import {
+  CATEGORIES,
+  getFormData,
+  disconnectionDialogLogo,
+  isPrimaryColorForDisconnection,
+  disconnectionTitleMessage,
+} from './helpers';
 import { RENDER_FIELDS, RENDER_SELECT_ITEMS } from './fields';
 
 // Assets
@@ -70,6 +76,7 @@ export function PayBillsPage(props) {
   const [isDisconnectionDialogOpen, setDisconnectionDialog] = React.useState<
     string
   >('');
+  const [disconnectionCode, setDisconnectionCode] = React.useState(null);
   const isMECOR = billerCode === 'MECOR';
 
   let balanceInfo = '000.00';
@@ -105,14 +112,26 @@ export function PayBillsPage(props) {
         errorCode => errorCode === 151,
       );
 
-      if (apiErrors && apiErrors?.code === 422) {
+      if (
+        apiErrors &&
+        apiErrors?.provider_error?.length &&
+        apiErrors?.code === 422
+      ) {
         const provider_error =
-          apiErrors?.provider_error.length && apiErrors?.provider_error[0].data;
-        const payloadForMECOR: any = {
-          validationNumber: provider_error.validationNumber,
-        };
-        dispatch(actions.validatePayBillsSuccess(payloadForMECOR));
-        setDisconnectionDialog(provider_error?.message);
+          apiErrors?.provider_error.length && apiErrors?.provider_error[0];
+        if (provider_error?.data) {
+          const payloadForMECOR: any = {
+            validationNumber: provider_error?.data?.validationNumber,
+          };
+          dispatch(actions.validatePayBillsSuccess(payloadForMECOR));
+          setDisconnectionDialog(provider_error?.data?.message);
+          setDisconnectionCode(provider_error?.data?.code);
+        }
+
+        if (provider_error?.details) {
+          setDisconnectionDialog(provider_error?.details?.message);
+          setDisconnectionCode(provider_error?.details?.code);
+        }
       }
 
       if (transactionFailed) setDialogError(true);
@@ -141,7 +160,10 @@ export function PayBillsPage(props) {
 
   // Success created pay bills
   React.useEffect(() => {
-    if (Object.keys(validatedBiller).length) {
+    if (
+      Object.keys(validatedBiller).length &&
+      validatedBiller?.validationNumber
+    ) {
       setSteps(steps + 1);
     }
 
@@ -631,30 +653,40 @@ export function PayBillsPage(props) {
         <Dialog show={!!isDisconnectionDialogOpen} size="small">
           <S.DetailsWrapper padding="15px">
             <div className="text-center">
-              <CircleIndicator size="medium" color="primary">
-                <FontAwesomeIcon icon="check" />
+              <CircleIndicator
+                size="medium"
+                color={isPrimaryColorForDisconnection(disconnectionCode)}
+              >
+                <FontAwesomeIcon
+                  icon={disconnectionDialogLogo(disconnectionCode)}
+                />
               </CircleIndicator>
-              <H3 margin="15px 0 10px">Heads up!</H3>
+              <H3 margin="15px 0 10px">
+                {disconnectionTitleMessage(disconnectionCode)}
+              </H3>
               <S.DisconnectionMessage>
                 {isDisconnectionDialogOpen}
               </S.DisconnectionMessage>
               <S.DialogActions>
+                {disconnectionCode === 1 && (
+                  <Button
+                    fullWidth
+                    onClick={() => {
+                      setDisconnectionDialog('');
+                      setSteps(3);
+                    }}
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                  >
+                    I agree
+                  </Button>
+                )}
                 <Button
                   fullWidth
                   onClick={() => {
                     setDisconnectionDialog('');
-                    setSteps(3);
-                  }}
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                >
-                  I agree
-                </Button>
-                <Button
-                  fullWidth
-                  onClick={() => {
-                    setDisconnectionDialog('');
+                    history.push('/dashboard');
                   }}
                   variant="outlined"
                   color="default"

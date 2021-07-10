@@ -325,8 +325,8 @@ export const DialogActions = styled.div`
   button {
     margin-top: 20px;
 
-    &:first-child {
-      margin-right: 25px;
+    &[color='primary'] {
+      margin-right: 20px;
     }
   }
 `;
