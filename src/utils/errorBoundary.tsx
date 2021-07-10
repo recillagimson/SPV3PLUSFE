@@ -88,21 +88,23 @@ class ErrorBoundary extends React.Component<Props, State> {
               Click the button to go back or feel free to contact us if the
               problem persists.
             </p>
-            <p className="error-stack">
-              <strong>
-                {this.state.error
-                  ? this.state.error && this.state.error.toString()
-                  : ''}
-              </strong>
-              <span>
-                {this.state.errorInfo
-                  ? this.state.errorInfo.componentStack
-                  : ''}
-              </span>
-              <small>
-                Note: This Error Stack should be copied for debugging purposes
-              </small>
-            </p>
+            {process.env.NODE_ENV !== 'production' && (
+              <p className="error-stack">
+                <strong>
+                  {this.state.error
+                    ? this.state.error && this.state.error.toString()
+                    : ''}
+                </strong>
+                <span>
+                  {this.state.errorInfo
+                    ? this.state.errorInfo.componentStack
+                    : ''}
+                </span>
+                <small>
+                  Note: This Error Stack should be copied for debugging purposes
+                </small>
+              </p>
+            )}
             <Button
               variant="contained"
               color="primary"
