@@ -141,7 +141,7 @@ export function App() {
 
       // delay the retrieval of references and user profile
       setTimeout(() => {
-        dispatch(actions.getLoadReferences());
+        // dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
         dispatch(dashboardAction.getFetchLoading());
       }, 2000);
@@ -157,9 +157,9 @@ export function App() {
     } else {
       dispatch(actions.getClientTokenLoading());
 
-      setTimeout(() => {
-        dispatch(actions.getLoadReferences());
-      }, 2000);
+      // setTimeout(() => {
+      //   dispatch(actions.getLoadReferences());
+      // }, 2000);
     }
   }, []);
 

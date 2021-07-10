@@ -27,41 +27,50 @@ export default function UserDetailsList({
   let showGuardianFields = false;
 
   if (profile && refs && Object.keys(refs).length > 0) {
-    country = refs.countries.findIndex(j => j.id === profile.country_id);
-    nationality = refs.nationalities.findIndex(
-      j => j.id === profile.nationality_id,
-    );
-    marital = refs.maritalStatus.findIndex(
-      j => j.id === profile.marital_status_id,
-    );
-
-    const nI = refs.natureOfWork.findIndex(
-      j => j.id === profile.nature_of_work_id,
-    );
-    if (
-      nI !== -1 &&
-      profile.nature_of_work_id !== '0ed96f01-9131-11eb-b44f-1c1b0d14e211'
-    ) {
-      natureOfWork = refs.natureOfWork[nI].description;
-    } else if (
-      profile.nature_of_work_id === '0ed96f01-9131-11eb-b44f-1c1b0d14e211'
-    ) {
-      natureOfWork = profile.encoded_nature_of_work;
+    if (refs.countries) {
+      country = refs.countries.findIndex(j => j.id === profile.country_id);
+    }
+    if (refs.nationalities) {
+      nationality = refs.nationalities.findIndex(
+        j => j.id === profile.nationality_id,
+      );
+    }
+    if (refs.maritalStatus) {
+      marital = refs.maritalStatus.findIndex(
+        j => j.id === profile.marital_status_id,
+      );
     }
 
-    const sI = refs.sourceOfFunds.findIndex(
-      j => j.id === profile.source_of_fund_id,
-    );
+    if (refs.natureOfWork) {
+      const nI = refs.natureOfWork.findIndex(
+        j => j.id === profile.nature_of_work_id,
+      );
+      if (
+        nI !== -1 &&
+        profile.nature_of_work_id !== '0ed96f01-9131-11eb-b44f-1c1b0d14e211'
+      ) {
+        natureOfWork = refs.natureOfWork[nI].description;
+      } else if (
+        profile.nature_of_work_id === '0ed96f01-9131-11eb-b44f-1c1b0d14e211'
+      ) {
+        natureOfWork = profile.encoded_nature_of_work;
+      }
+    }
 
-    if (
-      sI !== -1 &&
-      profile.source_of_fund_id !== '0ed801a1-9131-11eb-b44f-1c1b0d14e211'
-    ) {
-      sourceOfFunds = refs.sourceOfFunds[sI].description;
-    } else if (
-      profile.source_of_fund_id === '0ed801a1-9131-11eb-b44f-1c1b0d14e211'
-    ) {
-      sourceOfFunds = profile.encoded_source_of_fund;
+    if (refs.sourceOfFunds) {
+      const sI = refs.sourceOfFunds.findIndex(
+        j => j.id === profile.source_of_fund_id,
+      );
+      if (
+        sI !== -1 &&
+        profile.source_of_fund_id !== '0ed801a1-9131-11eb-b44f-1c1b0d14e211'
+      ) {
+        sourceOfFunds = refs.sourceOfFunds[sI].description;
+      } else if (
+        profile.source_of_fund_id === '0ed801a1-9131-11eb-b44f-1c1b0d14e211'
+      ) {
+        sourceOfFunds = profile.encoded_source_of_fund;
+      }
     }
 
     const bdate = profile.birth_date.split('-');

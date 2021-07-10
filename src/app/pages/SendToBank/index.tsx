@@ -69,7 +69,7 @@ export function SendToBank() {
   const [formErrors, setFormErrors] = React.useState(initialformErrors);
 
   const calculateTotalAmount = parseToNumber(
-    parseFloat(formData.amount) + validateTransaction?.service_fee,
+    parseFloat(formData.amount) + parseFloat(validateTransaction?.service_fee),
   );
 
   React.useEffect(() => {

@@ -131,7 +131,8 @@ function* getGenerateOTP() {
   const token = yield select(selectUserToken);
   const payload = yield select(selectResendRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/auth/generate/otp`;
+  // const requestURL = `${process.env.REACT_APP_API_URL}/auth/generate/otp`; // old generate otp
+  const requestURL = `${process.env.REACT_APP_API_URL}/user/email/validate`; // reuse the validate email
 
   let encryptPayload: string = '';
 

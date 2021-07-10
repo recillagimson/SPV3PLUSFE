@@ -49,7 +49,9 @@ Start Coding!
 - Add Money via Dragonpay
   - Update Email if none exists before using Dragonpay
 - Send To Bank (Instapay, Pesonet and UBP Direct)
+  - Instapay - replaced with secbank
 - Generate QR Code
+  - Resized the QR code with QRPH logo
 - Account Security (Change Password and Change PIN)
 - Paybills
   - SMART
@@ -73,3 +75,4 @@ Start Coding!
   - Privacy Policy
   - Terms and Conditions
 - Contact Us
+- Chat Plugin Integration

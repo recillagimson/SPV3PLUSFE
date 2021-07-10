@@ -351,7 +351,7 @@ export function LoginPage() {
                   type="button"
                   onClick={() => setShowPass(prev => !prev)}
                 >
-                  <FontAwesomeIcon icon={showPass ? 'eye-slash' : 'eye'} />
+                  <FontAwesomeIcon icon={!showPass ? 'eye-slash' : 'eye'} />
                 </IconButton>
               </InputIconWrapper>
 

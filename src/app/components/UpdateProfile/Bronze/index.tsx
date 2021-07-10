@@ -1011,6 +1011,7 @@ export default function UserProfileForm({
               apiURL="/auth/verify/otp"
               otpType="update_profile"
               onSuccess={onSubmit}
+              isUserToken
             />
 
             <Field className="text-center f-small" margin="20px 0 10px">
