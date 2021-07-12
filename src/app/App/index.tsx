@@ -70,6 +70,7 @@ import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/Lo
 import SuccessPostBack from './SuccessPostback';
 
 import { Page500 } from 'app/components/500/Loadable';
+import { ComingSoonPage } from 'app/components/ComingSoonPage/Loadable';
 
 // import pageRoutes from './Routes';
 
@@ -391,6 +392,7 @@ export function App() {
             />
             {/* Not found page should be the last entry for this <Switch /> container */}
             <Route path="/error" component={Page500} />
+            <Route path="/comingsoon" component={ComingSoonPage} />
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}

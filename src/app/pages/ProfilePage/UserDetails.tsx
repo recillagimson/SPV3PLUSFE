@@ -22,23 +22,26 @@ export default function UserDetailsList({
   let country = '-';
   let nationality = '-';
   let marital = '-';
-  let natureOfWork = '';
-  let sourceOfFunds = '';
+  let natureOfWork = '-';
+  let sourceOfFunds = '-';
   let showGuardianFields = false;
 
   if (profile && refs && Object.keys(refs).length > 0) {
     if (refs.countries) {
-      country = refs.countries.findIndex(j => j.id === profile.country_id);
+      const cI = refs.countries.findIndex(j => j.id === profile.country_id);
+      country = cI !== -1 ? refs.countries[cI].description : '-';
     }
     if (refs.nationalities) {
-      nationality = refs.nationalities.findIndex(
+      const nnI = refs.nationalities.findIndex(
         j => j.id === profile.nationality_id,
       );
+      nationality = nnI !== -1 ? refs.nationalities[nnI].description : '-';
     }
     if (refs.maritalStatus) {
-      marital = refs.maritalStatus.findIndex(
+      const mI = refs.maritalStatus.findIndex(
         j => j.id === profile.marital_status_id,
       );
+      marital = mI !== -1 ? refs.maritalStatus[mI].description : '-';
     }
 
     if (refs.natureOfWork) {
@@ -134,7 +137,7 @@ export default function UserDetailsList({
           role="presentation"
           onClick={() => onUpdate('birthday')}
           label="Date of Birth"
-          primary={profile ? bdate : '-'}
+          primary={bdate}
           style={{
             flexGrow: 1,
           }}
@@ -144,7 +147,7 @@ export default function UserDetailsList({
       <ListItem flex>
         <ListItemText
           label="Nationality"
-          primary={profile ? refs.nationalities[nationality].description : '-'}
+          primary={nationality}
           style={{
             flexGrow: 1,
           }}
@@ -156,7 +159,7 @@ export default function UserDetailsList({
           <ListItem flex>
             <ListItemText
               label="Place of Birth"
-              primary={profile.place_of_birth}
+              primary={profile.place_of_birth || '-'}
               style={{
                 flexGrow: 1,
               }}
@@ -165,7 +168,7 @@ export default function UserDetailsList({
           <ListItem flex>
             <ListItemText
               label="Mothers Maiden Name"
-              primary={profile.mother_maidenname}
+              primary={profile.mother_maidenname || '-'}
               style={{
                 flexGrow: 1,
               }}
@@ -174,7 +177,7 @@ export default function UserDetailsList({
           <ListItem flex>
             <ListItemText
               label="Marital Status"
-              primary={refs.maritalStatus[parseInt(marital)].description}
+              primary={marital}
               style={{
                 flexGrow: 1,
               }}
@@ -187,7 +190,7 @@ export default function UserDetailsList({
           <ListItem flex>
             <ListItemText
               label="Guardian's Name"
-              primary={profile && profile.guardian_name}
+              primary={profile.guardian_name || '-'}
               style={{
                 flexGrow: 1,
               }}
@@ -196,7 +199,7 @@ export default function UserDetailsList({
           <ListItem flex>
             <ListItemText
               label="Guardian's Mobile Number"
-              primary={profile && profile.guardian_mobile_number}
+              primary={profile.guardian_mobile_number || '-'}
               style={{
                 flexGrow: 1,
               }}
@@ -220,7 +223,7 @@ export default function UserDetailsList({
       <ListItem flex>
         <ListItemText
           label="Country"
-          primary={profile ? refs.countries[country].description : '-'}
+          primary={country}
           style={{
             flexGrow: 1,
           }}
@@ -229,7 +232,7 @@ export default function UserDetailsList({
       <ListItem flex>
         <ListItemText
           label="Address"
-          primary={profile ? `${profile.house_no_street}` : '-'}
+          primary={profile.house_no_street || '-'}
           style={{
             flexGrow: 1,
           }}
@@ -238,7 +241,7 @@ export default function UserDetailsList({
       <ListItem flex>
         <ListItemText
           label="Province / State"
-          primary={profile ? profile.province_state : '-'}
+          primary={profile.province_state || '-'}
           style={{
             flexGrow: 1,
           }}
@@ -247,7 +250,7 @@ export default function UserDetailsList({
       <ListItem flex>
         <ListItemText
           label="City"
-          primary={profile ? profile.city : '-'}
+          primary={profile.city || '-'}
           style={{
             flexGrow: 1,
           }}
@@ -256,7 +259,7 @@ export default function UserDetailsList({
       <ListItem flex>
         <ListItemText
           label="Postal Code"
-          primary={profile ? profile.postal_code : '-'}
+          primary={profile.postal_code || '-'}
           style={{
             flexGrow: 1,
           }}
@@ -267,7 +270,7 @@ export default function UserDetailsList({
           <ListItem flex>
             <ListItemText
               label="Nature of Work"
-              primary={profile ? natureOfWork : '-'}
+              primary={natureOfWork}
               style={{
                 flexGrow: 1,
               }}
@@ -276,7 +279,7 @@ export default function UserDetailsList({
           <ListItem flex>
             <ListItemText
               label="Source of Funds"
-              primary={profile ? sourceOfFunds : '-'}
+              primary={sourceOfFunds}
               style={{
                 flexGrow: 1,
               }}
@@ -285,7 +288,7 @@ export default function UserDetailsList({
           <ListItem flex>
             <ListItemText
               label="Occupation"
-              primary={profile ? profile.occupation : '-'}
+              primary={profile.occupation || '-'}
               style={{
                 flexGrow: 1,
               }}
@@ -294,7 +297,7 @@ export default function UserDetailsList({
           <ListItem flex>
             <ListItemText
               label="Employer"
-              primary={profile ? profile.employer : '-'}
+              primary={profile.employer || '-'}
               style={{
                 flexGrow: 1,
               }}
