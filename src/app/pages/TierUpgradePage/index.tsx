@@ -51,8 +51,7 @@ export function TiersPage() {
         if (
           currentTier &&
           currentTier.id === TierIDs.gold &&
-          i.id === TierIDs.bronze &&
-          i.id === TierIDs.silver
+          (i.id === TierIDs.bronze || i.id === TierIDs.silver)
         ) {
           isComplete = true;
         }
@@ -61,9 +60,9 @@ export function TiersPage() {
         if (
           currentTier &&
           currentTier.id === TierIDs.platinum &&
-          i.id === TierIDs.bronze &&
-          i.id === TierIDs.silver &&
-          i.id === TierIDs.gold
+          (i.id === TierIDs.bronze ||
+            i.id === TierIDs.silver ||
+            i.id === TierIDs.gold)
         ) {
           isComplete = true;
         }
