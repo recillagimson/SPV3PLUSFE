@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-
+import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 // get our fontawesome imports
@@ -16,6 +16,9 @@ import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
 import Select from 'app/components/Elements/Select';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
+import List from 'app/components/List';
+import ListItem from 'app/components/List/ListItem';
+import ListItemText from 'app/components/List/ListItemText';
 
 import { VerifyOTPPage } from './VerifyPage';
 
@@ -51,6 +54,7 @@ import InstapayLogo from 'app/components/Assets/instapay.svg';
 import PesonetLogo from 'app/components/Assets/pesonet.svg';
 
 export function SendToBank() {
+  const history = useHistory();
   const [steps, setSteps] = React.useState(0);
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
@@ -65,7 +69,7 @@ export function SendToBank() {
   const [formErrors, setFormErrors] = React.useState(initialformErrors);
 
   const calculateTotalAmount = parseToNumber(
-    parseFloat(formData.amount) + validateTransaction?.service_fee,
+    parseFloat(formData.amount) + parseFloat(validateTransaction?.service_fee),
   );
 
   React.useEffect(() => {
@@ -228,7 +232,11 @@ export function SendToBank() {
               {BANK_TRANSACTION_TYPE.map((cta, i) => (
                 <S.SendCTA
                   key={i}
-                  onClick={() => _handleSelectBankTransactionType(cta.id)}
+                  onClick={
+                    cta.onClick
+                      ? () => history.push('/send-to-bank/ubp')
+                      : () => _handleSelectBankTransactionType(cta.id)
+                  }
                 >
                   <S.SendCTAContent>
                     <p>{cta.header}</p>
@@ -250,17 +258,21 @@ export function SendToBank() {
       case 1:
         return (
           <S.Wrapper>
-            <S.List>
+            <List divider bordertop>
               {banks?.map((d: any) => (
-                <S.ListItem key={d.code}>
-                  <S.ItemTitle>{d.bank}</S.ItemTitle>
-                  <FontAwesomeIcon
-                    icon="chevron-right"
+                <ListItem flex key={d.code}>
+                  <ListItemText
+                    role="presentation"
                     onClick={() => _handleSelectBankData(d)}
+                    primary={d.bank}
+                    style={{
+                      flexGrow: 1,
+                    }}
+                    icon
                   />
-                </S.ListItem>
+                </ListItem>
               ))}
-            </S.List>
+            </List>
           </S.Wrapper>
         );
       case 2:
@@ -357,7 +369,7 @@ export function SendToBank() {
                     Please select
                   </option>
                   {purposes?.map(d => (
-                    <option key={d.code} value={d.code}>
+                    <option key={d.code} value={d.description}>
                       {d.description}
                     </option>
                   ))}

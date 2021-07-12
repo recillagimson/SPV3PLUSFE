@@ -37,6 +37,7 @@ import NavButton from './NavButton';
 // import { appActions } from 'app/App/slice';
 import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
 import LogoutWrapper from './LogoutWrapper';
+import { usePrevious } from '../Helpers/Hooks';
 
 export default function Sidebar() {
   const history = useHistory();
@@ -48,11 +49,18 @@ export default function Sidebar() {
   const [fakeLoading, setFakeLoading] = React.useState(false);
   const [avatar, setAvatar] = React.useState('');
 
+  const previousAvatar = usePrevious(profile ? profile.avatar_link : '');
+
   React.useEffect(() => {
-    if (profile && profile.avatar_link && avatar === '') {
+    if (
+      profile &&
+      profile.avatar_link &&
+      profile.avatar_link !== previousAvatar
+    ) {
       setAvatar(profile.avatar_link);
     }
-  }, [avatar, profile]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile]);
 
   const gotoProfile = () => {
     history.push('/profile');
@@ -95,7 +103,7 @@ export default function Sidebar() {
           className="sp-logo"
         />
         <div className="user-info" role="presentation" onClick={gotoProfile}>
-          <Avatar image={avatar !== '' ? avatar : undefined} size="medium" />
+          <Avatar image={avatar !== '' ? avatar : undefined} size="large" />
           <div className="user-short-details">
             <p className="name">
               {typeof profile === 'object'
@@ -170,9 +178,6 @@ export default function Sidebar() {
             Contact Us
           </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton as={NavLink} to="/send-to-bank-ubp">
-            Send to bank UBP
-          </NavButton>
         </Navigation>
         <div className="logout">
           <NavButton onClick={() => setIsLogout(prev => !prev)}>

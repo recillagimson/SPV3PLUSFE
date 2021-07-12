@@ -81,7 +81,7 @@ export function ForgotPasswordPage() {
     let apiError: string | undefined;
     if (error && Object.keys(error).length > 0) {
       const err = error.errors ? error.errors : false;
-      console.log(err);
+
       if (error.code && error.code === 422) {
         if (err && err.error_code && err.error_code.length > 0) {
           apiError = err.error_code.map(i => {
@@ -95,18 +95,30 @@ export function ForgotPasswordPage() {
                 isEmail ? 'email' : 'mobile number'
               } for verification process.`;
             }
-            if (i === 107) {
-              return `You cannot change your password yet as it hasn't reach it's 1 day minimum age.`;
-            }
-            if (i === 104) {
-              return 'You are attempting to login from an untrusted client. Please check your internet connection.';
+            if (i === 103) {
+              return 'Account does not exists.';
             }
             if (i === 105) {
-              return 'Too many failed login attempts. This device is temporarily blocked. Please try again later.';
+              return 'Your Account has been locked, Please contact Squidpay Support for assistance in unlocking your account.';
+            }
+            if (i === 106) {
+              return 'Password has already been used.';
+            }
+            if (i === 107) {
+              return `Password cannot be changed for at least 1 day/s.`;
             }
 
             return undefined;
           });
+        }
+
+        if (err && err.error_code && err.error_code.length === 0) {
+          if (err && err.email) {
+            apiError += err.email.join('\n');
+          }
+          if (err && err.mobile_number) {
+            apiError += err.mobile_number.join('\n');
+          }
         }
 
         setApiErrorMsg(apiError || '');
@@ -400,7 +412,7 @@ export function ForgotPasswordPage() {
       </div>
 
       <Dialog show={isError} size="small">
-        <div className="text-center">
+        <div className="text-center" style={{ padding: 20 }}>
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="times" />
           </CircleIndicator>

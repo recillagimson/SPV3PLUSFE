@@ -10,9 +10,11 @@ export interface GlobalState {
   user: UserProfileState | boolean;
   userToken: TokenState | string;
   isAuthenticated: boolean;
+  isUnauthenticated: boolean;
   token: TokenState | string;
   isSessionExpired: boolean;
   isBlankPage: boolean;
+  isServerError: boolean;
   references: {};
   tier: {} | boolean;
 }

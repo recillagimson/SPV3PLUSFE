@@ -43,6 +43,8 @@ import {
   selectResendCodeData,
   selectResendCodeError,
 } from './slice/selectors';
+import TermsCondition from 'app/components/TermsCondition';
+import PrivacyPolicy from 'app/components/PrivacyPolicy';
 
 export function RegisterPage() {
   const history = useHistory();
@@ -70,6 +72,11 @@ export function RegisterPage() {
   const [showPinCreated, setShowPinCreated] = React.useState(false);
   const [showVerify, setShowVerify] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false);
+
+  const [showAgreePrivacy, setShowAgreePrivacy] = React.useState(false);
+  const [showAgreeTerms, setShowAgreeTerms] = React.useState(false);
+  const [agreePrivacy, setAgreePrivacy] = React.useState(false);
+  const [agreeTerms, setAgreeTerms] = React.useState(false);
 
   // form fields
   const [isEmail, setIsEmail] = React.useState(false);
@@ -285,7 +292,7 @@ export function RegisterPage() {
       }
     }
 
-    if (!agree.value) {
+    if (!agree.value && (!agreePrivacy || !agreeTerms)) {
       hasError = true;
       setAgree({ ...agree, error: true });
     }
@@ -521,7 +528,7 @@ export function RegisterPage() {
                     onClick={() => setShowPass(prev => !prev)}
                     tabIndex={-1}
                   >
-                    <FontAwesomeIcon icon={showPass ? 'eye-slash' : 'eye'} />
+                    <FontAwesomeIcon icon={!showPass ? 'eye-slash' : 'eye'} />
                   </IconButton>
                 </InputIconWrapper>
 
@@ -556,7 +563,9 @@ export function RegisterPage() {
                     onClick={() => setShowConfirm(prev => !prev)}
                     tabIndex={-1}
                   >
-                    <FontAwesomeIcon icon={showConfirm ? 'eye-slash' : 'eye'} />
+                    <FontAwesomeIcon
+                      icon={!showConfirm ? 'eye-slash' : 'eye'}
+                    />
                   </IconButton>
                 </InputIconWrapper>
 
@@ -579,10 +588,7 @@ export function RegisterPage() {
                 Next
               </Button>
               <Field className="text-center" margin="20px 0 10px">
-                Already have an account?{' '}
-                <A to="/" underline="true">
-                  Log In
-                </A>
+                Already have an account? <A to="/">Log In</A>
               </Field>
               <Field className="agreement text-center" margin="25px 0 0">
                 <span>
@@ -592,28 +598,50 @@ export function RegisterPage() {
                     onChange={() =>
                       setAgree({ value: !agree.value, error: false })
                     }
-                    checked={agree.value}
+                    checked={agree.value || (agreePrivacy && agreeTerms)}
                   />
                   By creating an account, I agree to the{' '}
-                  <a
-                    href="https://squidpay.ph/tac"
-                    target="_blank"
-                    rel="noreferrer"
+                  <button
+                    className="as-link"
+                    // href="https://squidpay.ph/tac"
+                    // target="_blank"
+                    // rel="noreferrer"
+                    onClick={e => {
+                      if (e && e.preventDefault) e.preventDefault();
+                      setShowAgreeTerms(true);
+                    }}
                   >
                     Terms and Condition
-                  </a>{' '}
+                  </button>{' '}
                   and{' '}
-                  <a
-                    href="https://squidpay.ph/privacypolicy"
-                    target="_blank"
-                    rel="noreferrer"
+                  <button
+                    className="as-link"
+                    // href="https://squidpay.ph/privacypolicy"
+                    // target="_blank"
+                    // rel="noreferrer"
+                    onClick={e => {
+                      if (e && e.preventDefault) e.preventDefault();
+                      setShowAgreePrivacy(true);
+                    }}
                   >
                     Privacy Policy
-                  </a>
+                  </button>
                 </span>
-                {agree.error && (
+                {agree.error && !agreePrivacy && (
                   <ErrorMsg formError>
-                    You must agree to continue creating your account.
+                    You must agree to our Privacy Policy to continue.
+                  </ErrorMsg>
+                )}
+                {agree.error && !agreeTerms && (
+                  <ErrorMsg formError>
+                    You must agree to our Terms and Conditions to continue.
+                  </ErrorMsg>
+                )}
+                {agree.error && agreePrivacy && agreeTerms && (
+                  <ErrorMsg formError>
+                    {agreePrivacy &&
+                      agreeTerms &&
+                      'Tick the checkbox to continue.'}
                   </ErrorMsg>
                 )}
               </Field>
@@ -776,7 +804,7 @@ export function RegisterPage() {
       </Dialog>
 
       <Dialog show={resendDialog} size="small">
-        <div className="text-center">
+        <div className="text-center" style={{ padding: 20 }}>
           <CircleIndicator
             size="medium"
             color={resendSuccess ? 'primary' : 'danger'}
@@ -805,6 +833,48 @@ export function RegisterPage() {
           >
             Ok
           </Button>
+        </div>
+      </Dialog>
+
+      <Dialog
+        show={showAgreeTerms}
+        title="Terms and Conditions"
+        size="large"
+        onClick={() => {
+          setShowAgreeTerms(false);
+          setAgreeTerms(true);
+        }}
+        onClose={() => {
+          setShowAgreeTerms(false);
+          setAgreeTerms(false);
+        }}
+        okText="Agree"
+        cancelText="Disagree"
+      >
+        <div style={{ padding: 20 }}>
+          <TermsCondition />
+        </div>
+      </Dialog>
+
+      <Dialog
+        show={showAgreePrivacy}
+        title="Privacy Policy"
+        size="large"
+        onClick={() => {
+          setShowAgreePrivacy(false);
+          setAgreePrivacy(true);
+          setAgree({ ...agree, error: false });
+        }}
+        onClose={() => {
+          setShowAgreePrivacy(false);
+          setAgreePrivacy(false);
+          setAgree({ ...agree, error: false });
+        }}
+        okText="Agree"
+        cancelText="Disagree"
+      >
+        <div style={{ padding: 20 }}>
+          <PrivacyPolicy />
         </div>
       </Dialog>
     </Wrapper>

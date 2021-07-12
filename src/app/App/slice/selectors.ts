@@ -41,6 +41,11 @@ export const selectIsAuthenticated = createSelector(
   subState => subState.isAuthenticated,
 );
 
+export const setIsUnathenticated = createSelector(
+  [selectDomain],
+  subState => subState.isUnauthenticated,
+);
+
 export const selectClientToken = createSelector(
   [selectDomain],
   subState => subState.token,
@@ -69,4 +74,9 @@ export const selectReferences = createSelector(
 export const selectUserTier = createSelector(
   [selectDomain],
   subState => subState.tier,
+);
+
+export const selectIsServerError = createSelector(
+  [selectDomain],
+  subState => subState.isServerError,
 );

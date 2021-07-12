@@ -53,15 +53,21 @@ import {
 } from './slice/selectors';
 import { validatePhone } from 'app/components/Helpers';
 
+type UserProfileFormProps = {
+  onCancel: () => void;
+  onSuccess: () => void;
+  isTierUpgrade?: boolean;
+  idPhotoID?: string[];
+  selfieID?: string[];
+};
+
 export default function UserProfileForm({
   onCancel,
   onSuccess,
   isTierUpgrade,
-}: {
-  onCancel: () => void;
-  onSuccess: () => void;
-  isTierUpgrade?: boolean;
-}) {
+  idPhotoID,
+  selfieID,
+}: UserProfileFormProps) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
   const refs: any = useSelector(selectReferences);
@@ -644,6 +650,8 @@ export default function UserProfileForm({
       encoded_source_of_fund: sourceOfFunds.encoded,
       occupation: occupation.value,
       employer: employer.value,
+      id_photos_ids: isTierUpgrade ? idPhotoID : undefined,
+      id_selfie_ids: isTierUpgrade ? selfieID : undefined,
     };
     dispatch(actions.getFetchLoading(data));
   };
@@ -1315,7 +1323,7 @@ export default function UserProfileForm({
               <ListItemText
                 label="Marital Status"
                 primary={
-                  refs.countries[parseInt(marital.value, 10)].description
+                  refs.maritalStatus[parseInt(marital.value, 10)].description
                 }
                 style={{
                   flexGrow: 1,
@@ -1499,6 +1507,7 @@ export default function UserProfileForm({
               apiURL="/auth/verify/otp"
               otpType="update_profile"
               onSuccess={onSubmit}
+              isUserToken
             />
 
             <Field className="text-center f-small" margin="20px 0 10px">

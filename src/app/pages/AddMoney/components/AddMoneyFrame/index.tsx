@@ -90,10 +90,11 @@ export default function AddMoneyFrame(props) {
 
   const canAccessIFrame = iframe => {
     try {
-      console.log('iframe', iframe._frame.contentWindow.location.search);
+      // console.log('iframe', iframe._frame.contentWindow.location.search);
       return true;
+      // eslint-disable-next-line no-unreachable
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       return false;
     }
   };

@@ -15,7 +15,7 @@ import SelfieUpload from './SelfieUpload';
 
 type SecondaryIDsComponentProps = {
   tierID: string;
-  onSuccess: () => void;
+  onSuccess: (ids: string[]) => void;
   onBack: () => void;
 };
 
@@ -35,10 +35,10 @@ export default function SelfieComponent({
     setFiles(files);
   };
 
-  const onSuccessUpload = () => {
+  const onSuccessUpload = (ids: string[] = []) => {
     setFiles(false);
-
-    onSuccess();
+    // return success to parent component with the ids
+    onSuccess(ids);
   };
 
   return (
@@ -64,7 +64,10 @@ export default function SelfieComponent({
           </>
         }
       >
-        <Dropzone onSelectFiles={onSelectFiles} />
+        <Dropzone
+          onSelectFiles={onSelectFiles}
+          message="Drag and drop image here"
+        />
         {files && files.length && (
           <SelfieUpload files={files} onSuccess={onSuccessUpload} />
         )}

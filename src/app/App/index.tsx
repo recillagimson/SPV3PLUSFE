@@ -9,7 +9,7 @@
 
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Switch, Route, useHistory } from 'react-router-dom';
+import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { remoteConfig } from 'utils/firebase';
@@ -60,10 +60,17 @@ import { UpdateProfileVerificationPage } from 'app/pages/UpdateProfileVerificati
 import { ContactUsPage } from 'app/pages/ContactUsPage/Loadable';
 import { ChatSupportPage } from 'app/pages/ChatSupportPage/Loadable';
 import { MerchantInquiryPage } from 'app/pages/MerchantInquiry/Loadable';
-import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
+// import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
 import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
+import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
+import { AddMoney } from 'app/pages/AddMoney/Loadable';
+import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
+import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent/Loadable';
+import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/Loadable';
+import SuccessPostBack from './SuccessPostback';
 
 import { Page500 } from 'app/components/500/Loadable';
+import { ComingSoonPage } from 'app/components/ComingSoonPage/Loadable';
 
 // import pageRoutes from './Routes';
 
@@ -78,12 +85,10 @@ import {
   selectSessionExpired,
   selectIsAuthenticated,
   selectIsBlankPage,
+  setIsUnathenticated,
+  selectIsServerError,
 } from './slice/selectors';
 // import { usePrevious } from 'app/components/Helpers/Hooks';
-import { AddMoney } from 'app/pages/AddMoney';
-import { Dragonpay } from 'app/pages/AddMoney/Dragonpay';
-import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent';
-import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/indext';
 
 // default flags for features
 const defaultFlags = {
@@ -97,7 +102,7 @@ const defaultFlags = {
 
 export function App() {
   const { i18n } = useTranslation();
-  // const location = useLocation();
+  const location = useLocation();
   const history = useHistory();
 
   // sample usage of slice (react redux)
@@ -107,11 +112,13 @@ export function App() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isSessionExpired = useSelector(selectSessionExpired);
   const isBlankPage = useSelector(selectIsBlankPage);
+  const isServerError = useSelector(selectIsServerError);
+  const clientTokenExpired = useSelector(setIsUnathenticated); // use this only on users who hasn't logged in yet
 
   const [flags, setFlags] = React.useState(defaultFlags);
 
   React.useEffect(() => {
-    // const path: string | boolean = location ? location.pathname : '/dashboard';
+    const path: string | boolean = location ? location.pathname : '/dashboard';
     const phrase = getCookie('spv_uat_hmc'); // retrieve the passphrase use for encrypting
     const sessionCookie = getCookie('spv_uat'); // user token
     const clientCookie = getCookie('spv_cat') || ''; // client token
@@ -127,7 +134,7 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (!forceUpdate && decrypt) {
+    if (!forceUpdate && decrypt && path !== '/transaction-success') {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
@@ -135,7 +142,7 @@ export function App() {
 
       // delay the retrieval of references and user profile
       setTimeout(() => {
-        dispatch(actions.getLoadReferences());
+        // dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
         dispatch(dashboardAction.getFetchLoading());
       }, 2000);
@@ -151,21 +158,21 @@ export function App() {
     } else {
       dispatch(actions.getClientTokenLoading());
 
-      setTimeout(() => {
-        dispatch(actions.getLoadReferences());
-      }, 2000);
+      // setTimeout(() => {
+      //   dispatch(actions.getLoadReferences());
+      // }, 2000);
     }
   }, []);
 
   React.useEffect(() => {
     /** enable this for FB customer chat if we are going to use this */
-    // if (
-    //   isAuthenticated &&
-    //   process.env.NODE_ENV === 'production' && // @ts-ignore
-    //   !window.fbAsyncInit
-    // ) {
-    //   loadFbAsync(); // load fb
-    // }
+    if (
+      isAuthenticated &&
+      process.env.NODE_ENV === 'production' && // @ts-ignore
+      !window.fbAsyncInit
+    ) {
+      loadFbAsync(); // load fb
+    }
 
     // remote config
     if (isAuthenticated) {
@@ -173,6 +180,13 @@ export function App() {
       // window.setInterval(getRemoteConfigValues, 300000); // 5 mins interval
     }
   }, [isAuthenticated]);
+
+  React.useEffect(() => {
+    if (isServerError) {
+      history.push('/error');
+      dispatch(actions.getIsServerError(false));
+    }
+  }, [isServerError]);
 
   const getRemoteConfigValues = () => {
     remoteConfig
@@ -203,29 +217,31 @@ export function App() {
   };
 
   /** Enable if FB Chat will be use, do not delete */
-  // const loadFbAsync = () => {
-  //   var chatbox: any = document.getElementById('fb-customer-chat');
-  //   chatbox.setAttribute('page_id', '100608264934915');
-  //   chatbox.setAttribute('attribution', 'biz_inbox');
-  //   // @ts-ignore
-  //   window.fbAsyncInit = function () {
-  //     // @ts-ignore
-  //     FB.init({
-  //       xfbml: true,
-  //       version: 'v10.0',
-  //     });
-  //   };
+  const loadFbAsync = () => {
+    var chatbox: any = document.getElementById('fb-customer-chat');
+    chatbox.setAttribute('page_id', '100608264934915');
+    chatbox.setAttribute('attribution', 'biz_inbox');
+    // @ts-ignore
+    window.fbAsyncInit = function () {
+      // @ts-ignore
+      FB.init({
+        xfbml: true,
+        version: 'v10.0',
+      });
+    };
 
-  //   (function (d, s, id) {
-  //     var js,
-  //       fjs: any = d.getElementsByTagName(s)[0];
-  //     if (d.getElementById(id)) return;
-  //     js = d.createElement(s);
-  //     js.id = id;
-  //     js.src = '//connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
-  //     fjs.parentNode.insertBefore(js, fjs);
-  //   })(document, 'script', 'facebook-jssdk');
-  // };
+    (function (d, s, id) {
+      var js,
+        fjs: any = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s);
+      js.id = id;
+      js.src = '//connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+      fjs.parentNode.insertBefore(js, fjs);
+    })(document, 'script', 'facebook-jssdk');
+  };
+
+  const currentLocation = location ? location.pathname : '';
 
   return (
     <>
@@ -241,10 +257,12 @@ export function App() {
       </Helmet>
 
       <Main className={isAuthenticated ? 'spdin' : undefined}>
-        <Header
-          isLoggedIn={isAuthenticated}
-          blankPage={isBlankPage ? true : false}
-        />
+        {currentLocation && currentLocation !== '/transaction-success' && (
+          <Header
+            isLoggedIn={isAuthenticated}
+            blankPage={isBlankPage ? true : false}
+          />
+        )}
         {!isBlankPage && isAuthenticated && <Sidebar />}
         <Content className={isAuthenticated ? 'authenticated' : undefined}>
           <Switch>
@@ -289,7 +307,12 @@ export function App() {
             <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
-            <PrivateRoute path="/profile" component={UserProfilePage} />
+            <PrivateRoute exact path="/profile" component={UserProfilePage} />
+            <PrivateRoute
+              exact
+              path="/profile/update-email"
+              component={UpdateEmailPage}
+            />
             <PrivateRoute
               path={['/notifications/:id', '/notifications']}
               component={Notifications}
@@ -319,7 +342,7 @@ export function App() {
             <PrivateRoute exact path="/send-to-bank" component={SendToBank} />
             <PrivateRoute
               exact
-              path="/send-to-bank-ubp"
+              path="/send-to-bank/ubp"
               component={SendToBankUBP}
             />
             <PrivateRoute exact path="/settings" component={SettingsPage} />
@@ -344,7 +367,7 @@ export function App() {
               path="/merchant-inquiry"
               component={MerchantInquiryPage}
             />
-            <PrivateRoute exact path="/pay-bills" component={PayBillsPage} />
+            {/* <PrivateRoute exact path="/pay-bills" component={PayBillsPage} /> */}
             <PrivateRoute exact path="/tiers" component={TiersPage} />
             <PrivateRoute
               exact
@@ -362,7 +385,14 @@ export function App() {
               component={TermsAndConditionConsent}
             />
 
+            <Route
+              exact
+              path="/transaction-success"
+              component={SuccessPostBack}
+            />
             {/* Not found page should be the last entry for this <Switch /> container */}
+            <Route path="/error" component={Page500} />
+            <Route path="/comingsoon" component={ComingSoonPage} />
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}
@@ -387,14 +417,34 @@ export function App() {
           </Button>
         </div>
       </Dialog>
+
+      <Dialog show={clientTokenExpired} size="small">
+        <div className="text-center" style={{ padding: '25px' }}>
+          <CircleIndicator size="medium" color="primary">
+            <FontAwesomeIcon icon="stopwatch" />
+          </CircleIndicator>
+          <p style={{ margin: '15px 0 10px' }}>
+            <strong>Oops, Your session token has expired.</strong>
+          </p>
+          <p>Kindly refresh to the page to try again.</p>
+          <Button
+            fullWidth
+            onClick={onClickSessionExpired}
+            variant="contained"
+            color="primary"
+          >
+            Refresh
+          </Button>
+        </div>
+      </Dialog>
       <GlobalStyle />
 
       {/* Idle Timer */}
       {isAuthenticated && <IdleTimer idle={process.env.IDLE_TIME || 3000000} />}
 
       {/*  FB element containers */}
-      {/* <div id="fb-root"></div>
-      <div id="fb-customer-chat" className="fb-customerchat" /> */}
+      <div id="fb-root"></div>
+      <div id="fb-customer-chat" className="fb-customerchat" />
     </>
   );
 }

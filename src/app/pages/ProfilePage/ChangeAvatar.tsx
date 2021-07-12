@@ -148,7 +148,7 @@ export default function ChangeAvatarComponent({
             paddingBottom: 20,
           }}
         >
-          <Avatar image={avatar || undefined} size="xlarge" />
+          <Avatar image={avatar || undefined} size="xxlarge" />
           <Button
             size="large"
             color="primary"

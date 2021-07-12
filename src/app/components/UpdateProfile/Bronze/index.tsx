@@ -286,7 +286,7 @@ export default function UserProfileForm({
       setApiErrorMsg(apiError || '');
       setIsError(true);
     }
-    if (error.code && error.code !== 422) {
+    if (error.response || (error.code && error.code !== 422)) {
       apiError = error.response.statusText;
       setApiErrorMsg(apiError || '');
       setIsError(true);
@@ -1011,6 +1011,7 @@ export default function UserProfileForm({
               apiURL="/auth/verify/otp"
               otpType="update_profile"
               onSuccess={onSubmit}
+              isUserToken
             />
 
             <Field className="text-center f-small" margin="20px 0 10px">

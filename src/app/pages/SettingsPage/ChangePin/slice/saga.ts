@@ -12,6 +12,7 @@ import {
 
 import { containerActions as actions } from '.';
 import { selectRequest, selectValidateRequest } from './selectors';
+import { appActions } from 'app/App/slice';
 
 /**
  * Change Password
@@ -72,6 +73,9 @@ function* getChangePassword() {
         ...body,
       };
       yield put(actions.getFetchError(JSON.stringify(newError)));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getFetchReset());
     } else {
       yield put(actions.getFetchError(JSON.stringify(err)));
     }
@@ -123,7 +127,7 @@ function* getValidatePin() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-      console.log(decryptData);
+
       if (decryptData) {
         yield put(actions.getValidateSuccess(true));
       }
@@ -137,6 +141,9 @@ function* getValidatePin() {
         ...body,
       };
       yield put(actions.getValidateError(JSON.stringify(newError)));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getValidateReset());
     } else {
       yield put(actions.getValidateError(JSON.stringify(err)));
     }

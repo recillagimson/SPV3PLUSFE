@@ -5,12 +5,12 @@ export type ErrorState = ApiErrorState;
 
 export interface TierUpgradeState {
   loading: boolean;
-  error?: string;
+  error?: {};
   data: { primary?: IDTypes[]; secondary?: IDTypes[] };
   request: object | boolean;
   validate: {
     loading: boolean;
-    error?: string;
+    error?: {};
     data: boolean;
     request: object | boolean;
   };

@@ -1,29 +1,33 @@
 import * as React from 'react';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
-import Select from 'app/components/Elements/Select';
+// import Select from 'app/components/Elements/Select';
+
+import PrivacyPolicy from 'app/components/PrivacyPolicy';
 
 export function DataPrivacyConsent() {
-  const [language, setLanguage] = React.useState('English');
+  // const [language, setLanguage] = React.useState('English');
+
   return (
     <ProtectedContent>
       <Box
         title="Privacy Policy"
         titleBorder
         withPadding
-        titleAction={
-          <Select
-            style={{ borderColor: 'transparent' }}
-            value={language}
-            onChange={e => {
-              setLanguage(e.currentTarget.value);
-            }}
-          >
-            <option value="English">English</option>
-          </Select>
-        }
+        // titleAction={
+        //   <Select
+        //     style={{ borderColor: 'transparent' }}
+        //     value={language}
+        //     onChange={e => {
+        //       setLanguage(e.currentTarget.value);
+        //     }}
+        //   >
+        //     <option value="English">English</option>
+        //   </Select>
+        // }
       >
-        {{
+        <PrivacyPolicy />
+        {/* {{
           English: (
             <>
               <p>
@@ -370,7 +374,7 @@ export function DataPrivacyConsent() {
               revoked or amended by SquidPay
             </p>
           </>
-        )}
+        )} */}
       </Box>
     </ProtectedContent>
   );

@@ -72,6 +72,11 @@ const slice = createSlice({
       state.loading = false;
       state.generateOTP = {};
     },
+    generateSendToBankOTPReset(state) {
+      state.error = {};
+      state.loading = false;
+      state.generateOTP = {};
+    },
   },
 });
 

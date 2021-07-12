@@ -111,6 +111,9 @@ function* getLogin() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
+      yield put(actions.getFetchError({}));
     } else {
       yield put(actions.getFetchError(err));
     }
@@ -161,6 +164,9 @@ function* getResendActivationCode() {
         ...body,
       };
       yield put(actions.getResendCodeError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
+      yield put(actions.getResendCodeError({}));
     } else {
       yield put(actions.getResendCodeError(err));
     }

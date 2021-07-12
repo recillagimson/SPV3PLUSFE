@@ -192,6 +192,18 @@ export function SettingsChangePasswordPage() {
         ) {
           apiError += err.errors.new_password_confirmation.join('\n');
         }
+        if (
+          err.errors.password_confirmation &&
+          err.errors.password_confirmation.length > 0
+        ) {
+          apiError += err.errors.password_confirmation.join('\n');
+        }
+        if (err.errors.email && err.errors.email.length > 0) {
+          apiError += err.errors.email.join('\n');
+        }
+        if (err.errors.mobile_number && err.errors.mobile_number.length > 0) {
+          apiError += err.errors.mobile_number.join('\n');
+        }
 
         setPassError(apiError);
         return;
@@ -521,6 +533,7 @@ export function SettingsChangePasswordPage() {
             <VerifyOTP
               onSuccess={onSubmitPassword}
               apiURL="/user/password/verify"
+              isUserToken
             />
 
             <Field className="text-center f-small" margin="20px 0 10px">

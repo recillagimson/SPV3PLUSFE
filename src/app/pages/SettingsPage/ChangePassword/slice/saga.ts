@@ -127,7 +127,7 @@ function* getValidatePassword() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-      console.log(decryptData);
+
       if (decryptData) {
         yield put(actions.getValidateSuccess(true));
       }
@@ -141,6 +141,9 @@ function* getValidatePassword() {
         ...body,
       };
       yield put(actions.getValidateError(JSON.stringify(newError)));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getValidateReset());
     } else {
       yield put(actions.getValidateError(JSON.stringify(err)));
     }

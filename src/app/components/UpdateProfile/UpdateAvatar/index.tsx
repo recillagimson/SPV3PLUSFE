@@ -66,7 +66,7 @@ export default function AvatarUpload({
 }) {
   return (
     <Wrapper>
-      <Avatar image={image || undefined} size="large" />
+      <Avatar image={image || undefined} size="xlarge" />
       <label htmlFor="avatar-upload">
         <FontAwesomeIcon icon="camera" />
 

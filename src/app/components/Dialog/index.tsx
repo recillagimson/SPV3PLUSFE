@@ -64,7 +64,7 @@ export default function DialogComponent({
   if (onClose) {
     buttons = true;
     cancelButton = (
-      <Button onClick={onClose} size="medium" variant="contained">
+      <Button onClick={onClose} size="medium" variant="outlined" color="danger">
         {cancelText || 'CANCEL'}
       </Button>
     );
@@ -90,7 +90,7 @@ export default function DialogComponent({
           </div>
           {buttons && (
             <Actions>
-              {okButton} {cancelButton}
+              {cancelButton} {okButton}
             </Actions>
           )}
         </div>

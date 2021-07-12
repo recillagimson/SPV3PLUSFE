@@ -15,9 +15,12 @@ import Grid from 'app/components/Elements/Grid';
 import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
-import H5 from 'app/components/Elements/H5';
+import Dialog from 'app/components/Dialog';
+import H3 from 'app/components/Elements/H3';
 
-import PromosDeals from 'app/components/PromosDeals';
+// import H5 from 'app/components/Elements/H5';
+
+// import PromosDeals from 'app/components/PromosDeals';
 
 import { numberCommas } from 'app/components/Helpers';
 import { TierIDs } from 'app/components/Helpers/Tiers';
@@ -32,6 +35,8 @@ import QRCode from 'app/components/Assets/QRCode';
 import QuickGuide from 'app/components/Assets/QuickGuide';
 // import Others from 'app/components/Assets/Others';
 import NewsUpdate from 'app/components/Assets/NewsUpdate';
+import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
+import comingSoon from 'app/components/Assets/coming-soon.png';
 
 import Balance from './Balance';
 import ButtonFlexWrapper from './ButtonFlex';
@@ -59,6 +64,9 @@ export function DashboardPage() {
   const transactionData: any = useSelector(selectTransactionData);
   const flags: any = window['spFlags'];
 
+  const [showUpgrade, setShowUpgrade] = React.useState(false);
+  const [isComingSoon, setIsComingSoon] = React.useState(false);
+
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());
     dispatch(actions.getTransactionLoading());
@@ -66,9 +74,7 @@ export function DashboardPage() {
 
   let balanceInfo = '000.00';
   if (dashData && dashData.balance_info) {
-    balanceInfo = numberCommas(
-      parseFloat(dashData.balance_info.available_balance).toFixed(2),
-    );
+    balanceInfo = numberCommas(dashData.balance_info.available_balance);
   }
 
   let transactionItems: React.ReactNode | undefined = (
@@ -112,21 +118,21 @@ export function DashboardPage() {
   }
 
   let isBronze = false;
-  // if (
-  //   user &&
-  //   user.user_account &&
-  //   user.user_account.tier_id &&
-  //   user.user_account.tier_id !== ''
-  // ) {
-  //   isBronze = user.user_account.tier_id === TierIDs.bronze;
-  // }
+  if (
+    user &&
+    user.user_account &&
+    user.user_account.tier_id &&
+    user.user_account.tier_id !== ''
+  ) {
+    isBronze = user.user_account.tier_id === TierIDs.bronze;
+  }
 
   return (
     <ProtectedContent>
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
-      {loading && <Loading position="absolute" />}
+      {loading && <Loading position="fixed" />}
 
       <Grid columns="35% 1fr" gap="30px">
         <Box
@@ -182,20 +188,29 @@ export function DashboardPage() {
           Add Money
         </DashboardButton>
         <DashboardButton
-          onClick={() => history.push('/sendmoney')}
-          disabled={(flags && !flags.send_money_enabled) || isBronze}
+          onClick={
+            isBronze
+              ? () => setShowUpgrade(true)
+              : () => history.push('/sendmoney')
+          }
+          disabled={flags && !flags.send_money_enabled}
         >
           <SendMoney />
           Send Money
         </DashboardButton>
         <DashboardButton
-          onClick={() => history.push('/send-to-bank')}
-          disabled={(flags && !flags.send_to_bank_ubp_enabled) || isBronze}
+          onClick={
+            isBronze
+              ? () => setShowUpgrade(true)
+              : () => history.push('/send-to-bank')
+          }
+          disabled={flags && !flags.send_to_bank_ubp_enabled}
         >
           <SendToBank />
           Send To Bank
         </DashboardButton>
-        <DashboardButton onClick={() => history.push('/pay-bills')}>
+        {/* <DashboardButton onClick={() => history.push('/pay-bills')}> */}
+        <DashboardButton onClick={() => setIsComingSoon(true)}>
           <PayBills />
           Pay Bills
         </DashboardButton>
@@ -227,81 +242,68 @@ export function DashboardPage() {
         </DashboardButton>
       </ButtonFlexWrapper>
 
-      <div style={{ padding: '20px 0' }}>
+      {/* <div style={{ padding: '20px 0' }}>
         <H5>Promos and Deals</H5>
         <PromosDeals />
-      </div>
-      {/* <div>
-        <Box
-          title="Sample Container for Box UI"
-          titleBorder
-          footerBorder
-          footer={
-            <>
-              <Button size="medium" color="primary" variant="contained">
-                SEND
-              </Button>
-              <Button size="medium" color="secondary" variant="outlined">
-                CANCEL
-              </Button>
-            </>
-          }
-          footerAlign="right"
-        >
-          <div style={{ padding: '25px' }}>
-            <p>
-              This element has a parent container that has a padding. The
-              content element of this box component has no padding, so it's up
-              to the child elements container to have the padding
-            </p>
-          </div>
-          <div>
-            <p>This element has a parent container that has no padding</p>
-          </div>
-        </Box>
-      </div>
-      <div></div>
-      <Grid columns="1fr 1fr" gap="0 25px" alignItems="start">
-        <Box
-          title="Box UI with Button in Title"
-          titleBorder
-          titleAction={
-            <IconButton onClick={() => alert('clicked')}>
-              <FontAwesomeIcon icon="trash" />
-            </IconButton>
-          }
-          footerBorder
-          footer={
-            <>
-              <Button size="medium" color="primary" variant="contained">
-                SEND
-              </Button>
-              <Button size="medium" color="secondary" variant="outlined">
-                CANCEL
-              </Button>
-            </>
-          }
-          footerAlign="center"
-        >
-          <div style={{ padding: '25px' }}>
-            <p>
-              This is inside a grid element with 2 columns and action footer
-              aligned center
-            </p>
-          </div>
-        </Box>
-        <Box title="Box UI" titleBorder>
-          <div style={{ padding: '25px' }}>
-            <p>This element has no action footer buttons</p>
-          </div>
-        </Box>
-
-        <Box>
-          <div style={{ padding: '25px' }}>
-            <p>this element are child elements only, no title and footer</p>
-          </div>
-        </Box>
-      </Grid> */}
+      </div> */}
+      {/* Show upgrade notification */}
+      <Dialog show={showUpgrade} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <img
+            src={tierUpgrade}
+            alt="Upgrade your tier to unlock other services"
+          />
+          <H3 margin="30px 0 10px">Oops!</H3>
+          <p style={{ marginBottom: 35 }}>
+            Uh-no! You need to upgrade your account to unlock other SquidPay
+            services.
+          </p>
+          <Button
+            fullWidth
+            onClick={() => history.push('/tiers')}
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Upgrade Now
+          </Button>
+          <Button
+            fullWidth
+            onClick={() => setShowUpgrade(false)}
+            variant="outlined"
+            color="secondary"
+            size="large"
+          >
+            Upgrade Later
+          </Button>
+        </div>
+      </Dialog>
+      {/* Coming Soon */}
+      <Dialog show={isComingSoon} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <img src={comingSoon} alt="Coming soon" />
+          <H3 margin="30px 0 10px">Feature Coming Soon</H3>
+          <p style={{ marginBottom: 35 }}>
+            Sorry for the inconvenience. We're currently working on this feature
+            for you. We'll notify you when it's available.
+          </p>
+          <Button
+            fullWidth
+            onClick={() => setIsComingSoon(false)}
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Close
+          </Button>
+        </div>
+      </Dialog>
     </ProtectedContent>
   );
 }

@@ -6,10 +6,10 @@ type Props = {
   size?: 'small' | 'medium';
 };
 
-const sizes = {
-  small: '50%',
-  medium: '75%',
-};
+// const sizes = {
+//   small: '50%',
+//   medium: '75%',
+// };
 
 const Wrapper = styled.div<Props>`
   background-color: ${StyleConstants.WHITE};

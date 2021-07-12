@@ -8,6 +8,7 @@
  * @prop {string}     apiURL        pass the API endpoint ie: /auth/verify/password
  * @prop {string}     otpType       otp type ie: send_money
  *                                  NOTE: do not include the /api in the endpoint
+ * @prop {boolean}    isUserToken   True/false to use user token instead of client token
  */
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -69,6 +70,8 @@ type VerifyOTPComponentProps = {
   apiURL: string;
   /** Where the OTP will be use */
   otpType?: string;
+  /** If to use user token instead of client token */
+  isUserToken?: boolean;
 };
 export default function VerifyOTPComponent({
   isEmail,
@@ -76,6 +79,7 @@ export default function VerifyOTPComponent({
   onSuccess,
   apiURL,
   otpType,
+  isUserToken,
 }: VerifyOTPComponentProps) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
@@ -121,6 +125,19 @@ export default function VerifyOTPComponent({
           return i;
         });
       }
+      if (err.errors && !err.errors.error_code) {
+        let apiErrorMsg = '';
+        if (err.code && err.code.length > 0) {
+          apiErrorMsg += err.code.join('\n');
+        }
+        if (err.email && err.email.length > 0) {
+          apiErrorMsg += err.email.join('\n');
+        }
+        if (err.mobile_number && err.mobile_number.length > 0) {
+          apiErrorMsg += err.mobile_number.join('\n');
+        }
+        setApiError(apiErrorMsg);
+      }
     }
 
     if (!err.code && err.response && err.response.status !== 422) {
@@ -152,6 +169,7 @@ export default function VerifyOTPComponent({
     if (!error) {
       const data = {
         url: apiURL,
+        isUser: isUserToken,
         body: {
           // code_type: codeType ? codeType : 'password_recovery',
           mobile_number: viaValue && !isEmail ? viaValue : undefined,

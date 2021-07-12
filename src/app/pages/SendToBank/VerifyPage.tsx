@@ -48,7 +48,7 @@ export function VerifyOTPPage(props) {
   const [errors, setErrors] = React.useState('');
 
   const calculateTotalAmount = parseToNumber(
-    parseFloat(formData.amount) + validateTransaction?.service_fee,
+    parseFloat(formData.amount) + parseFloat(validateTransaction?.service_fee),
   );
 
   React.useEffect(() => {
@@ -139,6 +139,7 @@ export function VerifyOTPPage(props) {
           apiURL="/auth/verify/otp"
           otpType="send2bank"
           onSuccess={() => dispatch(actions.sendToBankLoading())}
+          isUserToken
         />
         <p className="resend-code">
           Need a new code?{' '}
