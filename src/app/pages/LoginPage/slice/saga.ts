@@ -15,6 +15,7 @@ import {
 import { containerActions as actions } from '.';
 import { selectRequest, selectResendCodeRequest } from './selectors';
 import { setCookie } from 'app/components/Helpers';
+import { setSentryUser } from 'utils/sentry';
 
 /**
  * Login
@@ -99,6 +100,7 @@ function* getLogin() {
         //       for now, we will just send as true to redirect to dashboard page
         yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
         yield put(actions.getFetchSuccess({ redirect: '/dashboard' }));
+        setSentryUser(hasProfile.id);
       }
 
       return;

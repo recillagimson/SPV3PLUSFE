@@ -172,7 +172,7 @@ export function* getLoggedInUserProfile() {
       );
 
       yield put(actions.getUserProfile(decryptData));
-      return true;
+      return decryptData || true;
     }
   } catch (err) {
     if (err && err.response && err.response.status === 401) {

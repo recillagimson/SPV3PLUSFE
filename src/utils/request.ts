@@ -1,3 +1,5 @@
+import { captureException } from './sentry';
+
 export class ResponseError extends Error {
   public response: Response;
 
@@ -33,6 +35,9 @@ function checkStatus(response: Response) {
   }
   const error = new ResponseError(response);
   error.response = response;
+
+  captureException(response.clone());
+
   throw error;
 }
 
