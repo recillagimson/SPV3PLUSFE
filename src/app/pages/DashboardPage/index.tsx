@@ -207,7 +207,8 @@ export function DashboardPage() {
           <SendToBank />
           Send To Bank
         </DashboardButton>
-        <DashboardButton onClick={() => history.push('/pay-bills')}>
+        {/* <DashboardButton onClick={() => history.push('/pay-bills')}> */}
+        <DashboardButton onClick={() => history.push('/comingsoon')}>
           <PayBills />
           Pay Bills
         </DashboardButton>
