@@ -2,6 +2,8 @@
  * Application Helpers
  */
 
+import { removetSentryUser } from 'utils/sentry';
+
 // email and mobile regex validation
 export const regExEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/; // email must be in valid format ie: example@domain.com
 export const regExIsGonnaBeEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@/; // pattern for when user is going to type an email (if there is an [at] sign at the value) ie: 123@
@@ -114,6 +116,8 @@ export function doSignOut() {
   deleteCookie('spv_cat');
   deleteCookie('spv_uat_u');
   deleteCookie('spv_uat_f');
+
+  removetSentryUser();
 
   // set a delay, in the component where this will be called, set a loading indicator to delay the logout
   setTimeout(() => {
