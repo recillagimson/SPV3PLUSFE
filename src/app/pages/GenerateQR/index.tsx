@@ -177,12 +177,12 @@ export function GenerateQR() {
                       size={200}
                       id="QRCode"
                       includeMargin
-                      imageSettings={{
-                        src: `${process.env.PUBLIC_URL}/img/qrph.png`,
-                        x: null,
-                        y: null,
-                        excavate: true,
-                      }}
+                      // imageSettings={{
+                      //   src: `${process.env.PUBLIC_URL}/img/qrph.png`,
+                      //   x: null,
+                      //   y: null,
+                      //   excavate: true,
+                      // }}
                     />
                   </Flex>
                   <br />

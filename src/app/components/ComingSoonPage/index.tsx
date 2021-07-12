@@ -33,10 +33,10 @@ export function ComingSoonPage() {
       </Helmet>
       <Wrapper>
         <img src={comingSoon} alt="Coming Soon!" />
-        <Title>Coming Soon</Title>
+        <Title>Feature Coming Soon</Title>
         <p>
-          Hey Squidee! Come back soon for more efficient and convenient cashless
-          experience.
+          Sorry for the inconvenience. We're currently working on this feature
+          for you. We'll notify you when it's available.
         </p>
         <ButtonLink
           variant="contained"
@@ -44,7 +44,7 @@ export function ComingSoonPage() {
           to="/dashboard"
           fullWidth
         >
-          Go home
+          Close
         </ButtonLink>
       </Wrapper>
     </>
