@@ -60,7 +60,7 @@ import { UpdateProfileVerificationPage } from 'app/pages/UpdateProfileVerificati
 import { ContactUsPage } from 'app/pages/ContactUsPage/Loadable';
 import { ChatSupportPage } from 'app/pages/ChatSupportPage/Loadable';
 import { MerchantInquiryPage } from 'app/pages/MerchantInquiry/Loadable';
-import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
+// import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
 import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
 import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
 import { AddMoney } from 'app/pages/AddMoney/Loadable';
@@ -70,6 +70,7 @@ import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/Lo
 import SuccessPostBack from './SuccessPostback';
 
 import { Page500 } from 'app/components/500/Loadable';
+import { ComingSoonPage } from 'app/components/ComingSoonPage/Loadable';
 
 // import pageRoutes from './Routes';
 
@@ -366,7 +367,7 @@ export function App() {
               path="/merchant-inquiry"
               component={MerchantInquiryPage}
             />
-            <PrivateRoute exact path="/pay-bills" component={PayBillsPage} />
+            {/* <PrivateRoute exact path="/pay-bills" component={PayBillsPage} /> */}
             <PrivateRoute exact path="/tiers" component={TiersPage} />
             <PrivateRoute
               exact
@@ -391,6 +392,7 @@ export function App() {
             />
             {/* Not found page should be the last entry for this <Switch /> container */}
             <Route path="/error" component={Page500} />
+            <Route path="/comingsoon" component={ComingSoonPage} />
             <Route component={NotFoundPage} />
           </Switch>
           {!isBlankPage && <Footer />}

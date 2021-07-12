@@ -36,6 +36,7 @@ import QuickGuide from 'app/components/Assets/QuickGuide';
 // import Others from 'app/components/Assets/Others';
 import NewsUpdate from 'app/components/Assets/NewsUpdate';
 import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
+import comingSoon from 'app/components/Assets/coming-soon.png';
 
 import Balance from './Balance';
 import ButtonFlexWrapper from './ButtonFlex';
@@ -64,6 +65,7 @@ export function DashboardPage() {
   const flags: any = window['spFlags'];
 
   const [showUpgrade, setShowUpgrade] = React.useState(false);
+  const [isComingSoon, setIsComingSoon] = React.useState(false);
 
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());
@@ -207,7 +209,8 @@ export function DashboardPage() {
           <SendToBank />
           Send To Bank
         </DashboardButton>
-        <DashboardButton onClick={() => history.push('/pay-bills')}>
+        {/* <DashboardButton onClick={() => history.push('/pay-bills')}> */}
+        <DashboardButton onClick={() => setIsComingSoon(true)}>
           <PayBills />
           Pay Bills
         </DashboardButton>
@@ -275,6 +278,29 @@ export function DashboardPage() {
             size="large"
           >
             Upgrade Later
+          </Button>
+        </div>
+      </Dialog>
+      {/* Coming Soon */}
+      <Dialog show={isComingSoon} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <img src={comingSoon} alt="Coming soon" />
+          <H3 margin="30px 0 10px">Feature Coming Soon</H3>
+          <p style={{ marginBottom: 35 }}>
+            Sorry for the inconvenience. We're currently working on this feature
+            for you. We'll notify you when it's available.
+          </p>
+          <Button
+            fullWidth
+            onClick={() => setIsComingSoon(false)}
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Close
           </Button>
         </div>
       </Dialog>
