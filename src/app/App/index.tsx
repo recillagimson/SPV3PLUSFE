@@ -88,6 +88,7 @@ import {
   setIsUnathenticated,
   selectIsServerError,
 } from './slice/selectors';
+import { captureException } from 'utils/sentry';
 // import { usePrevious } from 'app/components/Helpers/Hooks';
 
 // default flags for features
@@ -206,7 +207,7 @@ export function App() {
 
         setFlags(newFlags);
       })
-      .catch(err => console.warn(err));
+      .catch(err => captureException(err));
   };
 
   const onClickSessionExpired = () => {
