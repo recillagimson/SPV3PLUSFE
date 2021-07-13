@@ -209,11 +209,17 @@ export function DashboardPage() {
           <SendToBank />
           Send To Bank
         </DashboardButton>
-        {/* <DashboardButton onClick={() => history.push('/pay-bills')}> */}
-        <DashboardButton onClick={() => setIsComingSoon(true)}>
-          <PayBills />
-          Pay Bills
-        </DashboardButton>
+        {process.env.REACT_APP_SENTRY_ENV === 'development' ? (
+          <DashboardButton onClick={() => history.push('/pay-bills')}>
+            <PayBills />
+            Pay Bills
+          </DashboardButton>
+        ) : (
+          <DashboardButton onClick={() => setIsComingSoon(true)}>
+            <PayBills />
+            Pay Bills
+          </DashboardButton>
+        )}
         <DashboardButton
           onClick={() => history.push('/buyload')}
           disabled={flags && !flags.buy_load_enabled}

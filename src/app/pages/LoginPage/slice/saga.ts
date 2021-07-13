@@ -16,6 +16,8 @@ import { containerActions as actions } from '.';
 import { selectRequest, selectResendCodeRequest } from './selectors';
 import { setCookie } from 'app/components/Helpers';
 import { setSentryUser } from 'utils/sentry';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
 
 /**
  * Login
@@ -95,12 +97,14 @@ function* getLogin() {
         yield put(
           actions.getFetchSuccess({ redirect: '/register/update-profile' }),
         );
+        analytics.logEvent(events.firstOpen);
       } else {
         // TODO: wait for UI to display, if password has expired and user need to update it
         //       for now, we will just send as true to redirect to dashboard page
         yield put(appActions.getIsAuthenticated(true)); // set the store state to true as user is authenticated
         yield put(actions.getFetchSuccess({ redirect: '/dashboard' }));
         setSentryUser(hasProfile.id);
+        analytics.logEvent(events.login);
       }
 
       return;

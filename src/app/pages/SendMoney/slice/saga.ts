@@ -17,6 +17,8 @@ import {
   selectValidateRequest,
   selectGenerateRequest,
 } from './selectors';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
 
 function* validateSendMoney() {
   yield delay(500);
@@ -140,6 +142,7 @@ function* getSendMoney() {
 
       if (decryptData) {
         yield put(actions.getFetchSuccess(decryptData));
+        analytics.logEvent(events.sendMoney);
       }
     } else {
       yield put(
