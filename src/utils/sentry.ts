@@ -16,13 +16,18 @@ export const initSentry = () => {
 };
 
 export const captureException = async (err: any) => {
-  const body = await err.json();
-  const error = new Error('Fetch failed');
+  // if we have a payload body response on error
+  if (err.json) {
+    const error = new Error('Fetch failed');
+    const body = await err.json();
+    // @ts-ignore
+    error.message = JSON.stringify(body);
 
-  // @ts-ignore
-  error.message = JSON.stringify(body);
+    Sentry.captureException(error);
+    return; // return immediately
+  }
 
-  Sentry.captureException(error);
+  Sentry.captureException(err);
 };
 
 // set the user_id

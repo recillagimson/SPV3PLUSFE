@@ -51,11 +51,10 @@ fontObserver.load().then(() => {
   document.body.classList.add('fontLoaded');
 });
 
+initSentry(); // initialize sentry;
 const publicURL = process.env.PUBLIC_URL || '';
 const store = configureAppStore();
 const MOUNT_NODE = document.getElementById('appMain') as HTMLElement;
-
-initSentry(); // initial sentry;
 
 ReactDOM.render(
   <Provider store={store}>
