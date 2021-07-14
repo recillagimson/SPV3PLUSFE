@@ -60,7 +60,7 @@ import { UpdateProfileVerificationPage } from 'app/pages/UpdateProfileVerificati
 import { ContactUsPage } from 'app/pages/ContactUsPage/Loadable';
 import { ChatSupportPage } from 'app/pages/ChatSupportPage/Loadable';
 import { MerchantInquiryPage } from 'app/pages/MerchantInquiry/Loadable';
-// import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
+import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
 import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
 import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
 import { AddMoney } from 'app/pages/AddMoney/Loadable';
@@ -158,10 +158,6 @@ export function App() {
       history.push('/register/update-profile');
     } else {
       dispatch(actions.getClientTokenLoading());
-
-      // setTimeout(() => {
-      //   dispatch(actions.getLoadReferences());
-      // }, 2000);
     }
   }, []);
 
@@ -178,7 +174,6 @@ export function App() {
     // remote config
     if (isAuthenticated) {
       getRemoteConfigValues();
-      // window.setInterval(getRemoteConfigValues, 300000); // 5 mins interval
     }
   }, [isAuthenticated]);
 
@@ -368,7 +363,7 @@ export function App() {
               path="/merchant-inquiry"
               component={MerchantInquiryPage}
             />
-            {/* <PrivateRoute exact path="/pay-bills" component={PayBillsPage} /> */}
+            <PrivateRoute exact path="/pay-bills" component={PayBillsPage} />
             <PrivateRoute exact path="/tiers" component={TiersPage} />
             <PrivateRoute
               exact

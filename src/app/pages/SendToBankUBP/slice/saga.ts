@@ -13,6 +13,8 @@ import {
 import { containerActions as actions } from '.';
 import { selectFormData } from './selectors';
 import { appActions } from 'app/App/slice';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
 
 /**
  * Register
@@ -200,14 +202,10 @@ function* sendToBank() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-      yield put(actions.sendToBankSuccess(decryptData));
-    } else {
-      yield put(
-        actions.sendToBankError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
+      if (decryptData) {
+        yield put(actions.sendToBankSuccess(decryptData));
+        analytics.logEvent(events.sendToBank, { type: 'ubpdirect' });
+      }
     }
   } catch (err) {
     // special case, check the 422 for invalid data (account already exists)
