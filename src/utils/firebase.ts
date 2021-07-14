@@ -16,6 +16,9 @@ if (firebase.apps.length === 0) {
 const analytics = firebase.analytics();
 
 const remoteConfig = firebase.remoteConfig();
-remoteConfig.settings.minimumFetchIntervalMillis = 3600; // set minimum interval
+remoteConfig.settings = {
+  fetchTimeoutMillis: 120000,
+  minimumFetchIntervalMillis: 60, // set minimum interval
+};
 
 export { firebase, remoteConfig, analytics };

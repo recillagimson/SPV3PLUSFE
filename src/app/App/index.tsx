@@ -158,10 +158,6 @@ export function App() {
       history.push('/register/update-profile');
     } else {
       dispatch(actions.getClientTokenLoading());
-
-      // setTimeout(() => {
-      //   dispatch(actions.getLoadReferences());
-      // }, 2000);
     }
   }, []);
 
@@ -178,7 +174,6 @@ export function App() {
     // remote config
     if (isAuthenticated) {
       getRemoteConfigValues();
-      // window.setInterval(getRemoteConfigValues, 300000); // 5 mins interval
     }
   }, [isAuthenticated]);
 
