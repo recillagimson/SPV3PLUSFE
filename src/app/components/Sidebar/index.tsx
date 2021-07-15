@@ -5,7 +5,7 @@
  * NOTE: the svg files here maybe moved into the assets if this will be used in other components
  */
 import * as React from 'react';
-import { NavLink, useHistory, useLocation } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
 
@@ -38,48 +38,20 @@ import NavButton from './NavButton';
 import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
 import LogoutWrapper from './LogoutWrapper';
 import { usePrevious } from '../Helpers/Hooks';
-import { remoteConfig } from 'utils/firebase';
+import { useFlags } from 'utils/FlagsProvider';
 
 export default function Sidebar() {
   const history = useHistory();
-  const location = useLocation();
+  // const location = useLocation();
   const profile: any = useSelector(selectUser);
   const loginName: string = useSelector(selectLoggedInName);
-  // const flags = window['spFlags'];
+  const flags: any = useFlags();
 
   const [isLogout, setIsLogout] = React.useState(false);
   const [fakeLoading, setFakeLoading] = React.useState(false);
   const [avatar, setAvatar] = React.useState('');
-  const [flags, setFlags] = React.useState({
-    add_money_dragon_pay_enabled: false,
-    buy_load_enabled: false,
-    send_money_enabled: false,
-    send_money_via_qr_enabled: false,
-    send_to_bank_ubp_enabled: false,
-    pay_bills_enabled: false,
-  });
 
   const previousAvatar = usePrevious(profile ? profile.avatar_link : '');
-
-  React.useEffect(() => {
-    const remoteFlags = {
-      add_money_dragon_pay_enabled: remoteConfig
-        .getValue('add_money_dragon_pay_enabled')
-        .asBoolean(),
-      buy_load_enabled: remoteConfig.getValue('buy_load_enabled').asBoolean(),
-      send_money_enabled: remoteConfig
-        .getValue('send_money_enabled')
-        .asBoolean(),
-      send_money_via_qr_enabled: remoteConfig
-        .getValue('send_money_via_qr_enabled')
-        .asBoolean(),
-      send_to_bank_ubp_enabled: remoteConfig
-        .getValue('send_to_bank_ubp_enabled')
-        .asBoolean(),
-      pay_bills_enabled: remoteConfig.getValue('pay_bills_enabled').asBoolean(),
-    };
-    setFlags(remoteFlags);
-  }, []);
 
   React.useEffect(() => {
     if (

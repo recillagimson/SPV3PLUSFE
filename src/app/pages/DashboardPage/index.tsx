@@ -51,52 +51,44 @@ import {
   selectData,
   selectTransactionData,
 } from './slice/selectors';
-import { remoteConfig } from 'utils/firebase';
+// import { remoteConfig } from 'utils/firebase';
+import { useFlags } from 'utils/FlagsProvider';
 
 export function DashboardPage() {
   const history = useHistory();
   const dispatch = useDispatch();
   const { actions } = useContainerSaga();
   const user: any = useSelector(selectUser);
-
+  const flags: any = useFlags();
   const loading = useSelector(selectLoading);
   // const error: any = useSelector(selectError);
   const dashData: any = useSelector(selectData);
   const transactionData: any = useSelector(selectTransactionData);
-  // const flags: any = window['spFlags'];
 
   const [showUpgrade, setShowUpgrade] = React.useState(false);
   const [isComingSoon, setIsComingSoon] = React.useState(false);
-  const [flags, setFlags] = React.useState({
-    add_money_dragon_pay_enabled: false,
-    buy_load_enabled: false,
-    send_money_enabled: false,
-    send_money_via_qr_enabled: false,
-    send_to_bank_ubp_enabled: false,
-    pay_bills_enabled: false,
-  });
 
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());
     dispatch(actions.getTransactionLoading());
 
-    const remoteFlags = {
-      add_money_dragon_pay_enabled: remoteConfig
-        .getValue('add_money_dragon_pay_enabled')
-        .asBoolean(),
-      buy_load_enabled: remoteConfig.getValue('buy_load_enabled').asBoolean(),
-      send_money_enabled: remoteConfig
-        .getValue('send_money_enabled')
-        .asBoolean(),
-      send_money_via_qr_enabled: remoteConfig
-        .getValue('send_money_via_qr_enabled')
-        .asBoolean(),
-      send_to_bank_ubp_enabled: remoteConfig
-        .getValue('send_to_bank_ubp_enabled')
-        .asBoolean(),
-      pay_bills_enabled: remoteConfig.getValue('pay_bills_enabled').asBoolean(),
-    };
-    setFlags(remoteFlags);
+    // const remoteFlags = {
+    //   add_money_dragon_pay_enabled: remoteConfig
+    //     .getValue('add_money_dragon_pay_enabled')
+    //     .asBoolean(),
+    //   buy_load_enabled: remoteConfig.getValue('buy_load_enabled').asBoolean(),
+    //   send_money_enabled: remoteConfig
+    //     .getValue('send_money_enabled')
+    //     .asBoolean(),
+    //   send_money_via_qr_enabled: remoteConfig
+    //     .getValue('send_money_via_qr_enabled')
+    //     .asBoolean(),
+    //   send_to_bank_ubp_enabled: remoteConfig
+    //     .getValue('send_to_bank_ubp_enabled')
+    //     .asBoolean(),
+    //   pay_bills_enabled: remoteConfig.getValue('pay_bills_enabled').asBoolean(),
+    // };
+    // setFlags(remoteFlags);
   }, [actions, dispatch]);
 
   let balanceInfo = '000.00';

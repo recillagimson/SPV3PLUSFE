@@ -24,7 +24,7 @@ export const captureException = async (err: any) => {
     error.message = JSON.stringify(body);
 
     // log the 401 and 422 as info only, else all are error
-    if (err.status === 401 || err.status === 422) {
+    if (err.status === 401 || err.status === 404 || err.status === 422) {
       Sentry.withScope(function (scope) {
         // @ts-ignore
         scope.setLevel('info');
