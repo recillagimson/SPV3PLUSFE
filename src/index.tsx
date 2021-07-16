@@ -13,9 +13,12 @@ import * as ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import FontFaceObserver from 'fontfaceobserver';
+import * as Sentry from '@sentry/react';
 
+// initial sentry
+import { initSentry } from './utils/sentry';
 // error boundary
-import ErrorBoundary from './utils/errorBoundary';
+import { ErrorFallback } from './utils/errorBoundary';
 
 // font awesome library
 import 'utils/faLibrary';
@@ -48,6 +51,7 @@ fontObserver.load().then(() => {
   document.body.classList.add('fontLoaded');
 });
 
+initSentry(); // initialize sentry;
 const publicURL = process.env.PUBLIC_URL || '';
 const store = configureAppStore();
 const MOUNT_NODE = document.getElementById('appMain') as HTMLElement;
@@ -57,9 +61,9 @@ ReactDOM.render(
     <HelmetProvider>
       <React.StrictMode>
         <BrowserRouter basename={publicURL !== '' ? publicURL : undefined}>
-          <ErrorBoundary>
+          <Sentry.ErrorBoundary fallback={ErrorFallback}>
             <App />
-          </ErrorBoundary>
+          </Sentry.ErrorBoundary>
         </BrowserRouter>
       </React.StrictMode>
     </HelmetProvider>

@@ -120,7 +120,7 @@ export function GenerateQR() {
           <title>Generate QR Code</title>
         </Helmet>
 
-        <Wrapper>
+        <Wrapper id="generateQR">
           {loading && <Loading position="absolute" />}
           <Card title="Generate QR Code" size="medium">
             <Field>

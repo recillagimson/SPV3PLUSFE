@@ -19,7 +19,7 @@ import {
   // selectError,
   selectTransactionHistoryData,
 } from './slice/selectors';
-import { transactionHistoryDefaultState } from './slice';
+// import { transactionHistoryDefaultState } from './slice';
 
 // Constants
 import { TRANSACTION_TYPE } from 'constants/transactions';
@@ -36,9 +36,9 @@ export function TransactionHistoryPage(props) {
   const [transactionType, setTransactionType] = React.useState(
     TRANSACTION_TYPE.ALL,
   );
-  const [transactionHistory, setFilteredTransactionHistory] = React.useState([
-    transactionHistoryDefaultState,
-  ]);
+  const [transactionHistory, setFilteredTransactionHistory] = React.useState(
+    [],
+  );
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
@@ -49,7 +49,9 @@ export function TransactionHistoryPage(props) {
   }, [actions, dispatch]);
 
   React.useEffect(() => {
-    if (success?.data?.length) setFilteredTransactionHistory(success.data);
+    if (success && success.data && success.data.length > 0) {
+      setFilteredTransactionHistory(success.data);
+    }
   }, [success]);
 
   const handleViewTransactionDetails = (id: string) => {
@@ -136,9 +138,9 @@ export function TransactionHistoryPage(props) {
             <p>Recent transaction will reflect within 24 hours.</p>
           </S.TransactionTitle>
           <ComponentLoading isLoading={loading}>
-            {transactionHistory.length ? (
+            {transactionHistory.length > 0 ? (
               <S.TransactionList>
-                {transactionHistory?.slice(0, pagination).map((d, i) => {
+                {transactionHistory?.slice(0, pagination).map((d: any, i) => {
                   const isPostiveAmount =
                     d.transaction_category.transaction_type === 'POSITIVE';
                   const isNegativeAmount =

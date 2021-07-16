@@ -57,7 +57,7 @@ interface State {
   errorInfo?: any;
 }
 
-class ErrorBoundary extends React.Component<Props, State> {
+export default class ErrorBoundary extends React.Component<Props, State> {
   public state: State = {
     hasError: false,
     error: null,
@@ -125,4 +125,38 @@ class ErrorBoundary extends React.Component<Props, State> {
   }
 }
 
-export default ErrorBoundary;
+export function ErrorFallback({ error, componentStack, resetError }) {
+  return (
+    <Wrapper>
+      <div className="content">
+        <img src={e500} alt="Error" />
+        <H5>Oops, something went wrong</H5>
+        <p>
+          Click the button to go back or feel free to contact us if the problem
+          persists.
+        </p>
+        {process.env.NODE_ENV !== 'production' && (
+          <p className="error-stack">
+            <strong>{error.toString()}</strong>
+            <span>{componentStack}</span>
+            <small>
+              Note: This Error Stack should be copied for debugging purposes
+            </small>
+          </p>
+        )}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            resetError();
+            window.location.replace(`${process.env.PUBLIC_URL}/`);
+          }}
+          fullWidth
+          size="large"
+        >
+          Go Back
+        </Button>
+      </div>
+    </Wrapper>
+  );
+}

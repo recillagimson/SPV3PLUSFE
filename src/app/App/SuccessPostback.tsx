@@ -42,7 +42,7 @@ export default function SuccessPostback() {
 
   React.useEffect(() => {
     const params = location ? location.search : '';
-    console.log(params, token);
+    // console.log(params, token);
     /*
     const passParams = async () => {
       setLoading(true);

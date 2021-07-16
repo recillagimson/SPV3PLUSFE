@@ -2,16 +2,18 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import ButtonLink from 'app/components/Elements/ButtonLink';
 
 import notFoundImg from 'app/components/Assets/not_found.png';
 
 import { appActions } from 'app/App/slice';
+import { selectIsAuthenticated } from 'app/App/slice/selectors';
 
 export function NotFoundPage() {
   const dispatch = useDispatch();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   React.useEffect(() => {
     const appMain = document.querySelector('#appMain');
@@ -34,7 +36,12 @@ export function NotFoundPage() {
       <Wrapper>
         <img src={notFoundImg} alt="Page not found!" />
         <Title>Uh-oh, page not found...</Title>
-        <ButtonLink variant="contained" color="primary" to="/" fullWidth>
+        <ButtonLink
+          variant="contained"
+          color="primary"
+          to={isAuthenticated ? '/dashboard' : '/'}
+          fullWidth
+        >
           Go home
         </ButtonLink>
       </Wrapper>

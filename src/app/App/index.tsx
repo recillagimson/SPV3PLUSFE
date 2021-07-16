@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet-async';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { remoteConfig } from 'utils/firebase';
 import IdleTimer from 'utils/useIdleTime';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -29,6 +28,7 @@ import CircleIndicator from 'app/components/Elements/CircleIndicator';
 
 import { doSignOut, getCookie } from 'app/components/Helpers';
 
+import FlagsProvider from 'utils/FlagsProvider';
 import { GlobalStyle } from 'styles/global-styles';
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
 
@@ -88,6 +88,7 @@ import {
   setIsUnathenticated,
   selectIsServerError,
 } from './slice/selectors';
+// import { captureException } from 'utils/sentry';
 // import { usePrevious } from 'app/components/Helpers/Hooks';
 
 // default flags for features
@@ -115,7 +116,7 @@ export function App() {
   const isServerError = useSelector(selectIsServerError);
   const clientTokenExpired = useSelector(setIsUnathenticated); // use this only on users who hasn't logged in yet
 
-  const [flags, setFlags] = React.useState(defaultFlags);
+  // const [flags, setFlags] = React.useState(defaultFlags);
 
   React.useEffect(() => {
     const path: string | boolean = location ? location.pathname : '/dashboard';
@@ -157,11 +158,10 @@ export function App() {
       history.push('/register/update-profile');
     } else {
       dispatch(actions.getClientTokenLoading());
-
-      // setTimeout(() => {
-      //   dispatch(actions.getLoadReferences());
-      // }, 2000);
     }
+
+    // remote config
+    // getRemoteConfigValues();
   }, []);
 
   React.useEffect(() => {
@@ -173,12 +173,6 @@ export function App() {
     ) {
       loadFbAsync(); // load fb
     }
-
-    // remote config
-    if (isAuthenticated) {
-      getRemoteConfigValues();
-      // window.setInterval(getRemoteConfigValues, 300000); // 5 mins interval
-    }
   }, [isAuthenticated]);
 
   React.useEffect(() => {
@@ -188,26 +182,26 @@ export function App() {
     }
   }, [isServerError]);
 
-  const getRemoteConfigValues = () => {
-    remoteConfig
-      .fetchAndActivate()
-      .then(() => {
-        return remoteConfig.getAll();
-      })
-      .then(remoteFlags => {
-        const newFlags = {
-          ...flags,
-        };
+  // const getRemoteConfigValues = () => {
+  //   remoteConfig
+  //     .fetchAndActivate()
+  //     .then(() => {
+  //       return remoteConfig.getAll();
+  //     })
+  //     .then(remoteFlags => {
+  //       const newFlags = {
+  //         ...flags,
+  //       };
 
-        for (const [key, config] of Object.entries(remoteFlags)) {
-          newFlags[key] = config.asBoolean();
-        }
-        window['spFlags'] = newFlags || {};
+  //       for (const [key, config] of Object.entries(remoteFlags)) {
+  //         newFlags[key] = config.asBoolean();
+  //       }
+  //       window['spFlags'] = newFlags || {};
 
-        setFlags(newFlags);
-      })
-      .catch(err => console.warn(err));
-  };
+  //       setFlags(newFlags);
+  //     })
+  //     .catch(err => captureException(err));
+  // };
 
   const onClickSessionExpired = () => {
     // window.location.replace('/');
@@ -244,7 +238,7 @@ export function App() {
   const currentLocation = location ? location.pathname : '';
 
   return (
-    <>
+    <FlagsProvider defaultFlags={defaultFlags}>
       <Helmet
         titleTemplate="%s - SquidPay"
         defaultTitle="SquidPay"
@@ -445,6 +439,6 @@ export function App() {
       {/*  FB element containers */}
       <div id="fb-root"></div>
       <div id="fb-customer-chat" className="fb-customerchat" />
-    </>
+    </FlagsProvider>
   );
 }

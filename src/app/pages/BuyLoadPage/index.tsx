@@ -321,7 +321,7 @@ export function BuyLoad() {
         {validateLoading && <Loading position="absolute" />}
         {payLoading && <Loading position="absolute" />}
 
-        <Wrapper>
+        <Wrapper id="buyLoad">
           <Card
             title={!isReview ? 'Buy Load' : 'Review Load Purchase'}
             size="medium"

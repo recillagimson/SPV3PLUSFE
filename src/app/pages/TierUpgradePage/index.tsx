@@ -23,7 +23,7 @@ export function TiersPage() {
   }, [actions, dispatch]);
 
   return (
-    <TierWrapper>
+    <TierWrapper id="tierUpgrade">
       <Helmet>
         <title>Tiers</title>
       </Helmet>
