@@ -59,11 +59,10 @@ export function AddMoneyViaBPI() {
     }
 
     if (!error) {
-      const data = {
-        amount: parseFloat(amount.value),
-      };
-
-      console.log(data);
+      // const data = {
+      //   amount: parseFloat(amount.value),
+      // };
+      // console.log(data);
       // dispatch payload to saga
       // dispatch(actions.getFetchLoading(data));
     }

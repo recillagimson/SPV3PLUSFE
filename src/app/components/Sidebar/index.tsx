@@ -38,12 +38,14 @@ import NavButton from './NavButton';
 import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
 import LogoutWrapper from './LogoutWrapper';
 import { usePrevious } from '../Helpers/Hooks';
+import { useFlags } from 'utils/FlagsProvider';
 
 export default function Sidebar() {
   const history = useHistory();
+  // const location = useLocation();
   const profile: any = useSelector(selectUser);
   const loginName: string = useSelector(selectLoggedInName);
-  const flags = window['spFlags'];
+  const flags: any = useFlags();
 
   const [isLogout, setIsLogout] = React.useState(false);
   const [fakeLoading, setFakeLoading] = React.useState(false);
@@ -139,7 +141,7 @@ export default function Sidebar() {
               QR Code
             </NavButton>
           ) : (
-            <NavButton>
+            <NavButton disabled>
               <QRCodeIcon />
               QR Code
             </NavButton>

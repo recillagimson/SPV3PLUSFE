@@ -121,22 +121,25 @@ export function RegisterPage() {
 
     if (validateError && Object.keys(validateError).length > 0) {
       setIsLoading(false);
-      // return the errors
-      const i112 = validateError.errors.error_code
-        ? validateError.errors.error_code.find(j => j === 112)
-        : -1;
-      if (i112 !== -1) {
-        setUsername({
-          ...username,
-          error: true,
-          msg: isEmail
-            ? 'Oops, this email address is already taken. Please try again.'
-            : 'Oops, this mobile number is already taken. Please try again.',
-        });
+      if (validateError.errors && validateError.errors.error_code) {
+        // return the errors
+        const i112 = validateError.errors.error_code
+          ? validateError.errors.error_code.find(j => j === 112)
+          : -1;
+        if (i112 !== -1) {
+          setUsername({
+            ...username,
+            error: true,
+            msg: isEmail
+              ? 'Oops, this email address is already taken. Please try again.'
+              : 'Oops, this mobile number is already taken. Please try again.',
+          });
+        }
       }
 
       if (
         validateError.errors &&
+        !validateError.errors.error_code &&
         validateError.errors.password &&
         validateError.errors.password.length > 0
       ) {
@@ -191,7 +194,7 @@ export function RegisterPage() {
       setApiError(error.response.statusText);
     }
 
-    if (!error.response && (!error.code || error.code !== 422)) {
+    if (!error.code && !error.response) {
       setApiError(error.message);
     }
 
@@ -435,7 +438,7 @@ export function RegisterPage() {
   return (
     <Wrapper>
       <Helmet title="Register" />
-      <div className="form-container">
+      <div id="form-register" className="form-container">
         {loading && <Loading position="fixed" />}
         {isLoading && <Loading position="fixed" />}
         {showChoose && (
@@ -481,6 +484,7 @@ export function RegisterPage() {
                   required
                   type={isEmail ? 'text' : 'number'}
                   value={username.value}
+                  name="username"
                   autoComplete="off"
                   min={0}
                   onChange={e =>
@@ -511,6 +515,7 @@ export function RegisterPage() {
                     value={password.value}
                     autoComplete="off"
                     placeholder="Password"
+                    name="password"
                     required
                     onChange={e => {
                       setPassword({
@@ -544,6 +549,7 @@ export function RegisterPage() {
                     value={confirmPassword.value}
                     autoComplete="off"
                     placeholder="Password"
+                    name="confirm-password"
                     required
                     onChange={e => {
                       setConfirmPassword({

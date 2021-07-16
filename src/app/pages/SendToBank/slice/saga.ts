@@ -13,6 +13,8 @@ import {
 import { selectBankTransactionType, selectFormData } from './selectors';
 
 import { containerActions as actions } from '.';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
 
 /**
  * Get Purpose
@@ -305,7 +307,7 @@ function* sendToBank() {
 
   try {
     const apirequest = yield call(request, requestURL, options);
-    if (apirequest) {
+    if (apirequest && apirequest.data) {
       // request decryption passphrase
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
@@ -318,14 +320,11 @@ function* sendToBank() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-      yield put(actions.sendToBankSuccess(decryptData));
-    } else {
-      yield put(
-        actions.sendToBankError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
+
+      if (decryptData) {
+        yield put(actions.sendToBankSuccess(decryptData));
+        analytics.logEvent(events.sendToBank, { type: bankTransactionType });
+      }
     }
   } catch (err) {
     // special case, check the 422 for invalid data (account already exists)

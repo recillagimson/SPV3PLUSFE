@@ -18,6 +18,8 @@ import {
 
 import { containerActions as actions } from '.';
 import { appActions } from 'app/App/slice';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
 
 /**
  * GET List of Billers
@@ -196,14 +198,10 @@ function* createPayBills() {
         decryptPhrase.passPhrase,
       );
 
-      yield put(actions.createPayBillsSuccess(decryptData));
-    } else {
-      yield put(
-        actions.createPayBillsError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
+      if (decryptData) {
+        yield put(actions.createPayBillsSuccess(decryptData));
+        analytics.logEvent(events.paybills, { code: billerCode });
+      }
     }
   } catch (err) {
     // special case, check the 422 for invalid data (account already exists)

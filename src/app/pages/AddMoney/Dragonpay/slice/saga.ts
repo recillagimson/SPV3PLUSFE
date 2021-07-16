@@ -12,6 +12,8 @@ import {
 } from 'app/App/slice/saga';
 // import { errorHandler } from './errorHandle';
 import { selectAmount } from './selectors';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
 
 function* addMoney() {
   const token = yield select(selectUserToken);
@@ -57,7 +59,7 @@ function* addMoney() {
       );
 
       yield put(actions.getFetchSuccess(decryptData));
-      return;
+      analytics.logEvent(events.addMoney, { type: 'dragonpay' });
     }
   } catch (err) {
     if (

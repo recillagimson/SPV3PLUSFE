@@ -13,6 +13,8 @@ import {
 
 import { containerActions as actions } from '.';
 import { selectRequest } from './selectors';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
 
 function* generateQR() {
   yield delay(500);
@@ -44,7 +46,7 @@ function* generateQR() {
 
   try {
     const apirequest = yield call(request, requestURL, options);
-    if (apirequest) {
+    if (apirequest && apirequest.data) {
       // request decryption passphrase
       let decryptPhrase: PassphraseState = yield call(
         getResponsePassphrase,
@@ -59,14 +61,8 @@ function* generateQR() {
 
       if (decryptData) {
         yield put(actions.getFetchSuccess(decryptData));
+        analytics.logEvent(events.generateQR);
       }
-    } else {
-      yield put(
-        actions.getFetchError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
     }
   } catch (err) {
     if (err && err.response && err.response.status === 422) {

@@ -51,18 +51,19 @@ import {
   selectData,
   selectTransactionData,
 } from './slice/selectors';
+// import { remoteConfig } from 'utils/firebase';
+import { useFlags } from 'utils/FlagsProvider';
 
 export function DashboardPage() {
   const history = useHistory();
   const dispatch = useDispatch();
   const { actions } = useContainerSaga();
   const user: any = useSelector(selectUser);
-
+  const flags: any = useFlags();
   const loading = useSelector(selectLoading);
   // const error: any = useSelector(selectError);
   const dashData: any = useSelector(selectData);
   const transactionData: any = useSelector(selectTransactionData);
-  const flags: any = window['spFlags'];
 
   const [showUpgrade, setShowUpgrade] = React.useState(false);
   const [isComingSoon, setIsComingSoon] = React.useState(false);
@@ -70,6 +71,24 @@ export function DashboardPage() {
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());
     dispatch(actions.getTransactionLoading());
+
+    // const remoteFlags = {
+    //   add_money_dragon_pay_enabled: remoteConfig
+    //     .getValue('add_money_dragon_pay_enabled')
+    //     .asBoolean(),
+    //   buy_load_enabled: remoteConfig.getValue('buy_load_enabled').asBoolean(),
+    //   send_money_enabled: remoteConfig
+    //     .getValue('send_money_enabled')
+    //     .asBoolean(),
+    //   send_money_via_qr_enabled: remoteConfig
+    //     .getValue('send_money_via_qr_enabled')
+    //     .asBoolean(),
+    //   send_to_bank_ubp_enabled: remoteConfig
+    //     .getValue('send_to_bank_ubp_enabled')
+    //     .asBoolean(),
+    //   pay_bills_enabled: remoteConfig.getValue('pay_bills_enabled').asBoolean(),
+    // };
+    // setFlags(remoteFlags);
   }, [actions, dispatch]);
 
   let balanceInfo = '000.00';
@@ -183,17 +202,32 @@ export function DashboardPage() {
       </Grid>
 
       <ButtonFlexWrapper>
-        <DashboardButton onClick={() => history.push('/add-money')}>
+        <DashboardButton
+          onClick={() => {
+            if (flags && !flags.add_money_dragon_pay_enabled) {
+              setIsComingSoon(true);
+            } else {
+              history.push('/add-money');
+            }
+          }}
+        >
           <AddMoney />
           Add Money
         </DashboardButton>
+
         <DashboardButton
           onClick={
             isBronze
               ? () => setShowUpgrade(true)
-              : () => history.push('/sendmoney')
+              : () => {
+                  if (flags && !flags.send_money_enabled) {
+                    setIsComingSoon(true);
+                  } else {
+                    history.push('/sendmoney');
+                  }
+                }
           }
-          disabled={flags && !flags.send_money_enabled}
+          // disabled={flags && !flags.send_money_enabled}
         >
           <SendMoney />
           Send Money
@@ -202,33 +236,57 @@ export function DashboardPage() {
           onClick={
             isBronze
               ? () => setShowUpgrade(true)
-              : () => history.push('/send-to-bank')
+              : () => {
+                  if (flags && !flags.send_to_bank_ubp_enabled) {
+                    setIsComingSoon(true);
+                  } else {
+                    history.push('/send-to-bank');
+                  }
+                }
           }
-          disabled={flags && !flags.send_to_bank_ubp_enabled}
         >
           <SendToBank />
           Send To Bank
         </DashboardButton>
-        {/* <DashboardButton onClick={() => history.push('/pay-bills')}> */}
-        <DashboardButton onClick={() => setIsComingSoon(true)}>
+        <DashboardButton
+          onClick={() => {
+            if (flags && !flags.pay_bills_enabled) {
+              setIsComingSoon(true);
+            } else {
+              history.push('/pay-bills');
+            }
+          }}
+        >
           <PayBills />
           Pay Bills
         </DashboardButton>
+
         <DashboardButton
-          onClick={() => history.push('/buyload')}
-          disabled={flags && !flags.buy_load_enabled}
+          onClick={() => {
+            if (flags && !flags.buy_load_enabled) {
+              setIsComingSoon(true);
+            } else {
+              history.push('/buyload');
+            }
+          }}
         >
           <BuyLoad />
           Buy Load
         </DashboardButton>
+
         <DashboardButton
-          onClick={() => history.push('/generateqr')}
-          disabled={flags && !flags.send_money_via_qr_enabled}
+          onClick={() => {
+            if (flags && !flags.send_money_via_qr_enabled) {
+              setIsComingSoon(true);
+            } else {
+              history.push('/generateqr');
+            }
+          }}
         >
           <QRCode />
           QR Code
         </DashboardButton>
-        <DashboardButton onClick={() => alert('Feature coming soon')}>
+        <DashboardButton onClick={() => setIsComingSoon(true)}>
           <QuickGuide />
           SquidPay Quick Guide
         </DashboardButton>

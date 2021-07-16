@@ -501,7 +501,12 @@ export default function UserProfileForm({
 
   let hasRefs = false;
   if (refs && Object.keys(refs).length > 0) {
-    hasRefs = true;
+    if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
+      hasRefs = true;
+    }
+    if (!refs.countries || Object.keys(refs.countries).length === 0) {
+      hasRefs = true;
+    }
   }
 
   return (
@@ -509,7 +514,7 @@ export default function UserProfileForm({
       {isLoading && <Loading position="fixed" />}
       {showForm && (
         <Box title="User Info" titleBorder withPadding>
-          <form>
+          <form id="bronzeUpdateProfile">
             <Field flex>
               <Label>First Name</Label>
               <div style={{ flexGrow: 1 }}>

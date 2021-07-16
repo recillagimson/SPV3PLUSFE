@@ -74,6 +74,7 @@ export default function Dropzone({ onSelectFiles, message }: DropzoneProps) {
 
   return (
     <Wrapper
+      className="file-uploader"
       onDrop={onDropFiles}
       onDragLeave={onDragPreventDefault}
       onDragOver={onDragOver}

@@ -17,6 +17,8 @@ import {
   selectResendCodeRequest,
 } from './selectors';
 import { appActions } from 'app/App/slice';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
 
 /**
  * Register
@@ -66,6 +68,7 @@ function* getRegisterAccount() {
 
       if (decryptData) {
         yield put(actions.getFetchSuccess(true));
+        analytics.logEvent(events.signup);
       }
     } else {
       yield put(
