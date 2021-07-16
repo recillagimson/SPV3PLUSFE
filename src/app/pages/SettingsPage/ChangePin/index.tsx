@@ -385,7 +385,7 @@ export function SettingsChangePinPage() {
           }
         >
           {validateLoading && <Loading position="absolute" />}
-          <Field flex>
+          <Field flex id="changePin">
             <Label>Enter your current Pin</Label>
             <div style={{ flexGrow: 1 }}>
               <InputIconWrapper>

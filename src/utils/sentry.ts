@@ -25,13 +25,27 @@ export const captureException = async (err: any) => {
 
     // log the 401 and 422 as info only, else all are error
     if (err.status === 401 || err.status === 404 || err.status === 422) {
-      Sentry.withScope(function (scope) {
-        // @ts-ignore
-        scope.setLevel('info');
-        Sentry.captureException(error);
+      Sentry.addBreadcrumb({
+        category: 'fetch error',
+        data: {
+          url: err.url.match(/\/\/[^\/]+\/([^\.]+)/)[1], // eslint-disable-line no-useless-escape
+          message: body.message,
+          errors: JSON.stringify(body.errors ? body.errors : ''),
+        },
+        level: Sentry.Severity.Info,
       });
+      Sentry.captureMessage('Fetch failed');
     } else {
-      Sentry.captureException(error);
+      Sentry.addBreadcrumb({
+        category: 'fetch error',
+        data: {
+          url: err.url.match(/\/\/[^\/]+\/([^\.]+)/)[1], // eslint-disable-line no-useless-escape
+          message: body.message,
+          errors: JSON.stringify(body.errors ? body.errors : ''),
+        },
+        level: Sentry.Severity.Warning,
+      });
+      Sentry.captureMessage('Fetch failed');
     }
 
     return; // return immediately

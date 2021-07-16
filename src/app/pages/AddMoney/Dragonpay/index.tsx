@@ -183,7 +183,7 @@ export function Dragonpay() {
             style={{ margin: 'auto' }}
           />
         </div>
-        <div>
+        <div id="addMoneyDragonpay">
           <Label htmlFor="amount">Amount</Label>
           <Input
             ref={inputEl}

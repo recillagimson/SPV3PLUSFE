@@ -48,6 +48,7 @@ export default function ParentalConsent({
             color="danger"
             variant="outlined"
             onClick={onCancel}
+            id="parentConsentDisagree"
           >
             Disagree
           </Button>
@@ -56,6 +57,7 @@ export default function ParentalConsent({
             color="primary"
             variant="contained"
             onClick={onAgree}
+            id="parentConsentAgree"
           >
             Agree
           </Button>

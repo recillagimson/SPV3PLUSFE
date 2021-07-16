@@ -254,7 +254,7 @@ export function UpdateEmailPage() {
           }
         >
           {validateLoading && <Loading position="absolute" />}
-          <div style={{ padding: '20px 25px' }}>
+          <div id="updateEmail" style={{ padding: '20px 25px' }}>
             <Field>
               <Label>Email Addres</Label>
               <InputIconWrapper left>

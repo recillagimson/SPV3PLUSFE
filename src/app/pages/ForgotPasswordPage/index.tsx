@@ -234,15 +234,6 @@ export function ForgotPasswordPage() {
       email: isEmail ? email.value : undefined,
     };
     dispatch(actions.getFetchLoading(data));
-
-    // redirect user to choosing via sms or email code sending
-    // setShowChoose(true);
-    // setShowVerify(false);
-    // setShowEmail(false);
-    // setShowMobile(false);
-    // setIsEmail(false);
-    // setEmail({ value: '', error: false });
-    // setMobile({ value: '', error: false });
   };
 
   const onCloseDialog = () => {
@@ -261,7 +252,7 @@ export function ForgotPasswordPage() {
   return (
     <Wrapper>
       <Helmet title="Forgot Password" />
-      <div className="form-container">
+      <div id="forgotPassword" className="form-container">
         {loading && <Loading position="fixed" />}
 
         <div className="text-center">
