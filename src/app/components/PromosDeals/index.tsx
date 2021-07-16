@@ -52,7 +52,7 @@ export default function PromosDeals() {
   };
 
   return (
-    <Wrapper>
+    <Wrapper id="promosSliderContainer">
       <Slider {...sliderSettings}>
         <div>
           <img src={img1} alt="" />

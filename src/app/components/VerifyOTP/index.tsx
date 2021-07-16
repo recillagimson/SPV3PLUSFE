@@ -184,7 +184,7 @@ export default function VerifyOTPComponent({
   };
 
   return (
-    <Wrapper>
+    <Wrapper id="verifyOtp">
       {loading && <Loading position="absolute" />}
       <Field className="code">
         <ReactCodeInput

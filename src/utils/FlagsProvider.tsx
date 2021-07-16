@@ -13,15 +13,14 @@ export const useFlags = () => {
 };
 
 // remote config
-
 export default function FlagsProvider({
-  defaults,
+  defaultFlags,
   children,
 }: {
-  defaults: {};
+  defaultFlags: {};
   children: any;
 }) {
-  const [flags, setFlags] = React.useState(defaults);
+  const [flags, setFlags] = React.useState(defaultFlags);
 
   React.useEffect(() => {
     // remoteConfig.defaultConfig = defaults;
@@ -29,14 +28,13 @@ export default function FlagsProvider({
     remoteConfig
       .fetchAndActivate()
       .then(activated => {
-        if (!activated) console.log('not activated');
         return remoteConfig.getAll();
       })
       .then(remoteFlags => {
         const newFlags = {
           ...flags,
         };
-
+        // loop to each flags and save as boolean
         for (const [key, config] of Object.entries(remoteFlags)) {
           newFlags[key] = config.asBoolean();
         }

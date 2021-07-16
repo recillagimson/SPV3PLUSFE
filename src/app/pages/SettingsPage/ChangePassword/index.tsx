@@ -370,7 +370,7 @@ export function SettingsChangePasswordPage() {
           }
         >
           {validateLoading && <Loading position="absolute" />}
-          <Field flex>
+          <Field flex id="changePin">
             <Label>Current Password</Label>
             <div style={{ flexGrow: 1 }}>
               <InputIconWrapper>

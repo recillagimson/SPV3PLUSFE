@@ -19,8 +19,6 @@ export function AddMoney() {
   const history = useHistory();
   const user: any = useSelector(selectUser);
 
-  const flags = window['spFlags'];
-
   const [showEmailUpdate, setShowEmailUpdate] = React.useState(false); // added by habs
 
   const onClickDragonpay = () => {
@@ -39,16 +37,8 @@ export function AddMoney() {
         <List divider>
           <ListItem flex>
             <ListItemText
-              role={
-                flags && flags.add_money_dragon_pay_enabled
-                  ? 'presentation'
-                  : undefined
-              }
-              onClick={
-                flags && flags.add_money_dragon_pay_enabled
-                  ? onClickDragonpay
-                  : undefined
-              }
+              role="presentation"
+              onClick={onClickDragonpay}
               primary="Dragonpay"
               style={{
                 flexGrow: 1,

@@ -690,7 +690,7 @@ export default function UserProfileForm({
 
       {showForm && (
         <Box title="User Info" titleBorder withPadding>
-          <form>
+          <form id="silverUpdateProfile">
             <Field flex>
               <Label>First Name</Label>
               <div style={{ flexGrow: 1 }}>

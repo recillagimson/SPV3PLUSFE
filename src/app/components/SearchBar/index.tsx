@@ -48,6 +48,7 @@ export default function SearchBard({ onChange }: SearchBarProps) {
         type="text"
         value={search}
         placeholder="Search"
+        name="search"
       />
 
       <FontAwesomeIcon icon={search === '' ? 'search' : 'times'} />

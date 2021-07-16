@@ -249,6 +249,7 @@ export default function UpdatePasswordComponent({
             placeholder="Password"
             required
             className={newPass.error ? 'error' : undefined}
+            name="newPassword"
           />
           <IconButton
             type="button"
@@ -275,6 +276,7 @@ export default function UpdatePasswordComponent({
             placeholder="Password"
             required
             className={confirmPass.error ? 'error' : undefined}
+            name="confirmPassword"
           />
           <IconButton
             type="button"
