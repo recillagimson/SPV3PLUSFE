@@ -501,10 +501,10 @@ export default function UserProfileForm({
 
   let hasRefs = false;
   if (refs && Object.keys(refs).length > 0) {
-    if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
+    if (refs.nationalities && Object.keys(refs.nationalities).length > 0) {
       hasRefs = true;
     }
-    if (!refs.countries || Object.keys(refs.countries).length === 0) {
+    if (refs.countries && Object.keys(refs.countries).length > 0) {
       hasRefs = true;
     }
   }

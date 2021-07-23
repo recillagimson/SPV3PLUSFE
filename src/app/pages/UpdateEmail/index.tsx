@@ -297,7 +297,7 @@ export function UpdateEmailPage() {
           >
             <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
             <p className="f-small">
-              The one time pin code has been sent to your mobile number
+              The one time pin code has been sent to your email address
             </p>
 
             <VerifyOTP
