@@ -286,13 +286,13 @@ export default function UserProfileForm({
       setApiErrorMsg(apiError || '');
       setIsError(true);
     }
-    if (error.response || (error.code && error.code !== 422)) {
-      apiError = error.response.statusText;
+    if (!err.code && err.response) {
+      apiError = err.response.statusText;
       setApiErrorMsg(apiError || '');
       setIsError(true);
     }
-    if (!error.response && (!error.code || error.code !== 422)) {
-      apiError = error.message;
+    if (!err.code && !err.response) {
+      apiError = err.message;
       setApiErrorMsg(apiError || '');
       setIsError(true);
     }
