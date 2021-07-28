@@ -87,6 +87,9 @@ function* getRegisterAccount() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getFetchReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
       yield put(actions.getFetchError({}));
@@ -161,6 +164,9 @@ function* getValidateFields() {
         ...body,
       };
       yield put(actions.getValidateError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getValidateReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
       yield put(actions.getValidateError({}));
@@ -225,6 +231,9 @@ function* getResendActivationCode() {
         ...body,
       };
       yield put(actions.getResendCodeError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getResendCodeReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
       yield put(actions.getResendCodeError({}));

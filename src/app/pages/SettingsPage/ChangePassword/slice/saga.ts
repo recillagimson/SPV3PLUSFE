@@ -48,21 +48,7 @@ function* getChangePassword() {
     const apirequest = yield call(request, requestURL, options);
 
     if (apirequest && apirequest.data && apirequest.data.id) {
-      // request decryption passphrase
-      let decryptPhrase: PassphraseState = yield call(
-        getResponsePassphrase,
-        apirequest.data.id,
-      );
-
-      // decrypt payload data
-      let decryptData = spdCrypto.decrypt(
-        apirequest.data.payload,
-        decryptPhrase.passPhrase,
-      );
-
-      if (decryptData) {
-        yield put(actions.getFetchSuccess(true));
-      }
+      yield put(actions.getFetchSuccess(true));
     }
   } catch (err) {
     // special case, check the 422 for invalid data (account already exists)

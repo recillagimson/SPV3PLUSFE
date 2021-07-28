@@ -361,7 +361,9 @@ export function SendToBankUBP() {
                       <p>{formData.remarks.value ?? 'None'}</p>
                     </S.ReviewListItem>
                     <S.TotalAmountWrapper>
-                      <S.TotalAmountTitle>Total Amount</S.TotalAmountTitle>
+                      <S.TotalAmountTitle>
+                        Total Amount plus service fee
+                      </S.TotalAmountTitle>
                       <S.TotalAmountValue>
                         PHP {numberWithCommas(calculateTotalAmount)}
                       </S.TotalAmountValue>

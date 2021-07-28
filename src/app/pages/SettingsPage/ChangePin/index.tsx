@@ -94,6 +94,7 @@ export function SettingsChangePinPage() {
   React.useEffect(() => {
     if (validateError && validateError.length > 0) {
       apiErrorMessage(JSON.parse(validateError));
+      dispatch(actions.getValidateReset());
     }
 
     if (validateSuccess) {
@@ -206,13 +207,8 @@ export function SettingsChangePinPage() {
       return;
     }
 
-    if (!err.response && (!err.code || err.code !== 422)) {
+    if (!err.response && !err.code) {
       setPinError(err.message);
-    }
-
-    if (validateSuccess) {
-      setShowForm(false);
-      setShowVerify(true);
     }
   };
 
