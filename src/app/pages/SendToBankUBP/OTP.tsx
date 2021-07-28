@@ -29,11 +29,13 @@ import * as S from './SendToBankUBP.style';
 // Assets
 import WrapperCuttedCornerBottom from 'app/components/Assets/WrapperCuttedCornerBottom.svg';
 import WrapperCuttedCornerTop from 'app/components/Assets/WrapperCuttedCornerTop.svg';
+import { selectUser } from 'app/App/slice/selectors';
 
 export default function OTP() {
   const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
+  const profile: any = useSelector(selectUser);
   const success = useSelector(selectSuccessToBank);
   const formData = useSelector(selectFormData);
   const validateTransaction = useSelector(selectValidateTransaction);
@@ -49,6 +51,11 @@ export default function OTP() {
   const calculateTotalAmount = parseToNumber(
     parseFloat(formData?.amount) + validateTransaction?.service_fee,
   );
+
+  let isMobile = false;
+  if (profile && profile.user_account && profile.mobile_number) {
+    isMobile = true;
+  }
 
   const renderReviewContainer = (type?: string) => {
     const isSuccessReview = type === 'successReview';
@@ -109,7 +116,8 @@ export default function OTP() {
         </CircleIndicator>
         <H3 margin="30px 0 10px">Enter 4-Digit one time PIN</H3>
         <p className="pin-description">
-          The one time pin code has been sent to your mobile number
+          A One-Time PIN Code has been sent to your{' '}
+          {isMobile ? 'mobile number' : 'email'}
         </p>
         <VerifyOTP
           apiURL="/auth/verify/otp"
