@@ -59,6 +59,9 @@ function* getChangePassword() {
         ...body,
       };
       yield put(actions.getFetchError(JSON.stringify(newError)));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getFetchReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getFetchReset());
@@ -127,6 +130,9 @@ function* getValidatePassword() {
         ...body,
       };
       yield put(actions.getValidateError(JSON.stringify(newError)));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getValidateReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getValidateReset());
