@@ -130,6 +130,9 @@ function* getGenerateOTP() {
         ...body,
       };
       yield put(actions.getSendOTPError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getSendOTPReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getSendOTPReset());

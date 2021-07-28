@@ -76,7 +76,7 @@ export default function UserProfileForm({
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
-  const profile = useSelector(selectUser);
+  const profile: any = useSelector(selectUser);
 
   const otpLoading = useSelector(selectOTPLoading);
   const otpError: any = useSelector(selectOTPError);
@@ -682,6 +682,11 @@ export default function UserProfileForm({
   let hasRefs = false;
   if (refs && Object.keys(refs).length > 0) {
     hasRefs = true;
+  }
+
+  let isEmail = false;
+  if (profile && profile.user_account && profile.user_account.email) {
+    isEmail = true;
   }
 
   return (
@@ -1500,7 +1505,8 @@ export default function UserProfileForm({
           >
             <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
             <p className="f-small">
-              The one time pin code has been sent to your mobile number
+              A One-Time PIN Code has been sent to your{' '}
+              {isEmail ? 'email address' : 'mobile number'}
             </p>
 
             <VerifyOTP

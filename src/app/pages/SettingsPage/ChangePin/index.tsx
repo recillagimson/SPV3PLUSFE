@@ -535,7 +535,7 @@ export function SettingsChangePinPage() {
             </CircleIndicator>
             <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
             <p className="f-small">
-              The one time pin code has been sent to{' '}
+              A One-Time PIN Code has been sent to{' '}
               {validateEmail(loginName) ? 'email' : 'mobile number'}
             </p>
 
