@@ -89,14 +89,14 @@ export const RENDER_SELECT_ITEMS = name => {
           label: 'Salary Loan Early Renewal Program (SLERP)',
         },
       ];
-    case 'unbnk_service':
+    case 'unbnk_otherinfo.service':
       return [
         {
-          value: 'Master Card',
+          value: '0',
           label: 'Mastercard',
         },
         {
-          value: 'Visa',
+          value: '1',
           label: 'Visa',
         },
       ];

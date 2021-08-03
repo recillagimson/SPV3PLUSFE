@@ -240,10 +240,12 @@ export const disconnectionDialogLogo = val => {
   switch (val) {
     case 1:
       return faExclamation;
+    case 2:
     case 3:
     case 5:
     case 4:
     case 6:
+    case 13:
       return 'times';
     default:
       return 'check';
@@ -254,10 +256,12 @@ export const isPrimaryColorForDisconnection = val => {
   switch (val) {
     case 1:
       return 'primary';
+    case 2:
     case 3:
     case 5:
     case 4:
     case 6:
+    case 13:
       return 'danger';
     default:
       return 'primary';
@@ -268,10 +272,12 @@ export const disconnectionTitleMessage = val => {
   switch (val) {
     case 1:
       return 'Heads up!';
+    case 2:
     case 3:
     case 5:
     case 4:
     case 6:
+    case 13:
       return 'Oops!';
     default:
       return 'Successful Payment';

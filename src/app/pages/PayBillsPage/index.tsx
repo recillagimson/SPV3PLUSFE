@@ -55,7 +55,7 @@ import WrapperCuttedCornerTop from 'app/components/Assets/WrapperCuttedCornerTop
 // Styles
 import * as S from './PayBills.style';
 
-export function PayBillsPage(props) {
+export function PayBillsPage() {
   const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
@@ -686,13 +686,12 @@ export function PayBillsPage(props) {
                   fullWidth
                   onClick={() => {
                     setDisconnectionDialog('');
-                    history.push('/dashboard');
                   }}
                   variant="outlined"
                   color="default"
                   size="large"
                 >
-                  Cancel
+                  {disconnectionCode === 1 ? 'Cancel' : 'Ok'}
                 </Button>
               </S.DialogActions>
             </div>
