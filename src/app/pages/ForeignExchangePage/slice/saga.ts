@@ -1,45 +1,29 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { delay, call, put, select, takeLatest } from 'redux-saga/effects';
+import { call, select, delay, put, takeLatest } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
 import { PassphraseState } from 'types/Default';
 import { selectUserToken } from 'app/App/slice/selectors';
-import {
-  getRequestPassphrase,
-  getResponsePassphrase,
-} from 'app/App/slice/saga';
-
+import { getResponsePassphrase } from 'app/App/slice/saga';
 import { containerActions as actions } from '.';
-import { selectRequest } from './selectors';
-
-function* generateQR() {
+import { appActions } from 'app/App/slice';
+/**
+ * Get Transaction History
+ */
+function* getCurrencyRates() {
   yield delay(500);
   const token = yield select(selectUserToken);
-  const payload = yield select(selectRequest);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/send/money/generate/qr`;
-
-  let encryptPayload: string = '';
-
-  let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
-
-  if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
-    encryptPayload = spdCrypto.encrypt(
-      JSON.stringify(payload),
-      requestPhrase.passPhrase,
-    );
-  }
+  const requestURL = `${process.env.REACT_APP_API_URL}/dashboard/currencies/rates`;
 
   const options = {
-    method: 'POST',
+    method: 'GET',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token.access_token}`,
     },
-    body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
   };
 
   try {
@@ -52,32 +36,28 @@ function* generateQR() {
       );
 
       // decrypt payload data
+      // function returns the parsed string
       let decryptData = spdCrypto.decrypt(
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
 
-      if (decryptData) {
-        yield put(actions.getFetchSuccess(decryptData));
-      }
-    } else {
-      yield put(
-        actions.getFetchError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
+      yield put(actions.getForeignExchangeSuccess(decryptData));
     }
   } catch (err) {
+    // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
         code: 422,
         ...body,
       };
-      yield put(actions.getFetchError(newError));
+      yield put(actions.getForeignExchangeError(newError));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getForeignExchangeReset());
     } else {
-      yield put(actions.getFetchError(err));
+      yield put(actions.getForeignExchangeError(err));
     }
   }
 }
@@ -90,5 +70,5 @@ export function* containerSaga() {
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
-  yield takeLatest(actions.getFetchLoading.type, generateQR);
+  yield takeLatest(actions.getForeignExchangeLoading.type, getCurrencyRates);
 }
