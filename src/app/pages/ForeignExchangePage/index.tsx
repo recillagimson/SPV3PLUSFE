@@ -2,10 +2,12 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
 import { useContainerSaga } from './slice';
+import isEmpty from 'lodash/isEmpty';
 
 // components
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import Input from 'app/components/Elements/Input';
 import Loading from 'app/components/Loading';
+import Box from 'app/components/Box';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import {
   selectLoading,
@@ -13,24 +15,78 @@ import {
   selectForeignExchangeData,
 } from './slice/selectors';
 
+// styles
+import * as Styled from './ForeignExchangePage.style';
+
 export function ForeignExchangePage() {
   const dispatch = useDispatch();
   const { actions } = useContainerSaga();
+  const [searchValue, setSearchValue] = React.useState<{
+    value: string;
+  }>({
+    value: '',
+  });
   const foreignExchangeData: any = useSelector(selectForeignExchangeData);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const loading = useSelector(selectLoading);
 
   React.useEffect(() => {
     dispatch(actions.getForeignExchangeLoading());
   }, [actions, dispatch]);
 
-  console.log(foreignExchangeData);
+  const { value } = searchValue;
+
   return (
     <ProtectedContent>
       <Helmet>
-        <title>Dashboard</title>
+        <title>Foreign exchange</title>
       </Helmet>
-      <>test</>
+      {loading ? (
+        <Loading position="fixed" />
+      ) : (
+        <Box title="Foreign Exchange" titleBorder withPadding>
+          <section
+            style={{
+              display: 'flex',
+              flexFlow: 'row',
+              justifyContent: 'flex-end',
+              margin: '8px 0 24px',
+            }}
+          >
+            <Input
+              style={{
+                width: '342px',
+              }}
+              value={value}
+              onChange={e => setSearchValue({ value: e.currentTarget.value })}
+              placeholder="Search"
+            />
+          </section>
+
+          <Styled.RatesContainer>
+            {!isEmpty(foreignExchangeData) &&
+              foreignExchangeData
+                .filter(currency => {
+                  return (
+                    currency.name.toLowerCase().includes(value) ||
+                    currency.code.toLowerCase().includes(value)
+                  );
+                })
+                .map(currency => (
+                  <Styled.Rate>
+                    <Styled.CurrencyContainer>
+                      <Styled.Currency>{currency?.code}</Styled.Currency>
+                      <Styled.CurrentFull>{currency?.name}</Styled.CurrentFull>
+                    </Styled.CurrencyContainer>
+                    <Styled.Spacer />
+                    <Styled.Rates>
+                      {parseFloat(currency?.rate).toFixed(4)}
+                    </Styled.Rates>
+                  </Styled.Rate>
+                ))}
+          </Styled.RatesContainer>
+        </Box>
+      )}
     </ProtectedContent>
   );
 }
