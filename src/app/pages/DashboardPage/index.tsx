@@ -298,6 +298,13 @@ export function DashboardPage() {
           <NewsUpdate />
           News and Update
         </DashboardButton>
+        <DashboardButton
+          onClick={() => {
+            history.push('/foreign-exchange');
+          }}
+        >
+          Foreign Exchange
+        </DashboardButton>
       </ButtonFlexWrapper>
 
       {/* <div style={{ padding: '20px 0' }}>

@@ -180,10 +180,6 @@ export default function Sidebar() {
             Contact Us
           </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
-          <NavButton as={NavLink} to="/foreign-exchange">
-            Foreign Exchange
-          </NavButton>
-          {/* <NavButton as={NavLink} to="/dashboard"> */}
         </Navigation>
         <div className="logout">
           <NavButton onClick={() => setIsLogout(prev => !prev)}>
