@@ -65,6 +65,9 @@ import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
 import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
 import { AddMoney } from 'app/pages/AddMoney/Loadable';
 import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
+// #endregion
+
+import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
 import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent/Loadable';
 import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/Loadable';
 import SuccessPostBack from './SuccessPostback';
@@ -326,6 +329,11 @@ export function App() {
               exact
               path="/transaction-history/:id"
               component={TransactionHistoryDetailsPage}
+            />
+            <PrivateRoute
+              exact
+              path="/foreign-exchange"
+              component={ForeignExchangePage}
             />
             <PrivateRoute
               exact

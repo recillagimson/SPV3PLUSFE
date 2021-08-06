@@ -15,6 +15,7 @@ import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice
 import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 import { DashboardState } from 'app/pages/DashboardPage/slice/types';
 import { TransactionHistoryState } from 'app/pages/TransactionHistoryPage/slice/types';
+import { ForeignExchangeState } from 'app/pages/ForeignExchangePage/slice/types';
 import { PayBillsState } from 'app/pages/PayBillsPage/slice/types';
 import { TierUpgradeState } from 'app/pages/TierUpgradePage/slice/types';
 import { SendToBankUBPState } from 'app/pages/SendToBankUBP/slice/types';
@@ -49,6 +50,7 @@ export interface RootState {
   termsAndConditions?: TermsAndConditions;
   addMoneyDragonpay: AddMoneyDragonpayState;
   transactionHistory?: TransactionHistoryState;
+  foreignExchange?: ForeignExchangeState;
   changePassword?: ChangePasswordState;
   changePin?: ChangePinState;
   dashboard?: DashboardState;
