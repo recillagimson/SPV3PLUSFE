@@ -63,10 +63,10 @@ const slice = createSlice({
       };
 
       if (u && u.user_account) {
-        otp.isEmail = !u.user_account.mobile;
-        otp.value = !u.user_account.mobile
+        otp.isEmail = !u.user_account.mobile_number;
+        otp.value = !u.user_account.mobile_number
           ? u.user_account.email
-          : u.user_account.mobile;
+          : u.user_account.mobile_number;
       }
       state.user = action.payload;
       state.otp = otp;
