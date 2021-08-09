@@ -750,8 +750,8 @@ export function RegisterPage() {
             <p className="f-small">
               A One-Time PIN has been sent to your{' '}
               {isEmail
-                ? `email ${username.value}`
-                : `mobile number ${username.value}`}
+                ? `email: ${username.value}`
+                : `mobile number: ${username.value}`}
             </p>
 
             <VerifyOTP

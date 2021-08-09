@@ -14,9 +14,10 @@ import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components/macro';
 import ReactCodeInput from 'react-code-input';
-
 import { StyleConstants } from 'styles/StyleConstants';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Loading from 'app/components/Loading';
 import Field from 'app/components/Elements/Fields';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
@@ -25,6 +26,8 @@ import Button from 'app/components/Elements/Button';
 /** slice */
 import { useComponentSaga } from './slice';
 import { selectLoading, selectError, selectData } from './slice/selectors';
+import { selectOTPDetails } from 'app/App/slice/selectors';
+import H3 from '../Elements/H3';
 
 const Wrapper = styled.div`
   text-align: center;
@@ -83,6 +86,8 @@ export default function VerifyOTPComponent({
 }: VerifyOTPComponentProps) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
+  const otpDetails = useSelector(selectOTPDetails);
+
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
@@ -185,6 +190,17 @@ export default function VerifyOTPComponent({
 
   return (
     <Wrapper id="verifyOtp">
+      <CircleIndicator size="large">
+        <FontAwesomeIcon icon="lock" />
+      </CircleIndicator>
+
+      <H3 margin="35px 0 10px">Enter 4-digit One-Time PIN</H3>
+      <p className="f-small" style={{ margin: '0 0 25px' }}>
+        A One-Time PIN has been sent to your{' '}
+        {otpDetails.isEmail
+          ? `email: ${otpDetails.value}`
+          : `mobile number: ${otpDetails.value}`}
+      </p>
       {loading && <Loading position="absolute" />}
       <Field className="code">
         <ReactCodeInput

@@ -513,15 +513,6 @@ export function SettingsChangePasswordPage() {
             className="text-center"
             style={{ width: '400px', margin: '0 auto', padding: '0 40px' }}
           >
-            <CircleIndicator size="medium" color="primary">
-              <FontAwesomeIcon icon="lock" />
-            </CircleIndicator>
-            <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
-            <p className="f-small">
-              A One-Time PIN Code has been sent to{' '}
-              {validateEmail(loginName) ? 'email' : 'mobile number'}
-            </p>
-
             <VerifyOTP
               onSuccess={onSubmitPassword}
               apiURL="/user/password/verify"

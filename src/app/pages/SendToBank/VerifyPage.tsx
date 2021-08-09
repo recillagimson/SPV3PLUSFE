@@ -33,13 +33,12 @@ import WrapperCuttedCornerTop from 'app/components/Assets/WrapperCuttedCornerTop
 
 // Styled Components
 import * as S from './SendToBank.style';
-import { selectUser } from 'app/App/slice/selectors';
 
 export function VerifyOTPPage(props) {
   const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
-  const profile: any = useSelector(selectUser);
+
   const apiErrors: any = useSelector(selectError);
   const formData = useSelector(selectFormData);
   const validateTransaction = useSelector(selectValidateTransaction);
@@ -121,11 +120,6 @@ export function VerifyOTPPage(props) {
   const date = DateTime.fromISO(success?.transaction_date);
   const monthDateYearTime = date.toLocaleString(DateTime.DATETIME_MED);
 
-  let isMobile = false;
-  if (profile && profile.user_account && profile.mobile_number) {
-    isMobile = true;
-  }
-
   return (
     <React.Fragment>
       <S.Wrapper
@@ -135,14 +129,6 @@ export function VerifyOTPPage(props) {
         width="400px"
         margin="20px auto"
       >
-        <CircleIndicator size="medium" color="primary">
-          <FontAwesomeIcon icon="lock" />
-        </CircleIndicator>
-        <H3 margin="30px 0 10px">Enter 4-Digit one time PIN</H3>
-        <p className="pin-description">
-          A One-Time PIN Code has been sent to your{' '}
-          {isMobile ? 'mobile number' : 'email'}
-        </p>
         <VerifyOTP
           apiURL="/auth/verify/otp"
           otpType="send2bank"
