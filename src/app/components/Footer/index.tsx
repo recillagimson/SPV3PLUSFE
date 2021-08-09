@@ -10,8 +10,10 @@ export default function FooterComponent() {
   return (
     <Wrapper className="site-footer">
       <p>
-        &copy; {new Date().getFullYear()} SquidPay Technology Inc. -{' '}
-        <span>(Build: {build.build_no})</span>
+        &copy; {new Date().getFullYear()} SquidPay Technology Inc.{' '}
+        <span>
+          (v{process.env.REACT_APP_VERSION} build: {build.build_no})
+        </span>
       </p>
     </Wrapper>
   );

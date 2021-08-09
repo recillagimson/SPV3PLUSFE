@@ -11,7 +11,7 @@ const Wrapper = styled.footer`
     color: #a9b1b8;
 
     span {
-      font-size: 0.9em;
+      font-size: 0.85em;
       opacity: 0.8;
     }
   }

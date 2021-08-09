@@ -95,3 +95,6 @@ v1.0.3
 - Update Profile Nationality and Country dropdown fix
 - Buy load proper handling of error messages from API
 - Added catching of error 500 on API calls
+- Paybills (404) Fix
+- Contact Us icon (sidebar) fix correct size
+- Fix transaction history date display
