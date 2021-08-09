@@ -9,6 +9,11 @@ const Wrapper = styled.footer`
   p {
     margin: 0 0;
     color: #a9b1b8;
+
+    span {
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
   }
 
   .authenticated & {
