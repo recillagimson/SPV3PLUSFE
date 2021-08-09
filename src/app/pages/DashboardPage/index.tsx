@@ -110,13 +110,24 @@ export function DashboardPage() {
 
   if (transactionData && transactionData.length > 0) {
     transactionItems = transactionData.map(i => {
-      const date = DateTime.fromISO(i.created_at).toFormat('LLLL dd, yyyy\ntt');
+      let date = DateTime.fromSQL(i.created_at);
+      if (date.invalid) {
+        date = DateTime.fromISO(i.created_at);
+      }
       return (
-        <ListItem flex key={i.id}>
+        <ListItem flex key={i.transaction_id}>
           <ListItemText
             bold
             primary={i.transaction_category.title}
-            secondary={date}
+            secondary={date.toFormat('LLLL dd, yyyy\ntt')}
+            caption={i.status}
+            captionClass={
+              i.status === 'SUCCESS'
+                ? 'text-green'
+                : i.status === 'PENDING'
+                ? 'text-yellow'
+                : 'text-red'
+            }
             style={{
               flexGrow: 1,
             }}
@@ -125,9 +136,7 @@ export function DashboardPage() {
           <ListItemText
             bold
             align="right"
-            primary={`PHP ${numberCommas(
-              parseFloat(i.signed_total_amount).toFixed(2),
-            )}`}
+            primary={`PHP ${numberCommas(i.signed_total_amount)}`}
             color={i.transaction_category.transaction_type}
             small
           />

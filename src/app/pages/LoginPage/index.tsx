@@ -90,7 +90,11 @@ export function LoginPage() {
     let apiError: string | undefined;
     if (error && Object.keys(error).length > 0) {
       if (error.code && error.code === 422) {
-        if (error.errors && error.errors.error_code) {
+        if (
+          error.errors &&
+          error.errors.error_code &&
+          error.errors.error_code.length > 0
+        ) {
           apiError = error.errors.error_code.map((i: any) => {
             if (i === 101 || i === 103 || i === 113) {
               return isEmail
@@ -131,12 +135,12 @@ export function LoginPage() {
         setIsError(true);
       }
 
-      if (error.code && error.code !== 422) {
+      if (!error.code && error.response) {
         apiError = error.response.statusText;
         setApiErrorMsg(apiError || '');
         setIsError(true);
       }
-      if (!error.response && (!error.code || error.code !== 422)) {
+      if (!error.response && !error.code) {
         apiError = error.message;
         setApiErrorMsg(apiError || '');
         setIsError(true);

@@ -80,6 +80,16 @@ export const GlobalStyle = createGlobalStyle`
     text-align: justify;
   }
 
+  .text-red {
+    color: ${StyleConstants.NEGATIVE} !important; 
+  }
+  .text-green {
+    color: ${StyleConstants.POSITIVE} !important; 
+  }
+  .text-yellow {
+    color: ${StyleConstants.GOLD} !important; 
+  }
+
   /** margins */
   .ml-1{
     margin-left: 0.2em;
