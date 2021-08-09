@@ -7,18 +7,15 @@ import { DateTime } from 'luxon';
 // Components
 import Button from 'app/components/Elements/Button';
 import ComponentLoading from 'app/components/ComponentLoading';
-import LoadingLogo from 'app/components/ComponentLoading/loading_dark.gif';
+import Loading from 'app/components/Loading';
+import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
 // Utils
 import { parseToNumber, numberWithCommas } from 'utils/common';
 
 /** slice */
 import { useContainerSaga } from './slice';
-import {
-  selectLoading,
-  // selectError,
-  selectTransactionHistoryData,
-} from './slice/selectors';
+import { selectTransactionHistoryData } from './slice/selectors';
 // import { transactionHistoryDefaultState } from './slice';
 
 // Constants
@@ -31,28 +28,77 @@ import * as S from './TransactionHistory.style';
 import NoTransactionsLogo from 'app/components/Assets/no-transactions.svg';
 
 export function TransactionHistoryPage(props) {
+  const { actions } = useContainerSaga();
+  const dispatch = useDispatch();
+  // const loading = useSelector(selectLoading);
+  // const error: any = useSelector(selectError);
+  const success: any = useSelector(selectTransactionHistoryData);
+
   const [isLoading, setLoading] = React.useState(false); // Temporary loading for pagination
-  const [pagination, setPagination] = React.useState(5); // Temporary pagination
+  const [noRecords, setNoRecords] = React.useState(false);
+  const [records, setRecords] = React.useState<any[]>([]);
   const [transactionType, setTransactionType] = React.useState(
     TRANSACTION_TYPE.ALL,
   );
-  const [transactionHistory, setFilteredTransactionHistory] = React.useState(
-    [],
-  );
-  const { actions } = useContainerSaga();
-  const dispatch = useDispatch();
-  const loading = useSelector(selectLoading);
-  // const error: any = useSelector(selectError);
-  const success: any = useSelector(selectTransactionHistoryData);
-  React.useEffect(() => {
-    dispatch(actions.getFetchLoading());
-  }, [actions, dispatch]);
+  const [transactionHistory, setTransactionHistory] = React.useState<any[]>([]);
+  const [pageDetails, setPageDetails] = React.useState({
+    current_page: 1,
+    last_page: 1,
+  });
+  const [currentPage, setCurrentPage] = React.useState(1);
 
   React.useEffect(() => {
-    if (success && success.data && success.data.length > 0) {
-      setFilteredTransactionHistory(success.data);
+    dispatch(actions.getFetchLoading(currentPage));
+    setLoading(true);
+
+    return () => {
+      setTransactionHistory([]);
+      setRecords([]);
+      setCurrentPage(1);
+      setPageDetails({
+        current_page: 1,
+        last_page: 1,
+      });
+      dispatch(actions.getFetchReset());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (success && success.data) {
+      setLoading(false);
+
+      if (success.data.length > 0) {
+        // concatenate previous data with newly loaded data
+        const { data, ...pageDetails } = success;
+        const newArray = [...records, ...data];
+        setRecords(newArray); // store all records in a state where we can reference it again when filter is All
+
+        // check the filter first for proper handling of loading more data
+        if (transactionType === TRANSACTION_TYPE.ALL) {
+          setTransactionHistory(newArray);
+        } else {
+          const data = newArray.filter(
+            transaction => transaction.transaction_type === transactionType,
+          );
+          setTransactionHistory(data);
+        }
+
+        setPageDetails(pageDetails);
+      }
+      if (success.data.length === 0) {
+        setNoRecords(true);
+      }
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);
+
+  const onLoadMore = page => {
+    setCurrentPage(page);
+    setLoading(true);
+    dispatch(actions.getFetchLoading(page));
+  };
 
   const handleViewTransactionDetails = (id: string) => {
     props.history.push(`/transaction-history/${id}`);
@@ -61,12 +107,13 @@ export function TransactionHistoryPage(props) {
   const filteredTransactionDetails = (type: string) => {
     setTransactionType(type);
     if (type === TRANSACTION_TYPE.ALL) {
-      setFilteredTransactionHistory(success?.data);
+      setTransactionHistory(records);
     } else {
-      const data = success?.data?.filter(
+      const newRecords = [...records];
+      const data = newRecords.filter(
         transaction => transaction.transaction_type === type,
       );
-      setFilteredTransactionHistory(data);
+      setTransactionHistory(data);
     }
   };
 
@@ -84,7 +131,7 @@ export function TransactionHistoryPage(props) {
   };
 
   return (
-    <>
+    <ProtectedContent>
       <Helmet>
         <title>Transaction History</title>
       </Helmet>
@@ -137,26 +184,40 @@ export function TransactionHistoryPage(props) {
             {renderTransactionTypeTitle()}
             <p>Recent transaction will reflect within 24 hours.</p>
           </S.TransactionTitle>
-          <ComponentLoading isLoading={loading}>
-            {transactionHistory.length > 0 ? (
+          <ComponentLoading>
+            {!noRecords && transactionHistory.length > 0 && (
               <S.TransactionList>
-                {transactionHistory?.slice(0, pagination).map((d: any, i) => {
+                {transactionHistory.map((d: any, i) => {
                   const isPostiveAmount =
                     d.transaction_category.transaction_type === 'POSITIVE';
                   const isNegativeAmount =
                     d.transaction_category.transaction_type === 'NEGATIVE';
-                  const date = DateTime.fromISO(d.created_at);
+                  let date = DateTime.fromSQL(d.created_at);
+                  if (date.invalid) {
+                    date = DateTime.fromISO(d.created_at);
+                  }
                   const monthDateYear = date.toLocaleString(DateTime.DATE_MED);
                   const time = date.toLocaleString(DateTime.TIME_SIMPLE);
 
                   return (
                     <S.TransactionListItem
-                      key={i}
+                      key={d.transaction_id}
                       isLast={i + 1 === transactionHistory.length}
                     >
                       <S.ListContainer>
                         <S.ListTitle>
-                          {d.transaction_category.title}
+                          {d.transaction_category.title}{' '}
+                          <span
+                            className={
+                              d.status === 'SUCCESS'
+                                ? 'text-green'
+                                : d.status === 'PENDING'
+                                ? 'text-yellow'
+                                : 'text-red'
+                            }
+                          >
+                            ({d.status})
+                          </span>
                         </S.ListTitle>
                         <S.ListDescription>{monthDateYear}</S.ListDescription>
                         <S.ListDescription>{time}</S.ListDescription>
@@ -172,7 +233,9 @@ export function TransactionHistoryPage(props) {
                           )}
                         </S.ListTitle>
                         <Button
-                          onClick={() => handleViewTransactionDetails(d.id)}
+                          onClick={() =>
+                            handleViewTransactionDetails(d.transaction_id)
+                          }
                           color="secondary"
                           size="small"
                           variant="outlined"
@@ -184,18 +247,9 @@ export function TransactionHistoryPage(props) {
                   );
                 })}
                 <S.TransactionListItem noBorder>
-                  {isLoading && (
-                    <img src={LoadingLogo} alt="Squid pay loading..." />
-                  )}
-                  {!isLoading && transactionHistory.length >= pagination && (
+                  {!isLoading && currentPage < pageDetails.last_page && (
                     <Button
-                      onClick={() => {
-                        setLoading(true);
-                        setTimeout(() => {
-                          setPagination(pagination + 5);
-                          setLoading(false);
-                        }, 2000);
-                      }}
+                      onClick={() => onLoadMore(currentPage + 1)}
                       color="secondary"
                       size="medium"
                       variant="outlined"
@@ -205,7 +259,8 @@ export function TransactionHistoryPage(props) {
                   )}
                 </S.TransactionListItem>
               </S.TransactionList>
-            ) : (
+            )}
+            {noRecords && (
               <S.EmptyWrapper>
                 <img src={NoTransactionsLogo} alt="No transactions..." />
                 <h6>No Transactions</h6>
@@ -213,8 +268,9 @@ export function TransactionHistoryPage(props) {
               </S.EmptyWrapper>
             )}
           </ComponentLoading>
+          {isLoading && <Loading position="relative" />}
         </S.TransactionContent>
       </S.Wrapper>
-    </>
+    </ProtectedContent>
   );
 }

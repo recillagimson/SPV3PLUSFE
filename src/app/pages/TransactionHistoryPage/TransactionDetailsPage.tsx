@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Button from 'app/components/Elements/Button';
 import ComponentLoading from 'app/components/ComponentLoading';
 import Dialog from 'app/components/Dialog';
+import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
 // Utils
 import { parseToNumber, numberWithCommas } from 'utils/common';
@@ -92,14 +93,20 @@ function TransactionHistoryDetailsPage(props) {
   };
 
   const hasServiceFee = isBankTransaction || isLoadTransaction;
-  const date = DateTime.fromISO(
+  let date = DateTime.fromSQL(
     transactionHistoryDetailsData?.transactable?.created_at,
   );
+  if (date.invalid) {
+    date = DateTime.fromISO(
+      transactionHistoryDetailsData?.transactable?.created_at,
+    );
+  }
   const monthDateYearTime = date.toLocaleString(DateTime.DATETIME_MED);
+
   return (
-    <>
+    <ProtectedContent>
       <Helmet>
-        <title>Transaction History</title>
+        <title>Transaction History - Details</title>
       </Helmet>
       <S.Wrapper>
         <S.TransactionHeader>
@@ -127,6 +134,20 @@ function TransactionHistoryDetailsPage(props) {
                         <p>{d.value}</p>
                       </S.TransactionDetailsListItem>
                     ))}
+                    <S.TransactionDetailsListItem>
+                      <p>Status</p>
+                      <p
+                        className={
+                          transactionHistoryDetailsData.status === 'SUCCESS'
+                            ? 'text-green'
+                            : transactionHistoryDetailsData.status === 'PENDING'
+                            ? 'text-yellow'
+                            : 'text-red'
+                        }
+                      >
+                        {transactionHistoryDetailsData.status}
+                      </p>
+                    </S.TransactionDetailsListItem>
                   </S.TransactionDetailsList>
                   <S.TotalTransactions>
                     <p>Total Amount</p>
@@ -156,7 +177,7 @@ function TransactionHistoryDetailsPage(props) {
                   </S.TotalTransactions>
                   <S.FooterWrapper>
                     <Logo size="small" />
-                    <p>{DateTime.fromISO('2021-05-11 14:44:19').toString()}</p>
+                    {/* <p>{DateTime.fromISO('2021-05-11 14:44:19').toString()}</p> */}
                     <p>{monthDateYearTime}</p>
                   </S.FooterWrapper>
                 </S.TransactionDetailsWrapperContent>
@@ -202,7 +223,7 @@ function TransactionHistoryDetailsPage(props) {
           </S.PaddingWrapper>
         </Dialog>
       </S.Wrapper>
-    </>
+    </ProtectedContent>
   );
 }
 

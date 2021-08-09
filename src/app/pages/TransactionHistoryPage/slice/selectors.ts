@@ -22,6 +22,11 @@ export const selectError = createSelector(
   subState => subState.error,
 );
 
+export const selectPage = createSelector(
+  [selectDomain],
+  subState => subState.page,
+);
+
 export const selectTransactionHistoryId = createSelector(
   [selectDomain],
   subState => subState.transactionHistoryId,

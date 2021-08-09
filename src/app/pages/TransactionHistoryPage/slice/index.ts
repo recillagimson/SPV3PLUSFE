@@ -37,6 +37,7 @@ export const transactionDetailsDefaultState = {
     transaction_type: '',
   },
   transactionDate: '',
+  status: '',
 };
 
 export const transactionHistoryDefaultState = {
@@ -52,6 +53,7 @@ export const transactionHistoryDefaultState = {
 export const initialState: ContainerState = {
   loading: false,
   error: {},
+  page: 1,
   transactionHistory: {},
   transactionHistoryDetails: transactionDetailsDefaultState,
   transactionHistoryDetailsError: {},
@@ -62,9 +64,10 @@ const slice = createSlice({
   name: 'transactionHistory',
   initialState,
   reducers: {
-    getFetchLoading(state) {
+    getFetchLoading(state, action: PayloadAction<number>) {
       state.loading = true;
       state.error = {};
+      state.page = action.payload;
       state.transactionHistory = {};
     },
     getFetchSuccess(state, action: PayloadAction<[]>) {

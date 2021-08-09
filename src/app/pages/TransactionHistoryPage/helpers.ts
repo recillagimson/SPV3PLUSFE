@@ -70,7 +70,9 @@ export const receivedMoneyListData = transactionHistoryDetailsData => {
     },
     {
       label: 'Mobile Number',
-      value: 'None',
+      value: transactionHistoryDetailsData?.transactable?.sender
+        ? transactionHistoryDetailsData?.transactable?.sender.mobile_number
+        : 'None',
     },
     {
       label: 'Message',
@@ -84,14 +86,28 @@ export const receivedMoneyListData = transactionHistoryDetailsData => {
 };
 
 export const dragonpayListData = transactionHistoryDetailsData => {
+  let name = 'None';
+  if (
+    transactionHistoryDetailsData.transactable &&
+    transactionHistoryDetailsData.transactable.user_details &&
+    transactionHistoryDetailsData.transactable.user_details.first_name &&
+    transactionHistoryDetailsData.transactable.user_details.last_name
+  ) {
+    name = `${transactionHistoryDetailsData.transactable.user_details.first_name} ${transactionHistoryDetailsData.transactable.user_details.last_name}`;
+  }
   return [
     {
       label: 'Name',
-      value: transactionHistoryDetailsData?.transaction_category?.name,
+      value: name,
     },
     {
       label: 'Mobile Number',
-      value: 'None',
+      value:
+        transactionHistoryDetailsData.transactable &&
+        transactionHistoryDetailsData?.transactable.user_details &&
+        transactionHistoryDetailsData?.transactable.user_details.mobile_number
+          ? transactionHistoryDetailsData?.user_details.mobile_number
+          : 'None',
     },
     {
       label: 'Transaction Number',

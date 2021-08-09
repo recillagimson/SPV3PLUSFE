@@ -7,7 +7,7 @@ import { PassphraseState } from 'types/Default';
 import { appActions } from 'app/App/slice';
 import { selectUserToken } from 'app/App/slice/selectors';
 import { getResponsePassphrase } from 'app/App/slice/saga';
-import { selectTransactionHistoryId } from './selectors';
+import { selectPage, selectTransactionHistoryId } from './selectors';
 
 import { containerActions as actions } from '.';
 
@@ -17,8 +17,9 @@ import { containerActions as actions } from '.';
 function* getTransactionHistory() {
   yield delay(500);
   const token = yield select(selectUserToken);
+  const page = yield select(selectPage);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/user/transaction/histories`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/user/transaction/histories?page=${page}`;
 
   const options = {
     method: 'GET',
