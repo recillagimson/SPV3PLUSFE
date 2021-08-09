@@ -746,9 +746,9 @@ export function RegisterPage() {
 
         {showVerify && (
           <div className="text-center" style={{ padding: '0 40px' }}>
-            <H3 margin="35px 0 10px">Authentication</H3>
+            <H3 margin="35px 0 10px">Enter 4-digit One-Time PIN</H3>
             <p className="f-small">
-              We sent 4-digit authentication code to your{' '}
+              A One-Time PIN has been sent to your{' '}
               {isEmail
                 ? `email ${username.value}`
                 : `mobile number ${username.value}`}

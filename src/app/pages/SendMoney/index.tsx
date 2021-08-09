@@ -502,12 +502,11 @@ export function SendMoney() {
                             <FontAwesomeIcon icon="lock" />
                           </CircleIndicator>
                           <H1 className="text-center" margin="20px 0 8px">
-                            Enter 4-Digit one time PIN
+                            Enter 4-digit One-Time PIN
                           </H1>
 
                           <p>
-                            The one time pin code has been sent to your mobile
-                            number
+                            A One-Time PIN has been sent to your mobile number
                           </p>
                         </div>
                         {/* <PinInput

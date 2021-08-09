@@ -112,7 +112,7 @@ export function DashboardPage() {
     transactionItems = transactionData.map(i => {
       const date = DateTime.fromISO(i.created_at).toFormat('LLLL dd, yyyy\ntt');
       return (
-        <ListItem flex key={i.id}>
+        <ListItem flex key={i.id || i.transaction_id}>
           <ListItemText
             bold
             primary={i.transaction_category.title}
