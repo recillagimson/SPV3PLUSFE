@@ -82,6 +82,9 @@ function* validateSendToBankUBP() {
         ...body,
       };
       yield put(actions.validateBankError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.validateBankError({}));
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
     } else {
@@ -152,6 +155,9 @@ function* generateSendToBankOTP() {
         ...body,
       };
       yield put(actions.generateSendToBankOTPError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.generateSendToBankOTPReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
     } else {
@@ -216,6 +222,9 @@ function* sendToBank() {
         ...body,
       };
       yield put(actions.sendToBankError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.sendToBankError({}));
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
     } else {

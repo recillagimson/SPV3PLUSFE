@@ -10,7 +10,9 @@ export const parseToNumber = (val: any): any => {
 };
 
 export const numberWithCommas = (val: string) => {
-  return parseToNumber(val)
-    .toString()
-    .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  // Number will converted with fixed 2 decimal and converted to number with commas using toLocaleString and return it
+  return Number(parseFloat(val).toFixed(2)).toLocaleString('en', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 };

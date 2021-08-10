@@ -434,7 +434,9 @@ export function App() {
       <GlobalStyle />
 
       {/* Idle Timer */}
-      {isAuthenticated && <IdleTimer idle={process.env.IDLE_TIME || 3000000} />}
+      {isAuthenticated && (
+        <IdleTimer idle={process.env.REACT_APP_IDLE_TIME || 3000000} />
+      )}
 
       {/*  FB element containers */}
       <div id="fb-root"></div>

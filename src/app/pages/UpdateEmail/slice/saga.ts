@@ -60,6 +60,9 @@ function* getUpdateEmail() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getFetchReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getFetchReset());
@@ -114,6 +117,9 @@ function* getValidateEmail() {
         ...body,
       };
       yield put(actions.getValidateError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getValidateReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getValidateReset());
@@ -169,6 +175,9 @@ function* getGenerateOTP() {
         ...body,
       };
       yield put(actions.getResendError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getResendReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getResendReset());

@@ -97,6 +97,7 @@ export function SettingsChangePasswordPage() {
   React.useEffect(() => {
     if (validateError && validateError.length > 0) {
       apiErrorMessage(JSON.parse(validateError));
+      dispatch(actions.getValidateReset());
     }
 
     if (validateSuccess) {
@@ -208,24 +209,15 @@ export function SettingsChangePasswordPage() {
         setPassError(apiError);
         return;
       }
-
-      if (err.errors && err.errors.password && err.errors.password.length > 0) {
-        setApiError(true);
-      }
     }
 
-    if (!err.code && err.response && err.response.status !== 422) {
+    if (!err.code && err.response) {
       setPassError(err.response.statusText);
       return;
     }
 
-    if (!err.response && (!err.code || err.code !== 422)) {
+    if (!err.response && !err.code) {
       setPassError(err.message);
-    }
-
-    if (validateSuccess) {
-      setShowForm(false);
-      setShowVerify(true);
     }
   };
 
@@ -526,7 +518,7 @@ export function SettingsChangePasswordPage() {
             </CircleIndicator>
             <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
             <p className="f-small">
-              The one time pin code has been sent to{' '}
+              A One-Time PIN Code has been sent to{' '}
               {validateEmail(loginName) ? 'email' : 'mobile number'}
             </p>
 
@@ -553,7 +545,7 @@ export function SettingsChangePasswordPage() {
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
           <p style={{ margin: '15px 0 20px' }}>
-            The one time pin code has been re-sent to{' '}
+            The One-Time PIN Code has been re-sent to{' '}
             {validateEmail(loginName) ? 'email' : 'mobile number'}
           </p>
 

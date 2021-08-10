@@ -69,7 +69,7 @@ export default function UserProfileForm({
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
-  const profile = useSelector(selectUser);
+  const profile: any = useSelector(selectUser);
 
   const otpLoading = useSelector(selectOTPLoading);
   const otpError: any = useSelector(selectOTPError);
@@ -198,9 +198,11 @@ export default function UserProfileForm({
   React.useEffect(() => {
     if (error && Object.keys(error).length > 0) {
       onApiError(error);
+      dispatch(actions.getFetchReset());
     }
     if (otpError && Object.keys(otpError).length > 0) {
       onApiError(otpError);
+      dispatch(actions.getSendOTPReset());
     }
   }, [error, otpError]);
 
@@ -286,13 +288,13 @@ export default function UserProfileForm({
       setApiErrorMsg(apiError || '');
       setIsError(true);
     }
-    if (error.response || (error.code && error.code !== 422)) {
-      apiError = error.response.statusText;
+    if (!err.code && err.response) {
+      apiError = err.response.statusText;
       setApiErrorMsg(apiError || '');
       setIsError(true);
     }
-    if (!error.response && (!error.code || error.code !== 422)) {
-      apiError = error.message;
+    if (!err.code && !err.response) {
+      apiError = err.message;
       setApiErrorMsg(apiError || '');
       setIsError(true);
     }
@@ -501,12 +503,17 @@ export default function UserProfileForm({
 
   let hasRefs = false;
   if (refs && Object.keys(refs).length > 0) {
-    if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
+    if (refs.nationalities && Object.keys(refs.nationalities).length > 0) {
       hasRefs = true;
     }
-    if (!refs.countries || Object.keys(refs.countries).length === 0) {
+    if (refs.countries && Object.keys(refs.countries).length > 0) {
       hasRefs = true;
     }
+  }
+
+  let isEmail = false;
+  if (profile && profile.user_account && profile.user_account.email) {
+    isEmail = true;
   }
 
   return (
@@ -1009,7 +1016,8 @@ export default function UserProfileForm({
           >
             <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
             <p className="f-small">
-              The one time pin code has been sent to your mobile number
+              A One-Time PIN Code has been sent to your{' '}
+              {isEmail ? 'email address' : 'mobile number'}
             </p>
 
             <VerifyOTP

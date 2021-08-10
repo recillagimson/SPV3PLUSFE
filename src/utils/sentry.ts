@@ -23,7 +23,7 @@ export const captureException = async (err: any) => {
     // @ts-ignore
     error.message = JSON.stringify(body);
 
-    // log the 401 and 422 as info only, else all are error
+    // log the 401, 404 and 422 as info only, else all are error
     if (err.status === 401 || err.status === 404 || err.status === 422) {
       Sentry.addBreadcrumb({
         category: 'fetch error',
@@ -35,23 +35,35 @@ export const captureException = async (err: any) => {
         level: Sentry.Severity.Info,
       });
       Sentry.captureMessage('Fetch failed');
-    } else {
-      Sentry.addBreadcrumb({
-        category: 'fetch error',
-        data: {
-          url: err.url.match(/\/\/[^\/]+\/([^\.]+)/)[1], // eslint-disable-line no-useless-escape
-          message: body.message,
-          errors: JSON.stringify(body.errors ? body.errors : ''),
-        },
-        level: Sentry.Severity.Warning,
-      });
-      Sentry.captureMessage('Fetch failed');
+
+      return; // return immediately
     }
 
-    return; // return immediately
+    // default for other http status codes
+    Sentry.addBreadcrumb({
+      category: 'fetch error',
+      data: {
+        url: err.url.match(/\/\/[^\/]+\/([^\.]+)/)[1], // eslint-disable-line no-useless-escape
+        message: body.message,
+        errors: JSON.stringify(body.errors ? body.errors : ''),
+      },
+      level: Sentry.Severity.Warning,
+    });
+    Sentry.captureMessage('Fetch failed');
+
+    return; // return immediately to stop doing codes below
   }
 
-  Sentry.captureException(err);
+  // default, if we have no error response payload
+  Sentry.addBreadcrumb({
+    category: 'fetch error',
+    data: {
+      url: err.url.match(/\/\/[^\/]+\/([^\.]+)/)[1], // eslint-disable-line no-useless-escape
+      status_code: err.status,
+    },
+    level: Sentry.Severity.Warning,
+  });
+  Sentry.captureMessage('Fetch failed');
 };
 
 // set the user_id

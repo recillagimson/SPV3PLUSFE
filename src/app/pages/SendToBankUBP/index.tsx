@@ -11,8 +11,9 @@ import Box from 'app/components/Box';
 import Field from 'app/components/Elements/Fields';
 import Label from 'app/components/Elements/Label';
 import Input from 'app/components/Elements/Input';
+import InputTextWrapper from 'app/components/Elements/InputTextWrapper';
 import Button from 'app/components/Elements/Button';
-import MaskedCurrencyInput from 'app/components/Elements/MaskedCurrencyInput';
+// import MaskedCurrencyInput from 'app/components/Elements/MaskedCurrencyInput';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Flex from 'app/components/Elements/Flex';
 import Grid from 'app/components/Elements/Grid';
@@ -62,8 +63,8 @@ export function SendToBankUBP() {
   );
 
   const calculateTotalAmount = parseToNumber(
-    parseFloat(formData.amount.value.replace(/,/g, '').replace(/PHP/g, '')) +
-      validateTransaction?.service_fee,
+    parseFloat(formData.amount.value) +
+      parseFloat(validateTransaction?.service_fee),
   );
 
   // #region handleForm Events
@@ -214,13 +215,17 @@ export function SendToBankUBP() {
                 <form onSubmit={onSubmit}>
                   <Field>
                     <Label>Enter Amount</Label>
-                    <MaskedCurrencyInput
-                      value={formData.amount.value}
-                      onChange={onChangeFieldValue}
-                      name="amount"
-                      className={formData.amount.error ? 'error' : undefined}
-                      placeholder="PHP0.00"
-                    />
+                    <InputTextWrapper>
+                      <Input
+                        value={formData.amount.value}
+                        onChange={onChangeFieldValue}
+                        name="amount"
+                        className={formData.amount.error ? 'error' : undefined}
+                        placeholder="0.00"
+                      />
+                      <span>PHP</span>
+                    </InputTextWrapper>
+
                     {formData.amount.error && (
                       <ErrorMsg formError>Amount is required.</ErrorMsg>
                     )}
@@ -356,7 +361,9 @@ export function SendToBankUBP() {
                       <p>{formData.remarks.value ?? 'None'}</p>
                     </S.ReviewListItem>
                     <S.TotalAmountWrapper>
-                      <S.TotalAmountTitle>Total Amount</S.TotalAmountTitle>
+                      <S.TotalAmountTitle>
+                        Total Amount plus service fee
+                      </S.TotalAmountTitle>
                       <S.TotalAmountValue>
                         PHP {numberWithCommas(calculateTotalAmount)}
                       </S.TotalAmountValue>

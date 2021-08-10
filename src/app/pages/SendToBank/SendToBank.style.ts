@@ -260,6 +260,11 @@ export const ReviewListItem = styled.div`
     font-style: normal;
     line-height: 21px;
     margin: 0;
+    width: 49%;
+
+    &:last-child {
+      text-align: right;
+    }
   }
 `;
 

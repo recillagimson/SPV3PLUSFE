@@ -185,13 +185,21 @@ export function BuyLoad() {
       dispatch(actions.getFetchReset());
       dispatch(actions.getValidateReset());
       dispatch(actions.getPayReset());
+      setShowForm(true);
+      setIsReview(false);
+      setShowProducts(false);
+      setIsSuccess(false);
     };
   }, [actions, dispatch]);
 
   React.useEffect(() => {
     if (validateError && Object.keys(validateError).length > 0) {
       if (validateError.code && validateError.code === 422) {
-        if (validateError.errors && validateError.errors.error_code) {
+        if (
+          validateError.errors &&
+          validateError.errors.error_code &&
+          validateError.errors.error_code.length > 0
+        ) {
           validateError.errors.error_code.forEach((i: any) => {
             if (i === 302) {
               setValidateApiMsg({
@@ -342,6 +350,7 @@ export function BuyLoad() {
                       })
                     }
                     error={mobile.error ? true : undefined}
+                    hidespinner
                   />
                   {mobile.error && <ErrorMsg formError>{mobile.msg}</ErrorMsg>}
                 </Field>
@@ -501,7 +510,11 @@ export function BuyLoad() {
                 )}
 
                 <section>
-                  <Scrollbars style={{ height: 200 }}>
+                  <Scrollbars
+                    autoHeight
+                    autoHeightMin={200}
+                    autoHeightMax={600}
+                  >
                     {success
                       .slice()
                       .sort((a, b) =>
@@ -521,6 +534,7 @@ export function BuyLoad() {
                         >
                           {category === promo.category ? (
                             <div
+                              key={promo.productCode}
                               className={
                                 isActive.value === ''
                                   ? 'product-list'
@@ -652,7 +666,7 @@ export function BuyLoad() {
               </div>
             </Dialog>
 
-            <Dialog show={isSuccess && paySuccess} size="xsmall">
+            <Dialog show={isSuccess && Boolean(paySuccess)} size="xsmall">
               <Receipt
                 title="Load purchase successful!"
                 total={paySuccess.amount + '.00'}
