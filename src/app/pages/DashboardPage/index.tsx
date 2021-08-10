@@ -115,7 +115,7 @@ export function DashboardPage() {
         date = DateTime.fromISO(i.created_at);
       }
       return (
-        <ListItem flex key={i.transaction_id}>
+        <ListItem flex key={i.id || i.transaction_id}>
           <ListItemText
             bold
             primary={i.transaction_category.title}

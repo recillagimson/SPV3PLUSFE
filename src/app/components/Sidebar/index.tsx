@@ -35,7 +35,7 @@ import NavButton from './NavButton';
 /** selectors, actions */
 // import { UserProfileState } from 'types/Default';
 // import { appActions } from 'app/App/slice';
-import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
+import { selectUser } from 'app/App/slice/selectors';
 import LogoutWrapper from './LogoutWrapper';
 import { usePrevious } from '../Helpers/Hooks';
 import { useFlags } from 'utils/FlagsProvider';
@@ -44,7 +44,6 @@ export default function Sidebar() {
   const history = useHistory();
   // const location = useLocation();
   const profile: any = useSelector(selectUser);
-  const loginName: string = useSelector(selectLoggedInName);
   const flags: any = useFlags();
 
   const [isLogout, setIsLogout] = React.useState(false);
@@ -83,17 +82,20 @@ export default function Sidebar() {
     doSignOut();
   };
 
+  let loginName = '';
   let tierName = '';
-  if (
-    profile &&
-    profile.user_account &&
-    profile.user_account.tier_id &&
-    profile.user_account.tier_id !== ''
-  ) {
-    const tierIndex = Tiers.findIndex(
-      j => j.id === profile.user_account.tier_id,
-    );
-    tierName = tierIndex !== -1 ? Tiers[tierIndex].class : '';
+  if (profile && profile.user_account) {
+    if (profile.user_account.tier_id && profile.user_account.tier_id !== '') {
+      const tierIndex = Tiers.findIndex(
+        j => j.id === profile.user_account.tier_id,
+      );
+      tierName = tierIndex !== -1 ? Tiers[tierIndex].class : '';
+    }
+    if (profile.user_account.mobile_number) {
+      loginName = profile.user_account.mobile_number;
+    } else {
+      loginName = profile.user_account.email;
+    }
   }
 
   return (

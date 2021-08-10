@@ -57,9 +57,11 @@ import {
 export default function UserProfileForm({
   onCancel,
   onSuccess,
+  firstTime,
 }: {
   onCancel: () => void;
   onSuccess: () => void;
+  firstTime?: boolean;
 }) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
@@ -1077,7 +1079,10 @@ export default function UserProfileForm({
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
           <H3 margin="15px 0 10px">Successfully updated!</H3>
-          <p>You have successfully updated your account information.</p>
+          <p>
+            You have successfully {firstTime ? 'created' : 'updated'} your
+            account information.
+          </p>
           <Button
             fullWidth
             onClick={onCloseSuccessDialog}

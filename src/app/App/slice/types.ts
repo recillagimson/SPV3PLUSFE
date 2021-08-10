@@ -9,6 +9,10 @@ export interface GlobalState {
   login: string;
   user: UserProfileState | boolean;
   userToken: TokenState | string;
+  otp: {
+    isEmail: boolean;
+    value: string;
+  };
   isAuthenticated: boolean;
   isUnauthenticated: boolean;
   token: TokenState | string;

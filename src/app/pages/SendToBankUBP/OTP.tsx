@@ -1,6 +1,6 @@
 import * as React from 'react';
+
 import VerifyOTP from 'app/components/VerifyOTP';
-import H3 from 'app/components/Elements/H3';
 import Logo from 'app/components/Assets/Logo';
 import Button from 'app/components/Elements/Button';
 import Dialog from 'app/components/Dialog';
@@ -29,13 +29,12 @@ import * as S from './SendToBankUBP.style';
 // Assets
 import WrapperCuttedCornerBottom from 'app/components/Assets/WrapperCuttedCornerBottom.svg';
 import WrapperCuttedCornerTop from 'app/components/Assets/WrapperCuttedCornerTop.svg';
-import { selectUser } from 'app/App/slice/selectors';
 
 export default function OTP() {
   const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
-  const profile: any = useSelector(selectUser);
+
   const success = useSelector(selectSuccessToBank);
   const formData = useSelector(selectFormData);
   const validateTransaction = useSelector(selectValidateTransaction);
@@ -51,11 +50,6 @@ export default function OTP() {
   const calculateTotalAmount = parseToNumber(
     parseFloat(formData?.amount) + validateTransaction?.service_fee,
   );
-
-  let isMobile = false;
-  if (profile && profile.user_account && profile.mobile_number) {
-    isMobile = true;
-  }
 
   const renderReviewContainer = (type?: string) => {
     const isSuccessReview = type === 'successReview';
@@ -111,14 +105,6 @@ export default function OTP() {
         width="400px"
         margin="20px auto"
       >
-        <CircleIndicator size="medium" color="primary">
-          <FontAwesomeIcon icon="lock" />
-        </CircleIndicator>
-        <H3 margin="30px 0 10px">Enter 4-Digit one time PIN</H3>
-        <p className="pin-description">
-          A One-Time PIN Code has been sent to your{' '}
-          {isMobile ? 'mobile number' : 'email'}
-        </p>
         <VerifyOTP
           apiURL="/auth/verify/otp"
           otpType="send2bank"
