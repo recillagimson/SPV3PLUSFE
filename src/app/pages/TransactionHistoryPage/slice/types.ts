@@ -6,6 +6,7 @@ export type ErrorState = ApiErrorState;
 export interface TransactionHistoryState {
   loading: boolean;
   error?: object;
+  page?: number;
   transactionHistory: object;
   transactionHistoryDetails: TransactionHistoryDetailsState;
   transactionHistoryDetailsError: object;
@@ -50,6 +51,7 @@ export interface TransactionHistoryDetailsState {
     transaction_type: string;
   };
   transactionDate: any;
+  status: string;
 }
 
 export type ContainerState = TransactionHistoryState;
