@@ -97,7 +97,6 @@ export default function Sidebar() {
       loginName = profile.user_account.email;
     }
   }
-  console.log(profile);
 
   return (
     <>

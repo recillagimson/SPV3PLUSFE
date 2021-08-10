@@ -45,7 +45,11 @@ export function UpdateProfileVerificationPage() {
           You need to update your basic profile information to continue using
           our services.
         </Note> */}
-      <UpdateProfile onSuccess={onSuccessUpdate} onCancel={onCancelUpdate} />
+      <UpdateProfile
+        onSuccess={onSuccessUpdate}
+        onCancel={onCancelUpdate}
+        firstTime
+      />
     </Wrapper>
   );
 }
