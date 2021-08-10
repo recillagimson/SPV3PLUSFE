@@ -19,8 +19,7 @@ import InputTextWrapper from 'app/components/Elements/InputTextWrapper';
 import Grid from 'app/components/Elements/Grid';
 import Card from 'app/components/Elements/Card/Card';
 
-import { UserProfileState } from 'types/Default';
-import { selectLoggedInName, selectUser } from 'app/App/slice/selectors';
+import { selectUser } from 'app/App/slice/selectors';
 
 // From this folder
 import Wrapper from './Wrapper';
@@ -38,8 +37,7 @@ export function GenerateQR() {
   // const error: any = useSelector(selectError);
   const success: any = useSelector(selectData);
 
-  const profile: boolean | UserProfileState = useSelector(selectUser);
-  const loginName: string = useSelector(selectLoggedInName);
+  const profile: any = useSelector(selectUser);
   const [amount, setAmount] = React.useState({
     value: '',
     error: false,
@@ -194,7 +192,13 @@ export function GenerateQR() {
                         : ''}
                     </H3>
                     <p style={{ margin: '0 0 20px' }}>
-                      {loginName && replaceFirst7(loginName)}
+                      {profile &&
+                        Object.keys(profile).length > 0 &&
+                        profile.user_account &&
+                        replaceFirst7(
+                          profile.user_account.mobile_number ||
+                            profile.user_account.email,
+                        )}
                     </p>
                   </span>
                   <Grid

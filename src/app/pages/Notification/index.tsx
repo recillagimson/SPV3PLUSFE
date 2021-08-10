@@ -80,6 +80,7 @@ export function Notifications() {
       <Box
         title="Notifications"
         titleBorder
+        withPadding
         // titleAction={
         //   <>
         //     {selectedNotif ? (
@@ -101,7 +102,7 @@ export function Notifications() {
         //   </>
         // }
       >
-        <div style={{ padding: '25px' }}>{renderNotif(notifications)}</div>
+        <div>{renderNotif(notifications)}</div>
       </Box>
     </ProtectedContent>
   );

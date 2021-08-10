@@ -59,6 +59,7 @@ export default function NotificationMessage({ data, isSelected }) {
           fontSize: '14px',
           color: StyleConstants.MAIN_TEXT,
           overflow: 'hidden',
+          padding: '10px 0',
         }}
       >
         {data.description}
@@ -91,7 +92,7 @@ export default function NotificationMessage({ data, isSelected }) {
           style={{
             color: '#A9B1B8',
             fontSize: '12px',
-            margin: 'px 0',
+            margin: '0',
           }}
         >
           {dateFormater(created_at)}
