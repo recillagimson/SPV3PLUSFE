@@ -1078,7 +1078,9 @@ export default function UserProfileForm({
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
-          <H3 margin="15px 0 10px">Successfully updated!</H3>
+          <H3 margin="15px 0 10px">
+            Successfully {firstTime ? 'created' : 'updated'}!
+          </H3>
           <p>
             You have successfully {firstTime ? 'created' : 'updated'} your
             account information.
