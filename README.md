@@ -103,4 +103,3 @@ v1.0.4
 
 - Send Money
   - Message Field maximum character length changed to 60 in line with the BE
-  - Added limit on values length in the Amount field

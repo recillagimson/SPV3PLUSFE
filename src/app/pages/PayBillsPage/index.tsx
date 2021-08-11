@@ -535,8 +535,8 @@ export function PayBillsPage(props) {
                 Close
               </Button>
               <S.ConfirmationMessage>
-                "You will receive a sms notification for your confirmed
-                transaction".
+                "You will receive an SMS notification for your confirmed
+                transaction"
               </S.ConfirmationMessage>
             </div>
           </S.DetailsWrapper>
