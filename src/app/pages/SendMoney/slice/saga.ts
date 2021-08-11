@@ -66,13 +66,6 @@ function* validateSendMoney() {
       if (decryptData) {
         yield put(actions.getValidateSuccess(decryptData));
       }
-    } else {
-      yield put(
-        actions.getValidateError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
     }
   } catch (err) {
     if (err && err.response && err.response.status === 422) {
@@ -82,6 +75,9 @@ function* validateSendMoney() {
         ...body,
       };
       yield put(actions.getValidateError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getValidateReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getValidateReset());
@@ -144,13 +140,6 @@ function* getSendMoney() {
         yield put(actions.getFetchSuccess(decryptData));
         analytics.logEvent(events.sendMoney);
       }
-    } else {
-      yield put(
-        actions.getFetchError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
     }
   } catch (err) {
     if (err && err.response && err.response.status === 422) {
@@ -160,6 +149,9 @@ function* getSendMoney() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getFetchReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getValidateReset());
@@ -216,13 +208,6 @@ function* generateCode() {
       if (decryptData) {
         yield put(actions.getGenerateSuccess(true));
       }
-    } else {
-      yield put(
-        actions.getGenerateError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
     }
   } catch (err) {
     if (err && err.response && err.response.status === 422) {
@@ -232,6 +217,9 @@ function* generateCode() {
         ...body,
       };
       yield put(actions.getGenerateError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getGenerateReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getGenerateReset());

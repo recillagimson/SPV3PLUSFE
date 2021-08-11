@@ -38,6 +38,8 @@ Start Coding!
 
 ### Release notes
 
+v1.0.1
+
 - Login / Registration / Forgot Password Modules
   - Update Profile of first time user
 - Notifications
@@ -76,3 +78,23 @@ Start Coding!
   - Terms and Conditions
 - Contact Us
 - Chat Plugin Integration
+
+v1.0.2
+
+- Fixes on some bugs
+- Added sentry error logging
+- Fix fetching of remote config
+
+v1.0.3
+
+- Fix send to bank review page UI display on details
+- Fix Send to Bank Total amount display with service fee
+- Fix Verify OTP message where the OTP was sent (either Email or Mobile Number)
+- Error display on changing password or pin
+- Modified RegEx for validating number that causes bug on Safari browser
+- Update Profile Nationality and Country dropdown fix
+- Buy load proper handling of error messages from API
+- Added catching of error 500 on API calls
+- Paybills (404) Fix
+- Contact Us icon (sidebar) fix correct size
+- Fix transaction history date display

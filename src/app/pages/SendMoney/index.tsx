@@ -1,18 +1,12 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-// import { Redirect } from 'react-router-dom';
 import { DateTime } from 'luxon';
 import { useSelector, useDispatch } from 'react-redux';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
 import Loading from 'app/components/Loading';
-import H1 from 'app/components/Elements/H1';
-// import H2 from 'app/components/Elements/H2';
 import H3 from 'app/components/Elements/H3';
-// import H5 from 'app/components/Elements/H5';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
@@ -23,7 +17,6 @@ import Dialog from 'app/components/Dialog';
 import Avatar from 'app/components/Elements/Avatar';
 import Flex from 'app/components/Elements/Flex';
 import Textarea from 'app/components/Elements/Textarea';
-import CircleIndicator from 'app/components/Elements/CircleIndicator';
 // import Ratio from 'app/components/Elements/Ratio';
 import InputTextWrapper from 'app/components/Elements/InputTextWrapper';
 // import IconButton from 'app/components/Elements/IconButton';
@@ -497,19 +490,6 @@ export function SendMoney() {
                   <Grid item md={8}>
                     <Flex justifyContent="center">
                       <Field>
-                        <div className="text-center">
-                          <CircleIndicator size="large">
-                            <FontAwesomeIcon icon="lock" />
-                          </CircleIndicator>
-                          <H1 className="text-center" margin="20px 0 8px">
-                            Enter 4-Digit one time PIN
-                          </H1>
-
-                          <p>
-                            The one time pin code has been sent to your mobile
-                            number
-                          </p>
-                        </div>
                         {/* <PinInput
                         length={4}
                         onChange={p => setOTP({ value: p, error: false })}

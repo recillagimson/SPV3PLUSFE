@@ -171,7 +171,9 @@ export function* getLoggedInUserProfile() {
         decryptPhrase.passPhrase,
       );
 
-      yield put(actions.getUserProfile(decryptData));
+      if (decryptData) {
+        yield put(actions.getUserProfile(decryptData));
+      }
       return decryptData || true;
     }
   } catch (err) {

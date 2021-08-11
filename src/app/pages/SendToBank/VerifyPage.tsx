@@ -38,6 +38,7 @@ export function VerifyOTPPage(props) {
   const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
+
   const apiErrors: any = useSelector(selectError);
   const formData = useSelector(selectFormData);
   const validateTransaction = useSelector(selectValidateTransaction);
@@ -128,13 +129,6 @@ export function VerifyOTPPage(props) {
         width="400px"
         margin="20px auto"
       >
-        <CircleIndicator size="medium" color="primary">
-          <FontAwesomeIcon icon="lock" />
-        </CircleIndicator>
-        <H3 margin="30px 0 10px">Enter 4-Digit one time PIN</H3>
-        <p className="pin-description">
-          The one time pin code has been sent to your mobile number
-        </p>
         <VerifyOTP
           apiURL="/auth/verify/otp"
           otpType="send2bank"

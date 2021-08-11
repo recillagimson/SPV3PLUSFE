@@ -126,6 +126,8 @@ export function doSignOut() {
 
 /**
  * Format number with commas
+ * Changes: Removed the RegEx which causes error on Safari Browser
+ *          Replaced with an updated toLocaleString
  * @param {number}  num       number to format
  *
  * @returns                   returns the formatted string number
@@ -133,10 +135,11 @@ export function doSignOut() {
 export function numberCommas(num: number | string = 0): string {
   const n = typeof num === 'number' ? num.toString() : num;
 
-  return parseFloat(n)
-    .toFixed(2) // add a two digit
-    .toString() // convert to string
-    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ','); // add commas
+  // Number will converted with fixed 2 decimal and converted to number with commas using toLocaleString and return it
+  return Number(parseFloat(n).toFixed(2)).toLocaleString('en', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 /**

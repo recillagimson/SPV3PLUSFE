@@ -16,6 +16,7 @@ import {
   selectValidateRequest,
   selectPayRequest,
 } from './selectors';
+import { appActions } from 'app/App/slice';
 
 function* getLoadProducts() {
   yield delay(500);
@@ -63,13 +64,6 @@ function* getLoadProducts() {
       if (decryptData) {
         yield put(actions.getFetchSuccess(decryptData));
       }
-    } else {
-      yield put(
-        actions.getFetchError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
     }
   } catch (err) {
     if (err && err.response && err.response.status === 422) {
@@ -79,6 +73,12 @@ function* getLoadProducts() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getFetchReset());
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getFetchReset());
     } else {
       yield put(actions.getFetchError(err));
     }
@@ -115,29 +115,8 @@ function* validateBuyLoad() {
 
   try {
     const apirequest = yield call(request, requestURL, options);
-    if (apirequest) {
-      // request decryption passphrase
-      let decryptPhrase: PassphraseState = yield call(
-        getResponsePassphrase,
-        apirequest.data.id,
-      );
-
-      // decrypt payload data
-      let decryptData = spdCrypto.decrypt(
-        apirequest.data.payload,
-        decryptPhrase.passPhrase,
-      );
-
-      if (decryptData) {
-        yield put(actions.getValidateSuccess(true));
-      }
-    } else {
-      yield put(
-        actions.getValidateError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
+    if (apirequest && apirequest.data) {
+      yield put(actions.getValidateSuccess(true));
     }
   } catch (err) {
     if (err && err.response && err.response.status === 422) {
@@ -147,6 +126,12 @@ function* validateBuyLoad() {
         ...body,
       };
       yield put(actions.getValidateError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getValidateReset());
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getValidateReset());
     } else {
       yield put(actions.getValidateError(err));
     }
@@ -199,13 +184,6 @@ function* payLoad() {
       if (decryptData) {
         yield put(actions.getPaySuccess(decryptData));
       }
-    } else {
-      yield put(
-        actions.getPayError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
     }
   } catch (err) {
     if (err && err.response && err.response.status === 422) {
@@ -215,6 +193,12 @@ function* payLoad() {
         ...body,
       };
       yield put(actions.getPayError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getPayReset());
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getPayReset());
     } else {
       yield put(actions.getPayError(err));
     }
