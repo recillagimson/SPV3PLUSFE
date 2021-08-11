@@ -248,7 +248,7 @@ export function GenerateQR() {
               >
                 <div>Amount Requested</div>
                 <div style={{ justifySelf: 'end' }}>
-                  PHP {amount.value !== '' ? numberCommas(amount.value, 9) : 0}
+                  PHP {amount.value !== '' ? numberCommas(amount.value) : 0}
                 </div>
               </div>
             </Field>
