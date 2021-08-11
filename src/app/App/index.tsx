@@ -44,6 +44,7 @@ import { AddMoneyViaBPI } from 'app/pages/AddMoneyViaBPIPage/Loadable';
 // import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoadPage/Loadable';
+import { BuyEpins } from 'app/pages/BuyEpinPage/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import {
   TransactionHistoryPage,
@@ -304,6 +305,7 @@ export function App() {
             <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
+            <PrivateRoute path="/buy-epins" component={BuyEpins} />
             <PrivateRoute exact path="/profile" component={UserProfilePage} />
             <PrivateRoute
               exact

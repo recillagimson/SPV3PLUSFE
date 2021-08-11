@@ -15,6 +15,7 @@ import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoadPage/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
+import { BuyEpins } from 'app/pages/BuyEpinPage/Loadable';
 
 type RouteProps = {
   path: string;
@@ -77,6 +78,13 @@ const pageRoutes: RouteProps = [
   {
     path: '/buyload',
     component: BuyLoad,
+    secured: true,
+    enabled: true,
+    exact: false,
+  },
+  {
+    path: '/buy-epins',
+    component: BuyEpins,
     secured: true,
     enabled: true,
     exact: false,
