@@ -5,6 +5,7 @@ import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { TokenState, UserProfileState } from 'types/Default';
 import { GlobalState } from './types';
 import { appSaga } from './saga';
+import { validateEmail } from 'app/components/Helpers';
 
 export const initialState: GlobalState = {
   loading: false,
@@ -14,6 +15,10 @@ export const initialState: GlobalState = {
   login: '',
   user: false,
   userToken: '',
+  otp: {
+    isEmail: false,
+    value: '',
+  },
   isAuthenticated: false,
   token: '',
   isUnauthenticated: false,
@@ -53,7 +58,17 @@ const slice = createSlice({
       state.user = action.payload;
     },
     getSaveLoginName(state, action: PayloadAction<string>) {
+      // write the proper OTP details for displaying of messages in verify otp
+      // as per BE, OTP sending will be based on the login name
+
+      const u = action.payload; // user details
+      let otp = {
+        isEmail: validateEmail(u),
+        value: u,
+      };
+
       state.login = action.payload;
+      state.otp = otp;
     },
     getUserToken(state, action: PayloadAction<TokenState>) {
       state.userToken = action.payload;

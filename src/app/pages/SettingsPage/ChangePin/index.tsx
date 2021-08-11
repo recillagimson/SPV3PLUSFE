@@ -94,6 +94,7 @@ export function SettingsChangePinPage() {
   React.useEffect(() => {
     if (validateError && validateError.length > 0) {
       apiErrorMessage(JSON.parse(validateError));
+      dispatch(actions.getValidateReset());
     }
 
     if (validateSuccess) {
@@ -206,13 +207,8 @@ export function SettingsChangePinPage() {
       return;
     }
 
-    if (!err.response && (!err.code || err.code !== 422)) {
+    if (!err.response && !err.code) {
       setPinError(err.message);
-    }
-
-    if (validateSuccess) {
-      setShowForm(false);
-      setShowVerify(true);
     }
   };
 
@@ -530,15 +526,6 @@ export function SettingsChangePinPage() {
             className="text-center"
             style={{ width: '400px', margin: '0 auto', padding: '0 40px' }}
           >
-            <CircleIndicator size="medium" color="primary">
-              <FontAwesomeIcon icon="lock" />
-            </CircleIndicator>
-            <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
-            <p className="f-small">
-              The one time pin code has been sent to{' '}
-              {validateEmail(loginName) ? 'email' : 'mobile number'}
-            </p>
-
             <VerifyOTP onSuccess={onSubmitPassword} apiURL="/user/pin/verify" />
 
             <Field className="text-center f-small" margin="20px 0 10px">

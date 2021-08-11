@@ -295,11 +295,6 @@ export function UpdateEmailPage() {
             className="text-center"
             style={{ maxWidth: 380, margin: '0 auto' }}
           >
-            <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
-            <p className="f-small">
-              The one time pin code has been sent to your mobile number
-            </p>
-
             <VerifyOTP
               onSuccess={onCodeVerified}
               otpType="update_email"

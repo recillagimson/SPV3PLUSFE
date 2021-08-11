@@ -1,6 +1,6 @@
 import * as React from 'react';
+
 import VerifyOTP from 'app/components/VerifyOTP';
-import H3 from 'app/components/Elements/H3';
 import Logo from 'app/components/Assets/Logo';
 import Button from 'app/components/Elements/Button';
 import Dialog from 'app/components/Dialog';
@@ -34,6 +34,7 @@ export default function OTP() {
   const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
+
   const success = useSelector(selectSuccessToBank);
   const formData = useSelector(selectFormData);
   const validateTransaction = useSelector(selectValidateTransaction);
@@ -104,13 +105,6 @@ export default function OTP() {
         width="400px"
         margin="20px auto"
       >
-        <CircleIndicator size="medium" color="primary">
-          <FontAwesomeIcon icon="lock" />
-        </CircleIndicator>
-        <H3 margin="30px 0 10px">Enter 4-Digit one time PIN</H3>
-        <p className="pin-description">
-          The one time pin code has been sent to your mobile number
-        </p>
         <VerifyOTP
           apiURL="/auth/verify/otp"
           otpType="send2bank"

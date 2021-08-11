@@ -56,6 +56,14 @@ export const selectUserToken = createSelector(
   subState => subState.userToken,
 );
 
+/**
+ * Use to display the proper OTP message
+ */
+export const selectOTPDetails = createSelector(
+  [selectDomain],
+  subState => subState.otp,
+);
+
 export const selectSessionExpired = createSelector(
   [selectDomain],
   subState => subState.isSessionExpired,

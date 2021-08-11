@@ -52,6 +52,7 @@ import * as S from './SendToBank.style';
 // Assets
 import InstapayLogo from 'app/components/Assets/instapay.svg';
 import PesonetLogo from 'app/components/Assets/pesonet.svg';
+import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
 export function SendToBank() {
   const history = useHistory();
@@ -457,13 +458,13 @@ export function SendToBank() {
   };
 
   return (
-    <React.Fragment>
+    <ProtectedContent>
       <Helmet title="Send To Bank" />
       <Box title={renderTitle(steps)} titleBorder={true}>
         <ComponentLoading isLoading={loading}>
           {renderSteps(steps)}
         </ComponentLoading>
       </Box>
-    </React.Fragment>
+    </ProtectedContent>
   );
 }

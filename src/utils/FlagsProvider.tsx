@@ -20,11 +20,26 @@ export default function FlagsProvider({
   defaultFlags: {};
   children: any;
 }) {
+  const [refetch, setRefetch] = React.useState(false);
   const [flags, setFlags] = React.useState(defaultFlags);
 
   React.useEffect(() => {
     // remoteConfig.defaultConfig = defaults;
 
+    getRemoteConfig();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (refetch) {
+      setTimeout(() => {
+        getRemoteConfig();
+      }, 5000);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refetch]);
+
+  const getRemoteConfig = () => {
     remoteConfig
       .fetchAndActivate()
       .then(activated => {
@@ -40,10 +55,10 @@ export default function FlagsProvider({
         }
 
         setFlags(newFlags);
+        setRefetch(false);
       })
-      .catch(error => console.error(error));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      .catch(error => setRefetch(true));
+  };
 
   return (
     <FlagsContext.Provider value={flags}>{children}</FlagsContext.Provider>

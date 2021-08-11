@@ -72,7 +72,7 @@ function* getLogin() {
       setCookie('spv_uat_hmc', decryptPhrase.passPhrase, 0);
       // encrypt email/mobile used for logging and store in cookie for session persist
       const encryptUsername = yield spdCrypto.encrypt(
-        JSON.stringify(payload.email ? payload.email : payload.mobile),
+        JSON.stringify(payload.email ? payload.email : payload.mobile_number),
         decryptPhrase.passPhrase,
       );
       setCookie('spv_uat_u', encryptUsername);
@@ -80,7 +80,7 @@ function* getLogin() {
       // write data in store state
       yield put(
         appActions.getSaveLoginName(
-          payload.email ? payload.email : payload.mobile,
+          payload.email ? payload.email : payload.mobile_number,
         ),
       );
       yield put(appActions.getUserToken(decryptData.user_token)); // write the new access token
@@ -117,6 +117,9 @@ function* getLogin() {
         ...body,
       };
       yield put(actions.getFetchError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getFetchReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
       yield put(actions.getFetchError({}));
@@ -170,6 +173,9 @@ function* getResendActivationCode() {
         ...body,
       };
       yield put(actions.getResendCodeError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getResendCodeReset());
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsUnauthenticated(true)); // client token is expired do not use when use is login, instead use session expired
       yield put(actions.getResendCodeError({}));

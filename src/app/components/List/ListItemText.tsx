@@ -20,9 +20,10 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 interface TypographyProps extends React.HTMLAttributes<any> {
   label?: string;
-  primary: string;
+  primary: string | React.ReactNode;
   secondary?: string;
   caption?: string;
+  captionClass?: string;
   small?: boolean;
   align?: 'left' | 'right' | 'center';
   bold?: boolean;
@@ -100,6 +101,7 @@ export default function TypographyComponent({
   primary,
   secondary,
   caption,
+  captionClass,
   small,
   align,
   bold,
@@ -125,8 +127,10 @@ export default function TypographyComponent({
           {primary}
         </Primary>
       )}
-      {Boolean(caption) && <Caption>{caption}</Caption>}
       {Boolean(secondary) && <Secondary>{secondary}</Secondary>}
+      {Boolean(caption) && (
+        <Caption className={captionClass || undefined}>{caption}</Caption>
+      )}
       {icon && <FontAwesomeIcon icon={iconName} />}
     </Wrapper>
   );

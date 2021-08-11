@@ -124,10 +124,14 @@ export const SendCTA = styled.div`
   margin-right: 30px;
   margin-bottom: 30px;
   height: 250px;
-  width: 400px;
+  width: 390px;
 
   display: flex;
   justify-content: space-between;
+
+  &:nth-child(2n) {
+    margin-right: 0;
+  }
 `;
 
 export const SendCTAContent = styled.div`
@@ -260,6 +264,11 @@ export const ReviewListItem = styled.div`
     font-style: normal;
     line-height: 21px;
     margin: 0;
+    width: 49%;
+
+    &:last-child {
+      text-align: right;
+    }
   }
 `;
 

@@ -73,6 +73,9 @@ function* getBillers() {
         ...body,
       };
       yield put(actions.getBillersError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getBillersError({}));
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.getBillersError({}));
@@ -143,6 +146,9 @@ function* validatePaybills() {
         ...body,
       };
       yield put(actions.validatePayBillsError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.validatePayBillsError({}));
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.validatePayBillsError({}));
@@ -210,6 +216,9 @@ function* createPayBills() {
         ...body,
       };
       yield put(actions.createPayBillsError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.createPayBillsError({}));
     } else if (err && err.response && err.response.status === 401) {
       yield put(appActions.getIsSessionExpired(true));
       yield put(actions.createPayBillsError({}));
