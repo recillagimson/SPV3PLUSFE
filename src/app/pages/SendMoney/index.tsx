@@ -374,10 +374,6 @@ export function SendMoney() {
         </Helmet>
 
         <Wrapper>
-          {validateLoading && <Loading position="absolute" />}
-          {generateLoading && <Loading position="absolute" />}
-          {loading && <Loading position="absolute" />}
-
           <Card
             title={
               isReview
@@ -390,6 +386,10 @@ export function SendMoney() {
             // footer={!isReview ? action : undefined}
             size="medium"
           >
+            {validateLoading && <Loading position="absolute" />}
+            {generateLoading && <Loading position="absolute" />}
+            {loading && <Loading position="absolute" />}
+
             {!isReview && !isVerification && (
               <>
                 <Field>

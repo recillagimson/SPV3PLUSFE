@@ -98,3 +98,10 @@ v1.0.3
 - Paybills (404) Fix
 - Contact Us icon (sidebar) fix correct size
 - Fix transaction history date display
+
+v1.0.4
+
+- Send Money (VVBT-236)
+  - Message Field maximum character length changed to 60 in line with the BE
+- Fix copy of "a sms" replaced to "an SMS" in the transaction receipts UI (VVBT-260)
+-
