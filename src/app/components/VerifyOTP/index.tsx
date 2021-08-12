@@ -145,12 +145,12 @@ export default function VerifyOTPComponent({
       }
     }
 
-    if (!err.code && err.response && err.response.status !== 422) {
+    if (!err.code && err.response) {
       setApiError(err.response.statusText);
       return;
     }
 
-    if (!err.response && (!err.code || err.code !== 422)) {
+    if (!err.code && !err.response) {
       setApiError(err.message);
     }
   };
