@@ -477,9 +477,9 @@ export function SendMoney() {
                     onChange={e =>
                       setMessage({ value: e.currentTarget.value, error: false })
                     }
-                    maxLength={64}
+                    maxLength={60}
                   ></Textarea>
-                  <small>{message.value.length}/64</small>
+                  <small>{message.value.length}/60</small>
                 </Field>
               </>
             )}

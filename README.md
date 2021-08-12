@@ -104,4 +104,4 @@ v1.0.4
 - Send Money (VVBT-236)
   - Message Field maximum character length changed to 60 in line with the BE
 - Fix copy of "a sms" replaced to "an SMS" in the transaction receipts UI (VVBT-260)
--
+- Generate QR Code, fix issue of input type="number" in Firefox browser (VVBT-244)

@@ -1503,12 +1503,6 @@ export default function UserProfileForm({
             className="text-center"
             style={{ maxWidth: 380, margin: '0 auto' }}
           >
-            <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
-            <p className="f-small">
-              A One-Time PIN Code has been sent to your{' '}
-              {isEmail ? 'email address' : 'mobile number'}
-            </p>
-
             <VerifyOTP
               apiURL="/auth/verify/otp"
               otpType="update_profile"
