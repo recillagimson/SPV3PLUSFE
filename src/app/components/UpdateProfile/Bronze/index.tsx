@@ -513,11 +513,6 @@ export default function UserProfileForm({
     }
   }
 
-  let isEmail = false;
-  if (profile && profile.user_account && profile.user_account.email) {
-    isEmail = true;
-  }
-
   return (
     <>
       {isLoading && <Loading position="fixed" />}
