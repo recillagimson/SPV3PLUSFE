@@ -7,6 +7,7 @@ import { RegisterState } from 'app/pages/RegisterPage/slice/types';
 import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
 import { SendMoneyState } from 'app/pages/SendMoney/slice/types';
 import { GenerateQRState } from 'app/pages/GenerateQR/slice/types';
+import { BuyEpinsState } from 'app/pages/BuyEpinPage/slice/types';
 import { BuyLoadState } from 'app/pages/BuyLoadPage/slice/types';
 import { ProfileState } from 'app/pages/ProfilePage/slice/types';
 import { NotificationsState } from 'app/pages/Notification/slice/types';
@@ -15,6 +16,7 @@ import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice
 import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 import { DashboardState } from 'app/pages/DashboardPage/slice/types';
 import { TransactionHistoryState } from 'app/pages/TransactionHistoryPage/slice/types';
+import { ForeignExchangeState } from 'app/pages/ForeignExchangePage/slice/types';
 import { PayBillsState } from 'app/pages/PayBillsPage/slice/types';
 import { TierUpgradeState } from 'app/pages/TierUpgradePage/slice/types';
 import { SendToBankUBPState } from 'app/pages/SendToBankUBP/slice/types';
@@ -40,6 +42,7 @@ export interface RootState {
   updatePassword?: UpdatePasswordState;
   sendMoney?: SendMoneyState;
   generateQR?: GenerateQRState;
+  buyEpins?: BuyEpinsState;
   buyLoad?: BuyLoadState;
   profile?: ProfileState;
   updateProfile?: ProfileState;
@@ -49,6 +52,7 @@ export interface RootState {
   termsAndConditions?: TermsAndConditions;
   addMoneyDragonpay: AddMoneyDragonpayState;
   transactionHistory?: TransactionHistoryState;
+  foreignExchange?: ForeignExchangeState;
   changePassword?: ChangePasswordState;
   changePin?: ChangePinState;
   dashboard?: DashboardState;

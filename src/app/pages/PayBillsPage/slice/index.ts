@@ -41,6 +41,9 @@ const slice = createSlice({
     setBillerCode(state, action: PayloadAction<string>) {
       state.billerCode = action.payload;
     },
+    setFormData(state, action: PayloadAction<object>) {
+      state.formData = action.payload;
+    },
     validatePayBillsLoading(state, action: PayloadAction<object>) {
       state.loading = true;
       state.error = {};

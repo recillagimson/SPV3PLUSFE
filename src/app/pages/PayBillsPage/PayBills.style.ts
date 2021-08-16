@@ -2,6 +2,17 @@ import styled, { css } from 'styled-components';
 
 import { StyleConstants } from 'styles/StyleConstants';
 
+export const Container = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & > .bayad-center {
+    margin-top: 20px;
+    width: 100px;
+  }
+`;
+
 export const Wrapper = styled.section<{
   isBoolean?: boolean;
 }>`
@@ -168,14 +179,26 @@ export const ReviewContainer = styled.div<{
     line-height: 36px;
     text-align: center;
   }
+
+  .mecor-message {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 21px;
+    margin: 0 0 25px;
+  }
 `;
 
 export const ReviewTotal = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-self: center;
   margin: 40px 0 0;
   width: 100%;
+
+  .bayad-center {
+    width: 100px;
+  }
 
   p {
     margin: 0;
@@ -225,6 +248,10 @@ export const ReviewListItem = styled.div`
     font-style: normal;
     line-height: 21px;
     margin: 0;
+
+    &:first-child {
+      margin-right: 5px;
+    }
   }
 `;
 
@@ -284,5 +311,58 @@ export const CuttedImageWrapper = styled.img`
     position: absolute;
     bottom: -7px;
     width: 100%;
+  }
+`;
+
+export const NoteWrapper = styled.div`
+  margin-top: 40px;
+
+  p {
+    font-size: 12px;
+    font-weight: normal;
+    margin: 0;
+
+    span {
+      color: ${StyleConstants.LABEL_TEXT};
+      margin-left: 5px;
+    }
+  }
+
+  .important {
+    color: ${StyleConstants.NEGATIVE};
+    margin-bottom: 20px;
+  }
+`;
+
+export const DialogActions = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    margin-top: 20px;
+
+    &[color='primary'] {
+      margin-right: 20px;
+    }
+  }
+`;
+
+export const DisconnectionMessage = styled.p`
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+`;
+
+export const PayBillCTAContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  img {
+    width: 100px;
+  }
+
+  button {
+    margin-top: 20px;
   }
 `;
