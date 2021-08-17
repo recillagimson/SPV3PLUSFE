@@ -134,6 +134,28 @@ export function PayBillsPage() {
         }
       }
 
+      if (
+        apiErrors &&
+        apiErrors?.provider_error?.length &&
+        apiErrors?.code === 422
+      ) {
+        const provider_error =
+          apiErrors?.provider_error.length && apiErrors?.provider_error[0];
+        if (provider_error?.data) {
+          const payloadForMECOR: any = {
+            validationNumber: provider_error?.data?.validationNumber,
+          };
+          dispatch(actions.validatePayBillsSuccess(payloadForMECOR));
+          setDisconnectionDialog(provider_error?.data?.message);
+          setDisconnectionCode(provider_error?.data?.code);
+        }
+
+        if (provider_error?.details) {
+          setDisconnectionDialog(provider_error?.details?.message);
+          setDisconnectionCode(provider_error?.details?.code);
+        }
+      }
+
       if (transactionFailed) setDialogError(true);
     }
 
