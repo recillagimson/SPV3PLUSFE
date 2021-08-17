@@ -1,15 +1,18 @@
 import { parseToNumber, numberWithCommas } from 'utils/common';
 
 export const bankListData = transactionHistoryDetailsData => {
-  const fullName = `${
-    transactionHistoryDetailsData?.transactable?.receiver_details?.first_name
-  } ${
-    transactionHistoryDetailsData?.transactable?.receiver_details?.last_name ||
-    ''
-  } ${
-    transactionHistoryDetailsData?.transactable?.receiver_details
-      ?.middle_name || ''
-  }`;
+  let fullName = transactionHistoryDetailsData?.transactable?.account_name;
+  if (transactionHistoryDetailsData?.transactable?.receiver_details) {
+    fullName = `${
+      transactionHistoryDetailsData?.transactable?.receiver_details?.first_name
+    } ${
+      transactionHistoryDetailsData?.transactable?.receiver_details
+        ?.last_name || ''
+    } ${
+      transactionHistoryDetailsData?.transactable?.receiver_details
+        ?.middle_name || ''
+    }`;
+  }
   return [
     {
       label: 'Bank',
@@ -72,6 +75,8 @@ export const receivedMoneyListData = transactionHistoryDetailsData => {
       label: 'Mobile Number',
       value: transactionHistoryDetailsData?.transactable?.sender
         ? transactionHistoryDetailsData?.transactable?.sender.mobile_number
+        : transactionHistoryDetailsData?.transactable?.receiver
+        ? transactionHistoryDetailsData?.transactable?.receiver.mobile_number
         : 'None',
     },
     {
@@ -130,6 +135,38 @@ export const loadListtData = transactionHistoryDetailsData => {
     {
       label: 'Message',
       value: transactionHistoryDetailsData?.transactable?.message || 'None',
+    },
+  ];
+};
+
+export const paybillsData = transactionHistoryDetailsData => {
+  return [
+    {
+      label: 'Billers Name',
+      value: transactionHistoryDetailsData?.transactable?.billers_name,
+    },
+    {
+      label: 'Account Number',
+      value: transactionHistoryDetailsData?.transactable?.account_number,
+    },
+    {
+      label: 'Biller Reference Number',
+      value:
+        transactionHistoryDetailsData?.transactable?.biller_reference_number,
+    },
+    {
+      label: 'Message',
+      value: transactionHistoryDetailsData?.transactable?.message || 'None',
+    },
+    {
+      label: 'Amount',
+      value: `PHP ${numberWithCommas(
+        transactionHistoryDetailsData?.transactable?.total_amount,
+      )}`,
+    },
+    {
+      label: 'Transaction Number',
+      value: transactionHistoryDetailsData?.transactable?.reference_number,
     },
   ];
 };

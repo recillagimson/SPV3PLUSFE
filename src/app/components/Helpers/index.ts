@@ -132,13 +132,16 @@ export function doSignOut() {
  *
  * @returns                   returns the formatted string number
  */
-export function numberCommas(num: number | string = 0): string {
+export function numberCommas(
+  num: number | string = 0,
+  digit: number = 2,
+): string {
   const n = typeof num === 'number' ? num.toString() : num;
 
   // Number will converted with fixed 2 decimal and converted to number with commas using toLocaleString and return it
-  return Number(parseFloat(n).toFixed(2)).toLocaleString('en', {
+  return Number(parseFloat(n).toFixed(digit)).toLocaleString('en', {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: digit,
   });
 }
 

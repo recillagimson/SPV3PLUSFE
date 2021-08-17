@@ -9,9 +9,10 @@ export const parseToNumber = (val: any): any => {
   }
 };
 
-export const numberWithCommas = (val: string) => {
+export const numberWithCommas = (val: number | string) => {
+  const n = typeof val === 'number' ? val.toString() : val;
   // Number will converted with fixed 2 decimal and converted to number with commas using toLocaleString and return it
-  return Number(parseFloat(val).toFixed(2)).toLocaleString('en', {
+  return Number(parseFloat(n).toFixed(2)).toLocaleString('en', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });

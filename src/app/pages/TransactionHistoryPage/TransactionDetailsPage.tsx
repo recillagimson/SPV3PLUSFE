@@ -29,6 +29,7 @@ import {
   receivedMoneyListData,
   dragonpayListData,
   loadListtData,
+  paybillsData,
 } from './helpers';
 
 // Assets
@@ -81,6 +82,11 @@ function TransactionHistoryDetailsPage(props) {
       'Load',
     ) !== -1;
 
+  const isPayBillsTransaction =
+    transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
+      'Bills Payment',
+    ) !== -1;
+
   const renderListItems = () => {
     if (isBankTransaction) return bankListData(transactionHistoryDetailsData);
     if (isReceiveMoneyTransaction || isSendMoneyTransaction)
@@ -88,6 +94,8 @@ function TransactionHistoryDetailsPage(props) {
     if (isDragonpayTransaction)
       return dragonpayListData(transactionHistoryDetailsData);
     if (isLoadTransaction) return loadListtData(transactionHistoryDetailsData);
+    if (isPayBillsTransaction)
+      return paybillsData(transactionHistoryDetailsData);
 
     return [];
   };

@@ -98,3 +98,16 @@ v1.0.3
 - Paybills (404) Fix
 - Contact Us icon (sidebar) fix correct size
 - Fix transaction history date display
+
+v1.0.4
+
+- Send Money
+  - Message Field maximum character length changed to 60 in line with the BE (VVBT-281 & VVBT-236)
+  - Redirect to dashboard on successfull transaction (VVBT-284)
+- Fix copy of "a sms" replaced to "an SMS" in the transaction receipts UI (VVBT-260)
+- Generate QR Code, fix issue of input type="number" in Firefox browser (VVBT-244)
+- UI Fix for Verify OTP on Profile Update (duplicate message) (VVBT-283)
+- Verify OTP proper message "sent to your email or sent to your mobile" (VVBT-235)
+- First time user profile creation - Successfull message (VVBT-229)
+- Transaction History additional information on Paybills details (VVBT-232)
+- Paybills MECOR changes, added BayadPartner Logo (BayadCenter)

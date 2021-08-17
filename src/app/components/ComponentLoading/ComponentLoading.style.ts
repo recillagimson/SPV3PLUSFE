@@ -17,6 +17,6 @@ export const Wrapper = styled.div<{
   }
 
   img {
-    width: 300px;
+    width: 120px;
   }
 `;
