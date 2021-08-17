@@ -2,6 +2,17 @@ import styled, { css } from 'styled-components';
 
 import { StyleConstants } from 'styles/StyleConstants';
 
+export const Container = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & > .bayad-center {
+    margin-top: 20px;
+    width: 100px;
+  }
+`;
+
 export const Wrapper = styled.section<{
   isBoolean?: boolean;
 }>`
@@ -181,8 +192,13 @@ export const ReviewTotal = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-self: center;
   margin: 40px 0 0;
   width: 100%;
+
+  .bayad-center {
+    width: 100px;
+  }
 
   p {
     margin: 0;
@@ -335,4 +351,18 @@ export const DisconnectionMessage = styled.p`
   font-size: 14px;
   font-weight: 400;
   line-height: 21px;
+`;
+
+export const PayBillCTAContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  img {
+    width: 100px;
+  }
+
+  button {
+    margin-top: 20px;
+  }
 `;

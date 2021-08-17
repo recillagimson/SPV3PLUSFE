@@ -13,5 +13,14 @@
   Header set X-XSS-Protection "1; mode=block"
   Header always append X-Frame-Options SAMEORIGIN
   Header set X-Content-Type-Options nosniff
-  Header set Cache-Control "max-age=2592000, immutable"
+  Header set Cache-Control "no-cache, no-store, must-revalidate"
+  Header set Pragma "no-cache"
+  Header set Expires 0
 </IfModule>
+
+<FilesMatch "\.(css|flv|gif|ico|jpe|jpeg|jpg|mp3|mp4|png|pdf|swf|txt)$">
+  <IfModule mod_headers.c>
+    Header unset Cache-Control
+    Header set Cache-Control "max-age=31536000, must-revalidate"
+  </IfModule>
+</FilesMatch>

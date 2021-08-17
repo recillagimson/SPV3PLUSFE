@@ -246,6 +246,7 @@ export const disconnectionDialogLogo = val => {
     case 4:
     case 6:
     case 13:
+    case 26:
       return 'times';
     default:
       return 'check';
@@ -262,6 +263,7 @@ export const isPrimaryColorForDisconnection = val => {
     case 4:
     case 6:
     case 13:
+    case 26:
       return 'danger';
     default:
       return 'primary';
@@ -278,6 +280,7 @@ export const disconnectionTitleMessage = val => {
     case 4:
     case 6:
     case 13:
+    case 26:
       return 'Oops!';
     default:
       return 'Successful Payment';

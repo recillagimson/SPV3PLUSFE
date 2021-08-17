@@ -243,11 +243,15 @@ export const TransactionDetailsListItem = styled.li`
   p {
     font-size: 14px;
     font-weight: 400;
-    flex: 1;
     line-height: 21px;
     margin: 0;
 
+    &:first-child {
+      width: 160px;
+    }
+
     &:last-child {
+      flex: 1;
       font-weight: 600;
       text-align: right;
     }

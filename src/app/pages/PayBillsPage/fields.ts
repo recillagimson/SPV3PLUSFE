@@ -286,7 +286,7 @@ export const RENDER_FIELDS = code => {
         },
         {
           label: 'Due Date',
-          type: 'text',
+          type: 'date',
           name: 'otherInfo.DueDate',
           placeholder: '',
           required: true,
@@ -310,7 +310,7 @@ export const RENDER_FIELDS = code => {
         },
         {
           label: 'Due Date',
-          type: 'text',
+          type: 'date',
           name: 'due_date',
           placeholder: '',
           required: true,

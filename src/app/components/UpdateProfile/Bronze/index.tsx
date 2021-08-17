@@ -513,11 +513,6 @@ export default function UserProfileForm({
     }
   }
 
-  let isEmail = false;
-  if (profile && profile.user_account && profile.user_account.email) {
-    isEmail = true;
-  }
-
   return (
     <>
       {isLoading && <Loading position="fixed" />}
@@ -1016,12 +1011,6 @@ export default function UserProfileForm({
             className="text-center"
             style={{ maxWidth: 380, margin: '0 auto' }}
           >
-            <H3 margin="35px 0 10px">Enter 4-Digit one time PIN</H3>
-            <p className="f-small">
-              A One-Time PIN Code has been sent to your{' '}
-              {isEmail ? 'email address' : 'mobile number'}
-            </p>
-
             <VerifyOTP
               apiURL="/auth/verify/otp"
               otpType="update_profile"
@@ -1078,7 +1067,9 @@ export default function UserProfileForm({
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
-          <H3 margin="15px 0 10px">Successfully updated!</H3>
+          <H3 margin="15px 0 10px">
+            Successfully {firstTime ? 'created' : 'updated'}!
+          </H3>
           <p>
             You have successfully {firstTime ? 'created' : 'updated'} your
             account information.

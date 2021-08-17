@@ -74,7 +74,7 @@ export default function ReceiptComponent({
           Ok
         </Button>
         <span className="note">
-          You will receive a sms notification for your confirmed transaction
+          "You will receive an SMS notification for your confirmed transaction"
         </span>
       </div>
     </Wrapper>
