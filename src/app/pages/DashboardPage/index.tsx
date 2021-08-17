@@ -31,9 +31,11 @@ import SendMoney from 'app/components/Assets/SendMoney';
 import SendToBank from 'app/components/Assets/SendToBank';
 import PayBills from 'app/components/Assets/PayBills';
 import BuyLoad from 'app/components/Assets/BuyLoad';
+import BuyEPINS from 'app/components/Assets/BuyEPINS';
 import QRCode from 'app/components/Assets/QRCode';
 import QuickGuide from 'app/components/Assets/QuickGuide';
 // import Others from 'app/components/Assets/Others';
+import Forex from 'app/components/Assets/Forex';
 import NewsUpdate from 'app/components/Assets/NewsUpdate';
 import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
 import comingSoon from 'app/components/Assets/coming-soon.png';
@@ -285,6 +287,19 @@ export function DashboardPage() {
 
         <DashboardButton
           onClick={() => {
+            if (flags && !flags.buy_load_enabled) {
+              setIsComingSoon(true);
+            } else {
+              history.push('/buy-epins');
+            }
+          }}
+        >
+          <BuyEPINS />
+          Buy EPINS
+        </DashboardButton>
+
+        <DashboardButton
+          onClick={() => {
             if (flags && !flags.send_money_via_qr_enabled) {
               setIsComingSoon(true);
             } else {
@@ -306,6 +321,14 @@ export function DashboardPage() {
         >
           <NewsUpdate />
           News and Update
+        </DashboardButton>
+        <DashboardButton
+          onClick={() => {
+            history.push('/foreign-exchange');
+          }}
+        >
+          <Forex />
+          Foreign Exchange
         </DashboardButton>
       </ButtonFlexWrapper>
 

@@ -16,6 +16,8 @@ import Wallets from 'app/components/Assets/paybills/wallets.svg';
 import Airlines from 'app/components/Assets/paybills/airlines.svg';
 import Others from 'app/components/Assets/paybills/others.svg';
 
+import { faExclamation } from '@fortawesome/free-solid-svg-icons';
+
 export const CATEGORIES = [
   {
     value: 'electric utility',
@@ -232,4 +234,55 @@ export const getFormData = (formData: any, code: string) => {
   }
 
   return payload;
+};
+
+export const disconnectionDialogLogo = val => {
+  switch (val) {
+    case 1:
+      return faExclamation;
+    case 2:
+    case 3:
+    case 5:
+    case 4:
+    case 6:
+    case 13:
+    case 26:
+      return 'times';
+    default:
+      return 'check';
+  }
+};
+
+export const isPrimaryColorForDisconnection = val => {
+  switch (val) {
+    case 1:
+      return 'primary';
+    case 2:
+    case 3:
+    case 5:
+    case 4:
+    case 6:
+    case 13:
+    case 26:
+      return 'danger';
+    default:
+      return 'primary';
+  }
+};
+
+export const disconnectionTitleMessage = val => {
+  switch (val) {
+    case 1:
+      return 'Heads up!';
+    case 2:
+    case 3:
+    case 5:
+    case 4:
+    case 6:
+    case 13:
+    case 26:
+      return 'Oops!';
+    default:
+      return 'Successful Payment';
+  }
 };

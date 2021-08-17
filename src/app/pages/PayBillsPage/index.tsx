@@ -39,17 +39,24 @@ import { BillersState, BillerStateOptions } from './slice/types';
 // Helpers
 import { numberWithCommas } from 'utils/common';
 import { numberCommas } from 'app/components/Helpers';
-import { CATEGORIES, getFormData } from './helpers';
+import {
+  CATEGORIES,
+  getFormData,
+  disconnectionDialogLogo,
+  isPrimaryColorForDisconnection,
+  disconnectionTitleMessage,
+} from './helpers';
 import { RENDER_FIELDS, RENDER_SELECT_ITEMS } from './fields';
 
 // Assets
 import WrapperCuttedCornerBottom from 'app/components/Assets/WrapperCuttedCornerBottom.svg';
 import WrapperCuttedCornerTop from 'app/components/Assets/WrapperCuttedCornerTop.svg';
+import BayadCenterLogo from 'app/components/Assets/paybills/bayad-center-logo.svg';
 
 // Styles
 import * as S from './PayBills.style';
 
-export function PayBillsPage(props) {
+export function PayBillsPage() {
   const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
@@ -64,7 +71,14 @@ export function PayBillsPage(props) {
   const [selectedBillers, setSelectedBillers] = React.useState([]);
   const [filteredBillers, setSelectedFilteredBillers] = React.useState([]);
   const [isDialogErrorOpen, setDialogError] = React.useState(false);
-  const [isDialogSuccessOpen, setDialogSuccess] = React.useState(false);
+  const [isDialogSuccessOpen, setDialogSuccess] = React.useState<boolean>(
+    false,
+  );
+  const [isDisconnectionDialogOpen, setDisconnectionDialog] = React.useState<
+    string
+  >('');
+  const [disconnectionCode, setDisconnectionCode] = React.useState(null);
+  const isMECOR = billerCode === 'MECOR';
 
   let balanceInfo = '000.00';
   if (dashData && dashData.balance_info) {
@@ -92,17 +106,42 @@ export function PayBillsPage(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Handles API errors
   React.useEffect(() => {
     if (apiErrors && apiErrors?.errors?.error_code?.length) {
       const transactionFailed = apiErrors?.errors?.error_code?.find(
         errorCode => errorCode === 151,
       );
+      if (
+        apiErrors &&
+        apiErrors?.provider_error?.length &&
+        apiErrors?.code === 422
+      ) {
+        const provider_error =
+          apiErrors?.provider_error.length && apiErrors?.provider_error[0];
+        if (provider_error?.data) {
+          const payloadForMECOR: any = {
+            validationNumber: provider_error?.data?.validationNumber,
+          };
+          dispatch(actions.validatePayBillsSuccess(payloadForMECOR));
+          setDisconnectionDialog(provider_error?.data?.message);
+          setDisconnectionCode(provider_error?.data?.code);
+        }
+
+        if (provider_error?.details) {
+          setDisconnectionDialog(provider_error?.details?.message);
+          setDisconnectionCode(provider_error?.details?.code);
+        }
+      }
 
       if (transactionFailed) setDialogError(true);
     }
 
     if (apiErrors && apiErrors?.provider_error?.length) {
-      if (apiErrors?.provider_error[0].status !== 400) {
+      if (
+        apiErrors?.provider_error[0].status !== 400 &&
+        apiErrors?.code !== 422
+      ) {
         const providerErr = Object.keys(apiErrors?.provider_error[0]?.errors);
         if (providerErr.length) {
           const errors = {};
@@ -121,7 +160,10 @@ export function PayBillsPage(props) {
 
   // Success created pay bills
   React.useEffect(() => {
-    if (Object.keys(validatedBiller).length) {
+    if (
+      Object.keys(validatedBiller).length &&
+      validatedBiller?.validationNumber
+    ) {
       setSteps(steps + 1);
     }
 
@@ -131,6 +173,79 @@ export function PayBillsPage(props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createdPayBills, validatedBiller]);
+
+  const renderList = (successReview: boolean, isMecor: boolean, data: any) => {
+    if (isMecor && successReview) {
+      return (
+        <React.Fragment>
+          <S.ReviewListItem>
+            <p>Account Name</p>
+            <p>{data.account_name || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Customer Account Number</p>
+            <p>{data.account_number || data.referenceNumber || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Reference Number</p>
+            <p>{data.reference_number || data.referenceNumber || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Amount</p>
+            <p>PHP {numberWithCommas(data.amount)}</p>
+          </S.ReviewListItem>
+        </React.Fragment>
+      );
+    } else if (isMecor) {
+      return (
+        <React.Fragment>
+          <S.ReviewListItem>
+            <p>Customer Account Number</p>
+            <p>{data.account_number || data.referenceNumber || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Amount</p>
+            <p>PHP {numberWithCommas(data.amount)}</p>
+          </S.ReviewListItem>
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <React.Fragment>
+          <S.ReviewListItem>
+            <p>Account Name</p>
+            <p>{data.account_name || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Account Number</p>
+            <p>{data.account_number || data.referenceNumber || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Reference Number</p>
+            <p>{data.reference_number || data.referenceNumber || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Amount</p>
+            <p>PHP {numberWithCommas(data.amount)}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Send Receipt To</p>
+            <p>{data.send_receipt_to || 'None'}</p>
+          </S.ReviewListItem>
+          <S.ReviewListItem>
+            <p>Message</p>
+            <p>{data.message || 'None'}</p>
+          </S.ReviewListItem>
+          {successReview && (
+            <S.ReviewListItem>
+              <p>Transaction Number</p>
+              <p>{data.transaction_number || 'None'}</p>
+            </S.ReviewListItem>
+          )}
+        </React.Fragment>
+      );
+    }
+  };
 
   const renderReviewContainer = (data: any, type?: string) => {
     const selectedBiller = billers?.find(biller => biller.code === billerCode);
@@ -148,36 +263,13 @@ export function PayBillsPage(props) {
         <h3 className="review-title">
           {isSuccessReview ? 'Transaction successful!' : selectedBiller?.name}
         </h3>
-        <S.ReviewListItem>
-          <p>Account Name</p>
-          <p>{data.account_name || 'None'}</p>
-        </S.ReviewListItem>
-        <S.ReviewListItem>
-          <p>Account Number</p>
-          <p>{data.account_number || data.referenceNumber || 'None'}</p>
-        </S.ReviewListItem>
-        <S.ReviewListItem>
-          <p>Reference Number</p>
-          <p>{data.reference_number || data.referenceNumber || 'None'}</p>
-        </S.ReviewListItem>
-        <S.ReviewListItem>
-          <p>Amount</p>
-          <p>PHP {numberWithCommas(data.amount)}</p>
-        </S.ReviewListItem>
-        <S.ReviewListItem>
-          <p>Send Receipt To</p>
-          <p>{data.send_receipt_to || 'None'}</p>
-        </S.ReviewListItem>
-        <S.ReviewListItem>
-          <p>Message</p>
-          <p>{data.message || 'None'}</p>
-        </S.ReviewListItem>
-        {isSuccessReview && (
-          <S.ReviewListItem>
-            <p>Transaction Number</p>
-            <p>{data.transaction_number || 'None'}</p>
-          </S.ReviewListItem>
+        {isMECOR && isSuccessReview && (
+          <p className="mecor-message">
+            "Sweet! We have received your MERALCO bill payment and are currently
+            processing it. Thank you. Have a great day ahead!"
+          </p>
         )}
+        {renderList(isSuccessReview, isMECOR, data)}
         <S.ReviewTotal>
           <p className="total-description">Total amount</p>
           <p className="total-amount">PHP {numberWithCommas(data?.amount)}</p>
@@ -187,20 +279,34 @@ export function PayBillsPage(props) {
           <p className="other-fees">
             Other Charges: PHP {numberWithCommas(validatedBiller?.otherCharges)}
           </p>
+          {isSuccessReview && (
+            <img
+              className="bayad-center"
+              src={BayadCenterLogo}
+              alt="Bayad Center"
+            />
+          )}
           {isSuccessReview ? (
             <React.Fragment>
               <Logo size="small" />
               <p className="date">{monthDateYearTime}</p>
             </React.Fragment>
           ) : (
-            <Button
-              size="large"
-              color="primary"
-              variant="contained"
-              onClick={() => dispatch(actions.createPayBillsLoading())}
-            >
-              Pay Bill
-            </Button>
+            <S.PayBillCTAContainer>
+              <img
+                className="bayad-center"
+                src={BayadCenterLogo}
+                alt="Bayad Center"
+              />
+              <Button
+                size="large"
+                color="primary"
+                variant="contained"
+                onClick={() => dispatch(actions.createPayBillsLoading())}
+              >
+                Pay Bill
+              </Button>
+            </S.PayBillCTAContainer>
           )}
         </S.ReviewTotal>
       </S.ReviewContainer>
@@ -436,6 +542,22 @@ export function PayBillsPage(props) {
                 }
               }
             })}
+            {isMECOR && (
+              <S.NoteWrapper>
+                <p className="important">
+                  IMPORTANT NOTE:
+                  <span>
+                    To avoid inconvenience, please input the exact amount of
+                    your total billing amount due and settle before your due
+                    date.
+                  </span>
+                </p>
+                <p>
+                  Please review to ensure that the details are correct before
+                  you proceed.
+                </p>
+              </S.NoteWrapper>
+            )}
             <S.FormFooter>
               <Button
                 size="medium"
@@ -498,74 +620,132 @@ export function PayBillsPage(props) {
       <Helmet>
         <title>Pay bills</title>
       </Helmet>
-      <S.Wrapper>
-        <S.WrapperHeader isCustom={steps === 1}>
-          {renderHeader(steps)}
-        </S.WrapperHeader>
-        <ComponentLoading isLoading={loading}>
-          <S.WrapperContent>{renderView(steps)}</S.WrapperContent>
-        </ComponentLoading>
-        {/* show success Dialog */}
-        <Dialog show={isDialogSuccessOpen} size="small">
-          <S.DetailsWrapper padding="15px">
-            <Logo size="medium" />
-            <S.SuccessWrapper>
-              <S.CuttedImageWrapper
-                src={WrapperCuttedCornerTop}
-                alt="Squid pay"
+      <S.Container>
+        <S.Wrapper data-id="Paybills-Wrapper">
+          <S.WrapperHeader isCustom={steps === 1}>
+            {renderHeader(steps)}
+          </S.WrapperHeader>
+          <ComponentLoading isLoading={loading}>
+            <S.WrapperContent>{renderView(steps)}</S.WrapperContent>
+          </ComponentLoading>
+        </S.Wrapper>
+        {/* Show BAYAD CENTER logo when in the form fields */}
+        {steps === 2 && (
+          <img
+            className="bayad-center"
+            src={BayadCenterLogo}
+            alt="Bayad Center"
+          />
+        )}
+      </S.Container>
+      {/* show success Dialog */}
+      <Dialog show={isDialogSuccessOpen} size="small">
+        <S.DetailsWrapper padding="15px">
+          <Logo size="medium" />
+          <S.SuccessWrapper>
+            <S.CuttedImageWrapper
+              src={WrapperCuttedCornerTop}
+              alt="Squid pay"
+            />
+            {renderReviewContainer(createdPayBills, 'successReview')}
+            <S.CuttedImageWrapper
+              src={WrapperCuttedCornerBottom}
+              alt="Squid pay"
+            />
+          </S.SuccessWrapper>
+          <div className="text-center">
+            <Button
+              size="medium"
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                setDialogError(false);
+                dispatch(actions.clear());
+                history.push('/dashboard');
+              }}
+              fullWidth
+            >
+              Close
+            </Button>
+            <S.ConfirmationMessage>
+              "You will receive an SMS notification for your confirmed
+              transaction"
+            </S.ConfirmationMessage>
+          </div>
+        </S.DetailsWrapper>
+      </Dialog>
+      {/* MECOR Disconnection Dialog */}
+      <Dialog show={!!isDisconnectionDialogOpen} size="small">
+        <S.DetailsWrapper padding="15px">
+          <div className="text-center">
+            <CircleIndicator
+              size="medium"
+              color={isPrimaryColorForDisconnection(disconnectionCode)}
+            >
+              <FontAwesomeIcon
+                icon={disconnectionDialogLogo(disconnectionCode)}
               />
-              {renderReviewContainer(createdPayBills, 'successReview')}
-              <S.CuttedImageWrapper
-                src={WrapperCuttedCornerBottom}
-                alt="Squid pay"
-              />
-            </S.SuccessWrapper>
-            <div className="text-center">
-              <Button
-                size="medium"
-                color="primary"
-                variant="contained"
-                onClick={() => {
-                  setDialogError(false);
-                  dispatch(actions.clear());
-                  history.push('/dashboard');
-                }}
-                fullWidth
-              >
-                Close
-              </Button>
-              <S.ConfirmationMessage>
-                "You will receive an SMS notification for your confirmed
-                transaction"
-              </S.ConfirmationMessage>
-            </div>
-          </S.DetailsWrapper>
-        </Dialog>
-        {/* show error Dialog */}
-        <Dialog show={isDialogErrorOpen} size="small">
-          <S.DetailsWrapper padding="15px">
-            <div className="text-center">
-              <CircleIndicator size="medium" color="danger">
-                <FontAwesomeIcon icon="times" />
-              </CircleIndicator>
-              <H3 margin="15px 0 10px">Oops! System Error</H3>
+            </CircleIndicator>
+            <H3 margin="15px 0 10px">
+              {disconnectionTitleMessage(disconnectionCode)}
+            </H3>
+            <S.DisconnectionMessage>
+              {isDisconnectionDialogOpen}
+            </S.DisconnectionMessage>
+            <S.DialogActions>
+              {disconnectionCode === 1 && (
+                <Button
+                  fullWidth
+                  onClick={() => {
+                    setDisconnectionDialog('');
+                    setSteps(3);
+                  }}
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                >
+                  I agree
+                </Button>
+              )}
               <Button
                 fullWidth
                 onClick={() => {
-                  setDialogError(false);
-                  dispatch(actions.clear());
-                  history.push('/dashboard');
+                  setDisconnectionDialog('');
                 }}
                 variant="outlined"
-                color="secondary"
+                color="default"
                 size="large"
               >
-                Ok
+                {disconnectionCode === 1 ? 'Cancel' : 'Ok'}
               </Button>
-            </div>
-          </S.DetailsWrapper>
-        </Dialog>
-      </S.Wrapper>
+            </S.DialogActions>
+          </div>
+        </S.DetailsWrapper>
+      </Dialog>
+      {/* show error Dialog */}
+      <Dialog show={isDialogErrorOpen} size="small">
+        <S.DetailsWrapper padding="15px">
+          <div className="text-center">
+            <CircleIndicator size="medium" color="danger">
+              <FontAwesomeIcon icon="times" />
+            </CircleIndicator>
+            <H3 margin="15px 0 10px">Oops! System Error</H3>
+            <Button
+              fullWidth
+              onClick={() => {
+                setDialogError(false);
+                dispatch(actions.clear());
+                history.push('/dashboard');
+              }}
+              variant="outlined"
+              color="secondary"
+              size="large"
+            >
+              Ok
+            </Button>
+          </div>
+        </S.DetailsWrapper>
+      </Dialog>
     </>
   );
 }

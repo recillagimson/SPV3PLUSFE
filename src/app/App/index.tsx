@@ -44,6 +44,7 @@ import { AddMoneyViaBPI } from 'app/pages/AddMoneyViaBPIPage/Loadable';
 // import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import { BuyLoad } from 'app/pages/BuyLoadPage/Loadable';
+import { BuyEpins } from 'app/pages/BuyEpinPage/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import {
   TransactionHistoryPage,
@@ -65,6 +66,9 @@ import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
 import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
 import { AddMoney } from 'app/pages/AddMoney/Loadable';
 import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
+// #endregion
+
+import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
 import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent/Loadable';
 import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/Loadable';
 import SuccessPostBack from './SuccessPostback';
@@ -301,6 +305,7 @@ export function App() {
             <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute path="/buyload" component={BuyLoad} />
+            <PrivateRoute path="/buy-epins" component={BuyEpins} />
             <PrivateRoute exact path="/profile" component={UserProfilePage} />
             <PrivateRoute
               exact
@@ -326,6 +331,11 @@ export function App() {
               exact
               path="/transaction-history/:id"
               component={TransactionHistoryDetailsPage}
+            />
+            <PrivateRoute
+              exact
+              path="/foreign-exchange"
+              component={ForeignExchangePage}
             />
             <PrivateRoute
               exact
