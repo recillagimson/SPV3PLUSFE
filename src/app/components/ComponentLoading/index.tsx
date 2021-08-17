@@ -5,8 +5,8 @@
  */
 import * as React from 'react';
 
-import loading from './loading_light.gif';
-import loadingDark from './loading_dark.gif';
+import loading from 'app/components/Loading/loading_light.gif';
+import loadingDark from 'app/components/Loading/loading_dark.gif';
 
 // Styles
 import * as S from './ComponentLoading.style';

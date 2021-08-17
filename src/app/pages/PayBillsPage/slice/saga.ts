@@ -128,7 +128,6 @@ function* validatePaybills() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-
       yield put(actions.validatePayBillsSuccess(decryptData));
     } else {
       yield put(
@@ -168,7 +167,6 @@ function* createPayBills() {
   const requestURL = `${process.env.REACT_APP_API_URL}/pay/bills/create/payment/${billerCode}`;
   let encryptPayload: string = '';
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
-
   if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
     encryptPayload = spdCrypto.encrypt(
       JSON.stringify({

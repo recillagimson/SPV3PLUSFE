@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { DateTime } from 'luxon';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
@@ -53,6 +54,7 @@ import {
 } from './slice/selectors';
 
 export function SendMoney() {
+  const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
 
@@ -253,6 +255,7 @@ export function SendMoney() {
     dispatch(actions.getFetchReset());
     dispatch(actions.getGenerateReset());
     dispatch(actions.getValidateReset());
+    history.push('/dashboard');
   };
 
   // React.useEffect(() => {
@@ -374,10 +377,6 @@ export function SendMoney() {
         </Helmet>
 
         <Wrapper>
-          {validateLoading && <Loading position="absolute" />}
-          {generateLoading && <Loading position="absolute" />}
-          {loading && <Loading position="absolute" />}
-
           <Card
             title={
               isReview
@@ -390,6 +389,10 @@ export function SendMoney() {
             // footer={!isReview ? action : undefined}
             size="medium"
           >
+            {validateLoading && <Loading position="absolute" />}
+            {generateLoading && <Loading position="absolute" />}
+            {loading && <Loading position="absolute" />}
+
             {!isReview && !isVerification && (
               <>
                 <Field>
@@ -477,9 +480,9 @@ export function SendMoney() {
                     onChange={e =>
                       setMessage({ value: e.currentTarget.value, error: false })
                     }
-                    maxLength={64}
+                    maxLength={60}
                   ></Textarea>
-                  <small>{message.value.length}/64</small>
+                  <small>{message.value.length}/60</small>
                 </Field>
               </>
             )}
@@ -595,46 +598,6 @@ export function SendMoney() {
                 </div>
               </>
             )}
-
-            {/* {apiErrorMsg && (
-            <>
-              <Dialog show={success} size="small">
-                <div className="text-center">
-                  <CircleIndicator size="medium" color="primary">
-                    <FontAwesomeIcon icon="check" />
-                  </CircleIndicator>
-                  <H3 margin="15px 0 10px">Success</H3>
-
-                  <Button
-                    fullWidth
-                    onClick={onCloseSuccessDialog}
-                    variant="outlined"
-                    color="secondary"
-                  >
-                    Ok
-                  </Button>
-                </div>
-              </Dialog>
-            </>
-          )} */}
-            {/* <Dialog show={success} size="small">
-            <div className="text-center">
-              <CircleIndicator size="medium" color="primary">
-                <FontAwesomeIcon icon="check" />
-              </CircleIndicator>
-              <H3 margin="15px 0 10px">Success</H3>
-
-              <Button
-                fullWidth
-                onClick={onCloseSuccessDialog}
-                variant="outlined"
-                color="secondary"
-              >
-                Ok
-              </Button>
-            </div>
-          </Dialog> */}
-            {/* fsdkjjgdlk */}
 
             <Dialog show={isSuccess} size="small">
               <Receipt
