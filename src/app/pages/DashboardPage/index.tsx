@@ -31,7 +31,6 @@ import SendMoney from 'app/components/Assets/SendMoney';
 import SendToBank from 'app/components/Assets/SendToBank';
 import PayBills from 'app/components/Assets/PayBills';
 import BuyLoad from 'app/components/Assets/BuyLoad';
-import BuyEPINS from 'app/components/Assets/BuyEPINS';
 import QRCode from 'app/components/Assets/QRCode';
 import QuickGuide from 'app/components/Assets/QuickGuide';
 // import Others from 'app/components/Assets/Others';
@@ -271,33 +270,18 @@ export function DashboardPage() {
           <PayBills />
           Pay Bills
         </DashboardButton>
-
         <DashboardButton
           onClick={() => {
             if (flags && !flags.buy_load_enabled) {
               setIsComingSoon(true);
             } else {
-              history.push('/buyload');
+              history.push('/buy');
             }
           }}
         >
           <BuyLoad />
           Buy Load
         </DashboardButton>
-
-        <DashboardButton
-          onClick={() => {
-            if (flags && !flags.buy_load_enabled) {
-              setIsComingSoon(true);
-            } else {
-              history.push('/buy-epins');
-            }
-          }}
-        >
-          <BuyEPINS />
-          Buy EPINS
-        </DashboardButton>
-
         <DashboardButton
           onClick={() => {
             if (flags && !flags.send_money_via_qr_enabled) {

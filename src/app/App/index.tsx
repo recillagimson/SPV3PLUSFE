@@ -33,18 +33,19 @@ import { GlobalStyle } from 'styles/global-styles';
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
 
 import { DashboardPage } from 'app/pages/DashboardPage/Loadable';
-// import { CardMemberAgreementPage } from 'app/pages/CardMemberAgreementPage/Loadable';
 import { LoginPage } from 'app/pages/LoginPage/Loadable';
 import { RegisterPage } from 'app/pages/RegisterPage/Loadable';
 import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
 import { AddMoneyViaBPI } from 'app/pages/AddMoneyViaBPIPage/Loadable';
-
-// import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
-import { BuyLoad } from 'app/pages/BuyLoadPage/Loadable';
-import { BuyEpins } from 'app/pages/BuyEpinPage/Loadable';
+import {
+  BuyLoadIndexPage,
+  BuyLoadPage,
+  BuyEpinsPage,
+} from 'app/pages/BuyLoadPage/Loadable';
+
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import {
   TransactionHistoryPage,
@@ -304,8 +305,9 @@ export function App() {
             <PrivateRoute path="/generateqr" component={GenerateQR} />
             <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
-            <PrivateRoute path="/buyload" component={BuyLoad} />
-            <PrivateRoute path="/buy-epins" component={BuyEpins} />
+            <PrivateRoute exact path="/buy" component={BuyLoadIndexPage} />
+            <PrivateRoute exact path="/buy/load" component={BuyLoadPage} />
+            <PrivateRoute exact path="/buy/epins" component={BuyEpinsPage} />
             <PrivateRoute exact path="/profile" component={UserProfilePage} />
             <PrivateRoute
               exact
