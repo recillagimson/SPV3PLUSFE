@@ -110,3 +110,4 @@ v1.0.4
 - Verify OTP proper message "sent to your email or sent to your mobile" (VVBT-235)
 - First time user profile creation - Successfull message (VVBT-229)
 - Transaction History additional information on Paybills details (VVBT-232)
+- Paybills MECOR changes, added BayadPartner Logo (BayadCenter)
