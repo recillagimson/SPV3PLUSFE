@@ -696,8 +696,14 @@ export default function UserProfileForm({
               <div style={{ flexGrow: 1 }}>
                 <Input
                   value={firstName.value}
-                  onChange={e =>
-                    setFirstName({ value: e.currentTarget.value, error: false })
+                  onChange={
+                    isAuthenticated
+                      ? undefined
+                      : e =>
+                          setFirstName({
+                            value: e.currentTarget.value,
+                            error: false,
+                          })
                   }
                   className={firstName.error ? 'error' : undefined}
                   placeholder="First Name"
@@ -713,11 +719,14 @@ export default function UserProfileForm({
               <div style={{ flexGrow: 1 }}>
                 <Input
                   value={middleName.value}
-                  onChange={e =>
-                    setMiddleName({
-                      value: e.currentTarget.value,
-                      error: false,
-                    })
+                  onChange={
+                    isAuthenticated
+                      ? undefined
+                      : e =>
+                          setMiddleName({
+                            value: e.currentTarget.value,
+                            error: false,
+                          })
                   }
                   className={middleName.error ? 'error' : undefined}
                   placeholder="Middle Name"
@@ -733,8 +742,14 @@ export default function UserProfileForm({
               <div style={{ flexGrow: 1 }}>
                 <Input
                   value={lastName.value}
-                  onChange={e =>
-                    setLastName({ value: e.currentTarget.value, error: false })
+                  onChange={
+                    isAuthenticated
+                      ? undefined
+                      : e =>
+                          setLastName({
+                            value: e.currentTarget.value,
+                            error: false,
+                          })
                   }
                   className={lastName.error ? 'error' : undefined}
                   placeholder="Last Name"
@@ -782,7 +797,7 @@ export default function UserProfileForm({
                     <Select
                       name="month"
                       value={birthDate.month}
-                      onChange={onChangeBirthDate}
+                      onChange={isAuthenticated ? undefined : onChangeBirthDate}
                       className={birthDate.error ? 'error' : undefined}
                     >
                       <option value="" disabled>

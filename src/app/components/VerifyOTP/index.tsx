@@ -63,7 +63,7 @@ const Wrapper = styled.div`
 `;
 
 type VerifyOTPComponentProps = {
-  /** If we are passing as email or mobile number */
+  /** If we are passing as email or mobile number, use only on registration, component will auto detect details once logged in */
   isEmail?: boolean;
   /** If this prop is defined, email or mobile will be pass on the request payload, this should be use with isEmail props */
   viaValue?: string;
@@ -188,6 +188,13 @@ export default function VerifyOTPComponent({
     }
   };
 
+  let otpMessage = otpDetails.isEmail
+    ? `email: ${otpDetails.value}`
+    : `mobile number: ${otpDetails.value}`;
+  if (isEmail && viaValue) {
+    otpMessage = isEmail ? `email: ${viaValue}` : `mobile number: ${viaValue}`;
+  }
+
   return (
     <Wrapper id="verifyOtp">
       <CircleIndicator size="large">
@@ -196,10 +203,7 @@ export default function VerifyOTPComponent({
 
       <H3 margin="35px 0 10px">Enter 4-digit One-Time PIN</H3>
       <p className="f-small" style={{ margin: '0 0 25px' }}>
-        A One-Time PIN has been sent to your{' '}
-        {otpDetails.isEmail
-          ? `email: ${otpDetails.value}`
-          : `mobile number: ${otpDetails.value}`}
+        A One-Time PIN has been sent to your {otpMessage}
       </p>
       {loading && <Loading position="absolute" />}
       <Field className="code">

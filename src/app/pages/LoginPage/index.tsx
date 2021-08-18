@@ -87,7 +87,7 @@ export function LoginPage() {
 
   React.useEffect(() => {
     // set error message based on error code from api
-    let apiError: string | undefined;
+    let apiError: string = '';
     if (error && Object.keys(error).length > 0) {
       if (error.code && error.code === 422) {
         if (
@@ -114,6 +114,9 @@ export function LoginPage() {
             }
             return undefined;
           });
+
+          setApiErrorMsg(apiError || '');
+          setIsError(true);
         }
         if (error.errors && !error.errors.error_code) {
           if (error.errors.password && error.errors.password.length > 0) {
@@ -129,20 +132,18 @@ export function LoginPage() {
           ) {
             apiError += error.errors.mobile_number.join('\n');
           }
-        }
 
-        setApiErrorMsg(apiError || '');
-        setIsError(true);
+          setApiErrorMsg(apiError || '');
+          setIsError(true);
+        }
       }
 
       if (!error.code && error.response) {
-        apiError = error.response.statusText;
-        setApiErrorMsg(apiError || '');
+        setApiErrorMsg(error.response.statusText);
         setIsError(true);
       }
       if (!error.response && !error.code) {
-        apiError = error.message;
-        setApiErrorMsg(apiError || '');
+        setApiErrorMsg(error.message);
         setIsError(true);
       }
     }
@@ -171,7 +172,8 @@ export function LoginPage() {
     // check if field is not empty and we are typing in an email format
     if (
       email.value !== '' && // check if not empty
-      (!/\d/g.test(email.value) || regExIsGonnaBeEmail.test(email.value)) && // check if we are typing into an email format ie: asb@
+      (!/\d/g.test(email.value) ||
+        regExIsGonnaBeEmail.test(email.value.trim())) && // check if we are typing into an email format ie: asb@
       !validateEmail(email.value) // check if what we type is a valid email format ie: email@example.com
     ) {
       // set error message we did't pass email validation
@@ -186,8 +188,8 @@ export function LoginPage() {
     // check if value is not empty
     if (
       email.value !== '' && // check if not empty
-      !regExIsGonnaBeEmail.test(email.value) && // check if we are not typing into an email format
-      !validateEmail(email.value) && // validate if it's not valid email
+      !regExIsGonnaBeEmail.test(email.value.trim()) && // check if we are not typing into an email format
+      !validateEmail(email.value.trim()) && // validate if it's not valid email
       /\d/g.test(email.value) // check if we started with a digit
     ) {
       // we have typed a digit and did not pass the email validation
@@ -204,7 +206,7 @@ export function LoginPage() {
     }
 
     // if we pass the validation above, set if we are going to pass an email or mobile
-    if (email.value !== '' && validateEmail(email.value)) {
+    if (email.value !== '' && validateEmail(email.value.trim())) {
       anEmail = true;
       setIsEmail(true);
     } else if (email.value !== '' && regExMobile.test(email.value)) {
@@ -222,8 +224,8 @@ export function LoginPage() {
 
     if (!error) {
       const data = {
-        email: anEmail ? email.value : undefined,
-        mobile_number: !anEmail ? email.value : undefined,
+        email: anEmail ? email.value.trim() : undefined,
+        mobile_number: !anEmail ? email.value.trim() : undefined,
         password: password.value,
       };
 
@@ -246,8 +248,8 @@ export function LoginPage() {
   const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     // since we already have the login information, send the user email or mobile number to receive activation code
     const data = {
-      email: isEmail ? email.value : undefined,
-      mobile_number: !isEmail ? email.value : undefined,
+      email: isEmail ? email.value.trim() : undefined,
+      mobile_number: !isEmail ? email.value.trim() : undefined,
       otp_type: 'registration',
     };
 
@@ -386,11 +388,6 @@ export function LoginPage() {
         )}
         {showVerify && (
           <div className="text-center">
-            <H3 margin="35px 0 10px">Account Activation</H3>
-            <p className="f-small">
-              Check your mobile or email for the activation code
-            </p>
-
             <VerifyOTP
               onSuccess={onSuccessVerify}
               isEmail={isEmail}
@@ -459,7 +456,9 @@ export function LoginPage() {
           <H3 margin="15px 0 10px">Activation Code Sent</H3>
           <p>
             We have sent the code. Please check your{' '}
-            {isEmail ? `email ${email.value}` : `mobile number ${email.value}`}{' '}
+            {isEmail
+              ? `email ${email.value.trim()}`
+              : `mobile number ${email.value.trim()}`}{' '}
             for the activation code.
           </p>
           <Button
