@@ -171,16 +171,16 @@ export function RegisterPage() {
       let mobileError = '';
       if (error.errors) {
         if (error.errors.email && error.errors.email.length > 0) {
-          emailError = error.errors.email.join(' ');
+          emailError = error.errors.email.join('\n');
         }
         if (error.errors.password && error.errors.password.length > 0) {
-          passError = error.errors.password.join(' ');
+          passError = error.errors.password.join('\n');
         }
         if (
           error.errors.mobile_number &&
           error.errors.mobile_number.length > 0
         ) {
-          mobileError = error.errros.mobile_number.join(' ');
+          mobileError = error.errros.mobile_number.join('\n');
         }
       }
 
@@ -746,14 +746,6 @@ export function RegisterPage() {
 
         {showVerify && (
           <div className="text-center" style={{ padding: '0 40px' }}>
-            <H3 margin="35px 0 10px">Enter 4-digit One-Time PIN</H3>
-            <p className="f-small">
-              A One-Time PIN has been sent to your{' '}
-              {isEmail
-                ? `email: ${username.value}`
-                : `mobile number: ${username.value}`}
-            </p>
-
             <VerifyOTP
               onSuccess={onCodeVerified}
               isEmail={isEmail}

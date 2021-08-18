@@ -16,6 +16,7 @@ import IdleTimer from 'utils/useIdleTime';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
+import build from 'build.json';
 
 import Main from 'app/components/Layouts/Main';
 import Content from 'app/components/Layouts/Content';
@@ -250,8 +251,8 @@ export function App() {
         htmlAttributes={{ lang: i18n.language }}
       >
         <meta
-          name="description"
-          content="Empowering Filipinos through advanced payment solutions accessible to all."
+          name="app-version"
+          content={`v${process.env.REACT_APP_VERSION} build: ${build.build_no}`}
         />
       </Helmet>
 
