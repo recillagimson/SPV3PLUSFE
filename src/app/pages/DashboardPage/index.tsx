@@ -271,13 +271,12 @@ export function DashboardPage() {
           <PayBills />
           Pay Bills
         </DashboardButton>
-
         <DashboardButton
           onClick={() => {
             if (flags && !flags.buy_load_enabled) {
               setIsComingSoon(true);
             } else {
-              history.push('/buyload');
+              history.push('/buy');
             }
           }}
         >
