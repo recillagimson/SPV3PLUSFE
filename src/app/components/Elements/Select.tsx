@@ -47,7 +47,7 @@ interface SelectComponentProps extends React.SelectHTMLAttributes<any> {
   fullWidth?: boolean;
   children: React.ReactNodeArray | React.ReactNode;
   value: any;
-  onChange: (o: any) => void;
+  onChange?: (o: any) => void;
 }
 
 export default function SelectComponent({
