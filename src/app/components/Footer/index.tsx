@@ -11,9 +11,11 @@ export default function FooterComponent() {
     <Wrapper className="site-footer">
       <p>
         &copy; {new Date().getFullYear()} SquidPay Technology Inc.{' '}
-        <span>
-          (v{process.env.REACT_APP_VERSION} build: {build.build_no})
-        </span>
+        {process.env.NODE_ENV !== 'production' && (
+          <span>
+            (v{process.env.REACT_APP_VERSION} build: {build.build_no})
+          </span>
+        )}
       </p>
     </Wrapper>
   );
