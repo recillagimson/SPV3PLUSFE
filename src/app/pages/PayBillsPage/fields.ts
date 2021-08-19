@@ -138,6 +138,17 @@ export const RENDER_SELECT_ITEMS = name => {
           label: 'Summer',
         },
       ];
+    case 'splan_otherinfo.plantype':
+      return [
+        {
+          value: 'P',
+          label: 'Pension Plan',
+        },
+        {
+          value: 'E',
+          label: 'Education Plan',
+        },
+      ];
     default:
       return [];
   }
@@ -242,21 +253,21 @@ export const RENDER_FIELDS = code => {
         {
           label: 'Last Name',
           type: 'text',
-          name: 'last_name',
+          name: 'otherInfo.LastName',
           placeholder: '',
           required: true,
         },
         {
           label: 'First Name',
           type: 'text',
-          name: 'first_name',
+          name: 'otherInfo.FirstName',
           placeholder: '',
           required: true,
         },
         {
           label: 'Due Date',
-          type: 'text',
-          name: 'due_date',
+          type: 'date',
+          name: 'otherInfo.DueDate',
           placeholder: '',
           required: true,
         },
@@ -636,7 +647,7 @@ export const RENDER_FIELDS = code => {
         },
         {
           label: 'Bill Date',
-          type: 'text',
+          type: 'date',
           name: 'otherInfo.BillDate',
           placeholder: '',
           required: true,
@@ -811,6 +822,61 @@ export const RENDER_FIELDS = code => {
           label: 'Middle Name',
           type: 'text',
           name: 'otherInfo.MiddleName',
+          placeholder: '',
+          required: true,
+        },
+      ];
+    case 'PILAM':
+      return [
+        {
+          label: 'Policy Number (reference number)',
+          type: 'text',
+          name: 'referenceNumber',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Amount',
+          type: 'number',
+          name: 'amount',
+          placeholder: 'PHP 0.00',
+          required: true,
+        },
+        {
+          label: 'Due Date',
+          type: 'date',
+          name: 'otherInfo.DueDate',
+          placeholder: '',
+          required: true,
+        },
+      ];
+    case 'SPLAN':
+      return [
+        {
+          label: 'Policy Number (reference number)',
+          type: 'text',
+          name: 'referenceNumber',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Amount',
+          type: 'number',
+          name: 'amount',
+          placeholder: 'PHP 0.00',
+          required: true,
+        },
+        {
+          label: 'Plan Type',
+          type: 'select',
+          name: 'otherInfo.PlanType',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Due Date',
+          type: 'date',
+          name: 'otherInfo.DueDate',
           placeholder: '',
           required: true,
         },

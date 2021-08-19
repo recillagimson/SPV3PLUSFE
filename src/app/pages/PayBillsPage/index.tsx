@@ -109,6 +109,7 @@ export function PayBillsPage() {
   // Handles API errors
   React.useEffect(() => {
     if (apiErrors && apiErrors?.errors?.error_code?.length) {
+      console.log('apiErrors...', apiErrors);
       const transactionFailed = apiErrors?.errors?.error_code?.find(
         errorCode => errorCode === 151,
       );
@@ -186,10 +187,12 @@ export function PayBillsPage() {
       Object.keys(validatedBiller).length &&
       validatedBiller?.validationNumber
     ) {
+      console.log('validatedBiller...', validatedBiller);
       setSteps(steps + 1);
     }
 
     if (Object.keys(createdPayBills).length) {
+      console.log('createdPayBills...', createdPayBills);
       setDialogSuccess(true);
       setSteps(3);
     }
@@ -645,7 +648,10 @@ export function PayBillsPage() {
       <S.Container>
         <S.Wrapper data-id="Paybills-Wrapper">
           <S.WrapperHeader isCustom={steps === 1}>
-            {renderHeader(steps)}
+            <div>
+              {renderHeader(steps)}
+              <Button onClick={() => setSteps(0)}>Back</Button>
+            </div>
           </S.WrapperHeader>
           <ComponentLoading isLoading={loading}>
             <S.WrapperContent>{renderView(steps)}</S.WrapperContent>
