@@ -109,7 +109,6 @@ export function PayBillsPage() {
   // Handles API errors
   React.useEffect(() => {
     if (apiErrors && apiErrors?.errors?.error_code?.length) {
-      console.log('apiErrors...', apiErrors);
       const transactionFailed = apiErrors?.errors?.error_code?.find(
         errorCode => errorCode === 151,
       );
@@ -187,12 +186,10 @@ export function PayBillsPage() {
       Object.keys(validatedBiller).length &&
       validatedBiller?.validationNumber
     ) {
-      console.log('validatedBiller...', validatedBiller);
       setSteps(steps + 1);
     }
 
     if (Object.keys(createdPayBills).length) {
-      console.log('createdPayBills...', createdPayBills);
       setDialogSuccess(true);
       setSteps(3);
     }
@@ -247,20 +244,24 @@ export function PayBillsPage() {
           </S.ReviewListItem>
           <S.ReviewListItem>
             <p>Reference Number</p>
-            <p>{data.reference_number || data.referenceNumber || 'None'}</p>
+            <p>{data.reference_number || data.validationNumber || 'None'}</p>
           </S.ReviewListItem>
           <S.ReviewListItem>
             <p>Amount</p>
             <p>PHP {numberWithCommas(data.amount)}</p>
           </S.ReviewListItem>
-          <S.ReviewListItem>
-            <p>Send Receipt To</p>
-            <p>{data.send_receipt_to || 'None'}</p>
-          </S.ReviewListItem>
-          <S.ReviewListItem>
-            <p>Message</p>
-            <p>{data.message || 'None'}</p>
-          </S.ReviewListItem>
+          {data.send_receipt_to && (
+            <S.ReviewListItem>
+              <p>Send Receipt To</p>
+              <p>{data.send_receipt_to}</p>
+            </S.ReviewListItem>
+          )}
+          {data.message && (
+            <S.ReviewListItem>
+              <p>Message</p>
+              <p>{data.message}</p>
+            </S.ReviewListItem>
+          )}
           {successReview && (
             <S.ReviewListItem>
               <p>Transaction Number</p>

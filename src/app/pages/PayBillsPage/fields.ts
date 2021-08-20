@@ -229,7 +229,7 @@ export const RENDER_FIELDS = code => {
         {
           label: 'Account Name',
           type: 'text',
-          name: 'account_name',
+          name: 'otherInfo.AccountName',
           placeholder: '',
           required: true,
         },
@@ -746,7 +746,7 @@ export const RENDER_FIELDS = code => {
           label: 'School Year',
           type: 'text',
           name: 'otherInfo.SchoolYear',
-          placeholder: '',
+          placeholder: 'YYYY-YYYY',
           required: true,
         },
         {
