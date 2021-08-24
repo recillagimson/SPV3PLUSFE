@@ -35,10 +35,11 @@ import BuyLoad from 'app/components/Assets/BuyLoad';
 import QRCode from 'app/components/Assets/QRCode';
 import QuickGuide from 'app/components/Assets/QuickGuide';
 // import Others from 'app/components/Assets/Others';
-// import Forex from 'app/components/Assets/Forex';
+import Forex from 'app/components/Assets/Forex';
 import NewsUpdate from 'app/components/Assets/NewsUpdate';
 import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
 import comingSoon from 'app/components/Assets/coming-soon.png';
+import maintenance from 'app/components/Assets/maintenance.png';
 
 import Balance from './Balance';
 import ButtonFlexWrapper from './ButtonFlex';
@@ -69,6 +70,7 @@ export function DashboardPage() {
 
   const [showUpgrade, setShowUpgrade] = React.useState(false);
   const [isComingSoon, setIsComingSoon] = React.useState(false);
+  const [isMaintenance, setIsMaintenance] = React.useState(false);
 
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());
@@ -216,7 +218,7 @@ export function DashboardPage() {
         <DashboardButton
           onClick={() => {
             if (flags && !flags.add_money_dragon_pay_enabled) {
-              setIsComingSoon(true);
+              setIsMaintenance(true);
             } else {
               history.push('/add-money');
             }
@@ -232,7 +234,7 @@ export function DashboardPage() {
               ? () => setShowUpgrade(true)
               : () => {
                   if (flags && !flags.send_money_enabled) {
-                    setIsComingSoon(true);
+                    setIsMaintenance(true);
                   } else {
                     history.push('/sendmoney');
                   }
@@ -249,7 +251,7 @@ export function DashboardPage() {
               ? () => setShowUpgrade(true)
               : () => {
                   if (flags && !flags.send_to_bank_ubp_enabled) {
-                    setIsComingSoon(true);
+                    setIsMaintenance(true);
                   } else {
                     history.push('/send-to-bank');
                   }
@@ -262,7 +264,7 @@ export function DashboardPage() {
         <DashboardButton
           onClick={() => {
             if (flags && !flags.pay_bills_enabled) {
-              setIsComingSoon(true);
+              setIsMaintenance(true);
             } else {
               history.push('/pay-bills');
             }
@@ -274,7 +276,7 @@ export function DashboardPage() {
         <DashboardButton
           onClick={() => {
             if (flags && !flags.buy_load_enabled) {
-              setIsComingSoon(true);
+              setIsMaintenance(true);
             } else {
               history.push('/buy');
             }
@@ -300,7 +302,7 @@ export function DashboardPage() {
         <DashboardButton
           onClick={() => {
             if (flags && !flags.send_money_via_qr_enabled) {
-              setIsComingSoon(true);
+              setIsMaintenance(true);
             } else {
               history.push('/generateqr');
             }
@@ -309,7 +311,7 @@ export function DashboardPage() {
           <QRCode />
           QR Code
         </DashboardButton>
-        <DashboardButton onClick={() => setIsComingSoon(true)}>
+        <DashboardButton onClick={() => setIsMaintenance(true)}>
           <QuickGuide />
           SquidPay Quick Guide
         </DashboardButton>
@@ -321,14 +323,14 @@ export function DashboardPage() {
           <NewsUpdate />
           News and Update
         </DashboardButton>
-        {/* <DashboardButton
+        <DashboardButton
           onClick={() => {
             history.push('/foreign-exchange');
           }}
         >
           <Forex />
           Foreign Exchange
-        </DashboardButton> */}
+        </DashboardButton>
       </ButtonFlexWrapper>
 
       {/* <div style={{ padding: '20px 0' }}>
@@ -382,6 +384,32 @@ export function DashboardPage() {
           <Button
             fullWidth
             onClick={() => setIsComingSoon(false)}
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Close
+          </Button>
+        </div>
+      </Dialog>
+      {/* Under Maintenance */}
+      <Dialog show={isMaintenance} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <img src={maintenance} alt="Under maintenance" />
+          <H3 margin="30px 0 10px">
+            SquidPay service is temporarily unavailable
+          </H3>
+          <p style={{ marginBottom: 35 }}>
+            Uh-oh, we are unable to provide access at this time. Rest assured
+            that we are resolving this issue, we apologize for the
+            inconvenience.
+          </p>
+          <Button
+            fullWidth
+            onClick={() => setIsMaintenance(false)}
             variant="contained"
             color="primary"
             size="large"

@@ -193,6 +193,22 @@ export default function UserProfileForm({
         if (profile && Object.keys(profile).length > 0) {
           writeProfileDetails(profile);
         }
+        if (
+          !profile &&
+          refs.countries &&
+          refs.nationalities &&
+          Object.keys(refs.countries).length > 0 &&
+          Object.keys(refs.nationalities).length > 0
+        ) {
+          const cI = refs.countries.findIndex(
+            j => j.id === '0eceb736-9131-11eb-b44f-1c1b0d14e211',
+          ); // ph id
+          setCountry({ value: cI.toString(), error: false });
+          const nI = refs.nationalities.findIndex(
+            j => j.id === '700217f7-91b1-11eb-8d33-1c1b0d14e211',
+          ); // ph id
+          setNationality({ value: nI.toString(), error: false });
+        }
       }
     }
   }, [refs, profile]);

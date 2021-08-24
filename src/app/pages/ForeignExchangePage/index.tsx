@@ -17,6 +17,7 @@ import {
 
 // styles
 import * as Styled from './ForeignExchangePage.style';
+import { numberCommas } from 'app/components/Helpers';
 
 export function ForeignExchangePage() {
   const dispatch = useDispatch();
@@ -68,19 +69,19 @@ export function ForeignExchangePage() {
               foreignExchangeData
                 .filter(currency => {
                   return (
-                    currency.name.toLowerCase().includes(value) ||
-                    currency.code.toLowerCase().includes(value)
+                    currency.name.toLowerCase().includes(value.toLowerCase()) ||
+                    currency.code.toLowerCase().includes(value.toLowerCase())
                   );
                 })
                 .map(currency => (
-                  <Styled.Rate>
+                  <Styled.Rate key={currency?.code}>
                     <Styled.CurrencyContainer>
                       <Styled.Currency>{currency?.code}</Styled.Currency>
                       <Styled.CurrentFull>{currency?.name}</Styled.CurrentFull>
                     </Styled.CurrencyContainer>
                     <Styled.Spacer />
                     <Styled.Rates>
-                      {parseFloat(currency?.rate).toFixed(4)}
+                      {numberCommas(currency?.rate, 4)}
                     </Styled.Rates>
                   </Styled.Rate>
                 ))}

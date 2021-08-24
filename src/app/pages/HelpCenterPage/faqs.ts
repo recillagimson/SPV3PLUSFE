@@ -2,7 +2,7 @@ export const faqs = [
   {
     question: 'What is SquidPay?',
     answer:
-      'SquidPay isan all-in-one digital payment solution. Simplifies the cashless payment process as you commute, shop, dine, pay your bills and manage your financesthrough one app and one card.Partnered with national agencies, local government units, banks, private entities, public utility vehicle operators, and other transport systems to offer a suite of financial technology services.',
+      'SquidPay is an all-in-one digital payment solution. Simplifies the cashless payment process as you commute, shop, dine, pay your bills and manage your finances through one app and one card. Partnered with national agencies, local government units, banks, private entities, public utility vehicle operators, and other transport systems to offer a suite of financial technology services.',
   },
   {
     question: 'What are the services of SquidPay?',
@@ -12,7 +12,7 @@ export const faqs = [
   {
     question: 'How do I register for an account?',
     answer:
-      'Download the SquidPay app from Google Play or App Store\nRegister for an account using your mobile number of e-mail address.\nEnter the required information such as Name, and Date of Birth\nSubmit proof of identification and get verified within 24 hours.',
+      'Download the SquidPay app from Google Play or App Store.\nRegister for an account using your mobile number or e-mail address.\nEnter the required information such as Name, and Date of Birth\nSubmit proof of identification and get verified within 24 hours.',
   },
   {
     question: 'How many SquidPay account can a user register?',
