@@ -6,7 +6,10 @@ import * as React from 'react';
 import styled from 'styled-components/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import loadingImg from 'app/components/Loading/loading_dark.gif';
+
 import FormElementStyle from './FormElementsStyle';
+import { StyleConstants } from 'styles/StyleConstants';
 
 const Wrapper = styled.div<{ full?: boolean }>`
   width: ${p => (p.full ? '100%' : 'auto')};
@@ -14,6 +17,19 @@ const Wrapper = styled.div<{ full?: boolean }>`
   margin-right: ${p => (!p.full ? '15px' : '0')};
   padding: 0;
   position: relative;
+
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background-color: ${StyleConstants.WHITE_TRANSPARENT_BG};
+  }
 
   .arrow {
     position: absolute;
@@ -44,6 +60,7 @@ const Wrapper = styled.div<{ full?: boolean }>`
 `;
 
 interface SelectComponentProps extends React.SelectHTMLAttributes<any> {
+  loading?: boolean;
   fullWidth?: boolean;
   children: React.ReactNodeArray | React.ReactNode;
   value: any;
@@ -51,6 +68,7 @@ interface SelectComponentProps extends React.SelectHTMLAttributes<any> {
 }
 
 export default function SelectComponent({
+  loading,
   fullWidth,
   children,
   value,
@@ -59,6 +77,11 @@ export default function SelectComponent({
 }: SelectComponentProps) {
   return (
     <Wrapper className="select-wrapper" full={fullWidth}>
+      {loading && (
+        <span className="loading">
+          <img src={loadingImg} alt="Loading..." width="40" />
+        </span>
+      )}
       <select {...rest} value={value} onChange={onChange} tabIndex={0}>
         {children}
       </select>
