@@ -422,7 +422,6 @@ export default function UserProfileForm({
 
   /** Call this function if user has profile */
   const writeProfileDetails = async (prof: any) => {
-    console.log(prof);
     setFirstName({ value: prof.first_name, error: false });
     setMiddleName({ value: prof.middle_name, error: false });
     setLastName({ value: prof.last_name, error: false });
