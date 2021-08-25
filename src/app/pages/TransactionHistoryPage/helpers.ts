@@ -7,11 +7,11 @@ export const bankListData = transactionHistoryDetailsData => {
       transactionHistoryDetailsData?.transactable?.receiver_details?.first_name
     } ${
       transactionHistoryDetailsData?.transactable?.receiver_details
-        ?.last_name || ''
+        ?.middle_name || ''
     } ${
       transactionHistoryDetailsData?.transactable?.receiver_details
-        ?.middle_name || ''
-    }`;
+        ?.last_name || ''
+    } `;
   }
   return [
     {
@@ -50,20 +50,20 @@ export const receivedMoneyListData = transactionHistoryDetailsData => {
       transactionHistoryDetailsData?.transactable?.receiver_details?.first_name
     } ${
       transactionHistoryDetailsData?.transactable?.receiver_details
-        ?.last_name || ''
+        ?.middle_name || ''
     } ${
       transactionHistoryDetailsData?.transactable?.receiver_details
-        ?.middle_name || ''
+        ?.last_name || ''
     }`;
   } else {
     fullName = `${
       transactionHistoryDetailsData?.transactable?.sender_details?.first_name
     } ${
-      transactionHistoryDetailsData?.transactable?.sender_details?.last_name ||
-      ''
-    } ${
       transactionHistoryDetailsData?.transactable?.sender_details
         ?.middle_name || ''
+    } ${
+      transactionHistoryDetailsData?.transactable?.sender_details?.last_name ||
+      ''
     }`;
   }
   return [
@@ -73,11 +73,14 @@ export const receivedMoneyListData = transactionHistoryDetailsData => {
     },
     {
       label: 'Mobile Number',
-      value: transactionHistoryDetailsData?.transactable?.sender
-        ? transactionHistoryDetailsData?.transactable?.sender.mobile_number
-        : transactionHistoryDetailsData?.transactable?.receiver
-        ? transactionHistoryDetailsData?.transactable?.receiver.mobile_number
-        : 'None',
+      value:
+        transactionHistoryDetailsData?.transactable?.sender &&
+        transactionHistoryDetailsData?.transactable?.sender !== ''
+          ? transactionHistoryDetailsData?.transactable?.sender.mobile_number
+          : transactionHistoryDetailsData?.transactable?.receiver &&
+            transactionHistoryDetailsData?.transactable?.receiver.mobile_number
+          ? transactionHistoryDetailsData?.transactable?.receiver.mobile_number
+          : 'None',
     },
     {
       label: 'Message',
@@ -125,9 +128,15 @@ export const loadListtData = transactionHistoryDetailsData => {
   return [
     {
       label: 'Mobile Number',
-      value:
-        transactionHistoryDetailsData?.transactable?.recipient_mobile_number,
+      value: transactionHistoryDetailsData?.transactable
+        ?.recipient_mobile_number
+        ? transactionHistoryDetailsData?.transactable?.recipient_mobile_number
+        : 'None',
     },
+    // {
+    //   label: 'Product Code',
+    //   value: transactionHistoryDetailsData?.transactable?.product_name,
+    // },
     {
       label: 'Transaction Number',
       value: transactionHistoryDetailsData?.transactable?.reference_number,

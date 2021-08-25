@@ -156,3 +156,17 @@ export function fileSize(size: number = 0) {
   const i = Math.floor(Math.log(fSize) / Math.log(k));
   return parseFloat((fSize / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
+/**
+ * Convert string to title case
+ * @param {string}  text      text to transform
+ */
+export function toTitleCase(text: string = '') {
+  if (text === '') {
+    return text; // return the text if it is empty
+  }
+
+  return text.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}

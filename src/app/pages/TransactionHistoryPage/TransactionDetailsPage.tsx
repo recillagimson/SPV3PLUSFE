@@ -31,6 +31,7 @@ import {
   loadListtData,
   paybillsData,
 } from './helpers';
+import { toTitleCase } from 'app/components/Helpers';
 
 // Assets
 import Logo from 'app/components/Assets/Logo';
@@ -153,7 +154,7 @@ function TransactionHistoryDetailsPage(props) {
                             : 'text-red'
                         }
                       >
-                        {transactionHistoryDetailsData.status}
+                        {toTitleCase(transactionHistoryDetailsData.status)}
                       </p>
                     </S.TransactionDetailsListItem>
                   </S.TransactionDetailsList>
