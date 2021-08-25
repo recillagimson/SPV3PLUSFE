@@ -101,7 +101,8 @@ function TransactionHistoryDetailsPage(props) {
     return [];
   };
 
-  const hasServiceFee = isBankTransaction || isLoadTransaction;
+  // const hasServiceFee = isBankTransaction || isLoadTransaction;
+  const hasServiceFee = isPayBillsTransaction;
   let date = DateTime.fromSQL(
     transactionHistoryDetailsData?.transactable?.created_at,
   );

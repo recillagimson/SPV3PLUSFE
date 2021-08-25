@@ -1,4 +1,4 @@
-import { parseToNumber, numberWithCommas } from 'utils/common';
+import { numberWithCommas } from 'utils/common';
 
 export const bankListData = transactionHistoryDetailsData => {
   let fullName = transactionHistoryDetailsData?.transactable?.account_name;
@@ -20,18 +20,21 @@ export const bankListData = transactionHistoryDetailsData => {
     },
     {
       label: 'Account Number',
-      value: transactionHistoryDetailsData?.transactable?.account_number,
+      value: transactionHistoryDetailsData?.transactable?.account_number.replace(
+        /\w(?=(?:\W*\w){4})/g,
+        '*',
+      ),
     },
     {
       label: 'Account Name',
       value: fullName,
     },
-    {
-      label: 'Amount',
-      value: `PHP ${numberWithCommas(
-        parseToNumber(transactionHistoryDetailsData?.transactable?.amount),
-      )}`,
-    },
+    // {
+    //   label: 'Amount',
+    //   value: `PHP ${numberWithCommas(
+    //     parseToNumber(transactionHistoryDetailsData?.transactable?.amount),
+    //   )}`,
+    // },
     {
       label: 'Send Receipt To',
       value: transactionHistoryDetailsData?.transactable?.send_receipt_to,
@@ -39,6 +42,10 @@ export const bankListData = transactionHistoryDetailsData => {
     {
       label: 'Purpose of transaction',
       value: transactionHistoryDetailsData?.transactable?.purpose,
+    },
+    {
+      label: 'Transaction Number',
+      value: transactionHistoryDetailsData?.reference_number || 'None',
     },
   ];
 };
@@ -125,6 +132,7 @@ export const dragonpayListData = transactionHistoryDetailsData => {
 };
 
 export const loadListtData = transactionHistoryDetailsData => {
+  console.log(transactionHistoryDetailsData);
   return [
     {
       label: 'Mobile Number',
@@ -141,17 +149,17 @@ export const loadListtData = transactionHistoryDetailsData => {
       label: 'Transaction Number',
       value: transactionHistoryDetailsData?.transactable?.reference_number,
     },
-    {
-      label: 'Message',
-      value: transactionHistoryDetailsData?.transactable?.message || 'None',
-    },
+    // {
+    //   label: 'Message',
+    //   value: transactionHistoryDetailsData?.transactable?.message || 'None',
+    // },
   ];
 };
 
 export const paybillsData = transactionHistoryDetailsData => {
   return [
     {
-      label: 'Billers Name',
+      label: 'Account Name',
       value: transactionHistoryDetailsData?.transactable?.billers_name,
     },
     {
@@ -159,14 +167,14 @@ export const paybillsData = transactionHistoryDetailsData => {
       value: transactionHistoryDetailsData?.transactable?.account_number,
     },
     {
-      label: 'Biller Reference Number',
+      label: 'Reference Number',
       value:
         transactionHistoryDetailsData?.transactable?.biller_reference_number,
     },
-    {
-      label: 'Message',
-      value: transactionHistoryDetailsData?.transactable?.message || 'None',
-    },
+    // {
+    //   label: 'Message',
+    //   value: transactionHistoryDetailsData?.transactable?.message || 'None',
+    // },
     {
       label: 'Amount',
       value: `PHP ${numberWithCommas(
