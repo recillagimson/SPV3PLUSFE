@@ -32,7 +32,7 @@ export function ContactUsPage() {
           <ListItem flex>
             <ListItemText
               label="Website"
-              primary="https://account.squid.ph"
+              primary="https://squidpay.ph"
               style={{
                 flexGrow: 1,
               }}

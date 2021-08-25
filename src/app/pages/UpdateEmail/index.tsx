@@ -62,7 +62,10 @@ export function UpdateEmailPage() {
   const [showForm, setShowForm] = React.useState(true);
   const [showVerify, setShowVerify] = React.useState(false);
 
-  const [fromPath, setFromPath] = React.useState('/dashboard');
+  const [fromPath, setFromPath] = React.useState({
+    path: '/dashboard',
+    channel: 'dashboard',
+  });
   const [email, setEmail] = React.useState({
     value: '',
     error: false,
@@ -83,7 +86,11 @@ export function UpdateEmailPage() {
 
   React.useEffect(() => {
     if (location && location.state && location.state !== '') {
-      setFromPath(location.state || '/dashboard');
+      const from = {
+        path: location.state.path || '/dashboard',
+        channel: location.state.channel || 'dashboard',
+      };
+      setFromPath(from);
     }
   }, [location]);
 
@@ -218,7 +225,7 @@ export function UpdateEmailPage() {
     });
 
     dispatch(appActions.getLoadUserProfile());
-    history.push(fromPath);
+    history.push(fromPath.path);
   };
 
   let showAsDialog = false;
@@ -243,7 +250,7 @@ export function UpdateEmailPage() {
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={() => history.push(fromPath)}
+                onClick={() => history.push(fromPath.path)}
               >
                 Cancel
               </Button>
@@ -299,6 +306,12 @@ export function UpdateEmailPage() {
               onSuccess={onCodeVerified}
               otpType="update_email"
               apiURL="/auth/verify/otp"
+              viaValue={
+                fromPath.channel === 'dragonpay'
+                  ? email.value.trim()
+                  : undefined
+              }
+              isEmail={fromPath.channel === 'dragonpay'}
               isUserToken
             />
 

@@ -110,7 +110,7 @@ export function LoginPage() {
             }
             if (i === 105) {
               setErrorCode(105);
-              return 'Your Account has been locked, Please contact Squidpay Support for assistance in unlocking your account.';
+              return 'Your account is Locked due to suspicious activity. Please contact support@squid.ph or call (02) 85217035 to request for access.';
             }
             return undefined;
           });
