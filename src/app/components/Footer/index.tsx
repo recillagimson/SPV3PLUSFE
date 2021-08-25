@@ -11,7 +11,7 @@ export default function FooterComponent() {
     <Wrapper className="site-footer">
       <p>
         &copy; {new Date().getFullYear()} SquidPay Technology Inc.{' '}
-        {process.env.NODE_ENV !== 'production' && (
+        {process.env.REACT_APP_SENTRY_ENV !== 'release' && (
           <span>
             (v{process.env.REACT_APP_VERSION} build: {build.build_no})
           </span>
