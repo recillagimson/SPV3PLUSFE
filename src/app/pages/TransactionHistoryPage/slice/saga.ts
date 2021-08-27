@@ -109,13 +109,6 @@ function* getTransactionHistoryDetails() {
       );
 
       yield put(actions.getTransactionHistoryDetailsSuccess(decryptData));
-    } else {
-      yield put(
-        actions.getTransactionHistoryDetailsError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
     }
   } catch (err) {
     // special case, check the 422 for invalid data (account already exists)

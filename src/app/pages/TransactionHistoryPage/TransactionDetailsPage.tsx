@@ -31,6 +31,7 @@ import {
   loadListtData,
   paybillsData,
 } from './helpers';
+import { toTitleCase } from 'app/components/Helpers';
 
 // Assets
 import Logo from 'app/components/Assets/Logo';
@@ -100,7 +101,8 @@ function TransactionHistoryDetailsPage(props) {
     return [];
   };
 
-  const hasServiceFee = isBankTransaction || isLoadTransaction;
+  // const hasServiceFee = isBankTransaction || isLoadTransaction;
+  const hasServiceFee = isPayBillsTransaction;
   let date = DateTime.fromSQL(
     transactionHistoryDetailsData?.transactable?.created_at,
   );
@@ -130,10 +132,11 @@ function TransactionHistoryDetailsPage(props) {
                 />
                 <S.TransactionDetailsWrapperContent>
                   <h6>
-                    {
-                      transactionHistoryDetailsData?.transaction_category
-                        ?.description
-                    }
+                    {isDragonpayTransaction
+                      ? transactionHistoryDetailsData?.transaction_category
+                          ?.title
+                      : transactionHistoryDetailsData?.transaction_category
+                          ?.description}
                   </h6>
                   <S.TransactionDetailsList>
                     {renderListItems().map((d, i) => (
@@ -153,7 +156,7 @@ function TransactionHistoryDetailsPage(props) {
                             : 'text-red'
                         }
                       >
-                        {transactionHistoryDetailsData.status}
+                        {toTitleCase(transactionHistoryDetailsData.status)}
                       </p>
                     </S.TransactionDetailsListItem>
                   </S.TransactionDetailsList>

@@ -26,6 +26,7 @@ import * as S from './TransactionHistory.style';
 
 // Assets
 import NoTransactionsLogo from 'app/components/Assets/no-transactions.svg';
+import { toTitleCase } from 'app/components/Helpers';
 
 export function TransactionHistoryPage(props) {
   const { actions } = useContainerSaga();
@@ -216,7 +217,7 @@ export function TransactionHistoryPage(props) {
                                 : 'text-red'
                             }
                           >
-                            ({d.status})
+                            ({toTitleCase(d.status)})
                           </span>
                         </S.ListTitle>
                         <S.ListDescription>{monthDateYear}</S.ListDescription>
