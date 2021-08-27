@@ -82,7 +82,7 @@ export const receivedMoneyListData = transactionHistoryDetailsData => {
       label: 'Mobile Number',
       value:
         transactionHistoryDetailsData?.transactable?.sender &&
-        transactionHistoryDetailsData?.transactable?.sender !== ''
+        transactionHistoryDetailsData?.transactable?.sender.mobile_number
           ? maskCharacters(
               transactionHistoryDetailsData?.transactable?.sender.mobile_number,
             )
