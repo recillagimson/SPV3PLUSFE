@@ -31,7 +31,6 @@ import { doSignOut, getCookie } from 'app/components/Helpers';
 
 import FlagsProvider from 'utils/FlagsProvider';
 import { GlobalStyle } from 'styles/global-styles';
-import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
 
 import { DashboardPage } from 'app/pages/DashboardPage/Loadable';
 // import { CardMemberAgreementPage } from 'app/pages/CardMemberAgreementPage/Loadable';
@@ -72,10 +71,13 @@ import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
 import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
 import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent/Loadable';
 import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/Loadable';
-import SuccessPostBack from './SuccessPostback';
+
+import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 import { ComingSoonPage } from 'app/components/ComingSoonPage/Loadable';
+
+import SuccessPostBack from './SuccessPostback';
 
 // import pageRoutes from './Routes';
 
@@ -140,7 +142,7 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (!forceUpdate && decrypt && path !== '/transaction-success') {
+    if (!forceUpdate && decrypt && path !== '/postback') {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
@@ -187,31 +189,7 @@ export function App() {
     }
   }, [isServerError]);
 
-  // const getRemoteConfigValues = () => {
-  //   remoteConfig
-  //     .fetchAndActivate()
-  //     .then(() => {
-  //       return remoteConfig.getAll();
-  //     })
-  //     .then(remoteFlags => {
-  //       const newFlags = {
-  //         ...flags,
-  //       };
-
-  //       for (const [key, config] of Object.entries(remoteFlags)) {
-  //         newFlags[key] = config.asBoolean();
-  //       }
-  //       window['spFlags'] = newFlags || {};
-
-  //       setFlags(newFlags);
-  //     })
-  //     .catch(err => captureException(err));
-  // };
-
   const onClickSessionExpired = () => {
-    // window.location.replace('/');
-    // dispatch(actions.getIsAuthenticated(false));
-    // dispatch(actions.getIsSessionExpired(false));
     doSignOut();
   };
 
@@ -256,7 +234,7 @@ export function App() {
       </Helmet>
 
       <Main className={isAuthenticated ? 'spdin' : undefined}>
-        {currentLocation && currentLocation !== '/transaction-success' && (
+        {currentLocation && currentLocation !== '/postback' && (
           <Header
             isLoggedIn={isAuthenticated}
             blankPage={isBlankPage ? true : false}
@@ -390,17 +368,14 @@ export function App() {
               component={TermsAndConditionConsent}
             />
 
-            <Route
-              exact
-              path="/transaction-success"
-              component={SuccessPostBack}
-            />
+            <Route exact path="/postback" component={SuccessPostBack} />
             {/* Not found page should be the last entry for this <Switch /> container */}
             <Route path="/error" component={Page500} />
             <Route path="/comingsoon" component={ComingSoonPage} />
             <Route component={NotFoundPage} />
           </Switch>
-          {!isBlankPage && <Footer />}
+          {!isBlankPage ||
+            (currentLocation && currentLocation !== '/postback' && <Footer />)}
         </Content>
       </Main>
       <Dialog show={isSessionExpired} size="small">

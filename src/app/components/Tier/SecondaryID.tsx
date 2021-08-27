@@ -53,6 +53,7 @@ export default function SecondaryIDsComponent({
   const [idCount, setIDCount] = React.useState(0); // will record if user has uploaded two types of id
   const [id, setID] = React.useState<{ id: string; current: boolean }[]>([]);
   const [idNumber, setIDNumber] = React.useState({ value: '', error: false });
+  const [uploadedID, setUploadedID] = React.useState<string[]>([]);
   const [showIDSelection, setShowIDSelection] = React.useState(true);
   const [showIDInput, setShowIDInput] = React.useState(false);
   const [showUpload, setShowUpload] = React.useState(false);
@@ -101,20 +102,24 @@ export default function SecondaryIDsComponent({
   };
 
   const onSuccessUpload = (ids: string[] = []) => {
+    const guids = [...uploadedID, ...ids];
     if (idCount === 0 && id.length < 2) {
       setCookie('spv_sec_count', idCount.toString());
       setShowUpload(false);
       setShowIDSelection(true);
       setIDNumber({ value: '', error: false });
+      setUploadedID(guids);
     }
     if (idCount === 1 && id.length < 2) {
       setCookie('spv_sec_count', idCount.toString());
       setShowUpload(false);
       setShowIDSelection(true);
       setIDNumber({ value: '', error: false });
+      setUploadedID(guids);
     }
     if (id.length === 2) {
-      onSuccess(ids);
+      // onSuccess(ids);
+      onSuccess(guids);
       deleteCookie('spv_sec_count');
       setIDCount(0);
     }
@@ -124,6 +129,7 @@ export default function SecondaryIDsComponent({
     onBack();
     setIDCount(0);
     setID([]);
+    setUploadedID([]);
     setIDNumber({ value: '', error: false });
     setShowIDSelection(true);
     setShowIDInput(false);
