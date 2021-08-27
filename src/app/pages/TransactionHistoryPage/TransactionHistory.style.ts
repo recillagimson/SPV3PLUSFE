@@ -247,7 +247,7 @@ export const TransactionDetailsListItem = styled.li`
     margin: 0;
 
     &:first-child {
-      width: 160px;
+      width: 159px;
     }
 
     &:last-child {

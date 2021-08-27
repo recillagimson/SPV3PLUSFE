@@ -374,8 +374,8 @@ export function App() {
             <Route path="/comingsoon" component={ComingSoonPage} />
             <Route component={NotFoundPage} />
           </Switch>
-          {!isBlankPage ||
-            (currentLocation && currentLocation !== '/postback' && <Footer />)}
+          {(!isBlankPage ||
+            (currentLocation && currentLocation !== '/postback')) && <Footer />}
         </Content>
       </Main>
       <Dialog show={isSessionExpired} size="small">

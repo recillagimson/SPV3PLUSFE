@@ -132,10 +132,11 @@ function TransactionHistoryDetailsPage(props) {
                 />
                 <S.TransactionDetailsWrapperContent>
                   <h6>
-                    {
-                      transactionHistoryDetailsData?.transaction_category
-                        ?.description
-                    }
+                    {isDragonpayTransaction
+                      ? transactionHistoryDetailsData?.transaction_category
+                          ?.title
+                      : transactionHistoryDetailsData?.transaction_category
+                          ?.description}
                   </h6>
                   <S.TransactionDetailsList>
                     {renderListItems().map((d, i) => (

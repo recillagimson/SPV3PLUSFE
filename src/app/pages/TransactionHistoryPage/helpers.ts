@@ -1,3 +1,4 @@
+import { maskCharacters } from 'app/components/Helpers';
 import { numberWithCommas } from 'utils/common';
 
 export const bankListData = transactionHistoryDetailsData => {
@@ -20,9 +21,8 @@ export const bankListData = transactionHistoryDetailsData => {
     },
     {
       label: 'Account Number',
-      value: transactionHistoryDetailsData?.transactable?.account_number.replace(
-        /\w(?=(?:\W*\w){4})/g,
-        '*',
+      value: maskCharacters(
+        transactionHistoryDetailsData?.transactable?.account_number,
       ),
     },
     {
@@ -83,10 +83,15 @@ export const receivedMoneyListData = transactionHistoryDetailsData => {
       value:
         transactionHistoryDetailsData?.transactable?.sender &&
         transactionHistoryDetailsData?.transactable?.sender !== ''
-          ? transactionHistoryDetailsData?.transactable?.sender.mobile_number
+          ? maskCharacters(
+              transactionHistoryDetailsData?.transactable?.sender.mobile_number,
+            )
           : transactionHistoryDetailsData?.transactable?.receiver &&
             transactionHistoryDetailsData?.transactable?.receiver.mobile_number
-          ? transactionHistoryDetailsData?.transactable?.receiver.mobile_number
+          ? maskCharacters(
+              transactionHistoryDetailsData?.transactable?.receiver
+                .mobile_number,
+            )
           : 'None',
     },
     {
@@ -121,7 +126,9 @@ export const dragonpayListData = transactionHistoryDetailsData => {
         transactionHistoryDetailsData.transactable &&
         transactionHistoryDetailsData?.transactable.user_details &&
         transactionHistoryDetailsData?.transactable.user_details.mobile_number
-          ? transactionHistoryDetailsData?.user_details.mobile_number
+          ? maskCharacters(
+              transactionHistoryDetailsData?.user_details.mobile_number,
+            )
           : 'None',
     },
     {
@@ -132,13 +139,15 @@ export const dragonpayListData = transactionHistoryDetailsData => {
 };
 
 export const loadListtData = transactionHistoryDetailsData => {
-  console.log(transactionHistoryDetailsData);
   return [
     {
       label: 'Mobile Number',
       value: transactionHistoryDetailsData?.transactable
         ?.recipient_mobile_number
-        ? transactionHistoryDetailsData?.transactable?.recipient_mobile_number
+        ? maskCharacters(
+            transactionHistoryDetailsData?.transactable
+              ?.recipient_mobile_number,
+          )
         : 'None',
     },
     // {
@@ -164,7 +173,9 @@ export const paybillsData = transactionHistoryDetailsData => {
     },
     {
       label: 'Account Number',
-      value: transactionHistoryDetailsData?.transactable?.account_number,
+      value: maskCharacters(
+        transactionHistoryDetailsData?.transactable?.account_number,
+      ),
     },
     {
       label: 'Reference Number',
