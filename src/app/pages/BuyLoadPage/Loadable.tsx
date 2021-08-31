@@ -4,7 +4,17 @@
 
 import { lazyLoad } from 'utils/loadable';
 
-export const BuyLoad = lazyLoad(
+export const BuyLoadIndexPage = lazyLoad(
   () => import('./index'),
-  module => module.BuyLoad,
+  module => module.BuyLoadIndexPage,
+);
+
+export const BuyLoadPage = lazyLoad(
+  () => import('./Load'),
+  module => module.BuyLoadPage,
+);
+
+export const BuyEpinsPage = lazyLoad(
+  () => import('./EPins'),
+  module => module.BuyEpinsPage,
 );

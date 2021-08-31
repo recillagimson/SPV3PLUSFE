@@ -38,7 +38,7 @@ import {
   selectPayError,
 } from './slice/selectors';
 
-export function BuyEpins() {
+export function BuyEpinsPage() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   let success: any = useSelector(selectData);
