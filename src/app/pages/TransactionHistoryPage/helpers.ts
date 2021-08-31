@@ -198,3 +198,33 @@ export const paybillsData = transactionHistoryDetailsData => {
     },
   ];
 };
+
+export const drCrMemoData = transactionHistoryDetailsData => {
+  return [
+    {
+      label: 'Memo Category',
+      value: transactionHistoryDetailsData?.transactable?.category,
+    },
+    {
+      label: 'Type of Memo',
+      value:
+        transactionHistoryDetailsData?.transactable?.type_of_memo === 'CR'
+          ? 'Credit'
+          : 'Debit',
+    },
+    {
+      label: 'Reference Number',
+      value: transactionHistoryDetailsData?.reference_number,
+    },
+    {
+      label: 'Remarks',
+      value: transactionHistoryDetailsData?.transactable?.remarks || 'None',
+    },
+    // {
+    //   label: 'Amount',
+    //   value: `PHP ${numberWithCommas(
+    //     transactionHistoryDetailsData?.total_amount,
+    //   )}`,
+    // },
+  ];
+};

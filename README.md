@@ -111,3 +111,21 @@ v1.0.4
 - First time user profile creation - Successfull message (VVBT-229)
 - Transaction History additional information on Paybills details (VVBT-232)
 - Paybills MECOR changes, added BayadPartner Logo (BayadCenter)
+
+v1.0.5
+
+- OTP standardize message
+
+v1.0.6
+
+- VVBT-328 Fix OTP message on Update Email in Dragonpay
+
+v1.0.7
+
+- Fix OTP message on Dragonpay Update Email (VVBT-328)
+- Fix display on transaction history details (VVBT-232)
+
+v1.1.0
+
+- Foreign Exchange Rate
+- Updated FAQs

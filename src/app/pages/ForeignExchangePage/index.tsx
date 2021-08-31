@@ -50,12 +50,13 @@ export function ForeignExchangePage() {
               display: 'flex',
               flexFlow: 'row',
               justifyContent: 'flex-end',
-              margin: '8px 0 24px',
+              margin: '8px 0 15px',
             }}
           >
             <Input
               style={{
-                width: '342px',
+                width: '100%',
+                maxWidth: '320px',
               }}
               value={value}
               onChange={e => setSearchValue({ value: e.currentTarget.value })}
@@ -68,8 +69,8 @@ export function ForeignExchangePage() {
               foreignExchangeData
                 .filter(currency => {
                   return (
-                    currency.name.toLowerCase().includes(value) ||
-                    currency.code.toLowerCase().includes(value)
+                    currency.name.toLowerCase().includes(value.toLowerCase()) ||
+                    currency.code.toLowerCase().includes(value.toLowerCase())
                   );
                 })
                 .map(currency => (

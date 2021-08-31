@@ -5,7 +5,7 @@
 import styled from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
-const DashboardButton = styled.button`
+const DashboardButton = styled.button<{ border?: boolean }>`
   outline: 0;
   border: 0;
   background: #fff;
@@ -15,6 +15,7 @@ const DashboardButton = styled.button`
   justify-content: center;
   flex-direction: column;
   border-radius: ${StyleConstants.BORDER_RADIUS};
+  border: ${p => (p.border ? `1px solid ${StyleConstants.BORDER_COLOR}` : '0')};
   font-size: 0.9rem;
   color: inherit;
   display: block;
