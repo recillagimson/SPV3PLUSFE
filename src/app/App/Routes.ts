@@ -12,10 +12,13 @@ import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { ScanQR } from 'app/pages/ScanQR/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
-import { BuyLoad } from 'app/pages/BuyLoadPage/Loadable';
+import {
+  BuyLoadIndexPage,
+  BuyLoadPage,
+  BuyEpinsPage,
+} from 'app/pages/BuyLoadPage/Loadable';
 import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import { PayBillsPage } from 'app/pages/PayBillsPage/Loadable';
-import { BuyEpins } from 'app/pages/BuyEpinPage/Loadable';
 
 type RouteProps = {
   path: string;
@@ -76,15 +79,22 @@ const pageRoutes: RouteProps = [
     exact: false,
   },
   {
-    path: '/buyload',
-    component: BuyLoad,
+    path: '/buy',
+    component: BuyLoadIndexPage,
     secured: true,
     enabled: true,
     exact: false,
   },
   {
-    path: '/buy-epins',
-    component: BuyEpins,
+    path: '/buy/load',
+    component: BuyLoadPage,
+    secured: true,
+    enabled: true,
+    exact: false,
+  },
+  {
+    path: '/buy/epins',
+    component: BuyEpinsPage,
     secured: true,
     enabled: true,
     exact: false,
