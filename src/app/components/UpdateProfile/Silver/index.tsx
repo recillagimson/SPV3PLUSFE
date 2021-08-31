@@ -653,7 +653,8 @@ export default function UserProfileForm({
       id_photos_ids: isTierUpgrade ? idPhotoID : undefined,
       id_selfie_ids: isTierUpgrade ? selfieID : undefined,
     };
-    dispatch(actions.getFetchLoading(data));
+    console.log('payload', data);
+    // dispatch(actions.getFetchLoading(data));
   };
 
   // close error dialog

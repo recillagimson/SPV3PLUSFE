@@ -2,6 +2,7 @@ type FieldInput<T> = {
   value: T;
   error: boolean;
   type?: string;
+  msg?: string;
   validation?: {
     type: string;
     validate: boolean | RegExp | Function;
@@ -37,6 +38,7 @@ export const initialFormValues: FormModel = {
     value: '',
     type: 'stringMatch',
     error: false,
+    msg: '',
   },
   recipient_name: {
     value: '',
