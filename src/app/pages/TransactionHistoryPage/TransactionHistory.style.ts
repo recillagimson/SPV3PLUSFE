@@ -233,6 +233,7 @@ export const TransactionDetailsList = styled.ul`
 export const TransactionDetailsListItem = styled.li`
   align-items: center;
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 10px;
 
@@ -246,14 +247,15 @@ export const TransactionDetailsListItem = styled.li`
     line-height: 21px;
     margin: 0;
 
-    &:first-child {
-      width: 160px;
-    }
+    /* &:first-child {
+      width: 159px;
+    } */
 
     &:last-child {
       flex: 1;
       font-weight: 600;
       text-align: right;
+      padding-left: 10px;
     }
   }
 `;

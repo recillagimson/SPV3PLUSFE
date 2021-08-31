@@ -22,7 +22,7 @@ import H3 from 'app/components/Elements/H3';
 
 // import PromosDeals from 'app/components/PromosDeals';
 
-import { numberCommas } from 'app/components/Helpers';
+import { numberCommas, toTitleCase } from 'app/components/Helpers';
 import { TierIDs } from 'app/components/Helpers/Tiers';
 
 /** svg icons */
@@ -35,7 +35,7 @@ import BuyLoad from 'app/components/Assets/BuyLoad';
 import QRCode from 'app/components/Assets/QRCode';
 import QuickGuide from 'app/components/Assets/QuickGuide';
 // import Others from 'app/components/Assets/Others';
-import Forex from 'app/components/Assets/Forex';
+// import Forex from 'app/components/Assets/Forex';
 import NewsUpdate from 'app/components/Assets/NewsUpdate';
 import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
 import comingSoon from 'app/components/Assets/coming-soon.png';
@@ -122,7 +122,7 @@ export function DashboardPage() {
             bold
             primary={i.transaction_category.title}
             secondary={date.toFormat('LLLL dd, yyyy\ntt')}
-            caption={i.status}
+            caption={toTitleCase(i.status)}
             captionClass={
               i.status === 'SUCCESS'
                 ? 'text-green'
@@ -321,14 +321,14 @@ export function DashboardPage() {
           <NewsUpdate />
           News and Update
         </DashboardButton>
-        <DashboardButton
+        {/* <DashboardButton
           onClick={() => {
             history.push('/foreign-exchange');
           }}
         >
           <Forex />
           Foreign Exchange
-        </DashboardButton>
+        </DashboardButton> */}
       </ButtonFlexWrapper>
 
       {/* <div style={{ padding: '20px 0' }}>

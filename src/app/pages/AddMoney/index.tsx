@@ -74,7 +74,10 @@ export function AddMoney() {
             onClick={() =>
               history.push({
                 pathname: '/profile/update-email',
-                state: '/add-money',
+                state: {
+                  path: '/add-money',
+                  channel: 'dragonpay',
+                },
               })
             }
             variant="contained"
