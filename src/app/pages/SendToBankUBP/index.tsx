@@ -146,6 +146,7 @@ export function SendToBankUBP() {
   }, [validateTransaction, isSubmitted]);
 
   React.useEffect(() => {
+    console.log(apiErrors);
     if (apiErrors?.errors?.error_code?.length) {
       apiErrors?.errors?.error_code?.map(err => {
         switch (err) {
@@ -169,6 +170,9 @@ export function SendToBankUBP() {
           case 151:
             setErrors('Encrypted payload is invalid.');
             break;
+          case 203:
+            setErrors('Invalid provider.');
+            break;
           default:
             setErrors('Please try again later.');
             break;
@@ -176,6 +180,21 @@ export function SendToBankUBP() {
         setFailedDialog(true);
         return null;
       });
+    }
+    if (apiErrors && apiErrors.errors) {
+      if (
+        apiErrors.errors.recipient_account_no &&
+        apiErrors.errors.recipient_account_no.length > 0
+      ) {
+        updateFormData({
+          ...formData,
+          recipient_account_no: {
+            ...formData['recipient_account_no'],
+            error: true,
+            msg: apiErrors.errors.recipient_account_no.join('\n'),
+          },
+        });
+      }
     }
   }, [apiErrors]);
 
@@ -208,11 +227,13 @@ export function SendToBankUBP() {
                   <Label>Enter Amount</Label>
                   <InputTextWrapper>
                     <Input
+                      type="number"
                       value={formData.amount.value}
                       onChange={onChangeFieldValue}
                       name="amount"
                       className={formData.amount.error ? 'error' : undefined}
                       placeholder="0.00"
+                      hidespinner
                     />
                     <span>PHP</span>
                   </InputTextWrapper>
@@ -244,9 +265,14 @@ export function SendToBankUBP() {
                     className={
                       formData.recipient_account_no.error ? 'error' : undefined
                     }
+                    maxLength={12}
                   />
                   {formData.recipient_account_no.error && (
-                    <ErrorMsg formError>Account number is required.</ErrorMsg>
+                    <ErrorMsg formError>
+                      {formData.recipient_account_no.msg === ''
+                        ? 'Account number is required.'
+                        : formData.recipient_account_no.msg}
+                    </ErrorMsg>
                   )}
                 </Field>
                 <Field>
@@ -274,6 +300,7 @@ export function SendToBankUBP() {
                     onChange={onChangeFieldValue}
                     name="particulars"
                     className={formData.particulars.error ? 'error' : undefined}
+                    maxLength={60}
                   />
                   {formData.particulars.error && (
                     <ErrorMsg formError>{'Particulars is required.'}</ErrorMsg>
@@ -286,6 +313,7 @@ export function SendToBankUBP() {
                     onChange={onChangeFieldValue}
                     name="remarks"
                     className={formData.remarks.error ? 'error' : undefined}
+                    maxLength={60}
                   />
                   {formData.remarks.error && (
                     <ErrorMsg formError>{'Remark is required.'}</ErrorMsg>

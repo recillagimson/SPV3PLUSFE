@@ -216,3 +216,14 @@ export function sortBy(
 
   return arr;
 }
+
+/* Mask characters
+ * @param {string}  text          the string to be masked
+ * @param {number}  lastDigits    number of last digits that will not be masked
+ *                                default 4
+ * @returns masked string
+ */
+export function maskCharacters(text: any = '') {
+  // /\w(?=(?:\W*\w){4})/g
+  return text.replace(/\w(?=\w{4,}$)/g, '*');
+}
