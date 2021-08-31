@@ -51,12 +51,13 @@ export function ForeignExchangePage() {
               display: 'flex',
               flexFlow: 'row',
               justifyContent: 'flex-end',
-              margin: '8px 0 24px',
+              margin: '8px 0 15px',
             }}
           >
             <Input
               style={{
-                width: '342px',
+                width: '100%',
+                maxWidth: '320px',
               }}
               value={value}
               onChange={e => setSearchValue({ value: e.currentTarget.value })}

@@ -126,7 +126,7 @@ export function DashboardPage() {
             secondary={date.toFormat('LLLL dd, yyyy\ntt')}
             caption={toTitleCase(i.status)}
             captionClass={
-              i.status === 'SUCCESS'
+              i.status === 'SUCCESS' || i.status === 'APPROVED'
                 ? 'text-green'
                 : i.status === 'PENDING'
                 ? 'text-yellow'
@@ -278,7 +278,7 @@ export function DashboardPage() {
             if (flags && !flags.buy_load_enabled) {
               setIsMaintenance(true);
             } else {
-              history.push('/buy');
+              history.push('/buy/load');
             }
           }}
         >
@@ -325,7 +325,11 @@ export function DashboardPage() {
         </DashboardButton>
         <DashboardButton
           onClick={() => {
-            history.push('/foreign-exchange');
+            if (flags && !flags.forex_enabled) {
+              setIsMaintenance(true);
+            } else {
+              history.push('/foreign-exchange');
+            }
           }}
         >
           <Forex />
