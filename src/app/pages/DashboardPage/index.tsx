@@ -124,7 +124,7 @@ export function DashboardPage() {
             secondary={date.toFormat('LLLL dd, yyyy\ntt')}
             caption={toTitleCase(i.status)}
             captionClass={
-              i.status === 'SUCCESS'
+              i.status === 'SUCCESS' || i.status === 'APPROVED'
                 ? 'text-green'
                 : i.status === 'PENDING'
                 ? 'text-yellow'

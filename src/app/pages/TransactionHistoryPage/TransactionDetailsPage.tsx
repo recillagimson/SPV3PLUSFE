@@ -30,6 +30,7 @@ import {
   dragonpayListData,
   loadListtData,
   paybillsData,
+  drCrMemoData,
 } from './helpers';
 import { toTitleCase } from 'app/components/Helpers';
 
@@ -88,6 +89,11 @@ function TransactionHistoryDetailsPage(props) {
       'Bills Payment',
     ) !== -1;
 
+  const isDebitCreditMemo =
+    transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
+      'Memo',
+    ) !== -1;
+
   const renderListItems = () => {
     if (isBankTransaction) return bankListData(transactionHistoryDetailsData);
     if (isReceiveMoneyTransaction || isSendMoneyTransaction)
@@ -97,6 +103,7 @@ function TransactionHistoryDetailsPage(props) {
     if (isLoadTransaction) return loadListtData(transactionHistoryDetailsData);
     if (isPayBillsTransaction)
       return paybillsData(transactionHistoryDetailsData);
+    if (isDebitCreditMemo) return drCrMemoData(transactionHistoryDetailsData);
 
     return [];
   };
@@ -149,7 +156,8 @@ function TransactionHistoryDetailsPage(props) {
                       <p>Status</p>
                       <p
                         className={
-                          transactionHistoryDetailsData.status === 'SUCCESS'
+                          transactionHistoryDetailsData.status === 'SUCCESS' ||
+                          transactionHistoryDetailsData.status === 'APPROVED'
                             ? 'text-green'
                             : transactionHistoryDetailsData.status === 'PENDING'
                             ? 'text-yellow'

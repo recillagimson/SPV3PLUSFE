@@ -210,7 +210,7 @@ export function TransactionHistoryPage(props) {
                           {d.transaction_category.title}{' '}
                           <span
                             className={
-                              d.status === 'SUCCESS'
+                              d.status === 'SUCCESS' || d.status === 'APPROVED'
                                 ? 'text-green'
                                 : d.status === 'PENDING'
                                 ? 'text-yellow'
