@@ -44,6 +44,7 @@ export function* getMaritalStatus() {
         decryptPhrase.passPhrase,
       );
 
+      localStorage.setItem('spv_marital', JSON.stringify(decryptData)); // set the reference in the local storage
       return decryptData;
     }
   } catch (err) {
@@ -82,6 +83,7 @@ export function* getNatureOfWork() {
         decryptPhrase.passPhrase,
       );
 
+      localStorage.setItem('spv_nature', JSON.stringify(decryptData)); // set the reference in the local storage
       return decryptData;
     }
   } catch (err) {
@@ -120,6 +122,7 @@ export function* getNationalities() {
         decryptPhrase.passPhrase,
       );
 
+      localStorage.setItem('spv_nationalities', JSON.stringify(decryptData)); // set the reference in the local storage
       return decryptData;
     }
   } catch (err) {
@@ -158,6 +161,7 @@ export function* getCountries() {
         decryptPhrase.passPhrase,
       );
 
+      localStorage.setItem('spv_countries', JSON.stringify(decryptData)); // set the reference in the local storage
       return decryptData;
     }
   } catch (err) {
@@ -196,6 +200,7 @@ export function* getSignUpHost() {
         decryptPhrase.passPhrase,
       );
 
+      localStorage.setItem('spv_signup', JSON.stringify(decryptData)); // set the reference in the local storage
       return decryptData;
     }
   } catch (err) {
@@ -234,6 +239,7 @@ export function* getCurrencies() {
         decryptPhrase.passPhrase,
       );
 
+      localStorage.setItem('spv_currencies', JSON.stringify(decryptData)); // set the reference in the local storage
       return decryptData;
     }
   } catch (err) {
@@ -272,6 +278,7 @@ export function* getSourceOfFunds() {
         decryptPhrase.passPhrase,
       );
 
+      localStorage.setItem('spv_source', JSON.stringify(decryptData)); // set the reference in the local storage
       return decryptData;
     }
   } catch (err) {
