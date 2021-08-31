@@ -17,6 +17,40 @@ import { faqs } from './faqs';
 const AnswerWrapper = styled.div`
   padding: 5px;
   white-space: pre-wrap;
+
+  strong {
+    font-weight: 600;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0 0 15px;
+    padding: 0 0 0 10px;
+
+    &.inline {
+      display: flex;
+      align-items: flex-start;
+
+      li {
+        width: 49%;
+      }
+    }
+
+    li {
+      padding: 0 5px 5px;
+      white-space: pre-wrap;
+    }
+  }
+
+  p {
+    margin: 0 0 15px;
+    white-space: pre-wrap;
+
+    &.note {
+      font-style: italic;
+      font-size: 0.9em;
+    }
+  }
 `;
 
 export function FAQPage() {
@@ -98,7 +132,7 @@ export function FAQPage() {
           withPadding
         >
           <H3 margin="10px 0 20px">{answer.question}</H3>
-          <AnswerWrapper>{answer.answer}</AnswerWrapper>
+          <AnswerWrapper dangerouslySetInnerHTML={{ __html: answer.answer }} />
         </Box>
       )}
     </ProtectedContent>
