@@ -22,7 +22,7 @@ import H3 from 'app/components/Elements/H3';
 
 // import PromosDeals from 'app/components/PromosDeals';
 
-import { numberCommas } from 'app/components/Helpers';
+import { numberCommas, toTitleCase } from 'app/components/Helpers';
 import { TierIDs } from 'app/components/Helpers/Tiers';
 
 /** svg icons */
@@ -122,7 +122,7 @@ export function DashboardPage() {
             bold
             primary={i.transaction_category.title}
             secondary={date.toFormat('LLLL dd, yyyy\ntt')}
-            caption={i.status}
+            caption={toTitleCase(i.status)}
             captionClass={
               i.status === 'SUCCESS'
                 ? 'text-green'
