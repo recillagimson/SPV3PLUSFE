@@ -16,6 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { StyleConstants } from 'styles/StyleConstants';
 
 import imgIcon from 'app/components/Assets/ImgIcon.png';
+import imgIconError from 'app/components/Assets/ImgIconError.png';
 import IconButton from 'app/components/Elements/IconButton';
 import Dialog from 'app/components/Dialog';
 import Button from 'app/components/Elements/Button';
@@ -33,6 +34,7 @@ import { appActions } from 'app/App/slice';
 import { PassphraseState } from 'types/Default';
 import { getResponsePassphrase } from './helpers';
 import spdCrypto from '../Helpers/EncyptDecrypt';
+import Paragraph from '../Elements/Paragraph';
 
 const animate = keyframes`
    0% {
@@ -43,17 +45,28 @@ const animate = keyframes`
    }
  `;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ invalid?: boolean }>`
   padding: 8px 10px;
   margin-bottom: 10px;
-  background-color: #fafafa;
+  background-color: ${p => (p.invalid ? '#ffd1cf' : '#fafafa')};
+  color: ${p => (p.invalid ? '#ff645e' : 'inherit')};
   border-radius: ${StyleConstants.BORDER_RADIUS};
   display: flex;
   align-items: center;
   justify-content: center;
 
-  img {
+  .file-preview {
     width: 90px;
+    height: 64px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: ${StyleConstants.BORDER_RADIUS};
+
+    img {
+      object-fit: cover;
+    }
   }
 
   .file-info {
@@ -61,13 +74,9 @@ const Wrapper = styled.div`
     padding: 0 10px;
 
     small {
-      color: ${StyleConstants.GRAY_TEXT};
+      color: ${p => (p.invalid ? '#ff645e' : StyleConstants.GRAY_TEXT)};
       display: inline-block;
-      margin-left: 10px;
     }
-  }
-
-  .btn-file-stat {
   }
 
   .loader {
@@ -122,6 +131,7 @@ export default function IDUploadListComponent({
   const clientToken: any = useSelector(selectClientToken);
 
   const [arrayFiles, setArrayFiles] = React.useState<any[]>([]);
+  const [invalidArray, setInvalidArray] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
   const [success, setSuccess] = React.useState<boolean>(false);
@@ -131,26 +141,73 @@ export default function IDUploadListComponent({
   React.useEffect(() => {
     return () => {
       dt.clearData();
+      setArrayFiles([]);
+      setInvalidArray([]);
     };
   }, []);
 
   const onSelectFiles = (files: any) => {
+    const validFileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
     if (files && files.length > 0) {
-      const newFiles: any[] = [...arrayFiles];
+      const validFiles: any[] = [...arrayFiles];
+      const invalidFiles: any[] = [...invalidArray];
 
       // loop through the drop files and check if already exists on our array,
       // if it exists, skip the file
       Object.keys(files).forEach(i => {
-        const isExists = arrayFiles.findIndex(
-          j => j.name === files[i].name && j.size === files[i].size,
-        );
+        if (
+          validFileTypes.includes(files[i].type) &&
+          files[i].size <= 5242880
+        ) {
+          const isExists = arrayFiles.findIndex(
+            j => j.name === files[i].name && j.size === files[i].size,
+          );
 
-        if (isExists === -1) {
-          newFiles.push(files[i]);
-          dt.items.add(files[i]);
+          if (isExists === -1) {
+            validFiles.push(files[i]);
+            dt.items.add(files[i]);
+          }
+        }
+
+        if (
+          !validFileTypes.includes(files[i].type) ||
+          files[i].size > 5242880
+        ) {
+          const isInvalidExists = invalidArray.findIndex(
+            j => j.name === files[i].name && j.size === files[i].size,
+          );
+
+          if (isInvalidExists === -1) {
+            let errorMsg = '';
+            if (
+              validFileTypes.includes(files[i].type) &&
+              files[i].size > 5242880
+            ) {
+              errorMsg = 'Maximum file size exceeded.';
+            }
+            if (
+              !validFileTypes.includes(files[i].type) &&
+              files[i].size <= 5242880
+            ) {
+              errorMsg =
+                'Invalid file format. Accepted formats .jpg, .png, .pdf';
+            }
+            if (
+              !validFileTypes.includes(files[i].type) &&
+              files[i].size > 5242880
+            ) {
+              errorMsg = 'Maximum file size exceeded and invalid file format.';
+            }
+
+            invalidFiles.push({
+              file: files[i],
+              msg: errorMsg,
+            });
+          }
         }
       });
-      setArrayFiles(newFiles);
+      setArrayFiles(validFiles);
+      setInvalidArray(invalidFiles);
       // uploadFile();
     }
   };
@@ -173,6 +230,14 @@ export default function IDUploadListComponent({
     newArray.splice(i, 1);
 
     setArrayFiles(newArray);
+  };
+
+  // delete invalid file based on index
+  const onDeleteInvalidFile = (i: number) => {
+    const newArray = [...invalidArray];
+    newArray.splice(i, 1);
+
+    setInvalidArray(newArray);
   };
 
   const uploadFile = async () => {
@@ -289,37 +354,74 @@ export default function IDUploadListComponent({
     }
   };
 
-  let items: {} | null | undefined;
-  if (arrayFiles && arrayFiles.length) {
-    items = arrayFiles.map((f: any, i: number) => (
-      <Wrapper key={f.name}>
-        <img src={imgIcon} alt="" />
-        <div className="file-info">
-          <span>{f.name}</span>
-          <small>{fileSize(f.size)}</small>
-          <p className="loader">
-            <span
-              className={
-                loading ? 'animate load' : success ? 'success load' : 'load'
-              }
-              style={{
-                backgroundColor: error
-                  ? StyleConstants.NEGATIVE
-                  : StyleConstants.POSITIVE,
-              }}
-            />
-          </p>
-        </div>
-        <IconButton
-          size="small"
-          className="btn-file-stat"
-          onClick={() => onDeleteFile(i)}
-          disabled={loading}
-        >
-          <FontAwesomeIcon icon={success ? 'check' : 'times'} />
-        </IconButton>
-      </Wrapper>
-    ));
+  let validItems: {} | null | undefined;
+  let invalidItems: {} | null | undefined;
+  if (arrayFiles && arrayFiles.length > 0) {
+    validItems = arrayFiles.map((f: any, i: number) => {
+      let imgPreview = f.type.includes('image')
+        ? URL.createObjectURL(f)
+        : imgIcon;
+
+      return (
+        <Wrapper key={f.name}>
+          <div className="file-preview">
+            <img src={imgPreview} alt={f.name} />
+          </div>
+          <div className="file-info">
+            <span>{f.name}</span> <small>{fileSize(f.size)}</small>
+            <p className="loader">
+              <span
+                className={
+                  loading ? 'animate load' : success ? 'success load' : 'load'
+                }
+                style={{
+                  backgroundColor: error
+                    ? StyleConstants.NEGATIVE
+                    : StyleConstants.POSITIVE,
+                }}
+              />
+            </p>
+          </div>
+          <IconButton
+            size="small"
+            className="btn-file-stat"
+            onClick={() => onDeleteFile(i)}
+            disabled={loading}
+          >
+            <FontAwesomeIcon icon={success ? 'check' : 'times'} />
+          </IconButton>
+        </Wrapper>
+      );
+    });
+  }
+
+  if (invalidArray && invalidArray.length > 0) {
+    invalidItems = invalidArray.map((f: any, i: number) => {
+      let imgPreview = f.file.type.includes('image')
+        ? URL.createObjectURL(f.file)
+        : imgIconError;
+
+      return (
+        <Wrapper invalid key={f.file.name}>
+          <div className="file-preview">
+            <img src={imgPreview} alt={f.file.name} />
+          </div>
+          <div className="file-info">
+            <span>{f.file.name}</span> <small>{fileSize(f.file.size)}</small>
+            <br />
+            <small>{f.msg}</small>
+          </div>
+          <IconButton
+            size="small"
+            className="btn-file-stat"
+            onClick={() => onDeleteInvalidFile(i)}
+            disabled={loading}
+          >
+            <FontAwesomeIcon icon={success ? 'check' : 'times'} />
+          </IconButton>
+        </Wrapper>
+      );
+    });
   }
 
   return (
@@ -355,18 +457,24 @@ export default function IDUploadListComponent({
           onSelectFiles={onSelectFiles}
           message="Drag and drop both front and back side of your ID"
         />
-        {items}
+        {validItems}
+        <Paragraph align="right" weight="bold">
+          0/2 files ready for upload
+        </Paragraph>
+        {invalidItems}
 
-        {/* <Note style={{ marginBottom: 10 }}>
-            Note: Invalid files won't be uploaded
-          </Note> */}
-        <Note>Instruction:</Note>
+        <Note>Government ID:</Note>
         <Note>
+          <br />
+          - Upload 2 Images (Front, Back).
+          <br />
+          - Maximum of 2 files upload.
+          <br />
           - Must show all corners of the ID
           <br />
           - Must show front and back details of the ID
           <br />
-          - Max file size: 1MB (1024kb)
+          - Max file size: 5MB (5120kb)
           <br />- Formats accepted: JPG, PNG and PDF
         </Note>
       </Box>

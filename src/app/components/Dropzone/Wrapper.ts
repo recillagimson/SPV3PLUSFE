@@ -10,7 +10,7 @@ const Wrapper = styled.div<{ bg?: boolean }>`
   border-radius: ${StyleConstants.BORDER_RADIUS};
   border: 2px dashed ${StyleConstants.GOLD};
   width: 100%;
-  margin: 0 0 20px;
+  margin: 0 0 15px;
   display: flex;
   align-items: center;
   justify-content: center;
