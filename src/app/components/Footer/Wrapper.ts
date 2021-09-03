@@ -10,9 +10,11 @@ const Wrapper = styled.footer`
     margin: 0 0;
     color: #a9b1b8;
 
-    span {
-      font-size: 0.85em;
-      opacity: 0.8;
+    .small {
+      display: inline-block;
+      font-size: 0.8em;
+      opacity: 0.75;
+      padding-left: 5px;
     }
   }
 

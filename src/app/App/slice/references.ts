@@ -1,4 +1,4 @@
-import { call, select, delay } from 'redux-saga/effects';
+import { call, select, delay, put } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
@@ -6,6 +6,7 @@ import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 import { PassphraseState } from 'types/Default';
 import { selectClientToken } from './selectors';
 import { getResponsePassphrase } from './saga';
+import { appActions } from '.';
 
 /**
  * Collection on API calls for references
@@ -44,9 +45,17 @@ export function* getMaritalStatus() {
         decryptPhrase.passPhrase,
       );
 
-      localStorage.setItem('spv_marital', JSON.stringify(decryptData)); // set the reference in the local storage
-      return decryptData;
+      if (decryptData) {
+        const resp = {
+          key: 'maritalStatus',
+          data: decryptData,
+        };
+        yield put(appActions.getSaveReferences(resp));
+        localStorage.setItem('spv_marital', JSON.stringify(decryptData)); // set the reference in the local storage
+        return decryptData;
+      }
     }
+    return false;
   } catch (err) {
     return false;
   }
@@ -83,9 +92,17 @@ export function* getNatureOfWork() {
         decryptPhrase.passPhrase,
       );
 
-      localStorage.setItem('spv_nature', JSON.stringify(decryptData)); // set the reference in the local storage
-      return decryptData;
+      if (decryptData) {
+        const resp = {
+          key: 'natureOfWork',
+          data: decryptData,
+        };
+        yield put(appActions.getSaveReferences(resp));
+        localStorage.setItem('spv_nature', JSON.stringify(decryptData)); // set the reference in the local storage
+        return decryptData;
+      }
     }
+    return false;
   } catch (err) {
     return false;
   }
@@ -122,9 +139,17 @@ export function* getNationalities() {
         decryptPhrase.passPhrase,
       );
 
-      localStorage.setItem('spv_nationalities', JSON.stringify(decryptData)); // set the reference in the local storage
-      return decryptData;
+      if (decryptData) {
+        const resp = {
+          key: 'nationalities',
+          data: decryptData,
+        };
+        yield put(appActions.getSaveReferences(resp));
+        localStorage.setItem('spv_nationalities', JSON.stringify(decryptData)); // set the reference in the local storage
+        return decryptData;
+      }
     }
+    return false;
   } catch (err) {
     return false;
   }
@@ -161,9 +186,17 @@ export function* getCountries() {
         decryptPhrase.passPhrase,
       );
 
-      localStorage.setItem('spv_countries', JSON.stringify(decryptData)); // set the reference in the local storage
-      return decryptData;
+      if (decryptData) {
+        const resp = {
+          key: 'countries',
+          data: decryptData,
+        };
+        yield put(appActions.getSaveReferences(resp));
+        localStorage.setItem('spv_countries', JSON.stringify(decryptData)); // set the reference in the local storage
+        return decryptData;
+      }
     }
+    return false;
   } catch (err) {
     return false;
   }
@@ -200,9 +233,17 @@ export function* getSignUpHost() {
         decryptPhrase.passPhrase,
       );
 
-      localStorage.setItem('spv_signup', JSON.stringify(decryptData)); // set the reference in the local storage
-      return decryptData;
+      if (decryptData) {
+        const resp = {
+          key: 'signUpHost',
+          data: decryptData,
+        };
+        yield put(appActions.getSaveReferences(resp));
+        localStorage.setItem('spv_signup', JSON.stringify(decryptData)); // set the reference in the local storage
+        return decryptData;
+      }
     }
+    return false;
   } catch (err) {
     return false;
   }
@@ -239,9 +280,17 @@ export function* getCurrencies() {
         decryptPhrase.passPhrase,
       );
 
-      localStorage.setItem('spv_currencies', JSON.stringify(decryptData)); // set the reference in the local storage
-      return decryptData;
+      if (decryptData) {
+        const resp = {
+          key: 'currency',
+          data: decryptData,
+        };
+        yield put(appActions.getSaveReferences(resp));
+        localStorage.setItem('spv_currencies', JSON.stringify(decryptData)); // set the reference in the local storage
+        return decryptData;
+      }
     }
+    return false;
   } catch (err) {
     return false;
   }
@@ -278,9 +327,17 @@ export function* getSourceOfFunds() {
         decryptPhrase.passPhrase,
       );
 
-      localStorage.setItem('spv_source', JSON.stringify(decryptData)); // set the reference in the local storage
-      return decryptData;
+      if (decryptData) {
+        const resp = {
+          key: 'sourceOfFunds',
+          data: decryptData,
+        };
+        yield put(appActions.getSaveReferences(resp));
+        localStorage.setItem('spv_source', JSON.stringify(decryptData)); // set the reference in the local storage
+        return decryptData;
+      }
     }
+    return false;
   } catch (err) {
     return false;
   }

@@ -21,6 +21,8 @@ import Dialog from 'app/components/Dialog';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import ComponentLoading from 'app/components/ComponentLoading';
 
+import { numberCommas } from 'app/components/Helpers';
+
 // #region redux imports
 import { useSelector, useDispatch } from 'react-redux';
 import { useContainerSaga } from './slice';
@@ -35,7 +37,7 @@ import OTP from './OTP';
 
 // Helpers
 import { FormModel, initialFormValues } from './helpers';
-import { numberWithCommas, parseToNumber } from 'utils/common';
+import { parseToNumber } from 'utils/common';
 
 // Styles
 import * as S from './SendToBankUBP.style';
@@ -363,7 +365,7 @@ export function SendToBankUBP() {
                   </S.ReviewListItem>
                   <S.ReviewListItem>
                     <p>Amount</p>
-                    <p>{formData.amount.value}</p>
+                    <p>{numberCommas(formData.amount.value)}</p>
                   </S.ReviewListItem>
                   <S.ReviewListItem>
                     <p>Particulars</p>
@@ -378,7 +380,7 @@ export function SendToBankUBP() {
                       Total Amount plus service fee
                     </S.TotalAmountTitle>
                     <S.TotalAmountValue>
-                      PHP {numberWithCommas(calculateTotalAmount)}
+                      PHP {numberCommas(calculateTotalAmount)}
                     </S.TotalAmountValue>
                   </S.TotalAmountWrapper>
                 </S.ReviewContainer>

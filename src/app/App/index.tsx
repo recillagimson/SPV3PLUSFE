@@ -129,7 +129,8 @@ export function App() {
   React.useEffect(() => {
     /**
      * Check if we have the references in the local storage
-     * this will reduce the load time, references will be updated behind the background
+     * this will reduce the load time
+     * TODO: references update behind the background
      */
     let refs = {
       maritalStatus: localStorage.getItem('spv_marital')
@@ -156,7 +157,7 @@ export function App() {
     };
 
     if (refs) {
-      dispatch(actions.getReferences(refs));
+      dispatch(actions.getSaveAllReferences(refs));
     }
 
     /**
@@ -192,10 +193,6 @@ export function App() {
       }, 2000);
 
       history.push('/dashboard');
-
-      // if (process.env.NODE_ENV === 'production') {
-      //   loadFbAsync(); // load fb
-      // }
     } else if (forceUpdate) {
       dispatch(actions.getClientTokenLoading());
       history.push('/register/update-profile');
