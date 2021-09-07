@@ -302,7 +302,7 @@ export function SendToBankUBP() {
                     onChange={onChangeFieldValue}
                     name="particulars"
                     className={formData.particulars.error ? 'error' : undefined}
-                    maxLength={60}
+                    maxLength={50}
                   />
                   {formData.particulars.error && (
                     <ErrorMsg formError>{'Particulars is required.'}</ErrorMsg>
@@ -315,7 +315,7 @@ export function SendToBankUBP() {
                     onChange={onChangeFieldValue}
                     name="remarks"
                     className={formData.remarks.error ? 'error' : undefined}
-                    maxLength={60}
+                    maxLength={50}
                   />
                   {formData.remarks.error && (
                     <ErrorMsg formError>{'Remark is required.'}</ErrorMsg>
@@ -369,7 +369,7 @@ export function SendToBankUBP() {
                   </S.ReviewListItem>
                   <S.ReviewListItem>
                     <p>Particulars</p>
-                    <p>{formData.particulars.value ?? 'none'}</p>
+                    <p>{formData.particulars.value ?? 'None'}</p>
                   </S.ReviewListItem>
                   <S.ReviewListItem>
                     <p>Remarks</p>

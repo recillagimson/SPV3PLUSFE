@@ -151,6 +151,7 @@ export default function IDUploadListComponent({
     if (files && files.length > 0) {
       const validFiles: any[] = [...arrayFiles];
       const invalidFiles: any[] = [...invalidArray];
+      let count = validFiles.length;
 
       // loop through the drop files and check if already exists on our array,
       // if it exists, skip the file
@@ -163,12 +164,32 @@ export default function IDUploadListComponent({
             j => j.name === files[i].name && j.size === files[i].size,
           );
 
-          if (isExists === -1) {
+          if (isExists === -1 && count < 2) {
+            count = count + 1;
             validFiles.push(files[i]);
             dt.items.add(files[i]);
+
+            return;
           }
         }
 
+        // if valid but excedeed the count
+        if (
+          validFileTypes.includes(files[i].type) &&
+          files[i].size <= 5242880
+        ) {
+          const isInvalidExists = invalidArray.findIndex(
+            j => j.name === files[i].name && j.size === files[i].size,
+          );
+          if (isInvalidExists === -1) {
+            invalidFiles.push({
+              file: files[i],
+              msg: 'Exceeded maximum limit of upload',
+            });
+            return;
+          }
+        }
+        // if invalid files
         if (
           !validFileTypes.includes(files[i].type) ||
           files[i].size > 5242880
@@ -203,6 +224,7 @@ export default function IDUploadListComponent({
               file: files[i],
               msg: errorMsg,
             });
+            return;
           }
         }
       });
@@ -287,7 +309,7 @@ export default function IDUploadListComponent({
         setSuccess(true);
       }
       setLoading(false);
-    } catch (err) {
+    } catch (err: any) {
       // special case, check the 422 for invalid data (account already exists)
       if (err && err.response && err.response.status === 422) {
         const body = await err.response.json();
@@ -417,7 +439,7 @@ export default function IDUploadListComponent({
             onClick={() => onDeleteInvalidFile(i)}
             disabled={loading}
           >
-            <FontAwesomeIcon icon={success ? 'check' : 'times'} />
+            <FontAwesomeIcon icon="times" />
           </IconButton>
         </Wrapper>
       );
@@ -459,11 +481,11 @@ export default function IDUploadListComponent({
         />
         {validItems}
         <Paragraph align="right" weight="bold">
-          0/2 files ready for upload
+          {arrayFiles.length.toString()}/2 files ready for upload
         </Paragraph>
         {invalidItems}
 
-        <Note>Government ID:</Note>
+        <Note>{isPrimary ? 'Government ID' : 'Secondary ID'}:</Note>
         <Note>
           <br />
           - Upload 2 Images (Front, Back).
