@@ -60,7 +60,10 @@ export function GenerateQR() {
   const onChangeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.currentTarget.value;
 
-    if (val !== '' && !Number(val)) {
+    if (
+      (val !== '' && !Number(val)) ||
+      (val !== '' && Number(val) && parseInt(val) > 1000000)
+    ) {
       return;
     }
 
@@ -190,6 +193,7 @@ export function GenerateQR() {
                   placeholder="0.00"
                   value={amount.value}
                   min={0}
+                  max={1000000}
                   autoComplete="off"
                   onChange={onChangeAmount}
                   hidespinner
