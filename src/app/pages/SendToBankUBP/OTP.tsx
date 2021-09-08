@@ -79,6 +79,14 @@ export default function OTP() {
               <p>{success?.send_receipt_to}</p>
             </S.ReviewListItem>
             <S.ReviewListItem>
+              <p>Particulars</p>
+              <p>{success?.particulars}</p>
+            </S.ReviewListItem>
+            <S.ReviewListItem>
+              <p>Remarks</p>
+              <p>{success?.remarks}</p>
+            </S.ReviewListItem>
+            <S.ReviewListItem>
               <p>Transaction Number</p>
               <p>{success?.transaction_number}</p>
             </S.ReviewListItem>

@@ -42,7 +42,6 @@ export default function SuccessPostback() {
   const [pending, setPending] = React.useState(false);
 
   React.useEffect(() => {
-    console.log(window.location.href);
     const params = new URLSearchParams(window.location.href);
     /*
     const passParams = async () => {

@@ -127,6 +127,42 @@ export function App() {
   // const [flags, setFlags] = React.useState(defaultFlags);
 
   React.useEffect(() => {
+    /**
+     * Check if we have the references in the local storage
+     * this will reduce the load time
+     * TODO: references update behind the background
+     */
+    let refs = {
+      maritalStatus: localStorage.getItem('spv_marital')
+        ? JSON.parse(localStorage.getItem('spv_marital') || '')
+        : false,
+      natureOfWork: localStorage.getItem('spv_nature')
+        ? JSON.parse(localStorage.getItem('spv_nature') || '')
+        : false,
+      nationalities: localStorage.getItem('spv_nationalities')
+        ? JSON.parse(localStorage.getItem('spv_nationalities') || '')
+        : false,
+      countries: localStorage.getItem('spv_countries')
+        ? JSON.parse(localStorage.getItem('spv_countries') || '')
+        : false,
+      signUpHost: localStorage.getItem('spv_signup')
+        ? JSON.parse(localStorage.getItem('spv_signup') || '')
+        : false,
+      currency: localStorage.getItem('spv_currencies')
+        ? JSON.parse(localStorage.getItem('spv_currencies') || '')
+        : false,
+      sourceOfFunds: localStorage.getItem('spv_source')
+        ? JSON.parse(localStorage.getItem('spv_source') || '')
+        : false,
+    };
+
+    if (refs) {
+      dispatch(actions.getSaveAllReferences(refs));
+    }
+
+    /**
+     * Check Session and necessary cookies for the token
+     */
     const path: string | boolean = location ? location.pathname : '/dashboard';
     const phrase = getCookie('spv_uat_hmc'); // retrieve the passphrase use for encrypting
     const sessionCookie = getCookie('spv_uat'); // user token
@@ -157,10 +193,6 @@ export function App() {
       }, 2000);
 
       history.push('/dashboard');
-
-      // if (process.env.NODE_ENV === 'production') {
-      //   loadFbAsync(); // load fb
-      // }
     } else if (forceUpdate) {
       dispatch(actions.getClientTokenLoading());
       history.push('/register/update-profile');

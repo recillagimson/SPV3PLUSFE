@@ -3,7 +3,7 @@ import { createSlice } from 'utils/@reduxjs/toolkit';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 
 import { TokenState, UserProfileState } from 'types/Default';
-import { GlobalState } from './types';
+import { GlobalState, ReferenceTypes } from './types';
 import { appSaga } from './saga';
 import { validateEmail } from 'app/components/Helpers';
 
@@ -25,7 +25,15 @@ export const initialState: GlobalState = {
   isSessionExpired: false,
   isBlankPage: false,
   isServerError: false,
-  references: {},
+  references: {
+    nationalities: false,
+    countries: false,
+    maritalStatus: false,
+    natureOfWork: false,
+    signUpHost: false,
+    currency: false,
+    sourceOfFunds: false,
+  },
   tier: false,
 };
 
@@ -47,13 +55,13 @@ const slice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-    getClientTokenReset(state, action: PayloadAction) {
+    getClientTokenReset(state) {
       state.loading = false;
       state.error = false;
       state.data = false;
       state.token = '';
     },
-    getLoadUserProfile(state) {}, // an action only to dispatch retrieving of user profile
+    getLoadUserProfile() {}, // an action only to dispatch retrieving of user profile
     getUserProfile(state, action: PayloadAction<UserProfileState>) {
       state.user = action.payload;
     },
@@ -88,9 +96,23 @@ const slice = createSlice({
     getIsServerError(state, action: PayloadAction<boolean>) {
       state.isServerError = action.payload;
     },
-    getLoadReferences() {}, // an action only to dispatch retrieving of references
-    getReferences(state, action: PayloadAction<object>) {
+    getLoadAllReferences() {}, // an action only to dispatch retrieving of all references
+    getSaveAllReferences(state, action: PayloadAction<ReferenceTypes>) {
       state.references = action.payload;
+    },
+    getLoadMaritalRef() {},
+    getLoadNationalityRef() {},
+    getLoadCountryRef() {},
+    getLoadCurrencyRef() {},
+    getLoadNatureOfWorkRef() {},
+    getLoadSourceOfFundsRef() {},
+    getLoadSignUpHostRef() {},
+    getSaveReferences(
+      state,
+      action: PayloadAction<{ key: string; data: any }>,
+    ) {
+      const key = action.payload.key;
+      state.references[key] = action.payload.data;
     },
     getSaveTier(state, action: PayloadAction<object>) {
       state.tier = action.payload;
