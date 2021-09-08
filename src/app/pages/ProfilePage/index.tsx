@@ -9,6 +9,7 @@ import Box from 'app/components/Box';
 
 import ProfileBronze from 'app/components/UpdateProfile/Bronze';
 import ProfileSilver from 'app/components/UpdateProfile/Silver';
+// import ProfileForm from 'app/components/UpdateProfile/Profile';
 
 import { TierIDs, Tiers } from 'app/components/Helpers/Tiers';
 
@@ -50,10 +51,9 @@ export function UserProfilePage() {
   const [showEmail, setShowEmail] = React.useState(false);
 
   React.useEffect(() => {
-    // let's manually retrieve the references
-    if (!refs || Object.keys(refs).length === 0) {
-      dispatch(appActions.getLoadReferences());
-    }
+    // if (!refs || Object.keys(refs).length === 0) {
+    //   dispatch(appActions.getLoadAllReferences());
+    // }
 
     if (refs && Object.keys(refs).length > 0 && profile) {
       let loadRef = false;
@@ -63,23 +63,28 @@ export function UserProfilePage() {
       //       so user can continue and we will only just load the missing references
       if (!refs.maritalStatus || Object.keys(refs.maritalStatus).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadMaritalRef());
       }
       if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadNationalityRef());
       }
       if (!refs.countries || Object.keys(refs.countries).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadCountryRef());
       }
       if (!refs.sourceOfFunds || Object.keys(refs.sourceOfFunds).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadSourceOfFundsRef());
       }
       if (!refs.natureOfWork || Object.keys(refs.natureOfWork).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadNatureOfWorkRef());
       }
 
-      if (loadRef) {
-        dispatch(appActions.getLoadReferences());
-      }
+      // if (loadRef) {
+      //   dispatch(appActions.getLoadAllReferences());
+      // }
 
       // all references exists continue on edit profile
       if (!loadRef) {
@@ -143,6 +148,19 @@ export function UserProfilePage() {
     tierName = tierIndex !== -1 ? Tiers[tierIndex].class : '';
   }
 
+  // let updateForm = (
+  //   <ProfileForm
+  //     onCancel={() => {
+  //       setShowUpdateProfile(prev => !prev);
+  //       setShowProfile(prev => !prev);
+  //     }}
+  //     onSuccess={() => {
+  //       setShowUpdateProfile(prev => !prev);
+  //       setShowProfile(prev => !prev);
+  //     }}
+  //     isBronze={Boolean(tierID) && tierID === TierIDs.bronze}
+  //   />
+  // );
   let updateForm = (
     <ProfileBronze
       onCancel={() => {

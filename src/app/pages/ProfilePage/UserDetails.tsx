@@ -231,7 +231,7 @@ export default function UserDetailsList({
       </ListItem>
       <ListItem flex>
         <ListItemText
-          label="Address"
+          label="Address (House Number and Street)"
           primary={profile.house_no_street || '-'}
           style={{
             flexGrow: 1,
@@ -251,6 +251,15 @@ export default function UserDetailsList({
         <ListItemText
           label="City"
           primary={profile.city || '-'}
+          style={{
+            flexGrow: 1,
+          }}
+        />
+      </ListItem>
+      <ListItem flex>
+        <ListItemText
+          label="Barangay"
+          primary={profile.barangay || '-'}
           style={{
             flexGrow: 1,
           }}

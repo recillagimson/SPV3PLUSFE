@@ -17,6 +17,7 @@ import {
   getCurrencies,
   getSourceOfFunds,
 } from './references';
+import { ReferenceTypes } from './types';
 
 /**
  * Global function for user data or other data
@@ -187,9 +188,9 @@ export function* getLoggedInUserProfile() {
 /**
  * Retrieve the necessary references for use in the app
  */
-export function* getUserReferences() {
+export function* getLoadAllReferences() {
   yield delay(1000);
-  let refs = {};
+  let refs: ReferenceTypes = {};
 
   const maritalStatus = yield call(getMaritalStatus);
   if (maritalStatus) refs['maritalStatus'] = maritalStatus;
@@ -213,7 +214,7 @@ export function* getUserReferences() {
   if (sourceOfFunds) refs['sourceOfFunds'] = sourceOfFunds;
 
   yield delay(300);
-  yield put(actions.getReferences(refs));
+  yield put(actions.getSaveAllReferences(refs));
 }
 
 /**
@@ -225,6 +226,15 @@ export function* appSaga() {
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
   yield takeLatest(actions.getClientTokenLoading.type, getRequestToken);
-  yield takeLatest(actions.getLoadReferences.type, getUserReferences);
   yield takeLatest(actions.getLoadUserProfile.type, getLoggedInUserProfile);
+
+  yield takeLatest(actions.getLoadAllReferences.type, getLoadAllReferences);
+
+  yield takeLatest(actions.getLoadMaritalRef.type, getMaritalStatus);
+  yield takeLatest(actions.getLoadCountryRef.type, getCountries);
+  yield takeLatest(actions.getLoadCurrencyRef.type, getCurrencies);
+  yield takeLatest(actions.getLoadNationalityRef.type, getNationalities);
+  yield takeLatest(actions.getLoadNatureOfWorkRef.type, getNatureOfWork);
+  yield takeLatest(actions.getLoadSourceOfFundsRef.type, getSourceOfFunds);
+  yield takeLatest(actions.getLoadSignUpHostRef.type, getSignUpHost);
 }

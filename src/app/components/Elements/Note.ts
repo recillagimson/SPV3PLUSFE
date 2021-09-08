@@ -6,7 +6,7 @@ import styled from 'styled-components/macro';
 
 const Note = styled.span`
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   padding: 1px 2px 0;
   line-height: 1.3;
 `;

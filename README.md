@@ -129,3 +129,13 @@ v1.1.0
 
 - Foreign Exchange Rate
 - Updated FAQs
+
+v1.1.1
+
+- Upload ID UI modifications, limit to 2 files for upload, added validation on invalid files (VVBT-230, VVBT-338)
+- Total transaction amount on Send to Bank. Fix wrong display of adding amount and service fee (VVBT-421)
+- Verify OTP Fix (VVBT-282)
+- Enhance loading of references on Updating profile (VVBT-400)
+- QR Code limit entry on amount (VVBT-245)
+- Added a date picker for Date Field in Pay bill due date (VVBT-242, VVBT-273)
+- Paybills fix on account number (VVBT-291, VVBT-304)

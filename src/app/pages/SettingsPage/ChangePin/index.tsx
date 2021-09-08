@@ -526,7 +526,11 @@ export function SettingsChangePinPage() {
             className="text-center"
             style={{ width: '400px', margin: '0 auto', padding: '0 40px' }}
           >
-            <VerifyOTP onSuccess={onSubmitPassword} apiURL="/user/pin/verify" />
+            <VerifyOTP
+              onSuccess={onSubmitPassword}
+              apiURL="/user/pin/verify"
+              isUserToken
+            />
 
             <Field className="text-center f-small" margin="20px 0 10px">
               Need a new code?{' '}

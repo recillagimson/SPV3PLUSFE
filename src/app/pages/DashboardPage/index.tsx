@@ -311,7 +311,7 @@ export function DashboardPage() {
           <QRCode />
           QR Code
         </DashboardButton>
-        <DashboardButton onClick={() => setIsComingSoon(true)}>
+        <DashboardButton onClick={() => setIsMaintenance(true)}>
           <QuickGuide />
           SquidPay Quick Guide
         </DashboardButton>
