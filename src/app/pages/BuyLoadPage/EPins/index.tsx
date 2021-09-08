@@ -290,15 +290,14 @@ export function BuyEpinsPage() {
         <Helmet>
           <title>Buy EPINS</title>
         </Helmet>
-        {loading && <Loading position="absolute" />}
-        {validateLoading && <Loading position="absolute" />}
-        {payLoading && <Loading position="absolute" />}
-
         <Wrapper id="buyLoad">
           <Card
             title={!showReview ? 'Buy EPINS' : 'Review Load Purchase'}
             size="medium"
           >
+            {loading && <Loading position="absolute" />}
+            {validateLoading && <Loading position="absolute" />}
+            {payLoading && <Loading position="absolute" />}
             {showForm && (
               <>
                 <Field>
@@ -346,7 +345,7 @@ export function BuyEpinsPage() {
                 <H5 className="text-center">{mobile.value}</H5>
                 <br />
                 <section>
-                  <Scrollbars style={{ height: 200 }}>
+                  <Scrollbars style={{ height: 300 }}>
                     {success
                       .slice()
                       .sort((a, b) =>
@@ -491,7 +490,7 @@ export function BuyEpinsPage() {
               </div>
             </Dialog>
 
-            <Dialog show={showPay && paySuccess} size="xsmall">
+            <Dialog show={showPay && Boolean(paySuccess)} size="xsmall">
               <Receipt
                 title="Load purchase successful!"
                 total={paySuccess.amount + '.00'}

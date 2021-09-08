@@ -7,8 +7,9 @@ import Loading from 'app/components/Loading';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 
-import ProfileBronze from 'app/components/UpdateProfile/Bronze';
-import ProfileSilver from 'app/components/UpdateProfile/Silver';
+// import ProfileBronze from 'app/components/UpdateProfile/Bronze';
+// import ProfileSilver from 'app/components/UpdateProfile/Silver';
+import ProfileForm from 'app/components/UpdateProfile/Profile';
 
 import { TierIDs, Tiers } from 'app/components/Helpers/Tiers';
 
@@ -148,7 +149,7 @@ export function UserProfilePage() {
   }
 
   let updateForm = (
-    <ProfileBronze
+    <ProfileForm
       onCancel={() => {
         setShowUpdateProfile(prev => !prev);
         setShowProfile(prev => !prev);
@@ -157,23 +158,9 @@ export function UserProfilePage() {
         setShowUpdateProfile(prev => !prev);
         setShowProfile(prev => !prev);
       }}
+      isBronze={Boolean(tierID) && tierID === TierIDs.bronze}
     />
   );
-
-  if (Boolean(tierID) && tierID !== TierIDs.bronze) {
-    updateForm = (
-      <ProfileSilver
-        onCancel={() => {
-          setShowUpdateProfile(prev => !prev);
-          setShowProfile(prev => !prev);
-        }}
-        onSuccess={() => {
-          setShowUpdateProfile(prev => !prev);
-          setShowProfile(prev => !prev);
-        }}
-      />
-    );
-  }
 
   return (
     <ProtectedContent>
