@@ -23,7 +23,7 @@ const colors = {
   },
   default: {
     bg: 'transparent',
-    text: StyleConstants.BUTTONS.neutral.textColor,
+    text: 'inherit',
   },
 };
 

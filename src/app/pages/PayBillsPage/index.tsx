@@ -245,20 +245,24 @@ export function PayBillsPage() {
           </S.ReviewListItem>
           <S.ReviewListItem>
             <p>Reference Number</p>
-            <p>{data.reference_number || data.referenceNumber || 'None'}</p>
+            <p>{data.reference_number || data.validationNumber || 'None'}</p>
           </S.ReviewListItem>
           <S.ReviewListItem>
             <p>Amount</p>
             <p>PHP {numberWithCommas(data.amount)}</p>
           </S.ReviewListItem>
-          <S.ReviewListItem>
-            <p>Send Receipt To</p>
-            <p>{data.send_receipt_to || 'None'}</p>
-          </S.ReviewListItem>
-          <S.ReviewListItem>
-            <p>Message</p>
-            <p>{data.message || 'None'}</p>
-          </S.ReviewListItem>
+          {data.send_receipt_to && (
+            <S.ReviewListItem>
+              <p>Send Receipt To</p>
+              <p>{data.send_receipt_to}</p>
+            </S.ReviewListItem>
+          )}
+          {data.message && (
+            <S.ReviewListItem>
+              <p>Message</p>
+              <p>{data.message}</p>
+            </S.ReviewListItem>
+          )}
           {successReview && (
             <S.ReviewListItem>
               <p>Transaction Number</p>

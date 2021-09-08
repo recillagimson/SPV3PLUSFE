@@ -24,7 +24,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Wrapper from './Wrapper';
 
-import { regExMobile } from 'app/components/Helpers';
+import { numberCommas, regExMobile } from 'app/components/Helpers';
 
 import { useContainerSaga } from './slice';
 import {
@@ -248,7 +248,8 @@ export function BuyEpinsPage() {
       }
       case 405: {
         return {
-          msg: 'Oh No! You have exceeded your monthly limit.',
+          msg:
+            'You have reached the allowable wallet limit for this month. Please try again next month.',
           error: true,
         };
       }
@@ -279,9 +280,9 @@ export function BuyEpinsPage() {
     }
   };
 
-  let replaceFirst7 = (mobileNumber: string) => {
-    return mobileNumber.replace(/^.{1,7}/, m => '*'.repeat(m.length));
-  };
+  // let replaceFirst7 = (mobileNumber: string) => {
+  //   return mobileNumber.replace(/^.{1,7}/, m => '*'.repeat(m.length));
+  // };
 
   return (
     <>
@@ -289,15 +290,14 @@ export function BuyEpinsPage() {
         <Helmet>
           <title>Buy EPINS</title>
         </Helmet>
-        {loading && <Loading position="absolute" />}
-        {validateLoading && <Loading position="absolute" />}
-        {payLoading && <Loading position="absolute" />}
-
         <Wrapper id="buyLoad">
           <Card
             title={!showReview ? 'Buy EPINS' : 'Review Load Purchase'}
             size="medium"
           >
+            {loading && <Loading position="absolute" />}
+            {validateLoading && <Loading position="absolute" />}
+            {payLoading && <Loading position="absolute" />}
             {showForm && (
               <>
                 <Field>
@@ -314,6 +314,7 @@ export function BuyEpinsPage() {
                       })
                     }
                     error={mobile.error ? true : undefined}
+                    hidespinner
                   />
                   {mobile.error && <ErrorMsg formError>{mobile.msg}</ErrorMsg>}
                 </Field>
@@ -344,7 +345,7 @@ export function BuyEpinsPage() {
                 <H5 className="text-center">{mobile.value}</H5>
                 <br />
                 <section>
-                  <Scrollbars style={{ height: 200 }}>
+                  <Scrollbars style={{ height: 300 }}>
                     {success
                       .slice()
                       .sort((a, b) =>
@@ -418,14 +419,14 @@ export function BuyEpinsPage() {
                       </Flex>
                       <Flex justifyContent="space-between">
                         <p>Amount</p>
-                        <p>PHP {selectedProduct.amount}.00</p>
+                        <p>PHP {numberCommas(selectedProduct.amount)}</p>
                       </Flex>
                     </section>
                     <br />
 
                     <p className="text-center">Total Amount</p>
                     <H5 className="text-center">
-                      PHP {selectedProduct.amount}.00
+                      PHP {numberCommas(selectedProduct.amount)}
                     </H5>
                     <br />
                     <p style={{ marginBottom: '5px' }}>Description</p>
@@ -489,7 +490,7 @@ export function BuyEpinsPage() {
               </div>
             </Dialog>
 
-            <Dialog show={showPay && paySuccess} size="xsmall">
+            <Dialog show={showPay && Boolean(paySuccess)} size="xsmall">
               <Receipt
                 title="Load purchase successful!"
                 total={paySuccess.amount + '.00'}
@@ -498,9 +499,7 @@ export function BuyEpinsPage() {
               >
                 <Flex justifyContent="space-between">
                   <span>Mobile Number</span>
-                  <span>
-                    {replaceFirst7(paySuccess.recipient_mobile_number || '')}
-                  </span>
+                  <span>{paySuccess.recipient_mobile_number || ''}</span>
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Load</span>
@@ -508,7 +507,7 @@ export function BuyEpinsPage() {
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Amount</span>
-                  <span>PHP {paySuccess.amount}.00</span>
+                  <span>PHP {numberCommas(paySuccess.amount)}</span>
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Transaction Number</span>

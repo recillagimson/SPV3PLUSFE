@@ -9,6 +9,7 @@ import Box from 'app/components/Box';
 
 import ProfileBronze from 'app/components/UpdateProfile/Bronze';
 import ProfileSilver from 'app/components/UpdateProfile/Silver';
+// import ProfileForm from 'app/components/UpdateProfile/Profile';
 
 import { TierIDs, Tiers } from 'app/components/Helpers/Tiers';
 
@@ -147,6 +148,19 @@ export function UserProfilePage() {
     tierName = tierIndex !== -1 ? Tiers[tierIndex].class : '';
   }
 
+  // let updateForm = (
+  //   <ProfileForm
+  //     onCancel={() => {
+  //       setShowUpdateProfile(prev => !prev);
+  //       setShowProfile(prev => !prev);
+  //     }}
+  //     onSuccess={() => {
+  //       setShowUpdateProfile(prev => !prev);
+  //       setShowProfile(prev => !prev);
+  //     }}
+  //     isBronze={Boolean(tierID) && tierID === TierIDs.bronze}
+  //   />
+  // );
   let updateForm = (
     <ProfileBronze
       onCancel={() => {

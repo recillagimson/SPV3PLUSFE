@@ -193,7 +193,7 @@ export const ReviewTotal = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-self: center;
+  align-items: center;
   margin: 40px 0 0;
   width: 100%;
 

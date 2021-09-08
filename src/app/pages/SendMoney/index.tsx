@@ -607,34 +607,34 @@ export function SendMoney() {
                 date={humanReadable}
               >
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <span className="description">Name</span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={8}>
                     <span className="value">
                       {success.first_name} {success.last_name}
                     </span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <span className="description">
                       {isEmail ? 'Email address' : 'Mobile number'}
                     </span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={8}>
                     <span className="value">
                       {isEmail ? success.email : success.mobile_number}
                     </span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <span className="description">Message </span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={8}>
                     <span className="value">{success.message}</span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <span className="description">Transaction Number</span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={8}>
                     <span className="value">{success.reference_number}</span>
                   </Grid>
                 </Grid>

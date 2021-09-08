@@ -13,7 +13,7 @@ export const initialState: ContainerState = {
 };
 
 const slice = createSlice({
-  name: 'updateProfile',
+  name: 'profilePage',
   initialState,
   reducers: {
     getFetchLoading(state, action: PayloadAction<any>) {

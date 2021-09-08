@@ -28,6 +28,7 @@ import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
 import { VerifyOTPState } from 'app/components/VerifyOTP/slice/types';
 import { ProfileBronzeState } from 'app/components/UpdateProfile/Bronze/slice/types';
 import { ProfileSilverState } from 'app/components/UpdateProfile/Silver/slice/types';
+import { UpdateProfileState } from 'app/components/UpdateProfile/Profile/slice/types';
 
 /* 
   Because the redux-injectors injects your reducers asynchronously somewhere in your code
@@ -44,10 +45,10 @@ export interface RootState {
   generateQR?: GenerateQRState;
   buyEpins?: BuyEpinsState;
   buyLoad?: BuyLoadState;
-  profile?: ProfileState;
-  updateProfile?: ProfileState;
+  profilePage?: ProfileState;
   profileBronze?: ProfileBronzeState;
   profileSilver?: ProfileSilverState;
+  updateProfile?: UpdateProfileState;
   notifications?: NotificationsState;
   termsAndConditions?: TermsAndConditions;
   addMoneyDragonpay: AddMoneyDragonpayState;
