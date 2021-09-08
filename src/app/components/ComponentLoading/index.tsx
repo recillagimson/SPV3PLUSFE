@@ -18,7 +18,7 @@ type Props = {
 function ComponentLoading(props: Props) {
   return (
     <S.Wrapper>
-      {props.isLoading ? <Loading position="absolute" /> : props.children}
+      {props.isLoading ? <Loading position="relative" /> : props.children}
     </S.Wrapper>
   );
 }
