@@ -50,7 +50,8 @@ const useFetch = () => {
 
       // for development console logging only
       if (
-        process.env.REACT_APP_SENTRY_ENV === 'development' &&
+        (process.env.REACT_APP_SENTRY_ENV === 'development' ||
+          process.env.REACT_APP_SENTRY_ENV === 'staging') &&
         contentType !== 'form-data'
       ) {
         const cons = {
@@ -139,9 +140,12 @@ const useFetch = () => {
           }
         }
         setLoading(false);
-      } catch (err) {
+      } catch (err: any) {
         // for development console logging only
-        if (process.env.REACT_APP_SENTRY_ENV === 'development') {
+        if (
+          process.env.REACT_APP_SENTRY_ENV === 'development' ||
+          process.env.REACT_APP_SENTRY_ENV === 'staging'
+        ) {
           const cons = {
             url: url,
             error: err,
