@@ -133,7 +133,7 @@ export default function UserProfileForm({
 
   React.useEffect(() => {
     if (refs && Object.keys(refs).length === 0) {
-      dispatch(appActions.getLoadReferences());
+      dispatch(appActions.getLoadAllReferences());
     }
 
     if (refs && Object.keys(refs).length > 0) {

@@ -35,6 +35,8 @@ import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
 import VerifyOTP from 'app/components/VerifyOTP';
 
+import { deleteCookie, sortBy, validatePhone } from 'app/components/Helpers';
+
 /** selectors */
 import {
   selectReferences,
@@ -51,7 +53,8 @@ import {
   selectOTPError,
   selectOTPData,
 } from './slice/selectors';
-import { validatePhone } from 'app/components/Helpers';
+
+import { getBarangays, getCities, getProvinces } from './addressReferences';
 
 type UserProfileFormProps = {
   onCancel: () => void;
@@ -59,6 +62,8 @@ type UserProfileFormProps = {
   isTierUpgrade?: boolean;
   idPhotoID?: string[];
   selfieID?: string[];
+  isBronze?: boolean;
+  firstTime?: boolean;
 };
 
 export default function UserProfileForm({
@@ -67,9 +72,12 @@ export default function UserProfileForm({
   isTierUpgrade,
   idPhotoID,
   selfieID,
+  isBronze,
+  firstTime,
 }: UserProfileFormProps) {
   const { actions } = useComponentSaga();
   const dispatch = useDispatch();
+
   const refs: any = useSelector(selectReferences);
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
@@ -123,21 +131,41 @@ export default function UserProfileForm({
     error: false,
   });
 
+  // address references
+  // const [regionList, setRegionList] = React.useState<any>(false);
+  const [provinceList, setProvinceList] = React.useState<any>(false);
+  const [cityList, setCityList] = React.useState<any>(false);
+  const [cityLoading, setCityLoading] = React.useState(false);
+  const [barangayList, setBarangayList] = React.useState<any>(false);
+  const [brgyLoading, setBrgyLoading] = React.useState(false);
+
   // address
+  const [country, setCountry] = React.useState({
+    value: '',
+    error: false,
+  });
+
   const [houseNo, setHouseNo] = React.useState({
     value: '',
     error: false,
   });
-  const [city, setCity] = React.useState({
-    value: '',
-    error: false,
-  });
+  // const [region, setRegion] = React.useState({
+  //   value: '',
+  //   error: false,
+  // });
   const [province, setProvince] = React.useState({
     value: '',
+    name: '',
     error: false,
   });
-  const [country, setCountry] = React.useState({
+  const [city, setCity] = React.useState({
     value: '',
+    name: '',
+    error: false,
+  });
+  const [brgy, setBrgy] = React.useState({
+    value: '',
+    name: '',
     error: false,
   });
   const [postal, setPostal] = React.useState({
@@ -190,6 +218,11 @@ export default function UserProfileForm({
 
   React.useEffect(() => {
     loopYear(1950);
+    onLoadProvinceList('01');
+
+    return () => {
+      dispatch(actions.getStateReset());
+    };
   }, []);
 
   React.useEffect(() => {
@@ -208,37 +241,40 @@ export default function UserProfileForm({
   }, [birthDate]);
 
   React.useEffect(() => {
-    // if (refs && Object.keys(refs).length === 0) {
-    //   dispatch(appActions.getLoadAllReferences());
-    // }
+    if (refs && Object.keys(refs).length === 0) {
+      // dispatch(appActions.getLoadReferences());
+    }
 
     if (refs && Object.keys(refs).length > 0) {
       let loadRef = false;
 
-      if (!refs.maritalStatus || Object.keys(refs.maritalStatus).length === 0) {
+      if (!refs.countries || Object.keys(refs.countries).length === 0) {
         loadRef = true;
-        dispatch(appActions.getLoadMaritalRef());
       }
       if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
         loadRef = true;
-        dispatch(appActions.getLoadNationalityRef());
       }
-      if (!refs.countries || Object.keys(refs.countries).length === 0) {
-        loadRef = true;
-        dispatch(appActions.getLoadCountryRef());
-      }
-      if (!refs.sourceOfFunds || Object.keys(refs.sourceOfFunds).length === 0) {
-        loadRef = true;
-        dispatch(appActions.getLoadSourceOfFundsRef());
-      }
-      if (!refs.natureOfWork || Object.keys(refs.natureOfWork).length === 0) {
-        loadRef = true;
-        dispatch(appActions.getLoadNatureOfWorkRef());
+      if (!isBronze) {
+        if (
+          !refs.maritalStatus ||
+          Object.keys(refs.maritalStatus).length === 0
+        ) {
+          loadRef = true;
+        }
+        if (
+          !refs.sourceOfFunds ||
+          Object.keys(refs.sourceOfFunds).length === 0
+        ) {
+          loadRef = true;
+        }
+        if (!refs.natureOfWork || Object.keys(refs.natureOfWork).length === 0) {
+          loadRef = true;
+        }
       }
 
-      // if (loadRef) {
-      //   dispatch(appActions.getLoadAllReferences());
-      // }
+      if (loadRef) {
+        // dispatch(appActions.getLoadReferences());
+      }
 
       if (!loadRef) {
         setIsLoading(false);
@@ -385,7 +421,7 @@ export default function UserProfileForm({
   };
 
   /** Call this function if user has profile */
-  const writeProfileDetails = (prof: any) => {
+  const writeProfileDetails = async (prof: any) => {
     setFirstName({ value: prof.first_name, error: false });
     setMiddleName({ value: prof.middle_name, error: false });
     setLastName({ value: prof.last_name, error: false });
@@ -398,18 +434,6 @@ export default function UserProfileForm({
       day: bdate[2],
       error: false,
     });
-    setPlaceOfBirth({
-      value: prof.place_of_birth || '',
-      error: false,
-    });
-    setMothersMaidenName({
-      value: prof.mother_maidenname || '',
-      error: false,
-    });
-    const mI = refs.maritalStatus.findIndex(
-      j => j.id === prof.marital_status_id,
-    );
-    setMarital({ value: mI !== -1 ? mI.toString() : '', error: false });
 
     const cI = refs.countries.findIndex(j => j.id === prof.country_id);
     setCountry({ value: cI !== -1 ? cI.toString() : '', error: false });
@@ -422,38 +446,143 @@ export default function UserProfileForm({
       value: Boolean(prof.is_accept_parental_consent),
       error: false,
     });
+
     setHouseNo({ value: prof.house_no_street, error: false });
-    setCity({ value: prof.city, error: false });
-    setProvince({ value: prof.province_state, error: false });
+    let provIndex = -1;
+    let cityIndex = -1;
+    let brgyIndex = -1;
+    if (prof.province_state && prof.province_state !== '') {
+      const provList: any = await onLoadProvinceList('01');
+      provIndex = (await provList)
+        ? provList.findIndex(j => j.name === prof.province_state)
+        : -1;
+      setTimeout(() => {
+        setProvince({
+          value: provIndex !== -1 ? provIndex.toString() : '',
+          name: provIndex !== -1 ? prof.province_state : '',
+          error: false,
+        });
+      }, 200);
+
+      if (prof.city && prof.city !== '' && provIndex !== -1) {
+        setCityLoading(true);
+        const citiesList: any = await onLoadCityList(
+          provList[provIndex].province_code,
+        );
+        cityIndex = (await citiesList)
+          ? citiesList.findIndex(j => j.name === prof.city)
+          : -1;
+        setTimeout(() => {
+          setCity({
+            value: cityIndex !== -1 ? cityIndex.toString() : '',
+            name: cityIndex !== -1 ? prof.city : '',
+            error: false,
+          });
+          setCityLoading(false);
+        }, 200);
+
+        if (prof.barangay && prof.barangay !== '' && cityIndex !== -1) {
+          setBrgyLoading(true);
+          const brgyList: any = await onLoadBarangayList(
+            citiesList[cityIndex].municipality_code,
+          );
+          brgyIndex = (await brgyList)
+            ? brgyList.findIndex(j => j.name === prof.barangay)
+            : -1;
+          setTimeout(() => {
+            setBrgy({
+              value: brgyIndex !== -1 ? brgyIndex.toString() : '',
+              name: brgyIndex !== -1 ? prof.barangay : '',
+              error: false,
+            });
+            setBrgyLoading(false);
+          }, 200);
+        }
+      }
+    }
     setPostal({ value: prof.postal_code, error: false });
 
-    setContactNo({ value: prof.contact_no || '', error: false });
+    if (!isBronze) {
+      setMothersMaidenName({
+        value: prof.mother_maidenname || '',
+        error: false,
+      });
+      setPlaceOfBirth({
+        value: prof.place_of_birth || '',
+        error: false,
+      });
+      const mI = refs.maritalStatus.findIndex(
+        j => j.id === prof.marital_status_id,
+      );
+      setMarital({ value: mI !== -1 ? mI.toString() : '', error: false });
 
-    const nwI = refs.natureOfWork.findIndex(
-      j => j.id === prof.nature_of_work_id,
-    );
-    setNatureOfWork({
-      value: nwI !== -1 ? nwI.toString() : '',
-      encoded: prof.encoded_nature_of_work || '',
-      error: false,
-    });
+      setContactNo({ value: prof.contact_no || '', error: false });
 
-    const sI = refs.sourceOfFunds.findIndex(
-      j => j.id === prof.source_of_fund_id,
-    );
-    setSourceOfFunds({
-      value: sI !== -1 ? sI.toString() : '',
-      encoded: prof.encoded_source_of_fund || '',
-      error: false,
-    });
-    setOccupation({
-      value: prof.occupation || '',
-      error: false,
-    });
-    setEmployer({
-      value: prof.employer || '',
-      error: false,
-    });
+      const nwI = refs.natureOfWork.findIndex(
+        j => j.id === prof.nature_of_work_id,
+      );
+      setNatureOfWork({
+        value: nwI !== -1 ? nwI.toString() : '',
+        encoded: prof.encoded_nature_of_work || '',
+        error: false,
+      });
+
+      const sI = refs.sourceOfFunds.findIndex(
+        j => j.id === prof.source_of_fund_id,
+      );
+      setSourceOfFunds({
+        value: sI !== -1 ? sI.toString() : '',
+        encoded: prof.encoded_source_of_fund || '',
+        error: false,
+      });
+      setOccupation({
+        value: prof.occupation || '',
+        error: false,
+      });
+      setEmployer({
+        value: prof.employer || '',
+        error: false,
+      });
+    }
+  };
+
+  const onLoadProvinceList = async (code: string) => {
+    try {
+      const lists = await getProvinces(code);
+      if (lists && lists.length > 0) {
+        const newProvinceArray = await sortBy(lists, 'name', 'ASC', '');
+        setProvinceList(newProvinceArray);
+        return newProvinceArray;
+      }
+    } catch (err) {
+      return false;
+    }
+  };
+  const onLoadCityList = async (code: string) => {
+    try {
+      const lists = await getCities(code);
+      if (lists && lists.length > 0) {
+        const newArray = sortBy(lists, 'name', 'ASC', '');
+        setCityList(newArray);
+        setCityLoading(false);
+        return newArray;
+      }
+    } catch (err) {
+      return false;
+    }
+  };
+  const onLoadBarangayList = async (code: string) => {
+    try {
+      const lists = await getBarangays(code);
+      if (lists && lists.length > 0) {
+        const newArray = sortBy(lists, 'name', 'ASC', '');
+        setBarangayList(newArray);
+        setBrgyLoading(false);
+        return newArray;
+      }
+    } catch (err) {
+      return false;
+    }
   };
 
   const onChangeBirthDate = e => {
@@ -464,6 +593,73 @@ export default function UserProfileForm({
       error: false,
     });
     setConsent({ value: false, error: false });
+  };
+
+  const onChangeSelect = e => {
+    const name = e.currentTarget.name;
+    const value = e.currentTarget.value;
+
+    // if (name === 'regions' && value !== '') {
+    //   // setRegion({ value: value, error: false });
+    //   setProvince({ value: '', error: false });
+    //   setCity({ value: '', error: false });
+    //   setBrgy({ value: '', error: false });
+    //   const provPayload = {
+    //     region_code: regionList[parseInt(value)].region_code,
+    //   };
+    //   console.log(provPayload);
+    //   loadProvinces.goFetch(
+    //     '/address/provinces',
+    //     'POST',
+    //     JSON.stringify(provPayload),
+    //     '',
+    //     false,
+    //     true,
+    //   );
+    // }
+    if (name === 'provinces' && value !== '') {
+      setCityLoading(true);
+      setProvince({
+        value: value,
+        name: provinceList[parseInt(value)].name,
+        error: false,
+      });
+      setCity({ value: '', name: '', error: false });
+      setBrgy({ value: '', name: '', error: false });
+      onLoadCityList(provinceList[parseInt(value)].province_code);
+    }
+    if (name === 'cities' && value !== '') {
+      setBrgyLoading(true);
+      setCity({
+        value: value,
+        name: cityList[parseInt(value)].name,
+        error: false,
+      });
+      setBrgy({ value: '', name: '', error: false });
+      onLoadBarangayList(cityList[parseInt(value)].municipality_code);
+    }
+
+    if (name === 'barangays' && value !== '') {
+      setBrgy({
+        value: value,
+        name: barangayList[parseInt(value)].name,
+        error: false,
+      });
+      setPostal({
+        value: barangayList[parseInt(value)].zip_code || '',
+        error: false,
+      });
+    }
+  };
+
+  const onFocusSelect = e => {
+    const name = e.currentTarget.name;
+    // if (name === 'regions' && !regionList) {
+    //   loadRegion.goFetch('/address/regions', 'GET', '', '', false, true);
+    // }
+    if (name === 'provinces' && !provinceList) {
+      onLoadProvinceList('01');
+    }
   };
 
   // validate fields before reviewing
@@ -502,19 +698,9 @@ export default function UserProfileForm({
       setNationality({ ...nationality, error: true });
     }
 
-    if (placeOfBirth.value === '') {
+    if (country.value === '') {
       hasError = true;
-      setPlaceOfBirth({ ...placeOfBirth, error: true });
-    }
-
-    if (mothersMaidenName.value === '') {
-      hasError = true;
-      setMothersMaidenName({ ...mothersMaidenName, error: true });
-    }
-
-    if (marital.value === '') {
-      hasError = true;
-      setMarital({ ...marital, error: true });
+      setCountry({ ...country, error: true });
     }
 
     if (houseNo.value === '') {
@@ -522,19 +708,19 @@ export default function UserProfileForm({
       setHouseNo({ ...city, error: true });
     }
 
-    if (city.value === '') {
-      hasError = true;
-      setCity({ ...city, error: true });
-    }
-
     if (province.value === '') {
       hasError = true;
       setProvince({ ...province, error: true });
     }
 
-    if (country.value === '') {
+    if (city.value === '') {
       hasError = true;
-      setCountry({ ...country, error: true });
+      setCity({ ...city, error: true });
+    }
+
+    if (brgy.value === '') {
+      hasError = true;
+      setBrgy({ ...brgy, error: true });
     }
 
     if (postal.value === '') {
@@ -557,51 +743,65 @@ export default function UserProfileForm({
       }
     }
 
-    // others for nature of work and source of funds, occupation, employer
-    if (natureOfWork.value === '') {
-      hasError = true;
-      setNatureOfWork({ ...natureOfWork, error: true });
-    }
-    if (
-      natureOfWork.value !== '' &&
-      refs.natureOfWork[parseInt(natureOfWork.value)].id ===
-        '0ed96f01-9131-11eb-b44f-1c1b0d14e211' &&
-      natureOfWork.encoded === ''
-    ) {
-      hasError = true;
-      setNatureOfWork({ ...natureOfWork, error: true });
-    }
+    if (!isBronze) {
+      if (placeOfBirth.value === '') {
+        hasError = true;
+        setPlaceOfBirth({ ...placeOfBirth, error: true });
+      }
+      if (marital.value === '') {
+        hasError = true;
+        setMarital({ ...marital, error: true });
+      }
+      if (mothersMaidenName.value === '') {
+        hasError = true;
+        setMothersMaidenName({ ...mothersMaidenName, error: true });
+      }
+      if (
+        contactNo.value === '' ||
+        (contactNo.value !== '' && !validatePhone(contactNo.value))
+      ) {
+        hasError = true;
+        setContactNo({ ...contactNo, error: true });
+      }
 
-    if (sourceOfFunds.value === '') {
-      hasError = true;
-      setSourceOfFunds({ ...sourceOfFunds, error: true });
-    }
-    if (
-      sourceOfFunds.value !== '' &&
-      refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
-        '0ed801a1-9131-11eb-b44f-1c1b0d14e211' &&
-      sourceOfFunds.encoded === ''
-    ) {
-      hasError = true;
-      setSourceOfFunds({ ...sourceOfFunds, error: true });
-    }
+      // others for nature of work and source of funds, occupation, employer
+      if (natureOfWork.value === '') {
+        hasError = true;
+        setNatureOfWork({ ...natureOfWork, error: true });
+      }
+      if (
+        natureOfWork.value !== '' &&
+        refs.natureOfWork[parseInt(natureOfWork.value)].id ===
+          '0ed96f01-9131-11eb-b44f-1c1b0d14e211' &&
+        natureOfWork.encoded === ''
+      ) {
+        hasError = true;
+        setNatureOfWork({ ...natureOfWork, error: true });
+      }
 
-    if (occupation.value === '') {
-      hasError = true;
-      setOccupation({ ...occupation, error: true });
-    }
+      if (sourceOfFunds.value === '') {
+        hasError = true;
+        setSourceOfFunds({ ...sourceOfFunds, error: true });
+      }
+      if (
+        sourceOfFunds.value !== '' &&
+        refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
+          '0ed801a1-9131-11eb-b44f-1c1b0d14e211' &&
+        sourceOfFunds.encoded === ''
+      ) {
+        hasError = true;
+        setSourceOfFunds({ ...sourceOfFunds, error: true });
+      }
 
-    if (employer.value === '') {
-      hasError = true;
-      setEmployer({ ...employer, error: true });
-    }
+      if (occupation.value === '') {
+        hasError = true;
+        setOccupation({ ...occupation, error: true });
+      }
 
-    if (
-      contactNo.value === '' ||
-      (contactNo.value !== '' && !validatePhone(contactNo.value))
-    ) {
-      hasError = true;
-      setContactNo({ ...contactNo, error: true });
+      if (employer.value === '') {
+        hasError = true;
+        setEmployer({ ...employer, error: true });
+      }
     }
 
     if (!hasError) {
@@ -623,58 +823,66 @@ export default function UserProfileForm({
   };
 
   const onSubmit = () => {
+    const otherFields = !isBronze
+      ? {
+          place_of_birth: placeOfBirth.value,
+          marital_status_id:
+            marital.value !== ''
+              ? refs.maritalStatus[parseInt(marital.value)].id
+              : undefined,
+          contact_no: contactNo.value,
+          nature_of_work_id:
+            natureOfWork.value !== ''
+              ? refs.natureOfWork[parseInt(natureOfWork.value)].id
+              : undefined,
+          encoded_nature_of_work: natureOfWork.encoded,
+          source_of_fund_id:
+            sourceOfFunds.value !== ''
+              ? refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id
+              : undefined,
+          encoded_source_of_fund: sourceOfFunds.encoded,
+          occupation: occupation.value,
+          employer: employer.value,
+        }
+      : {};
+
     const data = {
-      // "entity_id": "123",
-      // "title": "sample",
-      last_name: lastName.value,
-      first_name: firstName.value,
-      middle_name: middleName.value,
-      // "name_extension": "jr",
-      birth_date: `${birthDate.year}-${birthDate.month}-${birthDate.day}`,
-      place_of_birth: placeOfBirth.value,
-      mother_maidenname: mothersMaidenName.value,
-      marital_status_id:
-        marital.value !== ''
-          ? refs.maritalStatus[parseInt(marital.value)].id
+      isBronze: isBronze,
+      body: {
+        // "entity_id": "123",
+        // "title": "sample",
+        last_name: lastName.value,
+        first_name: firstName.value,
+        middle_name: middleName.value,
+        // "name_extension": "jr",
+        birth_date: `${birthDate.year}-${birthDate.month}-${birthDate.day}`,
+        mother_maidenname: mothersMaidenName.value,
+        nationality_id:
+          nationality.value !== ''
+            ? refs.nationalities[parseInt(nationality.value)].id
+            : undefined,
+        country_id:
+          country.value !== ''
+            ? refs.countries[parseInt(country.value)].id
+            : undefined,
+        house_no_street: houseNo.value,
+        province_state: province.name,
+        city: city.name,
+        barangay: brgy.name,
+        postal_code: postal.value,
+        guardian_name: showGuardianFields ? guardianName.value : undefined,
+        guardian_mobile_number: showGuardianFields
+          ? guardianMobile.value
           : undefined,
-      nationality_id:
-        nationality.value !== ''
-          ? refs.nationalities[parseInt(nationality.value)].id
+        is_accept_parental_consent: showGuardianFields
+          ? consent.value
           : undefined,
-      house_no_street: houseNo.value,
-      city: city.value,
-      province_state: province.value,
-      country_id:
-        country.value !== ''
-          ? refs.countries[parseInt(country.value)].id
-          : undefined,
-      postal_code: postal.value,
-
-      guardian_name: showGuardianFields ? guardianName.value : undefined,
-      guardian_mobile_number: showGuardianFields
-        ? guardianMobile.value
-        : undefined,
-      is_accept_parental_consent: showGuardianFields
-        ? consent.value
-        : undefined,
-
-      contact_no: contactNo.value,
-      nature_of_work_id:
-        natureOfWork.value !== ''
-          ? refs.natureOfWork[parseInt(natureOfWork.value)].id
-          : undefined,
-      encoded_nature_of_work: natureOfWork.encoded,
-      source_of_fund_id:
-        sourceOfFunds.value !== ''
-          ? refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id
-          : undefined,
-      encoded_source_of_fund: sourceOfFunds.encoded,
-      occupation: occupation.value,
-      employer: employer.value,
-      id_photos_ids: isTierUpgrade ? idPhotoID : undefined,
-      id_selfie_ids: isTierUpgrade ? selfieID : undefined,
+        id_photos_ids: isTierUpgrade ? idPhotoID : undefined,
+        id_selfie_ids: isTierUpgrade ? selfieID : undefined,
+        ...otherFields,
+      },
     };
-
+    console.log(data);
     dispatch(actions.getFetchLoading(data));
   };
 
@@ -686,6 +894,7 @@ export default function UserProfileForm({
   };
 
   const onCloseSuccessDialog = () => {
+    deleteCookie('spv_uat_f');
     setIsSuccess(false);
     setShowConfirm(false);
     setShowForm(false);
@@ -703,20 +912,7 @@ export default function UserProfileForm({
 
   let hasRefs = false;
   if (refs && Object.keys(refs).length > 0) {
-    if (
-      refs.nationalities &&
-      refs.nationalities.length > 0 &&
-      refs.countries &&
-      refs.countries.length > 0 &&
-      refs.natureOfWork &&
-      refs.natureOfWork.length > 0 &&
-      refs.maritalStatus &&
-      refs.maritalStatus.length > 0 &&
-      refs.sourceOfFunds &&
-      refs.sourceOfFunds.length > 0
-    ) {
-      hasRefs = true;
-    }
+    hasRefs = true;
   }
 
   return (
@@ -725,7 +921,7 @@ export default function UserProfileForm({
 
       {showForm && (
         <Box title="User Info" titleBorder withPadding>
-          <form id="silverUpdateProfile">
+          <form id="updateProfile">
             <Field flex>
               <Label>First Name</Label>
               <div style={{ flexGrow: 1 }}>
@@ -890,73 +1086,81 @@ export default function UserProfileForm({
                 )}
               </div>
             </Field>
-            <Field flex>
-              <Label>Place of Birth</Label>
-              <div style={{ flexGrow: 1 }}>
-                <Input
-                  value={placeOfBirth.value}
-                  onChange={e =>
-                    setPlaceOfBirth({
-                      value: e.currentTarget.value,
-                      error: false,
-                    })
-                  }
-                  className={placeOfBirth.error ? 'error' : undefined}
-                  placeholder="Place of birth"
-                />
-                {placeOfBirth.error && (
-                  <ErrorMsg formError>Place of birth is required.</ErrorMsg>
-                )}
-              </div>
-            </Field>
-            <Field flex>
-              <Label>Mothers Maiden Name</Label>
-              <div style={{ flexGrow: 1 }}>
-                <Input
-                  value={mothersMaidenName.value}
-                  onChange={e =>
-                    setMothersMaidenName({
-                      value: e.currentTarget.value,
-                      error: false,
-                    })
-                  }
-                  className={mothersMaidenName.error ? 'error' : undefined}
-                  placeholder="Mothers maiden name"
-                />
-                {mothersMaidenName.error && (
-                  <ErrorMsg formError>Mothers maiden name required.</ErrorMsg>
-                )}
-              </div>
-            </Field>
-            <Field flex>
-              <Label>Marital Status</Label>
-              <div style={{ flexGrow: 1 }}>
-                <Select
-                  fullWidth
-                  value={marital.value}
-                  onChange={e =>
-                    setMarital({
-                      value: e.currentTarget.value,
-                      error: false,
-                    })
-                  }
-                  className={marital.error ? 'error' : undefined}
-                >
-                  <option value="" disabled>
-                    Select marital status
-                  </option>
-                  {hasRefs &&
-                    refs.maritalStatus.map((o, i) => (
-                      <option key={o.id} value={i}>
-                        {o.description}
+            {!isBronze && (
+              <>
+                <Field flex>
+                  <Label>Place of Birth</Label>
+                  <div style={{ flexGrow: 1 }}>
+                    <Input
+                      value={placeOfBirth.value}
+                      onChange={e =>
+                        setPlaceOfBirth({
+                          value: e.currentTarget.value,
+                          error: false,
+                        })
+                      }
+                      className={placeOfBirth.error ? 'error' : undefined}
+                      placeholder="Place of birth"
+                    />
+                    {placeOfBirth.error && (
+                      <ErrorMsg formError>Place of birth is required.</ErrorMsg>
+                    )}
+                  </div>
+                </Field>
+
+                <Field flex>
+                  <Label>Mothers Maiden Name</Label>
+                  <div style={{ flexGrow: 1 }}>
+                    <Input
+                      value={mothersMaidenName.value}
+                      onChange={e =>
+                        setMothersMaidenName({
+                          value: e.currentTarget.value,
+                          error: false,
+                        })
+                      }
+                      className={mothersMaidenName.error ? 'error' : undefined}
+                      placeholder="Mothers maiden name"
+                    />
+                    {mothersMaidenName.error && (
+                      <ErrorMsg formError>
+                        Mothers maiden name required.
+                      </ErrorMsg>
+                    )}
+                  </div>
+                </Field>
+
+                <Field flex>
+                  <Label>Marital Status</Label>
+                  <div style={{ flexGrow: 1 }}>
+                    <Select
+                      fullWidth
+                      value={marital.value}
+                      onChange={e =>
+                        setMarital({
+                          value: e.currentTarget.value,
+                          error: false,
+                        })
+                      }
+                      className={marital.error ? 'error' : undefined}
+                    >
+                      <option value="" disabled>
+                        Select marital status
                       </option>
-                    ))}
-                </Select>
-                {marital.error && (
-                  <ErrorMsg formError>Select marital status.</ErrorMsg>
-                )}
-              </div>
-            </Field>
+                      {hasRefs &&
+                        refs.maritalStatus.map((o, i) => (
+                          <option key={o.id} value={i}>
+                            {o.description}
+                          </option>
+                        ))}
+                    </Select>
+                    {marital.error && (
+                      <ErrorMsg formError>Select marital status.</ErrorMsg>
+                    )}
+                  </div>
+                </Field>
+              </>
+            )}
             <Field flex>
               <Label>Country</Label>
               <div style={{ flexGrow: 1 }}>
@@ -967,6 +1171,7 @@ export default function UserProfileForm({
                     setCountry({ value: e.currentTarget.value, error: false })
                   }
                   className={country.error ? 'error' : undefined}
+                  disabled
                 >
                   <option value="" disabled>
                     Select country
@@ -1063,21 +1268,127 @@ export default function UserProfileForm({
                 )}
               </div>
             </Field>
+            {/* <Field flex>
+              <Label>Region</Label>
+              <div style={{ flexGrow: 1 }}>
+                <Select
+                  loading={loadRegion.loading}
+                  fullWidth
+                  value={region.value}
+                  name="regions"
+                  onChange={onChangeSelect}
+                  className={region.error ? 'error' : undefined}
+                  onFocus={onFocusSelect}
+                >
+                  <option value="" disabled>
+                    Select region
+                  </option>
+                  {regionList &&
+                    regionList.length > 0 &&
+                    regionList.map((o: any, i: number) => (
+                      <option key={i} value={i}>
+                        {o.name}
+                      </option>
+                    ))}
+                </Select>
+                {region.error && (
+                  <ErrorMsg formError>Region is required.</ErrorMsg>
+                )}
+              </div>
+            </Field> */}
+            <Field flex>
+              <Label>Province</Label>
+              <div style={{ flexGrow: 1 }}>
+                <Select
+                  fullWidth
+                  value={province.value}
+                  name="provinces"
+                  onChange={onChangeSelect}
+                  className={province.error ? 'error' : undefined}
+                  onFocus={onFocusSelect}
+                  // disabled={!regionList || region.value === ''}
+                >
+                  <option value="" disabled>
+                    Select province
+                  </option>
+                  {provinceList &&
+                    provinceList.length > 0 &&
+                    provinceList.map((o: any, i: number) => (
+                      <option key={i} value={i}>
+                        {o.name}
+                      </option>
+                    ))}
+                </Select>
+                {province.error && (
+                  <ErrorMsg formError>Province is required.</ErrorMsg>
+                )}
+              </div>
+            </Field>
             <Field flex>
               <Label>City / Municipality</Label>
               <div style={{ flexGrow: 1 }}>
-                <Input
+                {/* <Input
                   value={city.value}
                   onChange={e =>
                     setCity({ value: e.currentTarget.value, error: false })
                   }
                   className={city.error ? 'error' : undefined}
                   placeholder="City / Municipality"
-                />
-                {city.error && <ErrorMsg formError>City is required</ErrorMsg>}
+                /> */}
+                <Select
+                  loading={cityLoading}
+                  fullWidth
+                  value={city.value}
+                  name="cities"
+                  onChange={onChangeSelect}
+                  className={city.error ? 'error' : undefined}
+                  disabled={!provinceList || province.value === ''}
+                >
+                  <option value="" disabled>
+                    Select city / municipality
+                  </option>
+                  {cityList &&
+                    cityList.length > 0 &&
+                    cityList.map((o: any, i: number) => (
+                      <option key={i} value={i}>
+                        {o.name}
+                      </option>
+                    ))}
+                </Select>
+                {city.error && (
+                  <ErrorMsg formError>City/Municipality is required</ErrorMsg>
+                )}
               </div>
             </Field>
             <Field flex>
+              <Label>Barangay</Label>
+              <div style={{ flexGrow: 1 }}>
+                <Select
+                  loading={brgyLoading}
+                  fullWidth
+                  value={brgy.value}
+                  name="barangays"
+                  onChange={onChangeSelect}
+                  className={brgy.error ? 'error' : undefined}
+                  disabled={!cityList || city.value === ''}
+                >
+                  <option value="" disabled>
+                    Select barangay
+                  </option>
+                  {barangayList &&
+                    barangayList.length > 0 &&
+                    barangayList.map((o: any, i: number) => (
+                      <option key={i} value={i}>
+                        {o.name}
+                      </option>
+                    ))}
+                </Select>
+                {brgy.error && (
+                  <ErrorMsg formError>Barangay is required.</ErrorMsg>
+                )}
+              </div>
+            </Field>
+            {/* <Field flex>
               <Label>Province / State</Label>
               <div style={{ flexGrow: 1 }}>
                 <Input
@@ -1092,7 +1403,7 @@ export default function UserProfileForm({
                   <ErrorMsg formError>Province / State is required</ErrorMsg>
                 )}
               </div>
-            </Field>
+            </Field> */}
 
             <Field flex>
               <Label>Postal Code</Label>
@@ -1111,169 +1422,176 @@ export default function UserProfileForm({
               </div>
             </Field>
 
-            <H5>Contact Info</H5>
-            <Field flex>
-              <Label>Mobile Number</Label>
-              <div style={{ flexGrow: 1 }}>
-                <Input
-                  value={contactNo.value}
-                  onChange={e =>
-                    setContactNo({ value: e.currentTarget.value, error: false })
-                  }
-                  className={contactNo.error ? 'error' : undefined}
-                  placeholder="Mobile number"
-                />
-                {contactNo.error && (
-                  <ErrorMsg formError>
-                    {contactNo.value === ''
-                      ? 'Enter your mobile number'
-                      : 'The mobile number is invalid. Use the format 09 + 9 digit mobile number.'}
-                  </ErrorMsg>
-                )}
-              </div>
-            </Field>
-
-            <H5>Work Info</H5>
-            <Field flex>
-              <Label>Nature of Work</Label>
-              <div style={{ flexGrow: 1 }}>
-                <Select
-                  fullWidth
-                  value={natureOfWork.value}
-                  onChange={e =>
-                    setNatureOfWork({
-                      value: e.currentTarget.value,
-                      encoded: '',
-                      error: false,
-                    })
-                  }
-                  className={natureOfWork.error ? 'error' : undefined}
-                >
-                  <option value="" disabled>
-                    Select nature of work
-                  </option>
-                  {hasRefs &&
-                    refs.natureOfWork.map((o, i) => (
-                      <option key={o.id} value={i}>
-                        {o.description}
-                      </option>
-                    ))}
-                </Select>
-                {natureOfWork.value !== '' &&
-                  refs.natureOfWork[parseInt(natureOfWork.value)].id ===
-                    '0ed96f01-9131-11eb-b44f-1c1b0d14e211' && (
+            {!isBronze && (
+              <>
+                <H5>Contact Info</H5>
+                <Field flex>
+                  <Label>Mobile Number</Label>
+                  <div style={{ flexGrow: 1 }}>
                     <Input
-                      value={natureOfWork.encoded}
+                      value={contactNo.value}
+                      onChange={e =>
+                        setContactNo({
+                          value: e.currentTarget.value,
+                          error: false,
+                        })
+                      }
+                      className={contactNo.error ? 'error' : undefined}
+                      placeholder="Mobile number"
+                    />
+                    {contactNo.error && (
+                      <ErrorMsg formError>
+                        {contactNo.value === ''
+                          ? 'Enter your mobile number'
+                          : 'The mobile number is invalid. Use the format 09 + 9 digit mobile number.'}
+                      </ErrorMsg>
+                    )}
+                  </div>
+                </Field>
+
+                <H5>Work Info</H5>
+                <Field flex>
+                  <Label>Nature of Work</Label>
+                  <div style={{ flexGrow: 1 }}>
+                    <Select
+                      fullWidth
+                      value={natureOfWork.value}
                       onChange={e =>
                         setNatureOfWork({
-                          ...natureOfWork,
-                          encoded: e.currentTarget.value,
+                          value: e.currentTarget.value,
+                          encoded: '',
                           error: false,
                         })
                       }
                       className={natureOfWork.error ? 'error' : undefined}
-                      placeholder="Please specify"
-                      style={{ marginTop: 3 }}
-                    />
-                  )}
-                {natureOfWork.error && (
-                  <ErrorMsg formError>
-                    {natureOfWork.value === ''
-                      ? 'Please select your nature of work'
-                      : 'Please fill out the others field.'}
-                  </ErrorMsg>
-                )}
-              </div>
-            </Field>
-            <Field flex>
-              <Label>Source of Funds</Label>
-              <div style={{ flexGrow: 1 }}>
-                <Select
-                  fullWidth
-                  value={sourceOfFunds.value}
-                  onChange={e =>
-                    setSourceOfFunds({
-                      value: e.currentTarget.value,
-                      encoded: '',
-                      error: false,
-                    })
-                  }
-                  className={sourceOfFunds.error ? 'error' : undefined}
-                >
-                  <option value="" disabled>
-                    Select source of funds
-                  </option>
-                  {hasRefs &&
-                    refs.sourceOfFunds.map((o, i) => (
-                      <option key={o.id} value={i}>
-                        {o.description}
+                    >
+                      <option value="" disabled>
+                        Select nature of work
                       </option>
-                    ))}
-                </Select>
-                {sourceOfFunds.value !== '' &&
-                  refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
-                    '0ed801a1-9131-11eb-b44f-1c1b0d14e211' && (
-                    <Input
-                      value={sourceOfFunds.encoded}
+                      {hasRefs &&
+                        refs.natureOfWork.map((o, i) => (
+                          <option key={o.id} value={i}>
+                            {o.description}
+                          </option>
+                        ))}
+                    </Select>
+                    {natureOfWork.value !== '' &&
+                      refs.natureOfWork[parseInt(natureOfWork.value)].id ===
+                        '0ed96f01-9131-11eb-b44f-1c1b0d14e211' && (
+                        <Input
+                          value={natureOfWork.encoded}
+                          onChange={e =>
+                            setNatureOfWork({
+                              ...natureOfWork,
+                              encoded: e.currentTarget.value,
+                              error: false,
+                            })
+                          }
+                          className={natureOfWork.error ? 'error' : undefined}
+                          placeholder="Please specify"
+                          style={{ marginTop: 3 }}
+                        />
+                      )}
+                    {natureOfWork.error && (
+                      <ErrorMsg formError>
+                        {natureOfWork.value === ''
+                          ? 'Please select your nature of work'
+                          : 'Please fill out the others field.'}
+                      </ErrorMsg>
+                    )}
+                  </div>
+                </Field>
+                <Field flex>
+                  <Label>Source of Funds</Label>
+                  <div style={{ flexGrow: 1 }}>
+                    <Select
+                      fullWidth
+                      value={sourceOfFunds.value}
                       onChange={e =>
                         setSourceOfFunds({
-                          ...sourceOfFunds,
-                          encoded: e.currentTarget.value,
+                          value: e.currentTarget.value,
+                          encoded: '',
                           error: false,
                         })
                       }
                       className={sourceOfFunds.error ? 'error' : undefined}
-                      placeholder="Please specify"
-                      style={{ marginTop: 3 }}
+                    >
+                      <option value="" disabled>
+                        Select source of funds
+                      </option>
+                      {hasRefs &&
+                        refs.sourceOfFunds.map((o, i) => (
+                          <option key={o.id} value={i}>
+                            {o.description}
+                          </option>
+                        ))}
+                    </Select>
+                    {sourceOfFunds.value !== '' &&
+                      refs.sourceOfFunds[parseInt(sourceOfFunds.value)].id ===
+                        '0ed801a1-9131-11eb-b44f-1c1b0d14e211' && (
+                        <Input
+                          value={sourceOfFunds.encoded}
+                          onChange={e =>
+                            setSourceOfFunds({
+                              ...sourceOfFunds,
+                              encoded: e.currentTarget.value,
+                              error: false,
+                            })
+                          }
+                          className={sourceOfFunds.error ? 'error' : undefined}
+                          placeholder="Please specify"
+                          style={{ marginTop: 3 }}
+                        />
+                      )}
+                    {sourceOfFunds.error && (
+                      <ErrorMsg formError>
+                        {sourceOfFunds.value === ''
+                          ? 'Please select your source of funds'
+                          : 'Please fill out the others field.'}
+                      </ErrorMsg>
+                    )}
+                  </div>
+                </Field>
+                <Field flex>
+                  <Label>Occupation</Label>
+                  <div style={{ flexGrow: 1 }}>
+                    <Input
+                      value={occupation.value}
+                      onChange={e =>
+                        setOccupation({
+                          value: e.currentTarget.value,
+                          error: false,
+                        })
+                      }
+                      className={occupation.error ? 'error' : undefined}
+                      placeholder="Occupation"
                     />
-                  )}
-                {sourceOfFunds.error && (
-                  <ErrorMsg formError>
-                    {sourceOfFunds.value === ''
-                      ? 'Please select your source of funds'
-                      : 'Please fill out the others field.'}
-                  </ErrorMsg>
-                )}
-              </div>
-            </Field>
-            <Field flex>
-              <Label>Occupation</Label>
-              <div style={{ flexGrow: 1 }}>
-                <Input
-                  value={occupation.value}
-                  onChange={e =>
-                    setOccupation({
-                      value: e.currentTarget.value,
-                      error: false,
-                    })
-                  }
-                  className={occupation.error ? 'error' : undefined}
-                  placeholder="Occupation"
-                />
-                {occupation.error && (
-                  <ErrorMsg formError>Enter your occupation</ErrorMsg>
-                )}
-              </div>
-            </Field>
-            <Field flex>
-              <Label>Employer</Label>
-              <div style={{ flexGrow: 1 }}>
-                <Input
-                  value={employer.value}
-                  onChange={e =>
-                    setEmployer({
-                      value: e.currentTarget.value,
-                      error: false,
-                    })
-                  }
-                  className={employer.error ? 'error' : undefined}
-                  placeholder="Employer"
-                />
-                {employer.error && (
-                  <ErrorMsg formError>Enter your employer</ErrorMsg>
-                )}
-              </div>
-            </Field>
+                    {occupation.error && (
+                      <ErrorMsg formError>Enter your occupation</ErrorMsg>
+                    )}
+                  </div>
+                </Field>
+                <Field flex>
+                  <Label>Employer</Label>
+                  <div style={{ flexGrow: 1 }}>
+                    <Input
+                      value={employer.value}
+                      onChange={e =>
+                        setEmployer({
+                          value: e.currentTarget.value,
+                          error: false,
+                        })
+                      }
+                      className={employer.error ? 'error' : undefined}
+                      placeholder="Employer"
+                    />
+                    {employer.error && (
+                      <ErrorMsg formError>Enter your employer</ErrorMsg>
+                    )}
+                  </div>
+                </Field>
+              </>
+            )}
 
             <Flex alignItems="center" justifyContent="flex-end">
               <Button
@@ -1351,15 +1669,17 @@ export default function UserProfileForm({
               />
             </ListItem>
 
-            <ListItem flex>
-              <ListItemText
-                label="Place of Birth"
-                primary={placeOfBirth.value}
-                style={{
-                  flexGrow: 1,
-                }}
-              />
-            </ListItem>
+            {!isBronze && (
+              <ListItem flex>
+                <ListItemText
+                  label="Place of Birth"
+                  primary={placeOfBirth.value}
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+            )}
             <ListItem flex>
               <ListItemText
                 label="Mothers Maiden Name"
@@ -1369,17 +1689,19 @@ export default function UserProfileForm({
                 }}
               />
             </ListItem>
-            <ListItem flex>
-              <ListItemText
-                label="Marital Status"
-                primary={
-                  refs.maritalStatus[parseInt(marital.value, 10)].description
-                }
-                style={{
-                  flexGrow: 1,
-                }}
-              />
-            </ListItem>
+            {!isBronze && (
+              <ListItem flex>
+                <ListItemText
+                  label="Marital Status"
+                  primary={
+                    refs.maritalStatus[parseInt(marital.value, 10)].description
+                  }
+                  style={{
+                    flexGrow: 1,
+                  }}
+                />
+              </ListItem>
+            )}
             <ListItem flex>
               <ListItemText
                 label="Country"
@@ -1459,61 +1781,65 @@ export default function UserProfileForm({
                 }}
               />
             </ListItem>
-            <ListItem flex>
-              <ListItemText
-                label="Home Phone Number"
-                primary={contactNo.value}
-                style={{
-                  flexGrow: 1,
-                }}
-              />
-            </ListItem>
-            <ListItem flex>
-              <ListItemText
-                label="Nature of Work"
-                primary={
-                  natureOfWork.encoded !== ''
-                    ? natureOfWork.encoded
-                    : refs.natureOfWork[parseInt(natureOfWork.value, 10)]
-                        .description
-                }
-                style={{
-                  flexGrow: 1,
-                }}
-              />
-            </ListItem>
-            <ListItem flex>
-              <ListItemText
-                label="Source of Funds"
-                primary={
-                  sourceOfFunds.encoded !== ''
-                    ? sourceOfFunds.encoded
-                    : refs.sourceOfFunds[parseInt(sourceOfFunds.value, 10)]
-                        .description
-                }
-                style={{
-                  flexGrow: 1,
-                }}
-              />
-            </ListItem>
-            <ListItem flex>
-              <ListItemText
-                label="Occupation"
-                primary={occupation.value}
-                style={{
-                  flexGrow: 1,
-                }}
-              />
-            </ListItem>
-            <ListItem flex>
-              <ListItemText
-                label="Employer"
-                primary={employer.value}
-                style={{
-                  flexGrow: 1,
-                }}
-              />
-            </ListItem>
+            {!isBronze && (
+              <>
+                <ListItem flex>
+                  <ListItemText
+                    label="Home Phone Number"
+                    primary={contactNo.value}
+                    style={{
+                      flexGrow: 1,
+                    }}
+                  />
+                </ListItem>
+                <ListItem flex>
+                  <ListItemText
+                    label="Nature of Work"
+                    primary={
+                      natureOfWork.encoded !== ''
+                        ? natureOfWork.encoded
+                        : refs.natureOfWork[parseInt(natureOfWork.value, 10)]
+                            .description
+                    }
+                    style={{
+                      flexGrow: 1,
+                    }}
+                  />
+                </ListItem>
+                <ListItem flex>
+                  <ListItemText
+                    label="Source of Funds"
+                    primary={
+                      sourceOfFunds.encoded !== ''
+                        ? sourceOfFunds.encoded
+                        : refs.sourceOfFunds[parseInt(sourceOfFunds.value, 10)]
+                            .description
+                    }
+                    style={{
+                      flexGrow: 1,
+                    }}
+                  />
+                </ListItem>
+                <ListItem flex>
+                  <ListItemText
+                    label="Occupation"
+                    primary={occupation.value}
+                    style={{
+                      flexGrow: 1,
+                    }}
+                  />
+                </ListItem>
+                <ListItem flex>
+                  <ListItemText
+                    label="Employer"
+                    primary={employer.value}
+                    style={{
+                      flexGrow: 1,
+                    }}
+                  />
+                </ListItem>
+              </>
+            )}
           </List>
           <Flex
             alignItems="center"
@@ -1605,12 +1931,16 @@ export default function UserProfileForm({
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
           <H3 margin="15px 0 10px">
-            {isTierUpgrade ? 'Request sent!' : 'Successfully updated!'}
+            {isTierUpgrade
+              ? 'Request sent!'
+              : `Successfully ${firstTime ? 'created' : 'updated'}!`}
           </H3>
           <p>
             {isTierUpgrade
               ? 'Awesome! We have received your request to update your account. We will review and verify your request within 24 hours.'
-              : 'You have successfully updated your account information.'}
+              : `You have successfully ${
+                  firstTime ? 'created' : 'updated'
+                } your account information.`}
           </p>
           <Button
             fullWidth

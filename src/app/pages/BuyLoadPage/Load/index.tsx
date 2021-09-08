@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Wrapper from './Wrapper';
 
-import { regExMobile } from 'app/components/Helpers';
+import { numberCommas, regExMobile } from 'app/components/Helpers';
 
 import { useContainerSaga } from './slice';
 import {
@@ -325,15 +325,15 @@ export function BuyLoadPage() {
         <Helmet>
           <title>Buy Load</title>
         </Helmet>
-        {loading && <Loading position="absolute" />}
-        {validateLoading && <Loading position="absolute" />}
-        {payLoading && <Loading position="absolute" />}
 
         <Wrapper id="buyLoad">
           <Card
             title={!isReview ? 'Buy Load' : 'Review Load Purchase'}
             size="medium"
           >
+            {loading && <Loading position="absolute" />}
+            {validateLoading && <Loading position="absolute" />}
+            {payLoading && <Loading position="absolute" />}
             {showForm && (
               <>
                 <Field>
@@ -595,14 +595,14 @@ export function BuyLoadPage() {
                       </Flex>
                       <Flex justifyContent="space-between">
                         <p>Amount</p>
-                        <p>PHP {selectedProduct.amount}.00</p>
+                        <p>PHP {numberCommas(selectedProduct.amount)}</p>
                       </Flex>
                     </section>
                     <br />
 
                     <p className="text-center">Total Amount</p>
                     <H5 className="text-center">
-                      PHP {selectedProduct.amount}.00
+                      PHP {numberCommas(selectedProduct.amount)}
                     </H5>
                     <br />
                     <p style={{ marginBottom: '5px' }}>Description</p>
@@ -685,7 +685,7 @@ export function BuyLoadPage() {
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Amount</span>
-                  <span>PHP {paySuccess.amount}.00</span>
+                  <span>PHP {numberCommas(paySuccess.amount)}</span>
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Transaction Number</span>

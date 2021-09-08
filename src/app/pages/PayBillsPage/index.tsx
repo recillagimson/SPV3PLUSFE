@@ -68,6 +68,7 @@ export function PayBillsPage() {
   const validatedBiller: any = useSelector(selectValidatedBiller);
   const createdPayBills: any = useSelector(selectCreatedPayBills);
   const [steps, setSteps] = React.useState(0);
+  const [selectedCategory, setCategory] = React.useState('');
   const [selectedBillers, setSelectedBillers] = React.useState([]);
   const [filteredBillers, setSelectedFilteredBillers] = React.useState([]);
   const [isDialogErrorOpen, setDialogError] = React.useState(false);
@@ -244,20 +245,24 @@ export function PayBillsPage() {
           </S.ReviewListItem>
           <S.ReviewListItem>
             <p>Reference Number</p>
-            <p>{data.reference_number || data.referenceNumber || 'None'}</p>
+            <p>{data.reference_number || data.validationNumber || 'None'}</p>
           </S.ReviewListItem>
           <S.ReviewListItem>
             <p>Amount</p>
             <p>PHP {numberWithCommas(data.amount)}</p>
           </S.ReviewListItem>
-          <S.ReviewListItem>
-            <p>Send Receipt To</p>
-            <p>{data.send_receipt_to || 'None'}</p>
-          </S.ReviewListItem>
-          <S.ReviewListItem>
-            <p>Message</p>
-            <p>{data.message || 'None'}</p>
-          </S.ReviewListItem>
+          {data.send_receipt_to && (
+            <S.ReviewListItem>
+              <p>Send Receipt To</p>
+              <p>{data.send_receipt_to}</p>
+            </S.ReviewListItem>
+          )}
+          {data.message && (
+            <S.ReviewListItem>
+              <p>Message</p>
+              <p>{data.message}</p>
+            </S.ReviewListItem>
+          )}
           {successReview && (
             <S.ReviewListItem>
               <p>Transaction Number</p>
@@ -342,6 +347,7 @@ export function PayBillsPage() {
         biller.active === '1',
     );
 
+    setCategory(category || 'Others');
     setSelectedBillers(filtered);
     setSelectedFilteredBillers(filtered);
     setSteps(1);
@@ -413,7 +419,7 @@ export function PayBillsPage() {
       case 0:
         return (
           <React.Fragment>
-            <h3 className="title">Categories</h3>
+            <S.ContainerTitle className="title">Categories</S.ContainerTitle>
             <S.BillersOptions>
               {activeCategories()?.map(
                 (category: BillerStateOptions, i: number) => {
@@ -616,11 +622,17 @@ export function PayBillsPage() {
     switch (step) {
       case 0:
       case 2:
-        return <h3>Pay Bills</h3>;
+        return (
+          <S.ContainerTitle className="container-title">
+            Pay Bills
+          </S.ContainerTitle>
+        );
       case 1:
         return (
           <React.Fragment>
-            <h3>Electric Utility</h3>
+            <S.ContainerTitle className="container-title">
+              {selectedCategory}
+            </S.ContainerTitle>
             {false && ( // Temporary hidden
               <Input
                 type="text"
@@ -631,7 +643,7 @@ export function PayBillsPage() {
           </React.Fragment>
         );
       case 3:
-        return <h3>Review Payments</h3>;
+        return <S.ContainerTitle>Review Payments</S.ContainerTitle>;
       default:
         return <React.Fragment />;
     }

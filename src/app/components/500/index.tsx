@@ -2,14 +2,18 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { Helmet } from 'react-helmet-async';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import Button from 'app/components/Elements/Button';
 
 import { appActions } from 'app/App/slice';
+import { selectIsAuthenticated } from 'app/App/slice/selectors';
 
 export function Page500() {
+  const history = useHistory();
   const dispatch = useDispatch();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   React.useEffect(() => {
     const appMain = document.querySelector('#appMain');
@@ -42,7 +46,7 @@ export function Page500() {
           size="large"
           variant="contained"
           color="primary"
-          onClick={() => window.location.replace('/')}
+          onClick={() => history.push(isAuthenticated ? '/dashboard' : '/')}
         >
           Go back
         </Button>
