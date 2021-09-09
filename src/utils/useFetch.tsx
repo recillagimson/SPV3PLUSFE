@@ -43,7 +43,7 @@ const useFetch = () => {
       method: string,
       payload: any,
       contentType?: '' | 'application/json' | 'form-data',
-      isUserToken?: boolean,
+      isUserToken?: boolean | string,
       decrypt?: boolean,
     ) => {
       setLoading(true);
@@ -146,9 +146,11 @@ const useFetch = () => {
           process.env.REACT_APP_SENTRY_ENV === 'development' ||
           process.env.REACT_APP_SENTRY_ENV === 'staging'
         ) {
+          const resp = err.response.clone();
           const cons = {
             url: url,
-            error: err,
+            error: await resp.json(),
+            status: resp.status,
           };
           console.info(cons);
         }
@@ -173,15 +175,6 @@ const useFetch = () => {
           dispatch(appActions.getIsServerError(true)); // error 500 - there is something wrong with the BE server or in their code
           return;
         }
-
-        /**
-         * API URL not found 404
-         * We shouldn't reach this part of the code, if we encounter this, kindly double check the API url or ask the BE devs
-         */
-        // if (err && err.response && err.response.status === 404) {
-        //   dispatch(appActions.getIsNotFound(true)); //
-        //   return;
-        // }
 
         /**
          * Default Error Messages from the API endpoint

@@ -183,7 +183,7 @@ const ButtonStyle = css<Props>`
   ${p =>
     p.size === 'small' &&
     `
-    padding: 7px 15px;
+    padding: 8px 15px;
     font-size: 0.8rem;
   `}
 

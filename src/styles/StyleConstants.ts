@@ -122,7 +122,7 @@ export const StyleConstants = Object.freeze({
     medium: '8px',
     small: '4px',
   },
-  transparencies: {
+  transparent: {
     black: 'rgba(0, 0, 0, 0.25)',
     white: 'rgba(255, 255, 255, 0.5)',
   },
