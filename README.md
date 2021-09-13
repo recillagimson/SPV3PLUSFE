@@ -139,3 +139,7 @@ v1.1.1
 - QR Code limit entry on amount (VVBT-245)
 - Added a date picker for Date Field in Pay bill due date (VVBT-242, VVBT-273)
 - Paybills fix on account number (VVBT-291, VVBT-304)
+
+v1.1.2
+
+- Fix decimal places on send money (VP2-246)
