@@ -657,7 +657,10 @@ export function PayBillsPage() {
       <S.Container>
         <S.Wrapper data-id="Paybills-Wrapper">
           <S.WrapperHeader isCustom={steps === 1}>
-            {renderHeader(steps)}
+            <div>
+              {renderHeader(steps)}
+              <Button onClick={() => setSteps(0)}>Back</Button>
+            </div>
           </S.WrapperHeader>
           <ComponentLoading isLoading={loading}>
             <S.WrapperContent>{renderView(steps)}</S.WrapperContent>
