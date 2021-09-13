@@ -52,8 +52,11 @@ export function BuyEpinsPage() {
   const paySuccess: any = useSelector(selectPayData);
   const payError: any = useSelector(selectPayError);
 
-  const date = DateTime.fromISO(paySuccess.transaction_date);
-  const humanReadable = date.toLocaleString(DateTime.DATETIME_MED);
+  let date = DateTime.fromSQL(paySuccess.transaction_date);
+  if (date.invalid) {
+    date = DateTime.fromISO(paySuccess.transaction_date);
+  }
+  const humanReadable = date.toFormat('dd LLLL yyyy, t');
 
   const [mobile, setMobile] = React.useState<{
     value: string;

@@ -144,4 +144,4 @@ v1.1.2
 
 - Add 2 Decimal Places in the Amount in the Transaction Confirmation Screen of Send Money (VP2-246)
 - Forex - Search parameter should be searching for the 3 char forex symbol, not its description (VP2-285)
-- Buy EPINS load description (VP2-290)
+- Buy EPINS load description in Review and Receipt screen (VP2-290)
