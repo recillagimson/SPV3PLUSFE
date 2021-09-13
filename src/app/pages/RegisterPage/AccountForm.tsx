@@ -1,0 +1,549 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import * as React from 'react';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import Loading from 'app/components/Loading';
+import { H3, H4 } from 'app/components/Typography';
+import Label from 'app/components/Elements/Label';
+import Field from 'app/components/Elements/Fields';
+import Input from 'app/components/Elements/Input';
+import ErrorMsg from 'app/components/Elements/ErrorMsg';
+import Button from 'app/components/Elements/Button';
+import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
+import IconButton from 'app/components/Elements/IconButton';
+import A from 'app/components/Elements/A';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
+
+import Dialog from 'app/components/Dialog';
+
+import useFetch from 'utils/useFetch';
+import { regExMobile, validateEmail } from 'app/components/Helpers';
+import { useHistory } from 'react-router';
+
+type AccountFormProps = {
+  /**
+   * This should be passed only if we are coming from
+   * the No Account modal in login, pre-fill the fields
+   */
+  preFill?: {
+    /**
+     * If user is email or mobile
+     */
+    isEmail?: boolean;
+    /**
+     * Pre-fill the field of username if coming from No Account
+     */
+    username?: string;
+    /**
+     * Pre-fill the field of password if coming from No Account
+     */
+    password?: string;
+  };
+  /**
+   * Callback when validation is successfull
+   * The returned data should be use in creating account
+   * @returns { email: '' | undefined, mobile_number: '' | undefined, password: '', password_confirmation: '' }
+   */
+  onSuccessValidation: (
+    isEmail: boolean,
+    data: {
+      email: string | undefined;
+      mobile_number: string | undefined;
+      password: string;
+      password_confirmation: string;
+    },
+  ) => void;
+};
+
+/**
+ * Account Form
+ * @typedef AccountFormProps
+ */
+export default function AccountForm({
+  preFill,
+  onSuccessValidation,
+}: AccountFormProps) {
+  const history = useHistory();
+  const validate = useFetch();
+
+  const [isEmail, setIsEmail] = React.useState(preFill?.isEmail || false);
+  const [username, setUsername] = React.useState({
+    value: preFill?.username || '',
+    error: false,
+    msg: '',
+  });
+  const [password, setPassword] = React.useState({
+    value: preFill?.password || '',
+    error: false,
+    msg: '',
+    show: false,
+  });
+  const [confirmPassword, setConfirmPassword] = React.useState({
+    value: '',
+    error: false,
+    msg: '',
+    show: false,
+  });
+
+  /** See Notes */
+  const [passwordValidated, setPasswordValidated] = React.useState({
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+    5: false,
+  });
+
+  const [apiError, setApirError] = React.useState({
+    show: false,
+    msg: '',
+    code: 0,
+  });
+
+  React.useEffect(() => {
+    if (preFill && Object.keys(preFill).length > 0) {
+      setIsEmail(preFill.isEmail || false);
+      setUsername({
+        value: preFill.username || '',
+        error: false,
+        msg: '',
+      });
+      setPassword({
+        value: preFill.password || '',
+        error: false,
+        msg: '',
+        show: false,
+      });
+      setConfirmPassword({
+        value: preFill.password || '',
+        error: false,
+        msg: '',
+        show: false,
+      });
+    }
+  }, [preFill]);
+
+  React.useEffect(() => {
+    if (validate.response) {
+      onSuccessValidation(isEmail, {
+        email: isEmail ? username.value : undefined,
+        mobile_number: !isEmail ? username.value : undefined,
+        password: password.value,
+        password_confirmation: confirmPassword.value,
+      });
+    }
+    if (validate.error && Object.keys(validate.error).length > 0) {
+      onApiError(validate.error);
+    }
+  }, [validate.response, validate.error]);
+
+  const onApiError = (err: any) => {
+    if (err && Object.keys(err).length > 0) {
+      /**
+       * If there is no response in the error body,
+       * this is code 422
+       */
+      let errorCode: any = false;
+      if (
+        err.errors &&
+        err.errors.error_code &&
+        err.errors.error_code.length > 0
+      ) {
+        errorCode = err.errors.error_code;
+      }
+
+      if (!err.response && errorCode) {
+        errorCode.map((i: any) => {
+          if (i === 112) {
+            setUsername({
+              ...username,
+              error: true,
+              msg: isEmail
+                ? 'The email is already taken'
+                : 'The mobile number is already taken',
+            });
+            return undefined;
+          }
+          return undefined;
+        });
+      }
+      if (err.errors && !errorCode) {
+        if (err.errors.mobile_number && err.errors.mobile_number.length > 0) {
+          setUsername({
+            ...username,
+            error: true,
+            msg: err.errors.mobile_number.join('\n'),
+          });
+        }
+        if (err.errors.email && err.errors.email.length > 0) {
+          setUsername({
+            ...username,
+            error: true,
+            msg: err.errors.email.join('\n'),
+          });
+        }
+        if (err.errors.password && err.errors.password.length > 0) {
+          setPassword({
+            ...password,
+            error: true,
+            msg: err.errors.password.join('\n'),
+          });
+        }
+        if (
+          err.errors.password_confirmation &&
+          err.errors.password_confirmation.length > 0
+        ) {
+          setConfirmPassword({
+            ...confirmPassword,
+            error: true,
+            msg: err.errors.password_confirmation.join('\n'),
+          });
+        }
+      }
+
+      /** Other Error Status that is not been handled */
+      if (err.response) {
+        setApirError({
+          show: true,
+          msg: err.response.statusText,
+          code: err.response.status,
+        });
+      }
+    }
+  };
+
+  const onValidateFields = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    if (e && e.preventDefault) e.preventDefault();
+
+    let hasError = false;
+    let anEmail = false;
+
+    if (username.value !== '' && validateEmail(username.value.trim())) {
+      anEmail = true;
+      setIsEmail(true);
+    } else if (
+      username.value !== '' &&
+      regExMobile.test(username.value.trim())
+    ) {
+      anEmail = false;
+      setIsEmail(false);
+    }
+
+    // validate first the user inputs in the create account form
+    // validate as email
+    // if (isEmail) {
+    //   if (username.value === '') {
+    //     hasError = true;
+    //     setUsername({
+    //       ...username,
+    //       error: true,
+    //       msg: 'Kindly enter your email address',
+    //     });
+    //   }
+
+    //   if (username.value !== '' && !validateEmail(username.value)) {
+    //     hasError = true;
+    //     setUsername({
+    //       ...username,
+    //       error: true,
+    //       msg:
+    //         'Oops, please enter your email in valid format ie: email@example.com',
+    //     });
+    //   }
+    // }
+
+    // // validate as phone
+    // if (!isEmail) {
+    //   if (username.value === '') {
+    //     hasError = true;
+    //     setUsername({
+    //       ...username,
+    //       error: true,
+    //       msg: 'Kindly enter your mobile number',
+    //     });
+    //   }
+
+    //   if (username.value !== '' && !regExMobile.test(username.value)) {
+    //     hasError = true;
+    //     setUsername({
+    //       ...username,
+    //       error: true,
+    //       msg:
+    //         'Please enter valid mobile number (09 + 9 digit number) ie: 09xxxxxxxxx',
+    //     });
+    //   }
+    // }
+
+    // if (password.value === '') {
+    //   hasError = true;
+    //   setPassword({
+    //     ...password,
+    //     error: true,
+    //     msg: 'The password field is required.',
+    //   });
+    // }
+
+    // if (confirmPassword.value === '') {
+    //   hasError = true;
+    //   setConfirmPassword({
+    //     ...confirmPassword,
+    //     error: true,
+    //     msg: 'The password confirmation field is required.',
+    //   });
+    // }
+
+    // if (
+    //   password.value !== '' &&
+    //   confirmPassword.value !== '' &&
+    //   password.value !== confirmPassword.value
+    // ) {
+    //   hasError = true;
+    //   setPassword({ ...password, error: true, msg: '' });
+    //   setConfirmPassword({
+    //     ...confirmPassword,
+    //     error: true,
+    //     msg:
+    //       'Your password and confirm password did not match. Please enter again',
+    //   });
+    // }
+
+    // if (
+    //   password.value !== '' &&
+    //   confirmPassword.value !== '' &&
+    //   password.value === confirmPassword.value
+    // ) {
+    //   if (!regExStrongPassword.test(password.value)) {
+    //     hasError = true;
+    //     setPassError(
+    //       'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
+    //     );
+    //   }
+    // }
+
+    // if (!agree.value && (!agreePrivacy || !agreeTerms)) {
+    //   hasError = true;
+    //   setAgree({ ...agree, error: true });
+    // }
+
+    if (!hasError) {
+      // setIsLoading(true);
+      const data = {
+        email: anEmail ? username.value : undefined,
+        mobile_number: !anEmail ? username.value : undefined,
+        password: password.value,
+        password_confirmation: password.value,
+      };
+      // dispatch(actions.getValidateLoading(data));
+    }
+  };
+
+  let nextDisabled = true;
+  if (
+    username.value !== '' &&
+    password.value !== '' &&
+    confirmPassword.value !== ''
+  ) {
+    nextDisabled = false;
+  }
+
+  return (
+    <>
+      <H3 margin="0 0 5px">Create your account</H3>
+
+      <form>
+        <Field>
+          <Label>Email Address or Mobile No.</Label>
+          <Input
+            hidespinner
+            required
+            type={isEmail ? 'text' : 'number'}
+            value={username.value}
+            name="username"
+            autoComplete="off"
+            min={0}
+            onChange={e =>
+              setUsername({
+                value: e.currentTarget.value,
+                error: false,
+                msg: '',
+              })
+            }
+            placeholder="Email Address or Mobile Number"
+            className={username.error ? 'error' : undefined}
+          />
+          {username.error && <ErrorMsg formError>{username.msg}</ErrorMsg>}
+        </Field>
+        <Field>
+          <Label>Password</Label>
+          <InputIconWrapper>
+            <Input
+              type={password.show ? 'text' : 'password'}
+              value={password.value}
+              autoComplete="off"
+              placeholder="Password"
+              name="password"
+              required
+              onChange={e => {
+                setPassword({
+                  ...password,
+                  value: e.currentTarget.value,
+                  error: false,
+                  msg: '',
+                });
+              }}
+              className={password.error ? 'error' : undefined}
+            />
+            <IconButton
+              type="button"
+              onClick={() =>
+                setPassword(prev => ({ ...password, show: !prev.show }))
+              }
+              tabIndex={-1}
+            >
+              <FontAwesomeIcon icon={!password.show ? 'eye-slash' : 'eye'} />
+            </IconButton>
+          </InputIconWrapper>
+
+          {password.error && <ErrorMsg formError>{password.msg}</ErrorMsg>}
+        </Field>
+        <Field>
+          <Label>Confirm Password</Label>
+          <InputIconWrapper>
+            <Input
+              type={confirmPassword.show ? 'text' : 'password'}
+              value={confirmPassword.value}
+              autoComplete="off"
+              placeholder="Password"
+              name="confirm-password"
+              required
+              onChange={e => {
+                setConfirmPassword({
+                  ...confirmPassword,
+                  value: e.currentTarget.value,
+                  error: false,
+                });
+              }}
+              className={confirmPassword.error ? 'error' : undefined}
+            />
+            <IconButton
+              type="button"
+              onClick={() =>
+                setConfirmPassword(prev => ({
+                  ...confirmPassword,
+                  show: !prev.show,
+                }))
+              }
+              tabIndex={-1}
+            >
+              <FontAwesomeIcon
+                icon={!confirmPassword.show ? 'eye-slash' : 'eye'}
+              />
+            </IconButton>
+          </InputIconWrapper>
+
+          {confirmPassword.error && (
+            <ErrorMsg formError>{confirmPassword.msg}</ErrorMsg>
+          )}
+        </Field>
+
+        {apiError.show && <ErrorMsg formError>{apiError.msg}</ErrorMsg>}
+
+        <Button
+          type="submit"
+          onClick={onValidateFields}
+          color="primary"
+          fullWidth={true}
+          size="large"
+          variant="contained"
+          disabled={nextDisabled}
+        >
+          Next
+        </Button>
+        <Button
+          onClick={() => history.push('/')}
+          color="default"
+          fullWidth={true}
+          size="large"
+          variant="contained"
+        >
+          Back
+        </Button>
+        <Field className="text-center" margin="20px 0 10px">
+          Already have an account? <A to="/">Log In</A>
+        </Field>
+        {/* <Field className="agreement text-center" margin="25px 0 0">
+          <span>
+            <input
+              type="checkbox"
+              value={agree.value ? 'yes' : 'no'}
+              onChange={() => setAgree({ value: !agree.value, error: false })}
+              checked={agree.value || (agreePrivacy && agreeTerms)}
+            />
+            By creating an account, I agree to the{' '}
+            <button
+              className="as-link"
+              // href="https://squidpay.ph/tac"
+              // target="_blank"
+              // rel="noreferrer"
+              onClick={e => {
+                if (e && e.preventDefault) e.preventDefault();
+                setShowAgreeTerms(true);
+              }}
+            >
+              Terms and Condition
+            </button>{' '}
+            and{' '}
+            <button
+              className="as-link"
+              // href="https://squidpay.ph/privacypolicy"
+              // target="_blank"
+              // rel="noreferrer"
+              onClick={e => {
+                if (e && e.preventDefault) e.preventDefault();
+                setShowAgreePrivacy(true);
+              }}
+            >
+              Privacy Policy
+            </button>
+          </span>
+          {agree.error && !agreePrivacy && (
+            <ErrorMsg formError>
+              You must agree to our Privacy Policy to continue.
+            </ErrorMsg>
+          )}
+          {agree.error && !agreeTerms && (
+            <ErrorMsg formError>
+              You must agree to our Terms and Conditions to continue.
+            </ErrorMsg>
+          )}
+          {agree.error && agreePrivacy && agreeTerms && (
+            <ErrorMsg formError>
+              {agreePrivacy && agreeTerms && 'Tick the checkbox to continue.'}
+            </ErrorMsg>
+          )}
+        </Field> */}
+      </form>
+
+      <Dialog show={apiError.show} size="small">
+        <div className="text-center">
+          <CircleIndicator size="medium" color="danger">
+            <FontAwesomeIcon icon="times" />
+          </CircleIndicator>
+          <H4 margin="15px 0 10px">Account validation error</H4>
+          <p>{apiError.msg}</p>
+          <Button
+            fullWidth
+            onClick={() => setApirError({ show: false, msg: '', code: 0 })}
+            variant="outlined"
+            color="secondary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
+    </>
+  );
+}

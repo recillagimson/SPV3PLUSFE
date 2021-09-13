@@ -16,14 +16,16 @@ export function LoginPage() {
       <div className="form-container">
         <Logo size="medium" />
 
-        <LoginForm onNoAccount={() => alert('no account')} />
+        <LoginForm />
         <Field className="text-center" margin="10px 0 0">
-          <A to="/forgotpassword">Forgot Password?</A>
+          <A to="/forgotpassword" className="forgot-password">
+            Forgot Password?
+          </A>
         </Field>
 
         <Field className="text-center f-small" margin="45px 0 0">
           Not yet a member?{' '}
-          <A to="/register" underline="true">
+          <A to="/register" underline="true" className="sign-up">
             Sign up
           </A>
         </Field>

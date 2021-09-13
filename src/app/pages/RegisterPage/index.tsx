@@ -1,30 +1,27 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Loading from 'app/components/Loading';
-import H1 from 'app/components/Elements/H1';
-import H3 from 'app/components/Elements/H3';
-import Label from 'app/components/Elements/Label';
+import { H3 } from 'app/components/Typography';
 import Field from 'app/components/Elements/Fields';
-import Input from 'app/components/Elements/Input';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
-import A from 'app/components/Elements/A';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import VerifyOTP from 'app/components/VerifyOTP';
-
-import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
-import IconButton from 'app/components/Elements/IconButton';
 
 import Dialog from 'app/components/Dialog';
 import Wrapper from 'app/components/Layouts/AuthWrapper';
 
 import PinInput from 'app/components/Elements/PinInput';
+import TermsCondition from 'app/components/TermsCondition';
+import PrivacyPolicy from 'app/components/PrivacyPolicy';
+
+import Stepper from 'app/components/Elements/Stepper';
 
 import {
   validateEmail,
@@ -43,13 +40,16 @@ import {
   selectResendCodeData,
   selectResendCodeError,
 } from './slice/selectors';
-import TermsCondition from 'app/components/TermsCondition';
-import PrivacyPolicy from 'app/components/PrivacyPolicy';
+
+import AccountForm from './AccountForm';
 
 export function RegisterPage() {
   const history = useHistory();
+  const location: any = useLocation();
+
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
+
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
   const success = useSelector(selectData);
@@ -65,8 +65,7 @@ export function RegisterPage() {
   const [resendDialog, setResendDialog] = React.useState(false);
 
   // show proper forms
-  const [showChoose, setShowChoose] = React.useState(true);
-  const [showCreate, setShowCreate] = React.useState(false);
+  const [showCreate, setShowCreate] = React.useState(true);
   const [showPin, setShowPin] = React.useState(false);
   const [showPinConfirm, setShowPinConfirm] = React.useState(false);
   const [showPinCreated, setShowPinCreated] = React.useState(false);
@@ -78,18 +77,17 @@ export function RegisterPage() {
   const [agreePrivacy, setAgreePrivacy] = React.useState(false);
   const [agreeTerms, setAgreeTerms] = React.useState(false);
 
-  // form fields
+  const [activeSteps, setActiveSteps] = React.useState({
+    1: true,
+    2: false,
+    3: false,
+  });
+
   const [isEmail, setIsEmail] = React.useState(false);
-  const [username, setUsername] = React.useState({
-    value: '',
-    error: false,
-    msg: '',
-  });
-  const [password, setPassword] = React.useState({ value: '', error: false });
-  const [confirmPassword, setConfirmPassword] = React.useState({
-    value: '',
-    error: false,
-  });
+  const [preFill, setPreFill] = React.useState({});
+  const [accountFormData, setAccountFormData] = React.useState<any>({});
+
+  // form fields
   const [passError, setPassError] = React.useState('');
   const [agree, setAgree] = React.useState({ value: false, error: false });
   const [showPass, setShowPass] = React.useState(false);
@@ -101,6 +99,14 @@ export function RegisterPage() {
     error: false,
     msg: '',
   });
+
+  React.useEffect(() => {
+    if (location && location.state) {
+      console.log(location.state);
+      setPreFill(location?.state || {});
+      setIsEmail(location?.state?.isEmail || false);
+    }
+  }, [location]);
 
   React.useEffect(() => {
     return () => {
@@ -117,36 +123,6 @@ export function RegisterPage() {
     }
     if (error && Object.keys(error).length > 0) {
       apiErrorMessage();
-    }
-
-    if (validateError && Object.keys(validateError).length > 0) {
-      setIsLoading(false);
-      if (validateError.errors && validateError.errors.error_code) {
-        // return the errors
-        const i112 = validateError.errors.error_code
-          ? validateError.errors.error_code.find(j => j === 112)
-          : -1;
-        if (i112 !== -1) {
-          setUsername({
-            ...username,
-            error: true,
-            msg: isEmail
-              ? 'Oops, this email address is already taken. Please try again.'
-              : 'Oops, this mobile number is already taken. Please try again.',
-          });
-        }
-      }
-
-      if (
-        validateError.errors &&
-        !validateError.errors.error_code &&
-        validateError.errors.password &&
-        validateError.errors.password.length > 0
-      ) {
-        setPassError(
-          'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
-        );
-      }
     }
 
     if (validateSuccess) {
@@ -202,114 +178,17 @@ export function RegisterPage() {
   };
 
   // show the correct form based on selection (email or mobile)
-  const onShowForm = (bool: boolean) => {
-    setIsEmail(bool);
-    setShowChoose(false);
-    setShowCreate(true);
-  };
-
-  // validate the entered information (email/mobile, password)
-  const onValidateFields = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  const onSuccessValidation = (
+    emailFlag: boolean,
+    data: {
+      email: string | undefined;
+      mobile_number: string | undefined;
+      password: string;
+      password_confirmation: string;
+    },
   ) => {
-    if (e && e.preventDefault) e.preventDefault();
-
-    let hasError = false;
-
-    // validate first the user inputs in the create account form
-    // validate as email
-    if (isEmail) {
-      if (username.value === '') {
-        hasError = true;
-        setUsername({
-          ...username,
-          error: true,
-          msg: 'Kindly enter your email address',
-        });
-      }
-
-      if (username.value !== '' && !validateEmail(username.value)) {
-        hasError = true;
-        setUsername({
-          ...username,
-          error: true,
-          msg:
-            'Oops, please enter your email in valid format ie: email@example.com',
-        });
-      }
-    }
-
-    // validate as phone
-    if (!isEmail) {
-      if (username.value === '') {
-        hasError = true;
-        setUsername({
-          ...username,
-          error: true,
-          msg: 'Kindly enter your mobile number',
-        });
-      }
-
-      if (username.value !== '' && !regExMobile.test(username.value)) {
-        hasError = true;
-        setUsername({
-          ...username,
-          error: true,
-          msg:
-            'Please enter valid mobile number (09 + 9 digit number) ie: 09xxxxxxxxx',
-        });
-      }
-    }
-
-    if (password.value === '') {
-      hasError = true;
-      setPassword({ ...password, error: true });
-    }
-
-    if (confirmPassword.value === '') {
-      hasError = true;
-      setConfirmPassword({ ...confirmPassword, error: true });
-    }
-
-    if (
-      password.value !== '' &&
-      confirmPassword.value !== '' &&
-      password.value !== confirmPassword.value
-    ) {
-      hasError = true;
-      setPassError(
-        'Your password and confirm password did not match. Please enter again',
-      );
-    }
-
-    if (
-      password.value !== '' &&
-      confirmPassword.value !== '' &&
-      password.value === confirmPassword.value
-    ) {
-      if (!regExStrongPassword.test(password.value)) {
-        hasError = true;
-        setPassError(
-          'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
-        );
-      }
-    }
-
-    if (!agree.value && (!agreePrivacy || !agreeTerms)) {
-      hasError = true;
-      setAgree({ ...agree, error: true });
-    }
-
-    if (!hasError) {
-      setIsLoading(true);
-      const data = {
-        email: isEmail ? username.value : undefined,
-        mobile_number: !isEmail ? username.value : undefined,
-        password: password.value,
-        password_confirmation: password.value,
-      };
-      dispatch(actions.getValidateLoading(data));
-    }
+    setIsEmail(emailFlag);
+    setAccountFormData(data);
   };
 
   // if validation passed, show the reenter pin
@@ -375,15 +254,12 @@ export function RegisterPage() {
     if (e && e.preventDefault) e.preventDefault();
 
     const data = {
-      email: isEmail ? username.value : undefined,
-      mobile_number: !isEmail ? username.value : undefined,
-      password: password.value,
-      password_confirmation: password.value,
+      ...accountFormData,
       pin_code: pin.value,
     };
 
     // pass payload to saga
-    dispatch(actions.getFetchLoading(data));
+    // dispatch(actions.getFetchLoading(data));
   };
 
   const onCodeVerified = () => {
@@ -407,12 +283,12 @@ export function RegisterPage() {
   const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     setIsLoading(true);
     // since we already have the information, send the user email or mobile number to receive activation code
-    const data = {
-      email: isEmail ? username.value : undefined,
-      mobile_number: !isEmail ? username.value : undefined,
-      otp_type: 'registration',
-    };
-    dispatch(actions.getResendCodeLoading(data));
+    // const data = {
+    //   email: isEmail ? username.value : undefined,
+    //   mobile_number: !isEmail ? username.value : undefined,
+    //   otp_type: 'registration',
+    // };
+    // dispatch(actions.getResendCodeLoading(data));
   };
 
   const onCloseResendDialog = () => {
@@ -435,224 +311,38 @@ export function RegisterPage() {
     }
   }
 
+  const steps = [
+    {
+      name: 'Log in Details',
+      active: activeSteps[1],
+    },
+    {
+      name: 'Security Setup',
+      active: activeSteps[2],
+    },
+    {
+      name: 'User Information',
+      active: activeSteps[3],
+    },
+    {
+      name: 'Step 4',
+      active: activeSteps[4],
+    },
+  ];
+
   return (
-    <Wrapper>
+    <Wrapper align="flex-start">
       <Helmet title="Register" />
-      <div id="form-register" className="form-container">
+      <div className="form-container">
+        <Stepper steps={steps} margin="0 0 35px" />
         {loading && <Loading position="fixed" />}
         {isLoading && <Loading position="fixed" />}
-        {showChoose && (
-          <div className="text-center" style={{ padding: '0 40px' }}>
-            <H3>Create your Account</H3>
-            <p className="f-small">
-              We got you! Let us know which contact detail you want to use to
-              create your account
-            </p>
-            <Button
-              type="button"
-              onClick={() => onShowForm(false)}
-              color="primary"
-              fullWidth={true}
-              size="large"
-              variant="contained"
-            >
-              <FontAwesomeIcon icon="mobile" /> Mobile Number
-            </Button>
-            <Field margin="10px 0">Or</Field>
-            <Button
-              type="button"
-              onClick={() => onShowForm(true)}
-              color="primary"
-              fullWidth={true}
-              size="large"
-              variant="contained"
-            >
-              <FontAwesomeIcon icon="envelope" /> Email
-            </Button>
-          </div>
-        )}
 
         {showCreate && (
-          <>
-            <H1 margin="0 0 5px">Create your account</H1>
-
-            <form>
-              <Field>
-                <Label>{isEmail ? 'Email' : 'Mobile No.'}</Label>
-                <Input
-                  hidespinner
-                  required
-                  type={isEmail ? 'text' : 'number'}
-                  value={username.value}
-                  name="username"
-                  autoComplete="off"
-                  min={0}
-                  onChange={e =>
-                    setUsername({
-                      value: e.currentTarget.value,
-                      error: false,
-                      msg: '',
-                    })
-                  }
-                  placeholder={
-                    isEmail
-                      ? 'Ex: email@example.com'
-                      : 'Ex: 09 + 9 digit (09xxxxxxxxx)'
-                  }
-                  className={username.error ? 'error' : undefined}
-                />
-                {username.error && (
-                  <ErrorMsg formError>{username.msg}</ErrorMsg>
-                )}
-              </Field>
-              <Field>
-                <Label>
-                  Password <i>*</i>
-                </Label>
-                <InputIconWrapper>
-                  <Input
-                    type={showPass ? 'text' : 'password'}
-                    value={password.value}
-                    autoComplete="off"
-                    placeholder="Password"
-                    name="password"
-                    required
-                    onChange={e => {
-                      setPassword({
-                        value: e.currentTarget.value,
-                        error: false,
-                      });
-                      setPassError('');
-                    }}
-                    className={
-                      Boolean(passError) || password.error ? 'error' : undefined
-                    }
-                  />
-                  <IconButton
-                    type="button"
-                    onClick={() => setShowPass(prev => !prev)}
-                    tabIndex={-1}
-                  >
-                    <FontAwesomeIcon icon={!showPass ? 'eye-slash' : 'eye'} />
-                  </IconButton>
-                </InputIconWrapper>
-
-                {password.error && (
-                  <ErrorMsg formError>Please enter your password</ErrorMsg>
-                )}
-              </Field>
-              <Field>
-                <Label>Confirm Password</Label>
-                <InputIconWrapper>
-                  <Input
-                    type={showConfirm ? 'text' : 'password'}
-                    value={confirmPassword.value}
-                    autoComplete="off"
-                    placeholder="Password"
-                    name="confirm-password"
-                    required
-                    onChange={e => {
-                      setConfirmPassword({
-                        value: e.currentTarget.value,
-                        error: false,
-                      });
-                      setPassError('');
-                    }}
-                    className={
-                      Boolean(passError) || confirmPassword.error
-                        ? 'error'
-                        : undefined
-                    }
-                  />
-                  <IconButton
-                    type="button"
-                    onClick={() => setShowConfirm(prev => !prev)}
-                    tabIndex={-1}
-                  >
-                    <FontAwesomeIcon
-                      icon={!showConfirm ? 'eye-slash' : 'eye'}
-                    />
-                  </IconButton>
-                </InputIconWrapper>
-
-                {confirmPassword.error && (
-                  <ErrorMsg formError>Please confirm your password</ErrorMsg>
-                )}
-                {passError !== '' && <ErrorMsg formError>{passError}</ErrorMsg>}
-              </Field>
-
-              {apiError !== '' && <ErrorMsg formError>{apiError}</ErrorMsg>}
-
-              <Button
-                type="submit"
-                onClick={onValidateFields}
-                color="primary"
-                fullWidth={true}
-                size="large"
-                variant="contained"
-              >
-                Next
-              </Button>
-              <Field className="text-center" margin="20px 0 10px">
-                Already have an account? <A to="/">Log In</A>
-              </Field>
-              <Field className="agreement text-center" margin="25px 0 0">
-                <span>
-                  <input
-                    type="checkbox"
-                    value={agree.value ? 'yes' : 'no'}
-                    onChange={() =>
-                      setAgree({ value: !agree.value, error: false })
-                    }
-                    checked={agree.value || (agreePrivacy && agreeTerms)}
-                  />
-                  By creating an account, I agree to the{' '}
-                  <button
-                    className="as-link"
-                    // href="https://squidpay.ph/tac"
-                    // target="_blank"
-                    // rel="noreferrer"
-                    onClick={e => {
-                      if (e && e.preventDefault) e.preventDefault();
-                      setShowAgreeTerms(true);
-                    }}
-                  >
-                    Terms and Condition
-                  </button>{' '}
-                  and{' '}
-                  <button
-                    className="as-link"
-                    // href="https://squidpay.ph/privacypolicy"
-                    // target="_blank"
-                    // rel="noreferrer"
-                    onClick={e => {
-                      if (e && e.preventDefault) e.preventDefault();
-                      setShowAgreePrivacy(true);
-                    }}
-                  >
-                    Privacy Policy
-                  </button>
-                </span>
-                {agree.error && !agreePrivacy && (
-                  <ErrorMsg formError>
-                    You must agree to our Privacy Policy to continue.
-                  </ErrorMsg>
-                )}
-                {agree.error && !agreeTerms && (
-                  <ErrorMsg formError>
-                    You must agree to our Terms and Conditions to continue.
-                  </ErrorMsg>
-                )}
-                {agree.error && agreePrivacy && agreeTerms && (
-                  <ErrorMsg formError>
-                    {agreePrivacy &&
-                      agreeTerms &&
-                      'Tick the checkbox to continue.'}
-                  </ErrorMsg>
-                )}
-              </Field>
-            </form>
-          </>
+          <AccountForm
+            preFill={preFill}
+            onSuccessValidation={onSuccessValidation}
+          />
         )}
 
         {showPin && (
@@ -749,7 +439,9 @@ export function RegisterPage() {
             <VerifyOTP
               onSuccess={onCodeVerified}
               isEmail={isEmail}
-              viaValue={username.value}
+              viaValue={
+                isEmail ? accountFormData.email : accountFormData.mobile_number
+              }
               apiURL="/auth/verify/account"
             />
 

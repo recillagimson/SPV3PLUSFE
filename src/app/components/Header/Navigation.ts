@@ -20,7 +20,7 @@ const Navigation = styled.nav<NavProps>`
     right: 0;
     top: 100%;
     transform: translateY(-200%);
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.4s ease-in-out;
     padding: 10px 15% 15px;
   }
 

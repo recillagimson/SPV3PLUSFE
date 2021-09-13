@@ -3,12 +3,15 @@ import styled from 'styled-components/macro';
 import { media } from 'styles/media';
 import { StyleConstants } from 'styles/StyleConstants';
 
-const Wrapper = styled.section<{ bg?: boolean }>`
+const Wrapper = styled.section<{
+  bg?: boolean;
+  align?: 'flex-start' | 'center'; // only apply to 1024pixel and up display sizes
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 130px 10px 10px;
-  min-height: calc(100vh - 60px);
+  padding: 100px 10px 10px;
+  min-height: calc(100vh - 80px);
   position: relative;
   background-color: ${p => (p.bg ? StyleConstants.BODY_COLOR : 'transparent')};
 
@@ -114,6 +117,10 @@ const Wrapper = styled.section<{ bg?: boolean }>`
   }
 
   ${media.medium`
+    min-height: calc(100vh - 60px);
+    padding: 180px 10px 10px;
+    align-items: ${p => (p.align ? p.align : 'center')};
+
     .form-container {
       max-width: 540px;
     }
