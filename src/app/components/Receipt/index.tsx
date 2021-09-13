@@ -13,6 +13,7 @@ import Wrapper from './Wrapper';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Button from 'app/components/Elements/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { numberWithCommas } from 'utils/common';
 
 type ReceiptProps = {
   title: string;
@@ -54,7 +55,7 @@ export default function ReceiptComponent({
             </section>
             <section className="total">
               <span>Total amount</span>
-              <p>PHP {total}</p>
+              <p>PHP {numberWithCommas(total)}</p>
               {serviceFee && <span>Service Fee: PHP 0.00</span>}
             </section>
             <div className="logo-container">
