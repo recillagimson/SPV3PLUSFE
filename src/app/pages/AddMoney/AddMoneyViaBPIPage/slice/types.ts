@@ -3,11 +3,11 @@ import { ApiErrorState } from 'types/Default';
 /* --- STATE --- */
 export type ErrorState = ApiErrorState;
 
-export interface GenerateQRState {
+export interface AddMoneyBpiState {
   loading: boolean;
   error?: object;
-  data: object | boolean;
-  request: object | boolean;
+  amount: any | null;
+  addMoneyBpi: any;
 }
 
-export type ContainerState = GenerateQRState;
+export type ContainerState = AddMoneyBpiState;

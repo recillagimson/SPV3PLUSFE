@@ -31,6 +31,12 @@ export function AddMoney() {
     }
   };
 
+  const onClickBPI = () => {
+    if (user) {
+      history.push('/add-money/bpi');
+    }
+  };
+
   return (
     <ProtectedContent>
       <Box title="Web Banking" titleBorder withPadding>
@@ -46,17 +52,17 @@ export function AddMoney() {
               icon
             />
           </ListItem>
-          {/* <ListItem flex>
+          <ListItem flex>
             <ListItemText
               role="presentation"
-              onClick={() => alert('Feature coming soon')}
+              onClick={onClickBPI}
               primary="BPI"
               style={{
                 flexGrow: 1,
               }}
               icon
             />
-          </ListItem> */}
+          </ListItem>
         </List>
       </Box>
 

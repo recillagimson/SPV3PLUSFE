@@ -8,35 +8,35 @@ import { containerSaga } from './saga';
 export const initialState: ContainerState = {
   loading: false,
   error: {},
-  data: false,
-  request: false,
+  amount: null,
+  addMoneyBpi: null,
 };
 
 const slice = createSlice({
-  name: 'generateQR',
+  name: 'addMoneyBpi',
   initialState,
   reducers: {
-    getFetchLoading(state, action: PayloadAction<object>) {
+    getFetchLoading(state, action: PayloadAction<object | null>) {
       state.loading = true;
       state.error = {};
-      state.data = false;
-      state.request = action.payload;
+      state.amount = action.payload;
     },
-    getFetchSuccess(state, action: PayloadAction<object>) {
+    getFetchSuccess(state, action: PayloadAction<object | null>) {
       state.loading = false;
-      state.request = false;
-      state.data = action.payload;
+      state.error = {};
+      state.amount = null;
+      state.addMoneyBpi = action.payload;
     },
     getFetchError(state, action: PayloadAction<ErrorState>) {
       state.error = action.payload;
-      state.request = false;
+      state.amount = null;
       state.loading = false;
     },
     getFetchReset(state) {
       state.loading = false;
+      state.amount = null;
       state.error = {};
-      state.data = false;
-      state.request = false;
+      state.addMoneyBpi = null;
     },
   },
 });

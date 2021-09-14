@@ -4,11 +4,16 @@ import { RootState } from 'types';
 import { initialState } from '.';
 
 // First select the relevant part from the state
-const selectDomain = (state: RootState) => state.generateQR || initialState;
+const selectDomain = (state: RootState) => state.addMoneyBpi || initialState;
 
-export const selectData = createSelector(
+export const selectAmount = createSelector(
   [selectDomain],
-  subState => subState.data,
+  subState => subState.amount,
+);
+
+export const selectAddMoneyBpi = createSelector(
+  [selectDomain],
+  subState => subState.addMoneyBpi,
 );
 
 export const selectLoading = createSelector(
@@ -19,9 +24,4 @@ export const selectLoading = createSelector(
 export const selectError = createSelector(
   [selectDomain],
   subState => subState.error,
-);
-
-export const selectRequest = createSelector(
-  [selectDomain],
-  subState => subState.request,
 );

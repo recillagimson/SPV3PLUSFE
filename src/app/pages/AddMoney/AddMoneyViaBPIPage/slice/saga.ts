@@ -12,18 +12,21 @@ import {
 } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
-import { selectRequest } from './selectors';
+import { selectAmount } from './selectors';
 
-function* generateQR() {
+function* addMoney() {
   yield delay(500);
   const token = yield select(selectUserToken);
-  const payload = yield select(selectRequest);
+  const payload = yield select(selectAmount);
 
-  const requestURL = `${process.env.REACT_APP_API_URL}/send/money/generate/qr`;
+  const requestURL = `${process.env.REACT_APP_API_URL}/bpi/login/url`;
 
   let encryptPayload: string = '';
 
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
+
+  console.log(payload, 'paylaod');
+  console.log(requestPhrase, 'requestPhrase');
 
   if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
     encryptPayload = spdCrypto.encrypt(
@@ -68,7 +71,7 @@ function* generateQR() {
         }),
       );
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
@@ -90,5 +93,5 @@ export function* containerSaga() {
   // By using `takeLatest` only the result of the latest API call is applied.
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
-  yield takeLatest(actions.getFetchLoading.type, generateQR);
+  yield takeLatest(actions.getFetchLoading.type, addMoney);
 }
