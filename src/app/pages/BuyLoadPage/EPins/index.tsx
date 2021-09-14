@@ -52,8 +52,11 @@ export function BuyEpinsPage() {
   const paySuccess: any = useSelector(selectPayData);
   const payError: any = useSelector(selectPayError);
 
-  const date = DateTime.fromISO(paySuccess.transaction_date);
-  const humanReadable = date.toLocaleString(DateTime.DATETIME_MED);
+  let date = DateTime.fromSQL(paySuccess.transaction_date);
+  if (date.invalid) {
+    date = DateTime.fromISO(paySuccess.transaction_date);
+  }
+  const humanReadable = date.toFormat('dd LLLL yyyy, t');
 
   const [mobile, setMobile] = React.useState<{
     value: string;
@@ -351,9 +354,9 @@ export function BuyEpinsPage() {
                       .sort((a, b) =>
                         a.denomination > b.denomination ? 1 : -1,
                       )
-                      .map(promo => (
+                      .map((promo, idx) => (
                         <div
-                          key={promo.productCode}
+                          key={idx}
                           className={
                             selectedProduct.productName === ''
                               ? 'product-list'
@@ -415,7 +418,7 @@ export function BuyEpinsPage() {
                       </Flex>
                       <Flex justifyContent="space-between">
                         <p>Load</p>
-                        <p>{selectedProduct.productCode}</p>
+                        <p>{selectedProduct.description}</p>
                       </Flex>
                       <Flex justifyContent="space-between">
                         <p>Amount</p>
@@ -424,16 +427,15 @@ export function BuyEpinsPage() {
                     </section>
                     <br />
 
-                    <p className="text-center">Total Amount</p>
-                    <H5 className="text-center">
+                    <p className="text-center" style={{ margin: '0 0 5px' }}>
+                      Total Amount
+                    </p>
+                    <H5 className="text-center" margin="0 0 80px">
                       PHP {numberCommas(selectedProduct.amount)}
                     </H5>
-                    <br />
+                    {/* <br />
                     <p style={{ marginBottom: '5px' }}>Description</p>
-                    <small>{selectedProduct.description}</small>
-                    <br />
-                    <br />
-                    <br />
+                    <small>{selectedProduct.description}</small> */}
                     <Button
                       type="submit"
                       color="primary"
@@ -490,10 +492,10 @@ export function BuyEpinsPage() {
               </div>
             </Dialog>
 
-            <Dialog show={showPay && Boolean(paySuccess)} size="xsmall">
+            <Dialog show={showPay && Boolean(paySuccess)} size="small">
               <Receipt
                 title="Load purchase successful!"
-                total={paySuccess.amount + '.00'}
+                total={numberCommas(paySuccess.amount)}
                 onClick={onCloseSuccessDialog}
                 date={humanReadable}
               >
@@ -503,7 +505,7 @@ export function BuyEpinsPage() {
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Load</span>
-                  <span>{paySuccess.product_code}</span>
+                  <span>{paySuccess.product_name}</span>
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Amount</span>
