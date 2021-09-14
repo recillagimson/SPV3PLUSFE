@@ -324,10 +324,6 @@ export function RegisterPage() {
       name: 'User Information',
       active: activeSteps[3],
     },
-    {
-      name: 'Step 4',
-      active: activeSteps[4],
-    },
   ];
 
   return (

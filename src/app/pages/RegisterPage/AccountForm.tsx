@@ -4,7 +4,7 @@ import * as React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Loading from 'app/components/Loading';
-import { H3, H4 } from 'app/components/Typography';
+import { H3, H4, Paragraph } from 'app/components/Typography';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
@@ -14,12 +14,18 @@ import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
 import IconButton from 'app/components/Elements/IconButton';
 import A from 'app/components/Elements/A';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import List from 'app/components/List';
 
 import Dialog from 'app/components/Dialog';
 
 import useFetch from 'utils/useFetch';
 import { regExMobile, validateEmail } from 'app/components/Helpers';
 import { useHistory } from 'react-router';
+import {
+  PasswordValidationErrorCodes,
+  validateEmailOrMobile,
+  validatePassword,
+} from 'helpers/formValidations';
 
 type AccountFormProps = {
   /**
@@ -87,12 +93,14 @@ export default function AccountForm({
   });
 
   /** See Notes */
-  const [passwordValidated, setPasswordValidated] = React.useState({
-    1: false,
-    2: false,
-    3: false,
-    4: false,
-    5: false,
+  const [passwordValidated, setPasswordValidated] = React.useState<
+    PasswordValidationErrorCodes
+  >({
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
   });
 
   const [apiError, setApirError] = React.useState({
@@ -125,6 +133,35 @@ export default function AccountForm({
   }, [preFill]);
 
   React.useEffect(() => {
+    if (password.value !== '') {
+      let validatePass = validatePassword(password.value);
+      if (validatePass && validatePass.error) {
+        setPassword({
+          ...password,
+          error: true,
+          msg: validatePass.msg,
+        });
+      }
+      if (validatePass.errorCodes) {
+        setPasswordValidated(validatePass.errorCodes);
+      }
+    }
+  }, [password.value]);
+
+  React.useEffect(() => {
+    if (username.value !== '') {
+      let validateUsername = validateEmailOrMobile(username.value);
+      if (validateUsername && validateUsername.error) {
+        setUsername({
+          ...username,
+          error: true,
+          msg: validateUsername.msg,
+        });
+      }
+    }
+  }, [username.value]);
+
+  React.useEffect(() => {
     if (validate.response) {
       onSuccessValidation(isEmail, {
         email: isEmail ? username.value : undefined,
@@ -132,9 +169,11 @@ export default function AccountForm({
         password: password.value,
         password_confirmation: confirmPassword.value,
       });
+      validate.fetchReset();
     }
     if (validate.error && Object.keys(validate.error).length > 0) {
       onApiError(validate.error);
+      validate.fetchReset();
     }
   }, [validate.response, validate.error]);
 
@@ -221,121 +260,97 @@ export default function AccountForm({
     let hasError = false;
     let anEmail = false;
 
-    if (username.value !== '' && validateEmail(username.value.trim())) {
+    if (username.value === '') {
+      hasError = true;
+      setUsername({
+        ...username,
+        error: true,
+        msg: 'This field is required.',
+      });
+    }
+
+    if (username.value !== '') {
+      let validateUsername = validateEmailOrMobile(username.value);
+      if (validateUsername && validateUsername.error) {
+        hasError = true;
+        setUsername({
+          ...username,
+          error: true,
+          msg: validateUsername.msg,
+        });
+      }
+    }
+
+    if (password.value === '') {
+      hasError = true;
+      setPassword({
+        ...password,
+        error: true,
+        msg: 'The password field is required.',
+      });
+    }
+
+    if (password.value !== '') {
+      let validatePass = validatePassword(password.value);
+      if (validatePass && validatePass.error) {
+        hasError = true;
+        setPassword({
+          ...password,
+          error: true,
+          msg: validatePass.msg,
+        });
+      }
+      if (validatePass.errorCodes) {
+        setPasswordValidated(validatePass.errorCodes);
+      }
+    }
+
+    if (confirmPassword.value === '') {
+      hasError = true;
+      setConfirmPassword({
+        ...confirmPassword,
+        error: true,
+        msg: 'The password confirmation field is required.',
+      });
+    }
+
+    if (
+      password.value !== '' &&
+      confirmPassword.value !== '' &&
+      password.value !== confirmPassword.value
+    ) {
+      hasError = true;
+      setConfirmPassword({
+        ...confirmPassword,
+        error: true,
+        msg: 'The password confirmation did not match with your password',
+      });
+    }
+
+    if (username.value !== '' && validateEmail(username.value)) {
       anEmail = true;
       setIsEmail(true);
-    } else if (
-      username.value !== '' &&
-      regExMobile.test(username.value.trim())
-    ) {
+    } else {
       anEmail = false;
       setIsEmail(false);
     }
 
-    // validate first the user inputs in the create account form
-    // validate as email
-    // if (isEmail) {
-    //   if (username.value === '') {
-    //     hasError = true;
-    //     setUsername({
-    //       ...username,
-    //       error: true,
-    //       msg: 'Kindly enter your email address',
-    //     });
-    //   }
-
-    //   if (username.value !== '' && !validateEmail(username.value)) {
-    //     hasError = true;
-    //     setUsername({
-    //       ...username,
-    //       error: true,
-    //       msg:
-    //         'Oops, please enter your email in valid format ie: email@example.com',
-    //     });
-    //   }
-    // }
-
-    // // validate as phone
-    // if (!isEmail) {
-    //   if (username.value === '') {
-    //     hasError = true;
-    //     setUsername({
-    //       ...username,
-    //       error: true,
-    //       msg: 'Kindly enter your mobile number',
-    //     });
-    //   }
-
-    //   if (username.value !== '' && !regExMobile.test(username.value)) {
-    //     hasError = true;
-    //     setUsername({
-    //       ...username,
-    //       error: true,
-    //       msg:
-    //         'Please enter valid mobile number (09 + 9 digit number) ie: 09xxxxxxxxx',
-    //     });
-    //   }
-    // }
-
-    // if (password.value === '') {
-    //   hasError = true;
-    //   setPassword({
-    //     ...password,
-    //     error: true,
-    //     msg: 'The password field is required.',
-    //   });
-    // }
-
-    // if (confirmPassword.value === '') {
-    //   hasError = true;
-    //   setConfirmPassword({
-    //     ...confirmPassword,
-    //     error: true,
-    //     msg: 'The password confirmation field is required.',
-    //   });
-    // }
-
-    // if (
-    //   password.value !== '' &&
-    //   confirmPassword.value !== '' &&
-    //   password.value !== confirmPassword.value
-    // ) {
-    //   hasError = true;
-    //   setPassword({ ...password, error: true, msg: '' });
-    //   setConfirmPassword({
-    //     ...confirmPassword,
-    //     error: true,
-    //     msg:
-    //       'Your password and confirm password did not match. Please enter again',
-    //   });
-    // }
-
-    // if (
-    //   password.value !== '' &&
-    //   confirmPassword.value !== '' &&
-    //   password.value === confirmPassword.value
-    // ) {
-    //   if (!regExStrongPassword.test(password.value)) {
-    //     hasError = true;
-    //     setPassError(
-    //       'Your password is too short and weak. A minimum of 12 characters, with at least one uppercase and lowercase letter, one numeric and one special character (@$!%*#?&_) are needed',
-    //     );
-    //   }
-    // }
-
-    // if (!agree.value && (!agreePrivacy || !agreeTerms)) {
-    //   hasError = true;
-    //   setAgree({ ...agree, error: true });
-    // }
-
     if (!hasError) {
       // setIsLoading(true);
-      const data = {
+      const payload = {
         email: anEmail ? username.value : undefined,
         mobile_number: !anEmail ? username.value : undefined,
         password: password.value,
         password_confirmation: password.value,
       };
+      validate.goFetch(
+        '/auth/register/validate',
+        'POST',
+        JSON.stringify(payload),
+        '',
+        false,
+        true,
+      );
       // dispatch(actions.getValidateLoading(data));
     }
   };
@@ -357,9 +372,8 @@ export default function AccountForm({
         <Field>
           <Label>Email Address or Mobile No.</Label>
           <Input
-            hidespinner
             required
-            type={isEmail ? 'text' : 'number'}
+            type="text"
             value={username.value}
             name="username"
             autoComplete="off"
@@ -410,7 +424,7 @@ export default function AccountForm({
           {password.error && <ErrorMsg formError>{password.msg}</ErrorMsg>}
         </Field>
         <Field>
-          <Label>Confirm Password</Label>
+          <Label>Retype password</Label>
           <InputIconWrapper>
             <Input
               type={confirmPassword.show ? 'text' : 'password'}
@@ -448,8 +462,76 @@ export default function AccountForm({
             <ErrorMsg formError>{confirmPassword.msg}</ErrorMsg>
           )}
         </Field>
-
         {apiError.show && <ErrorMsg formError>{apiError.msg}</ErrorMsg>}
+
+        <Field margin="30px 0 20px">
+          <Paragraph size="small" margin="0 0 0">
+            Password must:
+          </Paragraph>
+
+          <List
+            listStyle="disc"
+            margin="0 0 0 20px"
+            style={{ fontSize: '12px' }}
+          >
+            <li
+              className={
+                passwordValidated[1] === 1
+                  ? 'text-green'
+                  : passwordValidated[1] === 2
+                  ? 'text-red'
+                  : undefined
+              }
+            >
+              The password must be at least 8 characters.
+            </li>
+            <li
+              className={
+                passwordValidated[2] === 1
+                  ? 'text-green'
+                  : passwordValidated[2] === 2
+                  ? 'text-red'
+                  : undefined
+              }
+            >
+              The password must have at least one number.
+            </li>
+            <li
+              className={
+                passwordValidated[3] === 1
+                  ? 'text-green'
+                  : passwordValidated[3] === 2
+                  ? 'text-red'
+                  : undefined
+              }
+            >
+              The password must have at least one uppercase.
+            </li>
+            <li
+              className={
+                passwordValidated[4] === 1
+                  ? 'text-green'
+                  : passwordValidated[4] === 2
+                  ? 'text-red'
+                  : undefined
+              }
+            >
+              The password must have at least one lowercase.
+            </li>
+            <li
+              className={
+                passwordValidated[5] === 1
+                  ? 'text-green'
+                  : passwordValidated[5] === 2
+                  ? 'text-red'
+                  : undefined
+              }
+            >
+              The password must have at least one special character.
+              {/* [@$!%*#?&amp;_]. */}
+            </li>
+          </List>
+        </Field>
 
         <Button
           type="submit"

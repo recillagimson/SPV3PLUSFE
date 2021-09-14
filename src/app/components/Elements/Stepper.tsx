@@ -84,7 +84,7 @@ export default function Stepper({ steps = [], margin }: StepperProps) {
   return (
     <Wrapper margin={margin || undefined}>
       {steps.map((s, i) => (
-        <Step active={s.active} width={width} num={i + 1}>
+        <Step key={i} active={s.active} width={width} num={i + 1}>
           {s.name}
         </Step>
       ))}

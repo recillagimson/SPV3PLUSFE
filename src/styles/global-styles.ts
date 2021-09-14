@@ -81,13 +81,13 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   .text-red {
-    color: ${StyleConstants.NEGATIVE} !important; 
+    color: ${StyleConstants.color.tones.red} !important; 
   }
   .text-green {
-    color: ${StyleConstants.POSITIVE} !important; 
+    color: ${StyleConstants.color.tones.green} !important; 
   }
   .text-yellow {
-    color: ${StyleConstants.GOLD} !important; 
+    color: ${StyleConstants.color.primaryyellow} !important; 
   }
 
   /** margins */

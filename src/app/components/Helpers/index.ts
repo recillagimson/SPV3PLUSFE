@@ -18,6 +18,7 @@ export const regExStrongPassword = new RegExp(
 );
 export const regExMediumPassword = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{8,})/;
 export const regExWeakPassword = /.{2,}$/;
+export const regExOneUpperOneLower = /(?=[A-Z]*[a-z])(?=[a-z]*[A-Z])[A-Za-z]/;
 
 /**
  * Validate Email

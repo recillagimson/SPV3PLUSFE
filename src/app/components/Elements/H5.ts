@@ -7,7 +7,7 @@ type H5Props = {
 };
 
 const H5 = styled.h5<H5Props>`
-  font-weight: 700;
+  font-weight: 600;
   font-size: 1.05rem;
   margin: ${p => (p.margin ? p.margin : '0 0 10px')};
   padding-bottom: ${p => (p.border ? `10px` : '0')};
