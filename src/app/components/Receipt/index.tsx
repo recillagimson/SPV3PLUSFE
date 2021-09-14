@@ -12,6 +12,7 @@ import * as React from 'react';
 import Wrapper from './Wrapper';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Button from 'app/components/Elements/Button';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { numberWithCommas } from 'utils/common';
 
