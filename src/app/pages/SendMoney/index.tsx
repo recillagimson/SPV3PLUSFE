@@ -38,6 +38,7 @@ import {
   regExMobile,
   regExIsGonnaBeEmail,
 } from 'app/components/Helpers';
+import { numberWithCommas } from 'utils/common';
 
 /** slice */
 import { useContainerSaga } from './slice';
@@ -556,11 +557,7 @@ export function SendMoney() {
                         </Grid>
                         <Grid item xs={6} className="item">
                           <span className="value">
-                            {' '}
-                            PHP{' '}
-                            {Number.isInteger(validateSuccess.amount)
-                              ? validateSuccess.amount + '.00'
-                              : validateSuccess.amount}
+                            PHP {numberWithCommas(validateSuccess.amount)}
                           </span>
                         </Grid>
                         <Grid item xs={6} className="item">

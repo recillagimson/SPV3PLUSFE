@@ -139,3 +139,9 @@ v1.1.1
 - QR Code limit entry on amount (VVBT-245)
 - Added a date picker for Date Field in Pay bill due date (VVBT-242, VVBT-273)
 - Paybills fix on account number (VVBT-291, VVBT-304)
+
+v1.1.2
+
+- Add 2 Decimal Places in the Amount in the Transaction Confirmation Screen of Send Money (VP2-246)
+- Forex - Search parameter should be searching for the 3 char forex symbol, not its description (VP2-285)
+- Buy EPINS load description in Review and Receipt screen (VP2-290)

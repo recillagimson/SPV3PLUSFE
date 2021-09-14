@@ -656,6 +656,12 @@ export function PayBillsPage() {
       </Helmet>
       <S.Container>
         <S.Wrapper data-id="Paybills-Wrapper">
+          {/* <S.WrapperHeader isCustom={steps === 1}>
+            <div>
+              {renderHeader(steps)}
+              <Button onClick={() => setSteps(0)}>Back</Button>
+            </div>
+          </S.WrapperHeader> */}
           <S.WrapperHeader isCustom={steps === 1}>
             {renderHeader(steps)}
           </S.WrapperHeader>
