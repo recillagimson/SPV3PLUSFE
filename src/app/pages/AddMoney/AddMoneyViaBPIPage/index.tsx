@@ -140,26 +140,14 @@ export function AddMoneyViaBPI() {
     );
   };
 
-  // function countIntegerExpressions(val) {
-  //   console.log('test', val);
-
-  //   if (typeof val === 'number') {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  // countIntegerExpressions('abc');
-
   return (
     <Wrapper>
       <Helmet>
         <title>Add Money Via BPI</title>
       </Helmet>
-      {loading && <Loading position="fixed" />}
 
       <ProtectedContent>
-        {/* {loading && <Loading position="absolute" />} */}
+        {loading && <Loading position="fixed" />}
         {isSelectAccounts && (
           <Card title="Login to BPI Online" size="medium">
             <Fragment>
