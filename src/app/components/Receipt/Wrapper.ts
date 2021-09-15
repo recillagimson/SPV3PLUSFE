@@ -6,7 +6,7 @@ const valueDescription = css`
   font-size: 13px;
   display: block;
   margin: 5px 0px;
-  font-weight: 500;
+  font-weight: 400;
 `;
 
 const Wrapper = styled.div`
@@ -49,7 +49,7 @@ const Wrapper = styled.div`
           font-size: 13px;
           display: block;
           margin: 5px 0px;
-          font-weight: 500;
+          font-weight: 400;
         }
         p {
           margin: 5px 0px;

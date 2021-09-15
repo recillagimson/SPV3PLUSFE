@@ -57,8 +57,8 @@ import {
 import { getBarangays, getCities, getProvinces } from './addressReferences';
 
 type UserProfileFormProps = {
-  onCancel: () => void;
   onSuccess: () => void;
+  onCancel?: () => void;
   isTierUpgrade?: boolean;
   idPhotoID?: string[];
   selfieID?: string[];
@@ -1594,15 +1594,17 @@ export default function UserProfileForm({
             )}
 
             <Flex alignItems="center" justifyContent="flex-end">
-              <Button
-                type="button"
-                variant="outlined"
-                color="secondary"
-                size="large"
-                onClick={onCancel}
-              >
-                Cancel
-              </Button>
+              {onCancel && (
+                <Button
+                  type="button"
+                  variant="outlined"
+                  color="secondary"
+                  size="large"
+                  onClick={onCancel}
+                >
+                  Cancel
+                </Button>
+              )}
               <Button
                 variant="contained"
                 color="primary"

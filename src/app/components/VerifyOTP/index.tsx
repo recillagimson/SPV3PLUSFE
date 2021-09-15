@@ -156,6 +156,7 @@ export default function VerifyOTPComponent({
 
   const onChangePin = (val: any) => {
     setCode({ value: val, error: false });
+    setApiError('');
     setIsCodeValid(true);
   };
 

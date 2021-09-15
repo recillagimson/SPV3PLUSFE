@@ -96,7 +96,7 @@ describe('<LoginForm />', () => {
     expect(validated).toBe(true);
   });
 
-  it('should validate mobile number and show error if length is greater than 11', () => {
+  it('should validate mobile number and show error failed', () => {
     const input = component.container.querySelector(
       '#username',
     ) as HTMLInputElement;
@@ -108,7 +108,7 @@ describe('<LoginForm />', () => {
     fireEvent.click(button);
     expect(
       screen.queryByText(
-        'The mobile number must not be greater than 11 characters.',
+        'The mobile number is invalid. Use the format 09 + 9 digit mobile number.',
       ),
     ).toBeInTheDocument();
   });

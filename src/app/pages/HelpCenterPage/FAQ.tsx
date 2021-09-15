@@ -19,7 +19,7 @@ const AnswerWrapper = styled.div`
   white-space: pre-wrap;
 
   strong {
-    font-weight: 600;
+    font-weight: 700;
   }
 
   ul {

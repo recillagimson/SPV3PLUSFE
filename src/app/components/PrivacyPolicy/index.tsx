@@ -7,7 +7,7 @@ import Wrapper from './Wrapper';
 
 export default function PrivacyPolicy() {
   return (
-    <Wrapper>
+    <Wrapper id="privacyNotice">
       <h4>Privacy Notice</h4>
 
       <h5>I. Statement of Policy</h5>

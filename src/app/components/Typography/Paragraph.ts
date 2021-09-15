@@ -8,14 +8,14 @@ const fontSize = {
   regular: '16px',
 };
 const fontWeight = {
-  bold: '600',
-  bolder: '700',
+  bold: '700',
+  bolder: '900',
   light: '300',
   lighter: '100',
   regular: '400',
 };
 const colors = {
-  default: StyleConstants.color.black,
+  default: StyleConstants.MAIN_TEXT,
   primary: StyleConstants.color.primaryyellow,
   secondary: StyleConstants.color.gray2,
   mute: StyleConstants.color.lightgray1,
@@ -23,8 +23,10 @@ const colors = {
   success: StyleConstants.color.tones.green,
 };
 
-// size?: 'xsmall' | 'small' | 'regular';
-// weight?: 'bold' | 'bolder' | 'light' | 'lighter' | 'regular';
+/**
+ * Paragraph component
+ * @typedef TypographyProps
+ */
 const Paragraph = styled.p<TypographyProps>`
   display: block;
   font-size: ${p => (p.size ? fontSize[p.size] : fontSize['regular'])};
@@ -43,6 +45,7 @@ const Paragraph = styled.p<TypographyProps>`
       : p.underline && p.strikethrough
       ? 'line-through underline'
       : 'none'};
+  white-space: pre-wrap;
 `;
 
 export default Paragraph;

@@ -7,7 +7,7 @@ const Button = styled.button`
   transition: color 0.2s ease-in;
   text-decoration: none;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 400;
   color: inherit;
   padding: 14px 35px 14px 2px;
   text-align: left;

@@ -8,6 +8,7 @@ import { H3, H4, Paragraph } from 'app/components/Typography';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
+import Select from 'app/components/Elements/Select';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
 import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
@@ -15,11 +16,13 @@ import IconButton from 'app/components/Elements/IconButton';
 import A from 'app/components/Elements/A';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import List from 'app/components/List';
-
 import Dialog from 'app/components/Dialog';
+import PrivacyPolicy from 'app/components/PrivacyPolicy';
+import TermsCondition from 'app/components/TermsCondition';
+import TermsConditionTagalog from 'app/components/TermsCondition/Tagalog';
 
 import useFetch from 'utils/useFetch';
-import { regExMobile, validateEmail } from 'app/components/Helpers';
+import { validateEmail } from 'app/components/Helpers';
 import { useHistory } from 'react-router';
 import {
   PasswordValidationErrorCodes,
@@ -91,6 +94,9 @@ export default function AccountForm({
     msg: '',
     show: false,
   });
+  const [isShowPrivacy, setIsShowPrivacy] = React.useState(false);
+  const [isShowTerms, setIsShowTerms] = React.useState(false);
+  const [termsLanguage, setTermsLanguage] = React.useState('English');
 
   /** See Notes */
   const [passwordValidated, setPasswordValidated] = React.useState<
@@ -355,6 +361,14 @@ export default function AccountForm({
     }
   };
 
+  // const onScroll = (e: any) => {
+  //   let nxt = e.target.querySelector('#privacyNotice');
+  //   console.log(nxt.scrollHeight - e.target.scrollTop, e.target.clientHeight);
+  //   if (nxt.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
+  //     // do something
+  //   }
+  // };
+
   let nextDisabled = true;
   if (
     username.value !== '' &&
@@ -366,9 +380,10 @@ export default function AccountForm({
 
   return (
     <>
+      {validate.loading && <Loading position="fixed" />}
       <H3 margin="0 0 5px">Create your account</H3>
 
-      <form>
+      <form id="accountCreation">
         <Field>
           <Label>Email Address or Mobile No.</Label>
           <Input
@@ -387,6 +402,7 @@ export default function AccountForm({
             }
             placeholder="Email Address or Mobile Number"
             className={username.error ? 'error' : undefined}
+            id="username"
           />
           {username.error && <ErrorMsg formError>{username.msg}</ErrorMsg>}
         </Field>
@@ -409,6 +425,7 @@ export default function AccountForm({
                 });
               }}
               className={password.error ? 'error' : undefined}
+              id="password"
             />
             <IconButton
               type="button"
@@ -441,6 +458,7 @@ export default function AccountForm({
                 });
               }}
               className={confirmPassword.error ? 'error' : undefined}
+              id="confirmPassword"
             />
             <IconButton
               type="button"
@@ -541,10 +559,12 @@ export default function AccountForm({
           size="large"
           variant="contained"
           disabled={nextDisabled}
+          className="form-submit"
         >
           Next
         </Button>
         <Button
+          type="button"
           onClick={() => history.push('/')}
           color="default"
           fullWidth={true}
@@ -553,9 +573,36 @@ export default function AccountForm({
         >
           Back
         </Button>
-        <Field className="text-center" margin="20px 0 10px">
-          Already have an account? <A to="/">Log In</A>
-        </Field>
+        <Paragraph align="center" size="small" margin="20px 0 10px">
+          By creating an account, I agree to the
+          <br />
+          <A
+            to="/"
+            color="gold"
+            onClick={e => {
+              if (e && e.preventDefault) {
+                e.preventDefault();
+              }
+              setIsShowTerms(true);
+            }}
+          >
+            Terms and Condition
+          </A>{' '}
+          and{' '}
+          <A
+            to="/"
+            color="gold"
+            onClick={e => {
+              if (e && e.preventDefault) {
+                e.preventDefault();
+              }
+              setIsShowPrivacy(true);
+            }}
+          >
+            Privacy Policy
+          </A>
+          .
+        </Paragraph>
         {/* <Field className="agreement text-center" margin="25px 0 0">
           <span>
             <input
@@ -624,6 +671,48 @@ export default function AccountForm({
           >
             Ok
           </Button>
+        </div>
+      </Dialog>
+
+      {/* Privacy Policy */}
+      <Dialog
+        show={isShowPrivacy}
+        title="Privacy Policy"
+        size="large"
+        onClick={() => setIsShowPrivacy(false)}
+        okText="Ok"
+      >
+        <div
+          // onScroll={onScroll}
+          style={{ maxHeight: '60vh', overflowY: 'auto' }}
+        >
+          <PrivacyPolicy />
+        </div>
+      </Dialog>
+      {/* Terms and Conditions */}
+      <Dialog
+        show={isShowTerms}
+        title="Terms and Conditions"
+        size="large"
+        onClick={() => setIsShowTerms(false)}
+        okText="Ok"
+        titleAction={
+          <Select
+            value={termsLanguage}
+            noBorder
+            onChange={e => setTermsLanguage(e.currentTarget.value)}
+          >
+            <option value="English">English</option>
+            <option value="Tagalog">Tagalog</option>
+          </Select>
+        }
+      >
+        <div
+          // onScroll={onScroll}
+          style={{ maxHeight: '60vh', overflowY: 'auto' }}
+        >
+          {termsLanguage === 'English' && <TermsCondition />}
+          {termsLanguage === 'Tagalog' && <TermsConditionTagalog />}
         </div>
       </Dialog>
     </>

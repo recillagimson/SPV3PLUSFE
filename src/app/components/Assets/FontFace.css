@@ -8,14 +8,14 @@
 @font-face {
   font-family: 'Museo Sans';
   font-style: normal;
-  font-weight: 600;
+  font-weight: 700;
   src: url('./fonts/MuseoSans_700.woff2') format('woff2'),
     url('./fonts/MuseoSans_700.woff') format('woff');
 }
 @font-face {
   font-family: 'Museo Sans';
   font-style: normal;
-  font-weight: 700;
+  font-weight: 900;
   src: url('./fonts/MuseoSans_900.woff2') format('woff2'),
     url('./fonts/MuseoSans_900.woff') format('woff');
 }

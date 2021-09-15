@@ -7,7 +7,7 @@ import Wrapper from './Wrapper';
 
 export default function TermsCondition() {
   return (
-    <Wrapper>
+    <Wrapper id="termsAndConditions">
       <h4>TERMS AND CONDITIONS</h4>
 
       <p>

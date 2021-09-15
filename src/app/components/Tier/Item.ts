@@ -90,7 +90,7 @@ const TierLimit = styled.p`
   small {
     font-size: 1rem;
     display: block;
-    font-weight: 500;
+    font-weight: 400;
   }
 `;
 

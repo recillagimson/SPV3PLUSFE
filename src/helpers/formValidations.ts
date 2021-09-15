@@ -189,3 +189,35 @@ export function validatePassword(value: string) {
     } as PasswordValidationErrorCodes,
   };
 }
+
+/**
+ * Validate PIN
+ * @param {string}  value
+ * @returns {error: boolean, msg: string} or false
+ */
+export function validatePIN(value: string) {
+  if (value !== '') {
+    if (!/^[0-9]*$/.test(value)) {
+      return {
+        error: true,
+        msg: 'The PIN code must be 4 digits.',
+      };
+    }
+
+    if (/^[0-9]*$/.test(value) && /(\d)\1\1\1/.test(value)) {
+      return {
+        error: true,
+        msg:
+          'Your PIN should not be repeating numbers\n(e.g. 1111, 2222, etc.)',
+      };
+    }
+
+    return false;
+  }
+
+  // default return, no value PIN is required.
+  return {
+    error: true,
+    msg: 'The PIN code field is required.',
+  };
+}

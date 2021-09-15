@@ -2,59 +2,36 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Loading from 'app/components/Loading';
-import { H3 } from 'app/components/Typography';
+import { H4, Paragraph } from 'app/components/Typography';
 import Field from 'app/components/Elements/Fields';
-import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import VerifyOTP from 'app/components/VerifyOTP';
+import UpdateProfile from 'app/components/UpdateProfile/Profile';
 
 import Dialog from 'app/components/Dialog';
 import Wrapper from 'app/components/Layouts/AuthWrapper';
 
-import PinInput from 'app/components/Elements/PinInput';
-import TermsCondition from 'app/components/TermsCondition';
-import PrivacyPolicy from 'app/components/PrivacyPolicy';
-
 import Stepper from 'app/components/Elements/Stepper';
 
-import {
-  validateEmail,
-  regExMobile,
-  regExStrongPassword,
-} from 'app/components/Helpers';
-
 /** slice */
-import { useContainerSaga } from './slice';
-import {
-  selectLoading,
-  selectError,
-  selectData,
-  selectValidateError,
-  selectValidateData,
-  selectResendCodeData,
-  selectResendCodeError,
-} from './slice/selectors';
+import { selectResendCodeData, selectResendCodeError } from './slice/selectors';
 
 import AccountForm from './AccountForm';
+import PINCreation from './PINCreation';
+import useFetch from 'utils/useFetch';
 
 export function RegisterPage() {
   const history = useHistory();
   const location: any = useLocation();
 
-  const { actions } = useContainerSaga();
-  const dispatch = useDispatch();
+  const { loading, error, response, goFetch, fetchReset } = useFetch();
 
-  const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
-  const success = useSelector(selectData);
-  const validateError: any = useSelector(selectValidateError);
-  const validateSuccess = useSelector(selectValidateData);
   const resendSuccess: any = useSelector(selectResendCodeData);
   const resendError: any = useSelector(selectResendCodeError);
 
@@ -66,16 +43,11 @@ export function RegisterPage() {
 
   // show proper forms
   const [showCreate, setShowCreate] = React.useState(true);
-  const [showPin, setShowPin] = React.useState(false);
-  const [showPinConfirm, setShowPinConfirm] = React.useState(false);
-  const [showPinCreated, setShowPinCreated] = React.useState(false);
-  const [showVerify, setShowVerify] = React.useState(false);
+  const [showPinCreation, setShowPinCreation] = React.useState(false);
+  const [showVerifyOTP, setShowVerifyOTP] = React.useState(false);
+  const [showProfileForm, setShowProfileForm] = React.useState(false);
+  const [isWelcome, setIsWelcome] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false);
-
-  const [showAgreePrivacy, setShowAgreePrivacy] = React.useState(false);
-  const [showAgreeTerms, setShowAgreeTerms] = React.useState(false);
-  const [agreePrivacy, setAgreePrivacy] = React.useState(false);
-  const [agreeTerms, setAgreeTerms] = React.useState(false);
 
   const [activeSteps, setActiveSteps] = React.useState({
     1: true,
@@ -86,51 +58,33 @@ export function RegisterPage() {
   const [isEmail, setIsEmail] = React.useState(false);
   const [preFill, setPreFill] = React.useState({});
   const [accountFormData, setAccountFormData] = React.useState<any>({});
+  const [userID, setUserID] = React.useState('');
 
-  // form fields
-  const [passError, setPassError] = React.useState('');
-  const [agree, setAgree] = React.useState({ value: false, error: false });
-  const [showPass, setShowPass] = React.useState(false);
-  const [showConfirm, setShowConfirm] = React.useState(false);
-
-  const [pin, setPin] = React.useState({ value: '', error: false });
-  const [pinConfirm, setPinConfirm] = React.useState({
-    value: '',
-    error: false,
-    msg: '',
-  });
+  React.useEffect(() => {
+    return () => {
+      fetchReset();
+    };
+  }, []);
 
   React.useEffect(() => {
     if (location && location.state) {
-      console.log(location.state);
       setPreFill(location?.state || {});
       setIsEmail(location?.state?.isEmail || false);
     }
   }, [location]);
 
   React.useEffect(() => {
-    return () => {
-      dispatch(actions.getFetchReset()); // reset store state on unmount
-      dispatch(actions.getValidateReset()); // reset validate object
-      dispatch(actions.getResendCodeReset()); // reset re-send object
-    };
-  }, [actions, dispatch]);
-
-  React.useEffect(() => {
-    if (success) {
-      setShowPinCreated(false);
-      setShowVerify(true);
+    if (response && response.id) {
+      setUserID(response.id);
+      setShowPinCreation(false);
+      setShowVerifyOTP(true);
+      fetchReset();
     }
     if (error && Object.keys(error).length > 0) {
       apiErrorMessage();
+      fetchReset();
     }
-
-    if (validateSuccess) {
-      setShowCreate(false);
-      setShowPin(true);
-      setIsLoading(false);
-    }
-  }, [success, error, validateError, validateSuccess]);
+  }, [response, error]);
 
   React.useEffect(() => {
     if (resendSuccess || (resendError && Object.keys(resendError).length > 0)) {
@@ -189,82 +143,29 @@ export function RegisterPage() {
   ) => {
     setIsEmail(emailFlag);
     setAccountFormData(data);
-  };
-
-  // if validation passed, show the reenter pin
-  const onPinNext = () => {
-    if (pin.value !== '' && pin.value.length === 4) {
-      setShowPin(false);
-      setShowPinConfirm(true);
-      dispatch(actions.getValidateReset());
-    } else {
-      setPin({ ...pin, error: true });
-    }
-  };
-
-  // validate the re-entered pin and then show PIN created
-  const onPinConfirmNext = () => {
-    let hasError = false;
-    // validate the pin if they are the same
-    // notify user
-    if (pinConfirm.value === '') {
-      hasError = true;
-      setPinConfirm({
-        ...pinConfirm,
-        error: true,
-        msg: 'You have not re-entered your PIN. Please try again.',
-      });
-    }
-
-    if (pinConfirm.value !== '') {
-      if (pinConfirm.value.length < 4) {
-        hasError = true;
-        setPinConfirm({
-          ...pinConfirm,
-          error: true,
-          msg: 'You have not re-entered your PIN correctly. Please try again.',
-        });
-      }
-
-      if (pinConfirm.value.length === 4 && pinConfirm.value !== pin.value) {
-        hasError = true;
-        setPinConfirm({
-          ...pinConfirm,
-          error: true,
-          msg: 'Uh-oh! The PIN you entered is incorrect. Please try again.',
-        });
-      }
-    }
-
-    if (!hasError) {
-      setIsLoading(true);
-
-      setTimeout(() => {
-        setShowPinConfirm(false);
-        setShowPinCreated(true);
-        setIsLoading(false);
-      }, 800);
-    }
+    setActiveSteps({
+      ...activeSteps,
+      2: true,
+    });
+    setShowCreate(false);
+    setShowPinCreation(true);
   };
 
   // submit data to api
-  const onSubmitCreateAccount = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    if (e && e.preventDefault) e.preventDefault();
-
-    const data = {
+  const onSubmitCreateAccount = (pin: string) => {
+    const payload = {
       ...accountFormData,
-      pin_code: pin.value,
+      pin_code: pin,
     };
 
-    // pass payload to saga
-    // dispatch(actions.getFetchLoading(data));
+    // Create account
+    goFetch('/auth/register', 'POST', JSON.stringify(payload), '', false, true);
   };
 
   const onCodeVerified = () => {
-    setShowVerify(false);
-    setShowSuccess(true);
+    setShowVerifyOTP(false);
+    setIsWelcome(true);
+    setShowProfileForm(true);
   };
 
   // clicking the success dialog
@@ -274,8 +175,6 @@ export function RegisterPage() {
 
   // close error dialog
   const onCloseErrorDialog = () => {
-    dispatch(actions.getFetchReset());
-    dispatch(actions.getValidateReset());
     setIsError(false);
     setApiError('');
   };
@@ -293,7 +192,6 @@ export function RegisterPage() {
 
   const onCloseResendDialog = () => {
     setResendDialog(false);
-    dispatch(actions.getResendCodeReset());
   };
 
   // resend code error message
@@ -341,96 +239,11 @@ export function RegisterPage() {
           />
         )}
 
-        {showPin && (
-          <div className="text-center" style={{ padding: '0 40px' }}>
-            <CircleIndicator size="large">
-              <FontAwesomeIcon icon="lock" />
-            </CircleIndicator>
-            <H3 margin="20px 0 10px">Setup your unique PIN</H3>
-            <p className="f-small">
-              This will be used every time you login to your SquidPay account
-            </p>
-            <Field margin="5px 0 25px">
-              <PinInput
-                length={4}
-                onChange={p => setPin({ value: p, error: false })}
-                value={pin.value}
-                isValid={!pin.error}
-              />
-              {pin.error && <ErrorMsg>{pinConfirm.msg}</ErrorMsg>}
-            </Field>
-            <Button
-              type="button"
-              onClick={onPinNext}
-              color="primary"
-              fullWidth
-              size="large"
-              variant="contained"
-            >
-              Next
-            </Button>
-          </div>
-        )}
-        {showPinConfirm && (
-          <div className="text-center" style={{ padding: '0 40px' }}>
-            <CircleIndicator size="large">
-              <FontAwesomeIcon icon="lock" />
-            </CircleIndicator>
-            <H3 margin="20px 0 10px">Retype your unique PIN</H3>
-            <p className="f-small">
-              This will be used every time you login to your SquidPay account
-            </p>
-            <Field margin="5px 0 25px">
-              <PinInput
-                length={4}
-                onChange={p =>
-                  setPinConfirm({ value: p, error: false, msg: '' })
-                }
-                value={pinConfirm.value}
-                isValid={!pinConfirm.error}
-              />
-              {pinConfirm.error && (
-                <ErrorMsg formError>{pinConfirm.msg}</ErrorMsg>
-              )}
-            </Field>
-            <Button
-              type="button"
-              onClick={onPinConfirmNext}
-              color="primary"
-              fullWidth
-              size="large"
-              variant="contained"
-            >
-              Next
-            </Button>
-          </div>
+        {showPinCreation && (
+          <PINCreation onSuccessPinCreation={onSubmitCreateAccount} />
         )}
 
-        {showPinCreated && (
-          <div className="text-center" style={{ padding: '0 40px' }}>
-            <CircleIndicator size="large">
-              <FontAwesomeIcon icon="check" />
-            </CircleIndicator>
-            <H3 margin="20px 0 10px">User PIN successfully created</H3>
-            <p className="f-small">
-              This will be used every time you login to your SquidPay account
-            </p>
-            <Field margin="25px 0 0">
-              <Button
-                type="button"
-                onClick={onSubmitCreateAccount}
-                color="primary"
-                fullWidth
-                size="large"
-                variant="contained"
-              >
-                Next
-              </Button>
-            </Field>
-          </div>
-        )}
-
-        {showVerify && (
+        {showVerifyOTP && (
           <div className="text-center" style={{ padding: '0 40px' }}>
             <VerifyOTP
               onSuccess={onCodeVerified}
@@ -449,13 +262,20 @@ export function RegisterPage() {
             </Field>
           </div>
         )}
+        {showProfileForm && (
+          <UpdateProfile
+            onSuccess={() => setShowSuccess(true)}
+            isBronze
+            firstTime
+          />
+        )}
 
         {showSuccess && (
           <div className="text-center" style={{ padding: '0 40px' }}>
             <CircleIndicator size="large">
               <FontAwesomeIcon icon="check" />
             </CircleIndicator>
-            <H3 margin="25px 0 25px">You've successfully registered.</H3>
+            <H4 margin="25px 0 25px">You've successfully registered.</H4>
 
             <Button
               type="button"
@@ -471,12 +291,36 @@ export function RegisterPage() {
         )}
       </div>
 
+      {/* Welcome Squidee */}
+      <Dialog show={isWelcome} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <img src="/img/welcome-squidee.png" alt="Welcome Squidee!" />
+          <H4 margin="30px 0 10px">Welcome Squidee!</H4>
+          <Paragraph margin="0 0 35px">
+            Great to have you on board! Help us get to know you better by
+            filling up some important information about yourself.
+          </Paragraph>
+          <Button
+            fullWidth
+            onClick={() => setIsWelcome(false)}
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Close
+          </Button>
+        </div>
+      </Dialog>
+
       <Dialog show={isError} size="small">
         <div className="text-center">
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="times" />
           </CircleIndicator>
-          <H3 margin="15px 0 10px">Registration Failed</H3>
+          <H4 margin="15px 0 10px">Registration Failed</H4>
           <p>{apiError}</p>
           <Button
             fullWidth
@@ -497,9 +341,9 @@ export function RegisterPage() {
           >
             <FontAwesomeIcon icon={resendSuccess ? 'check' : 'times'} />
           </CircleIndicator>
-          <H3 margin="15px 0 10px">
+          <H4 margin="15px 0 10px">
             {resendSuccess ? 'Resend Code Success' : 'Resend Code Error'}
-          </H3>
+          </H4>
           {resendSuccess ? (
             <p>
               We have sent the code in your{' '}
@@ -519,48 +363,6 @@ export function RegisterPage() {
           >
             Ok
           </Button>
-        </div>
-      </Dialog>
-
-      <Dialog
-        show={showAgreeTerms}
-        title="Terms and Conditions"
-        size="large"
-        onClick={() => {
-          setShowAgreeTerms(false);
-          setAgreeTerms(true);
-        }}
-        onClose={() => {
-          setShowAgreeTerms(false);
-          setAgreeTerms(false);
-        }}
-        okText="Agree"
-        cancelText="Disagree"
-      >
-        <div style={{ padding: 20 }}>
-          <TermsCondition />
-        </div>
-      </Dialog>
-
-      <Dialog
-        show={showAgreePrivacy}
-        title="Privacy Policy"
-        size="large"
-        onClick={() => {
-          setShowAgreePrivacy(false);
-          setAgreePrivacy(true);
-          setAgree({ ...agree, error: false });
-        }}
-        onClose={() => {
-          setShowAgreePrivacy(false);
-          setAgreePrivacy(false);
-          setAgree({ ...agree, error: false });
-        }}
-        okText="Agree"
-        cancelText="Disagree"
-      >
-        <div style={{ padding: 20 }}>
-          <PrivacyPolicy />
         </div>
       </Dialog>
     </Wrapper>
