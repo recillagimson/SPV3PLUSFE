@@ -64,14 +64,17 @@ export function ForeignExchangePage() {
               placeholder="Search"
             />
           </section>
-
           <Styled.RatesContainer>
             {!isEmpty(foreignExchangeData) &&
               foreignExchangeData
                 .filter(currency => {
                   return (
-                    // currency.name.toLowerCase().includes(value.toLowerCase()) ||
-                    currency.code.toLowerCase().includes(value.toLowerCase())
+                    currency.name
+                      .toLowerCase()
+                      .includes(value.trim().toLowerCase()) ||
+                    currency.code
+                      .toLowerCase()
+                      .includes(value.trim().toLowerCase())
                   );
                 })
                 .map(currency => (
