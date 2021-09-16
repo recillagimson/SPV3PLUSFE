@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
@@ -36,13 +37,16 @@ import {
   selectPayData,
   selectPayLoading,
   selectPayError,
+  selectError,
 } from './slice/selectors';
 
 export function BuyEpinsPage() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
-  let success: any = useSelector(selectData);
-  let loading: any = useSelector(selectLoading);
+
+  const success: any = useSelector(selectData);
+  const loading: any = useSelector(selectLoading);
+  const error: any = useSelector(selectError);
 
   const validateLoading = useSelector(selectValidateLoading);
   const validateSuccess: any = useSelector(selectValidateData);
@@ -130,13 +134,24 @@ export function BuyEpinsPage() {
   }, [paySuccess]);
 
   React.useEffect(() => {
+    if (error && Object.keys(error).length > 0) {
+      if (error.code && error.code === 422) {
+        onApiError(error);
+      }
+    }
+  }, [error]);
+
+  React.useEffect(() => {
     if (validateError && Object.keys(validateError).length > 0) {
-      if (validateError.code && validateError.code === 422) {
-        if (validateError.errors && validateError.errors.error_code) {
-          validateError.errors.error_code.forEach((i: any) => {
-            setValidateApiMsg(errorHandler(i));
-          });
-        }
+      if (
+        validateError.code &&
+        validateError.errors &&
+        validateError.errors.error_code &&
+        validateError.errors.error_code.length > 0
+      ) {
+        validateError.errors.error_code.forEach((i: any) => {
+          setValidateApiMsg(errorHandler(i));
+        });
       }
     }
   }, [validateError]);
@@ -144,7 +159,12 @@ export function BuyEpinsPage() {
   React.useEffect(() => {
     if (payError && Object.keys(payError).length > 0) {
       if (payError.code && payError.code === 422) {
-        if (payError.errors && payError.errors.error_code) {
+        if (
+          payError.errors &&
+          payError.errors &&
+          payError.errors.error_code &&
+          payError.errors.error_code.length > 0
+        ) {
           payError.errors.error_code.forEach((i: any) => {
             setPayApiMsg(errorHandler(i));
           });
@@ -152,6 +172,107 @@ export function BuyEpinsPage() {
       }
     }
   }, [payError]);
+
+  const onApiError = err => {
+    const errors = err.errors ? err.errors : false;
+    if (errors && errors.error_code && errors.error_code.length > 0) {
+      errors.error_code.map(i => {
+        if (i === 302) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg: 'Transaction failed. Please try again.',
+          });
+          return null;
+        }
+        if (i === 401) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg: 'User profile not updated.',
+          });
+          return null;
+        }
+        if (i === 402) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg: 'Transaction denied due to insufficient Squidpay Balance.',
+          });
+          return null;
+        }
+        if (i === 405) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg:
+              'You have reached the allowable wallet limit for this month. Please try again next month.',
+          });
+          return null;
+        }
+        if (i === 406) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg:
+              'Oops! To completely access all Squidpay services, please update your profile. Thank you.',
+          });
+          return null;
+        }
+        if (i === 501) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg: 'Mobile number prefix is not supported.',
+          });
+          return null;
+        }
+        if (i === 502) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg: 'Mobile number is not supported.',
+          });
+          return null;
+        }
+
+        setMobile({
+          ...mobile,
+          error: false,
+          msg: '',
+        });
+        return null;
+      });
+    }
+    if (errors && !errors.error_code) {
+      let errMsg = '';
+      if (errors.mobile_number) {
+        errMsg = errors.mobile_number.join('\n');
+      }
+      if (errors.product_code) {
+        errMsg = errors.product_code.join('\n');
+      }
+      if (errors.product_name) {
+        errMsg = errors.product_name.join('\n');
+      }
+      if (errors.amount) {
+        errMsg = errors.amount.join('\n');
+      }
+      setMobile({
+        ...mobile,
+        error: errMsg !== '' ? true : false,
+        msg: errMsg,
+      });
+    }
+
+    if (!errors && err.response) {
+      setMobile({
+        ...mobile,
+        error: true,
+        msg: err.reponse.statusText,
+      });
+    }
+  };
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
