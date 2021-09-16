@@ -599,7 +599,7 @@ export function SendMoney() {
               </>
             )}
 
-            <Dialog show={isSuccess} size="small">
+            <Dialog show={isSuccess} size="medium">
               <Receipt
                 title="Money successfully sent to"
                 total={success.total_amount}
