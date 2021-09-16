@@ -14,7 +14,9 @@ const Wrapper = styled.div`
     padding: 30px 20px;
 
     .logo-container {
-      margin: 0 60px 20px;
+      margin: 0 auto 20px;
+      width: 200px;
+      text-align: center;
     }
     .bg-lightgold {
       background-color: #fff9ddff;
