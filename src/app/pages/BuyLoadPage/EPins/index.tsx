@@ -6,6 +6,7 @@ import { DateTime } from 'luxon';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Loading from 'app/components/Loading';
+import H3 from 'app/components/Elements/H3';
 import H5 from 'app/components/Elements/H5';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
@@ -19,6 +20,7 @@ import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Card from 'app/components/Elements/Card/Card';
 import Grid from 'app/components/Elements/Grid';
 import Receipt from 'app/components/Receipt';
+import Paragraph from 'app/components/Elements/Paragraph';
 
 import { Scrollbars } from 'react-custom-scrollbars';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -92,17 +94,21 @@ export function BuyEpinsPage() {
   const [validateApiMsg, setValidateApiMsg] = React.useState<{
     msg: string;
     error: boolean;
+    code: number;
   }>({
     msg: '',
     error: false,
+    code: 0,
   });
 
   const [payApiMsg, setPayApiMsg] = React.useState<{
     msg: string;
     error: boolean;
+    code: number;
   }>({
     msg: '',
     error: false,
+    code: 0,
   });
 
   React.useEffect(() => {
@@ -332,11 +338,22 @@ export function BuyEpinsPage() {
   };
 
   const onCloseValidateError = () => {
-    setValidateApiMsg({ msg: '', error: false });
+    if (validateApiMsg.code === 501 || validateApiMsg.code === 502) {
+      setShowForm(true);
+      setShowProducts(false);
+      setSelectedProduct({
+        productCode: '',
+        productName: '',
+        description: '',
+        amount: '',
+      });
+      dispatch(actions.getValidateReset());
+    }
+    setValidateApiMsg({ msg: '', error: false, code: 0 });
   };
 
   const onClosePayError = () => {
-    setPayApiMsg({ msg: '', error: false });
+    setPayApiMsg({ msg: '', error: false, code: 0 });
   };
 
   const onCloseSuccessDialog = () => {
@@ -356,18 +373,21 @@ export function BuyEpinsPage() {
         return {
           msg: 'Transaction failed. Please try again.',
           error: true,
+          code: 302,
         };
 
       case 401: {
         return {
           msg: 'User profile not updated.',
           error: true,
+          code: 401,
         };
       }
       case 402: {
         return {
           msg: 'Transaction denied due to insufficient Squidpay Balance.',
           error: true,
+          code: 402,
         };
       }
       case 405: {
@@ -375,6 +395,7 @@ export function BuyEpinsPage() {
           msg:
             'You have reached the allowable wallet limit for this month. Please try again next month.',
           error: true,
+          code: 405,
         };
       }
       case 406: {
@@ -382,24 +403,28 @@ export function BuyEpinsPage() {
           msg:
             'Oops! To completely access all Squidpay services, please update your profile. Thank you.',
           error: true,
+          code: 406,
         };
       }
       case 501: {
         return {
           msg: 'Mobile number prefix is not supported.',
           error: true,
+          code: 501,
         };
       }
       case 502: {
         return {
           msg: 'Mobile number is not supported.',
           error: true,
+          code: 502,
         };
       }
       default:
         return {
           msg: 'Something went wrong',
           error: true,
+          code: 1,
         };
     }
   };
@@ -578,10 +603,11 @@ export function BuyEpinsPage() {
                 <CircleIndicator size="medium" color="danger">
                   <FontAwesomeIcon icon="times" />
                 </CircleIndicator>
-                <H5 margin="10px 0 5px">Oops! Transaction Error</H5>
-                <small>{validateApiMsg.msg}</small>
-                <br />
-                <br />
+                <H3 margin="20px 0 5px">Oops! Transaction Error</H3>
+                <Paragraph size="small" align="center" margin="0 0 30px">
+                  {validateApiMsg.msg}
+                </Paragraph>
+
                 <Button
                   fullWidth
                   onClick={onCloseValidateError}
@@ -598,10 +624,11 @@ export function BuyEpinsPage() {
                 <CircleIndicator size="medium" color="danger">
                   <FontAwesomeIcon icon="times" />
                 </CircleIndicator>
-                <H5 margin="10px 0 5px">Oops! Transaction Error</H5>
-                <small>{payApiMsg.msg}</small>
-                <br />
-                <br />
+                <H3 margin="20px 0 5px">Oops! Transaction Error</H3>
+                <Paragraph size="small" align="center" margin="0 0 30px">
+                  {payApiMsg.msg}
+                </Paragraph>
+
                 <Button
                   fullWidth
                   onClick={onClosePayError}
@@ -616,7 +643,7 @@ export function BuyEpinsPage() {
             <Dialog show={showPay && Boolean(paySuccess)} size="small">
               <Receipt
                 title="Load purchase successful!"
-                total={numberCommas(paySuccess.amount)}
+                total={paySuccess.amount}
                 onClick={onCloseSuccessDialog}
                 date={humanReadable}
               >

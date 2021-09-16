@@ -39,10 +39,7 @@ export function ForgotPasswordPage() {
 
   const [isError, setIsError] = React.useState(false);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
-  const [title, setTitle] = React.useState('Forgot Password?');
-  const [subTitle, setSubTitle] = React.useState(
-    'We got you! Let us know which contact detail should we use to reset your password',
-  );
+
   const [showChoose, setShowChoose] = React.useState(true);
   const [showMobile, setShowMobile] = React.useState(false);
   const [showEmail, setShowEmail] = React.useState(false);
@@ -64,12 +61,6 @@ export function ForgotPasswordPage() {
     // if we have successfully requested a code, show verify
     // this success is a verify success
     if (success) {
-      setTitle('Enter 4-Digit recovery code');
-      setSubTitle(
-        `The recovery code has been sent to your ${
-          isEmail ? 'email address' : 'mobile number'
-        }`,
-      );
       setShowVerify(true);
       setShowEmail(false);
       setShowMobile(false);
@@ -142,35 +133,23 @@ export function ForgotPasswordPage() {
     setShowChoose(false);
     setShowMobile(true);
     setIsEmail(false);
-    setSubTitle(
-      "Simply enter your mobile number associated with your account and we'll send you the code",
-    );
   };
 
   const onClickEmail = () => {
     setShowChoose(false);
     setShowEmail(true);
     setIsEmail(true);
-    setSubTitle(
-      "Simply enter your email associated with your account and we'll send you the code",
-    );
   };
 
   const onSuccessVerify = () => {
     setShowVerify(false);
     setShowUpdate(true);
-    setSubTitle('Enter your new password');
-    setTitle('Reset Password');
   };
 
   const onSuccessUpdate = () => {
     setShowUpdate(false);
     setShowSuccess(true);
     setIsEmail(false);
-    setTitle('Password reset successful');
-    setSubTitle(
-      "All set! You've successfully reset your password. Please try logging in again.",
-    );
   };
 
   // submit
@@ -255,18 +234,21 @@ export function ForgotPasswordPage() {
       <div id="forgotPassword" className="form-container">
         {loading && <Loading position="fixed" />}
 
-        <div className="text-center">
-          <CircleIndicator size="large">
-            <FontAwesomeIcon icon={showSuccess ? 'check' : 'lock'} />
-          </CircleIndicator>
-        </div>
-
-        <H1 className="text-center" margin="20px 0 8px">
-          {title}
-        </H1>
-        <p className="text-center">{subTitle}</p>
         {showChoose && (
           <div className="content">
+            <div className="text-center">
+              <CircleIndicator size="large">
+                <FontAwesomeIcon icon="lock" />
+              </CircleIndicator>
+            </div>
+            <H1 className="text-center" margin="20px 0 8px">
+              Forgot Password
+            </H1>
+            <p style={{ padding: '0 10px' }} className="text-center">
+              We got you! Let us know which contact detail should we use to
+              reset your password
+            </p>
+
             <Flex alignItems="center" justifyContent="center">
               <Button
                 type="button"
@@ -298,6 +280,18 @@ export function ForgotPasswordPage() {
         )}
         {showMobile && (
           <div className="content">
+            <div className="text-center">
+              <CircleIndicator size="large">
+                <FontAwesomeIcon icon="lock" />
+              </CircleIndicator>
+            </div>
+            <H1 className="text-center" margin="20px 0 8px">
+              Forgot Password
+            </H1>
+            <p style={{ padding: '0 10px' }} className="text-center">
+              Simply enter your mobile number associated with your account and
+              we'll send you the code
+            </p>
             <Field>
               <Label>Mobile Number</Label>
               <Input
@@ -330,6 +324,18 @@ export function ForgotPasswordPage() {
         )}
         {showEmail && (
           <div className="content">
+            <div className="text-center">
+              <CircleIndicator size="large">
+                <FontAwesomeIcon icon="lock" />
+              </CircleIndicator>
+            </div>
+            <H1 className="text-center" margin="20px 0 8px">
+              Forgot Password
+            </H1>
+            <p style={{ padding: '0 10px' }} className="text-center">
+              Simply enter your email associated with your account and we'll
+              send you the code
+            </p>
             <Field>
               <Label>Email Address</Label>
               <Input
@@ -379,6 +385,17 @@ export function ForgotPasswordPage() {
         )}
         {showUpdate && (
           <div className="content">
+            <div className="text-center">
+              <CircleIndicator size="large">
+                <FontAwesomeIcon icon="lock" />
+              </CircleIndicator>
+            </div>
+            <H1 className="text-center" margin="20px 0 8px">
+              Reset Password
+            </H1>
+            <p style={{ padding: '0 10px' }} className="text-center">
+              Enter your new password
+            </p>
             <UpdatePassword
               onSuccess={onSuccessUpdate}
               isEmail={isEmail}
@@ -388,6 +405,21 @@ export function ForgotPasswordPage() {
         )}
         {showSuccess && (
           <div className="content">
+            <div className="text-center">
+              <CircleIndicator size="large">
+                <FontAwesomeIcon icon="check" />
+              </CircleIndicator>
+            </div>
+            <H1 className="text-center" margin="20px 0 8px">
+              Password reset successful
+            </H1>
+            <p
+              style={{ padding: '0 10px', margin: '5px 0 35px' }}
+              className="text-center"
+            >
+              All set! You've successfully reset your password. Please try
+              logging in again.
+            </p>
             <Button
               type="button"
               onClick={gotoLogin}
