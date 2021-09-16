@@ -5,15 +5,20 @@ import Box from 'app/components/Box';
 import Flex from 'app/components/Elements/Flex';
 import Paragraph from 'app/components/Elements/Paragraph';
 import Button from 'app/components/Elements/Button';
+import Dialog from 'app/components/Dialog';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
 import { selectUser } from 'app/App/slice/selectors';
+import CollapsibleContent from './components/CollapsibleContent';
 // assets
-import IconChevron from 'app/components/Assets/icon-chevron';
 import LoansComingSoon from 'app/components/Assets/LoansComingSoon';
+import Copy from 'app/components/Assets/Copy';
 // partner logos
 import RfscLogo from 'app/components/Assets/RFSC_Logo.png';
 // styles
 import * as S from './styled/LoansPage';
+import useFetch from 'utils/useFetch';
 
 export function LoansPage() {
   const profile: any = useSelector(selectUser);
@@ -21,8 +26,17 @@ export function LoansPage() {
     'partners',
   );
 
+  const { loading, response, goFetch } = useFetch();
+
   const [selectedPartner, setSelectedPartner] = React.useState<string>('');
-  const [selectedTab, setSelectedTab] = React.useState<number>(0);
+  const [showExitModal, setShowExitModal] = React.useState<boolean>(false);
+  const [partnerStep, setPartnerStep] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    if (partnerStep === 1) {
+      goFetch('/loans/get/reference_number', 'GET', '', '', true, true);
+    }
+  }, [partnerStep, goFetch]);
 
   const isPartner = React.useMemo(() => {
     return selection === 'partners';
@@ -53,6 +67,48 @@ export function LoansPage() {
         );
     }
   }, [profile.first_name, isPartner]);
+
+  const renderPartnerStep = React.useMemo(() => {
+    switch (partnerStep) {
+      case 0:
+        return <CollapsibleContent setPartnerStep={setPartnerStep} />;
+      case 1:
+        return (
+          <React.Fragment>
+            <Flex direction="column">
+              <Paragraph
+                weight="light"
+                align="left"
+                style={{ fontSize: '14px' }}
+              >
+                You will be redirected to the loan partner’s page. Please use
+                this generated SquidPay ID number as an identifier.
+              </Paragraph>
+              <Paragraph weight="light" align="left">
+                Squidpay ID number
+              </Paragraph>
+              <S.ReferenceNumberContainer>
+                <span>{response?.reference_number}</span>
+                {!loading && <Copy toCopy={response?.reference_number} />}
+              </S.ReferenceNumberContainer>
+            </Flex>
+            <Flex justifyContent="flex-end" style={{ margin: '24px 0 0' }}>
+              {!loading && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={e => setShowExitModal(true)}
+                >
+                  Next
+                </Button>
+              )}
+            </Flex>
+          </React.Fragment>
+        );
+      default:
+        return null;
+    }
+  }, [partnerStep, setPartnerStep, response, loading]);
 
   return (
     <ProtectedContent>
@@ -94,77 +150,47 @@ export function LoansPage() {
             </Flex>
           </React.Fragment>
         ) : (
-          <React.Fragment>
-            <Flex
-              direction="column"
-              justifyContent="flex-start"
-              alignItems="flex-start"
-            >
-              <S.CollapsibleHeader
-                role="button"
-                onClick={e => setSelectedTab(0)}
-              >
-                <Paragraph align="left" weight="bold" margin="0">
-                  Multi-Purpose Loan / Personal Loan
-                </Paragraph>
-                <S.Spacer />
-                <IconChevron
-                  style={{
-                    transform:
-                      selectedTab === 0 ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transformOrigin: '50% 50%',
-                    transition: 'all .2s ease',
-                  }}
-                />
-              </S.CollapsibleHeader>
-              <S.CollapsibleContent selected={selectedTab === 0}>
-                <Paragraph align="left" weight="light" margin="0 0 12px">
-                  Overview:
-                </Paragraph>
-                <ul
-                  style={{
-                    fontSize: '12px',
-                    padding: '0 16px',
-                    margin: 0,
-                  }}
-                >
-                  <li>Home Improvement Loan</li>
-                  <li>Education Loan</li>
-                  <li>Emergency Fun Loan</li>
-                  <li>Professional Loan</li>
-                  <li>Salary Loan (institutional)</li>
-                </ul>
-              </S.CollapsibleContent>
-              <S.CollapsibleHeader
-                role="button"
-                onClick={e => setSelectedTab(1)}
-              >
-                <Paragraph align="left" weight="bold" margin="0">
-                  SME Business Loans
-                </Paragraph>
-                <S.Spacer />
-                <IconChevron
-                  style={{
-                    transform:
-                      selectedTab === 1 ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transformOrigin: '50% 50%',
-                    transition: 'all .2s ease',
-                  }}
-                />
-              </S.CollapsibleHeader>
-              <S.CollapsibleContent selected={selectedTab === 1}>
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum."
-              </S.CollapsibleContent>
-            </Flex>
-          </React.Fragment>
+          renderPartnerStep
         )}
       </Box>
+      <Dialog show={showExitModal} size="small">
+        <div className="text-center" style={{ padding: '25px' }}>
+          <CircleIndicator size="medium" color="danger">
+            <FontAwesomeIcon icon="exclamation-circle" />
+          </CircleIndicator>
+          <p style={{ margin: '15px 0 10px' }}>
+            <strong>Leave site?</strong>
+          </p>
+          <p>Are you you want to leave this page?</p>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            onClick={e => {
+              e.preventDefault();
+              const Window = window;
+              if (Window != null) {
+                Window?.open(
+                  'https://apps.rfc.com.ph/rfc360loans/squidpay.php',
+                  '_blank',
+                  'noopener,noreferrer',
+                )?.focus();
+              }
+            }}
+          >
+            Leave Page
+          </Button>
+          <Button
+            style={{ marginTop: '12px' }}
+            fullWidth
+            variant="outlined"
+            color="secondary"
+            onClick={e => setShowExitModal(false)}
+          >
+            Stay on Page
+          </Button>
+        </div>
+      </Dialog>
     </ProtectedContent>
   );
 }
