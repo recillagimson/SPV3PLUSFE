@@ -4,9 +4,7 @@
  */
 import * as React from 'react';
 import { useLocation } from 'react-router';
-// import { request } from 'utils/request';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import Logo from 'app/components/Assets/Logo';

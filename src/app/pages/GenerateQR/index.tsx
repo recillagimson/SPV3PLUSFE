@@ -24,7 +24,12 @@ import { selectUser } from 'app/App/slice/selectors';
 import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
 import { useContainerSaga } from './slice';
 import { selectLoading, selectData } from './slice/selectors';
-import { numberCommas } from 'app/components/Helpers';
+import {
+  maskEmailAddress,
+  maskMobileNumber,
+  numberCommas,
+  validateEmail,
+} from 'app/components/Helpers';
 
 export function GenerateQR() {
   const { actions } = useContainerSaga();
@@ -131,8 +136,11 @@ export function GenerateQR() {
   };
 
   // Replace the first 7 digit of mobile number in the receipt
-  let replaceFirst7 = (username: string) => {
-    return username.replace(/^.{1,7}/, m => '*'.repeat(m.length));
+  let maskCharacter = (username: string) => {
+    if (validateEmail(username)) {
+      return maskEmailAddress(username);
+    }
+    return maskMobileNumber(username);
   };
 
   let balanceInfo = '000.00';
@@ -237,7 +245,7 @@ export function GenerateQR() {
                   {profile &&
                     Object.keys(profile).length > 0 &&
                     profile.user_account &&
-                    replaceFirst7(
+                    maskCharacter(
                       profile.user_account.mobile_number ||
                         profile.user_account.email,
                     )}
