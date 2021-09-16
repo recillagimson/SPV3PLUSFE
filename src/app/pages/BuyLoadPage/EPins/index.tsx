@@ -27,7 +27,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Wrapper from './Wrapper';
 
-import { numberCommas, regExMobile } from 'app/components/Helpers';
+import {
+  maskCharacters,
+  numberCommas,
+  regExMobile,
+} from 'app/components/Helpers';
 
 import { useContainerSaga } from './slice';
 import {
@@ -495,35 +499,36 @@ export function BuyEpinsPage() {
                 <br />
                 <section>
                   <Scrollbars style={{ height: 300 }}>
-                    {success
-                      .slice()
-                      .sort((a, b) =>
-                        a.denomination > b.denomination ? 1 : -1,
-                      )
-                      .map((promo, idx) => (
-                        <div
-                          key={idx}
-                          className={
-                            selectedProduct.productName === ''
-                              ? 'product-list'
-                              : selectedProduct.productName ===
-                                promo.productCode
-                              ? 'active product-list'
-                              : 'product-list'
-                          }
-                          onClick={() => {
-                            setSelectedProduct({
-                              productCode: promo.productCode,
-                              productName: promo.productCode,
-                              description: promo.description,
-                              amount: promo.denomination,
-                            });
-                          }}
-                        >
-                          <div>{promo.description}</div>
-                          <div>PHP {promo.denomination}.00</div>
-                        </div>
-                      ))}
+                    {success &&
+                      success
+                        .slice()
+                        .sort((a, b) =>
+                          a.denomination > b.denomination ? 1 : -1,
+                        )
+                        .map((promo, idx) => (
+                          <div
+                            key={idx}
+                            className={
+                              selectedProduct.productName === ''
+                                ? 'product-list'
+                                : selectedProduct.productName ===
+                                  promo.productCode
+                                ? 'active product-list'
+                                : 'product-list'
+                            }
+                            onClick={() => {
+                              setSelectedProduct({
+                                productCode: promo.productCode,
+                                productName: promo.productCode,
+                                description: promo.description,
+                                amount: promo.denomination,
+                              });
+                            }}
+                          >
+                            <div>{promo.description}</div>
+                            <div>PHP {promo.denomination}.00</div>
+                          </div>
+                        ))}
                   </Scrollbars>
                   <br />
                   <Flex justifyContent="flex-end">
@@ -649,7 +654,9 @@ export function BuyEpinsPage() {
               >
                 <Flex justifyContent="space-between">
                   <span>Mobile Number</span>
-                  <span>{paySuccess.recipient_mobile_number || ''}</span>
+                  <span>
+                    {maskCharacters(paySuccess.recipient_mobile_number || '')}
+                  </span>
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Load</span>

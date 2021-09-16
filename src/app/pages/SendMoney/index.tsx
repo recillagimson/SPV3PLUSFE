@@ -37,6 +37,8 @@ import {
   validateEmail,
   regExMobile,
   regExIsGonnaBeEmail,
+  maskEmailAddress,
+  maskMobileNumber,
 } from 'app/components/Helpers';
 import { numberWithCommas } from 'utils/common';
 
@@ -619,11 +621,13 @@ export function SendMoney() {
                   </Grid>
                   <Grid item xs={8}>
                     <span className="value">
-                      {isEmail ? success.email : success.mobile_number}
+                      {isEmail
+                        ? maskEmailAddress(success.email || '')
+                        : maskMobileNumber(success.mobile_number || '')}
                     </span>
                   </Grid>
                   <Grid item xs={4}>
-                    <span className="description">Message </span>
+                    <span className="description">Message</span>
                   </Grid>
                   <Grid item xs={8}>
                     <span className="value">{success.message}</span>
