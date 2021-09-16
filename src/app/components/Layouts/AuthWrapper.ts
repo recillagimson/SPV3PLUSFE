@@ -39,9 +39,9 @@ const Wrapper = styled.section<{ bg?: boolean }>`
       margin: 15px 0 10px;
     }
 
-    span {
+    /* span {
       font-size: 0.85rem;
-    }
+    } */
   }
 
   .content {
