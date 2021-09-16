@@ -89,13 +89,13 @@ export function BuyEpinsPage() {
   const [showReview, setShowReview] = React.useState<boolean>(false);
   const [showPay, setShowPay] = React.useState<boolean>(false);
 
-  // const [validateApiMsg, setValidateApiMsg] = React.useState<{
-  //   msg: string;
-  //   error: boolean;
-  // }>({
-  //   msg: '',
-  //   error: false,
-  // });
+  const [validateApiMsg, setValidateApiMsg] = React.useState<{
+    msg: string;
+    error: boolean;
+  }>({
+    msg: '',
+    error: false,
+  });
 
   const [payApiMsg, setPayApiMsg] = React.useState<{
     msg: string;
@@ -143,8 +143,15 @@ export function BuyEpinsPage() {
 
   React.useEffect(() => {
     if (validateError && Object.keys(validateError).length > 0) {
-      if (validateError.code && validateError.code === 422) {
-        onApiError(validateError);
+      if (
+        validateError.code &&
+        validateError.errors &&
+        validateError.errors.error_code &&
+        validateError.errors.error_code.length > 0
+      ) {
+        validateError.errors.error_code.forEach((i: any) => {
+          setValidateApiMsg(errorHandler(i));
+        });
       }
     }
   }, [validateError]);
@@ -152,7 +159,12 @@ export function BuyEpinsPage() {
   React.useEffect(() => {
     if (payError && Object.keys(payError).length > 0) {
       if (payError.code && payError.code === 422) {
-        if (payError.errors && payError.errors.error_code) {
+        if (
+          payError.errors &&
+          payError.errors &&
+          payError.errors.error_code &&
+          payError.errors.error_code.length > 0
+        ) {
           payError.errors.error_code.forEach((i: any) => {
             setPayApiMsg(errorHandler(i));
           });
@@ -319,9 +331,9 @@ export function BuyEpinsPage() {
     dispatch(actions.getPayLoading(data));
   };
 
-  // const onCloseValidateError = () => {
-  //   setValidateApiMsg({ msg: '', error: false });
-  // };
+  const onCloseValidateError = () => {
+    setValidateApiMsg({ msg: '', error: false });
+  };
 
   const onClosePayError = () => {
     setPayApiMsg({ msg: '', error: false });
@@ -561,7 +573,7 @@ export function BuyEpinsPage() {
               </>
             )}
 
-            {/* <Dialog show={validateApiMsg.error} size="xsmall">
+            <Dialog show={validateApiMsg.error} size="xsmall">
               <div style={{ margin: '20px', textAlign: 'center' }}>
                 <CircleIndicator size="medium" color="danger">
                   <FontAwesomeIcon icon="times" />
@@ -579,7 +591,7 @@ export function BuyEpinsPage() {
                   Ok
                 </Button>
               </div>
-            </Dialog> */}
+            </Dialog>
 
             <Dialog show={payApiMsg.error} size="xsmall">
               <div style={{ margin: '20px', textAlign: 'center' }}>
