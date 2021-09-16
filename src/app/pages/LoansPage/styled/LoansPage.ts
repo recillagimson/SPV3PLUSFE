@@ -34,10 +34,23 @@ interface CollapsibleContentProps {
 
 export const CollapsibleContent = styled.section<CollapsibleContentProps>`
   max-height: ${({ selected }) => (selected ? '1000px' : '0')};
-  overflow: hidden;
+  overflow: ${({ selected }) => (selected ? 'auto' : 'hidden')};
+  width: 100%;
   margin: 24px 0;
 `;
 
 export const Spacer = styled.span`
   flex: 1 1 auto;
+`;
+
+export const ReferenceNumberContainer = styled.section`
+  display: flex;
+  flex-direction: row;
+  padding: 13px 12px;
+  font-size: 16px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  background: #f0f0f0;
+  border-radius: 5px;
 `;
