@@ -1,14 +1,18 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useHistory } from 'react-router-dom';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 import Flex from 'app/components/Elements/Flex';
 import Paragraph from 'app/components/Elements/Paragraph';
 import Button from 'app/components/Elements/Button';
 import Dialog from 'app/components/Dialog';
+import H3 from 'app/components/Elements/H3';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
+import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
+import { TierIDs } from 'app/components/Helpers/Tiers';
 import { selectUser } from 'app/App/slice/selectors';
 import CollapsibleContent from './components/CollapsibleContent';
 // assets
@@ -17,14 +21,37 @@ import Copy from 'app/components/Assets/Copy';
 // partner logos
 import RfscLogo from 'app/components/Assets/RFSC_Logo.png';
 // styles
+
 import * as S from './styled/LoansPage';
 import useFetch from 'utils/useFetch';
 
 export function LoansPage() {
+  const history = useHistory();
   const profile: any = useSelector(selectUser);
   const [selection, setSelection] = React.useState<'partners' | 'my-loans'>(
     'partners',
   );
+
+  const isBronze = React.useMemo(() => {
+    let isBronze = false;
+    if (
+      profile &&
+      profile.user_account &&
+      profile.user_account.tier_id &&
+      profile.user_account.tier_id !== ''
+    ) {
+      isBronze = profile.user_account.tier_id === TierIDs.bronze;
+    }
+    return isBronze;
+  }, [profile]);
+
+  const [showUpgrade, setShowUpgrade] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isBronze) {
+      setShowUpgrade(true);
+    }
+  }, [isBronze, history, setShowUpgrade]);
 
   const { loading, response, goFetch } = useFetch();
 
@@ -189,6 +216,40 @@ export function LoansPage() {
             onClick={e => setShowExitModal(false)}
           >
             Stay on Page
+          </Button>
+        </div>
+      </Dialog>
+      {/* show upgrage dialog */}
+      <Dialog show={showUpgrade} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <img
+            src={tierUpgrade}
+            alt="Upgrade your tier to unlock other services"
+          />
+          <H3 margin="30px 0 10px">Oops!</H3>
+          <p style={{ marginBottom: 35 }}>
+            Uh-no! You need to upgrade your account to unlock this service
+          </p>
+          <Button
+            fullWidth
+            onClick={() => history.push('/tiers')}
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Upgrade Now
+          </Button>
+          <Button
+            fullWidth
+            onClick={() => history.push('/dashboard')}
+            variant="outlined"
+            color="secondary"
+            size="large"
+          >
+            Upgrade Later
           </Button>
         </div>
       </Dialog>

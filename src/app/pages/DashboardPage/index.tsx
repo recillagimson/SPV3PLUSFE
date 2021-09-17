@@ -337,9 +337,13 @@ export function DashboardPage() {
           Foreign Exchange
         </DashboardButton>
         <DashboardButton
-          onClick={() => {
-            history.push('/loans');
-          }}
+          onClick={
+            isBronze
+              ? () => setShowUpgrade(true)
+              : () => {
+                  history.push('/loans');
+                }
+          }
         >
           <Loans />
           Loans
