@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro';
+import { StyleConstants } from 'styles/StyleConstants';
 
 type ParagraphProps = {
   /**
@@ -16,6 +17,11 @@ type ParagraphProps = {
    * @default 'regular'
    */
   size?: 'xsmall' | 'small' | 'regular';
+  /**
+   * Color
+   * @default 'primary'
+   */
+  color?: 'default' | 'primary' | 'secondary' | 'mute' | 'danger' | 'success';
   /**
    * Margin (CSS value)
    * @default '0 0 15px'
@@ -41,6 +47,15 @@ const weights = {
   light: 300,
 };
 
+const colors = {
+  default: 'inherit',
+  primary: StyleConstants.color.primaryyellow,
+  secondary: StyleConstants.color.gray2,
+  mute: StyleConstants.color.gray4,
+  danger: StyleConstants.color.tones.red,
+  success: StyleConstants.color.tones.green,
+};
+
 /**
  * Paragraph Typography Component
  * @typedef ParagraphProps
@@ -51,6 +66,7 @@ const Paragraph = styled.p<ParagraphProps>`
   text-align: ${p => (p.align ? p.align : 'left')};
   margin: ${p => (p.margin ? p.margin : '0 0 15px')};
   padding: ${p => (p.padding ? p.padding : '0 0')};
+  color: ${p => (p.color ? colors[p.color] : colors['default'])};
 `;
 
 export default Paragraph;
