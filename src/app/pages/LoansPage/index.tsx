@@ -175,6 +175,7 @@ export function LoansPage() {
                   '_blank',
                   'noopener,noreferrer',
                 )?.focus();
+                setShowExitModal(false);
               }
             }}
           >

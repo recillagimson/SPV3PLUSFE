@@ -15,6 +15,13 @@ export const PartnerTile = styled.section`
     width: 54px;
     height: 21.08px;
   }
+
+  transition: all 0.4s ease;
+
+  &:hover {
+    border: 1px solid #737373;
+    filter: grayscale(0.6);
+  }
 `;
 
 export const CollapsibleHeader = styled.header`
