@@ -75,7 +75,15 @@ export function LoansPage() {
         return (
           <S.PartnerTile
             role="button"
-            onClick={e => setSelectedPartner('rfsc')}
+            onClick={
+              isBronze
+                ? () => {
+                    setShowUpgrade(true);
+                  }
+                : () => {
+                    setSelectedPartner('rfsc');
+                  }
+            }
           >
             <img src={RfscLogo} alt="RFSC logo" />
           </S.PartnerTile>
@@ -93,7 +101,7 @@ export function LoansPage() {
           </React.Fragment>
         );
     }
-  }, [profile.first_name, isPartner]);
+  }, [isPartner, isBronze, profile.first_name]);
 
   const renderPartnerStep = React.useMemo(() => {
     switch (partnerStep) {
