@@ -1,6 +1,5 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { Helmet } from 'react-helmet-async';
-import styled from 'styled-components/macro';
 import { useHistory } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,112 +15,240 @@ import InputTextWrapper from 'app/components/Elements/InputTextWrapper';
 import Card from 'app/components/Elements/Card/Card';
 import Dialog from 'app/components/Dialog';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
-import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
-import { maskCharactersInside, numberCommas } from 'app/components/Helpers';
+import { numberCommas } from 'app/components/Helpers';
 import Logo from 'app/components/Assets/Logo';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import H3 from 'app/components/Elements/H3';
 import RadioComponent from 'app/components/Elements/Radio';
 import Loading from 'app/components/Loading';
 
+import Wrapper from './Wrapper';
+import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
 import { useContainerSaga } from './slice';
-import { selectAddMoneyBpi, selectLoading } from './slice/selectors';
-
-const Wrapper = styled.div`
-  .account-wrapper {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    margin-left: 20px;
-  }
-`;
+import {
+  selectAccessToken,
+  selectAccounts,
+  selectBpiUrl,
+  selectData,
+  selectLoading,
+  selectError,
+  selectProcessData,
+} from './slice/selectors';
 
 export function AddMoneyViaBPI() {
+  const dispatch = useDispatch();
   const history = useHistory();
   const { actions } = useContainerSaga();
-  const dispatch = useDispatch();
 
   const dashData: any = useSelector(selectDashData);
-  const addMoneyBpi: any = useSelector(selectAddMoneyBpi);
+  const bpiUrl: any = useSelector(selectBpiUrl);
+  const accessToken: any = useSelector(selectAccessToken);
+  const accounts: any = useSelector(selectAccounts);
+  const data: any = useSelector(selectData);
+  const processData: any = useSelector(selectProcessData);
+  const error: any = useSelector(selectError);
   const loading = useSelector(selectLoading);
 
-  const [amount, setAmount] = useState({
-    value: '',
-    error: false,
-    errormsg: '',
-  });
-
-  // const isSuccess = false;
   const [isSuccess, setIsSuccess] = useState(false);
   const [isCashIn, setIsCashIn] = useState(true);
   const [isSelectAccounts, setIsSelectAccounts] = useState(false);
   const [isVerification, setIsVerification] = useState(false);
-  // const [showForm, setShowForm] = React.useState(true);
 
+  const [apiError, setApiError] = useState(false);
+  const [apiErrorMsg, setApiErrorMsg] = useState('');
+  const [amount, setAmount] = useState({
+    value: '',
+    isError: false,
+    errormsg: '',
+  });
+  const [accountNumberToken, setAccountNumberToken] = useState({
+    value: '',
+    isError: false,
+    errormsg: '',
+  });
+  const [otp, setOtp] = useState({
+    value: '',
+    isError: false,
+    errormsg: '',
+  });
+
+  //Error useEffect
+  //BPI login redirect useEFfect
   useEffect(() => {
-    if (addMoneyBpi) {
-      sessionStorage.setItem('test', amount.value);
-      window.location.href = addMoneyBpi.login_url;
+    if (error && Object.keys(error).length > 0) {
+      onApiError(error);
     }
-    //   setShowIframe({
-    //     show: true,
-    //     url: addMoneyBpi.login_url,
-    //   });
-    // }
-  }, [addMoneyBpi, amount.value]);
 
+    if (bpiUrl) {
+      sessionStorage.setItem('amount', amount.value);
+      window.location.href = bpiUrl.login_url;
+    }
+  }, [error, bpiUrl, amount.value]);
+
+  //View select accounts on postback
   useEffect(() => {
     if (window.location.pathname === '/add-money/bpi/select-account') {
       dispatch(actions.getFetchReset());
-      const amountValue: any = sessionStorage.getItem('test');
-      setAmount({ ...amount, value: amountValue.toString() });
-      setIsSelectAccounts(true);
-      setIsCashIn(false);
+      const amountValue: any = sessionStorage.getItem('amount');
+      if (amountValue && !isVerification) {
+        setAmount({ ...amount, value: amountValue.toString() });
+        setIsSelectAccounts(true);
+        setIsCashIn(false);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    //Redirect to add money landing state and page is not otp screen
+    if (!isVerification && error && Object.keys(error).length > 0) {
+      history.push('/add-money/bpi');
+      setIsSelectAccounts(false);
+      setIsCashIn(true);
+      dispatch(actions.getFetchReset());
+    }
+  }, [isVerification, error]);
+
+  //Show success modal on /process submit
+  useEffect(() => {
+    if (!error) {
+      if (processData !== null) {
+        setIsSuccess(true);
+      }
+    }
+  }, [processData, error]);
+
+  const onApiError = (err: any) => {
+    let apiError = '';
+    if (err.code && err.code === 422) {
+      if (
+        err.errors &&
+        err.errors.error_code &&
+        err.errors.error_code.length > 0
+      ) {
+        const i405 = err.errors.error_code.findIndex(j => j === 405);
+        if (err.errors.message) {
+          apiError = err.errors.message.join('\n');
+        }
+        if (i405 !== -1) {
+          apiError = err.errors.message.join('\n');
+        }
+      }
+      setApiErrorMsg(apiError || '');
+      setApiError(true);
+    }
+    if (err.code && err.code === 500) {
+      setApiErrorMsg(
+        'Oops! We are having problem connecting to BPI. Please try again later.',
+      );
+      setApiError(true);
+    }
+    if (err.response && !err.code) {
+      apiError = err.response.statusText;
+      setApiErrorMsg(apiError || '');
+      setApiError(true);
+    }
+    if (!err.response && !err.code) {
+      apiError = err.message;
+      setApiErrorMsg(apiError || '');
+      setApiError(true);
+    }
+  };
+
+  //Generate BPI URL
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
-
     let error = false;
     // Check amount if it's valid
     if (amount.value === '') {
       error = true;
       setAmount({
         ...amount,
-        error: true,
+        isError: true,
         errormsg: 'Oops! This field cannot be empty.',
       });
     }
-
     // Check amount if it's less than
     if (parseFloat(amount.value) <= 0) {
       error = true;
       setAmount({
         ...amount,
-        error: true,
+        isError: true,
         errormsg: 'You entered invalid amount.',
       });
     }
-
     if (!error) {
       const data = {
         amount: parseFloat(amount.value),
       };
-      // dispatch payload to saga
       dispatch(actions.getFetchLoading(data));
-      setIsCashIn(false);
     }
   };
 
+  //Fund TopUp
   const onSubmitCashIn = () => {
-    setIsSelectAccounts(false);
-    setIsVerification(true);
+    let error = false;
+    if (accountNumberToken.value === '') {
+      error = true;
+      setAccountNumberToken({
+        ...accountNumberToken,
+        isError: true,
+        errormsg: 'Oops! Please select an account.',
+      });
+    }
+    if (!error) {
+      const data = {
+        amount: parseFloat(amount.value),
+        accountNumberToken: accountNumberToken.value,
+        token: accessToken,
+      };
+      dispatch(actions.getFetchFundTopUpLoading(data));
+      setIsSelectAccounts(false);
+      setIsVerification(true);
+    }
   };
 
-  const onSubmitVerification = () => {
-    setIsSuccess(true);
+  //Process TopUp
+  const onSubmitVerification = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    if (e && e.preventDefault) e.preventDefault();
+
+    let error = false;
+    if (otp.value === '') {
+      error = true;
+      setOtp({
+        ...otp,
+        isError: true,
+        errormsg: 'Oops! This field cannot be empty.',
+      });
+    }
+    if (!error && data) {
+      const { transactionId, refId } = data;
+      const payload = {
+        token: accessToken,
+        otp: otp.value,
+        transactionId: transactionId,
+        amount: parseFloat(amount.value),
+        refId: refId,
+      };
+      dispatch(actions.getFetchProcessTopUpLoading(payload));
+    }
+  };
+
+  //Select accounts
+  const onRadioChange = (e: any) => {
+    setAccountNumberToken({
+      ...accountNumberToken,
+      value: e.target.value,
+    });
+  };
+
+  //close Error modal
+  const handlerCloseModal = () => {
+    setApiError(false);
+    setApiErrorMsg('');
+    dispatch(actions.getFetchReset());
   };
 
   let balanceInfo = '000.00';
@@ -148,101 +275,6 @@ export function AddMoneyViaBPI() {
 
       <ProtectedContent>
         {loading && <Loading position="fixed" />}
-        {isSelectAccounts && (
-          <Card title="Login to BPI Online" size="medium">
-            <Fragment>
-              <div className="text-center">
-                <p>Cash in amount (₱)</p>
-                <H3 className="total-amount">{numberCommas(amount.value)}</H3>
-              </div>
-              <br />
-              <div style={{ textAlign: 'left' }}>
-                <H5>Select Bank Account</H5>
-                <p>
-                  Select your bank account with sufficient balance to link your
-                  account and complete the cash in.
-                </p>
-              </div>
-              <RadioComponent name="solution" value="qr">
-                {bpiLogo()}
-                <div className="account-wrapper">
-                  <span>XXXXXX4444</span>
-                  <span>Savings Account</span>
-                </div>
-              </RadioComponent>
-
-              <br />
-              <RadioComponent name="solution" value="br">
-                {bpiLogo()}
-                <div className="account-wrapper">
-                  <span>XXXXXX4333</span>
-                  <span>Current Account</span>
-                </div>
-              </RadioComponent>
-
-              <br />
-              <Flex justifyContent="flex-end">
-                <Button
-                  type="submit"
-                  color="default"
-                  size="large"
-                  variant="contained"
-                  onClick={onSubmitCashIn}
-                >
-                  Cash In
-                </Button>
-              </Flex>
-            </Fragment>
-          </Card>
-        )}
-
-        {/* //Verify */}
-        {isVerification && (
-          <Card title="Login to BPI Online" size="medium">
-            <Fragment>
-              <div className="text-center">
-                <H5>Enter Verification Code</H5>
-                <p>
-                  Authentication Code is 6 digits which is sent to your mobile
-                  number.
-                  <br />
-                  <br />
-                  {maskCharactersInside('+639279565916')}
-                </p>
-              </div>
-              <div className="testss">
-                <Input
-                  required
-                  type="text"
-                  value={amount.value}
-                  onChange={e => console.log('test')}
-                  placeholder="Email or Mobile No."
-                  className={amount.error ? 'error' : undefined}
-                />
-                <Button
-                  type="submit"
-                  color="default"
-                  size="large"
-                  variant="contained"
-                  onClick={onSubmitCashIn}
-                >
-                  Cash In
-                </Button>
-              </div>
-              <Flex justifyContent="flex-end">
-                <Button
-                  type="submit"
-                  color="default"
-                  size="large"
-                  variant="contained"
-                  onClick={onSubmitVerification}
-                >
-                  Verify
-                </Button>
-              </Flex>
-            </Fragment>
-          </Card>
-        )}
 
         {isCashIn && (
           <Card title="Online Bank" size="medium">
@@ -260,23 +292,21 @@ export function AddMoneyViaBPI() {
                   onChange={e =>
                     setAmount({
                       value: e.currentTarget.value,
-                      error: false,
+                      isError: false,
                       errormsg: '',
                     })
                   }
-                  error={amount.error ? true : undefined}
+                  error={amount.isError ? true : undefined}
                 />
                 <span>PHP</span>
               </InputTextWrapper>
-
-              {amount.error ? (
+              {amount.isError ? (
                 <ErrorMsg formError>{amount.errormsg}</ErrorMsg>
               ) : (
                 <span style={{ fontSize: '12px', fontWeight: 'lighter' }}>
                   Available Balance PHP {balanceInfo}
                 </span>
               )}
-
               <br />
               <Flex justifyContent="flex-end">
                 <Button
@@ -290,6 +320,107 @@ export function AddMoneyViaBPI() {
                 </Button>
               </Flex>
             </Field>
+          </Card>
+        )}
+
+        {isSelectAccounts && (
+          <Card title="Login to BPI Online" size="medium">
+            <Fragment>
+              <div className="text-center">
+                <p>Cash in amount (₱)</p>
+                <H3 className="total-amount">{numberCommas(amount.value)}</H3>
+              </div>
+              <br />
+              <div className="text-left">
+                <H5>Select Bank Account</H5>
+                <p>
+                  Select your bank account with sufficient balance to link your
+                  account and complete the cash in.
+                </p>
+              </div>
+              <div className="list-account-wrapper">
+                {accounts?.body?.transactionalAccounts?.map((item: any) => (
+                  <Fragment key={`${item.displayOrder}${item.accountNumber}`}>
+                    <RadioComponent
+                      name={item.accountPreferredName}
+                      value={item.accountNumberToken}
+                      onChange={e => onRadioChange(e)}
+                    >
+                      {bpiLogo()}
+                      <div className="account-details">
+                        <span>{item.accountNumber}</span>
+                        <span>{item.accountType}</span>
+                      </div>
+                    </RadioComponent>
+                    <br />
+                  </Fragment>
+                ))}
+              </div>
+              {accounts?.status === 'error' && <p>{accounts?.description}</p>}
+              {accountNumberToken.isError && (
+                <ErrorMsg formError>{accountNumberToken.errormsg}</ErrorMsg>
+              )}
+              <Flex justifyContent="flex-end">
+                <Button
+                  type="submit"
+                  color="default"
+                  size="large"
+                  variant="contained"
+                  onClick={onSubmitCashIn}
+                >
+                  Cash In
+                </Button>
+              </Flex>
+            </Fragment>
+          </Card>
+        )}
+
+        {isVerification && (
+          <Card title="Login to BPI Online" size="medium">
+            <Fragment>
+              <div className="text-center">
+                <H5>Enter Verification Code</H5>
+                <p>
+                  Authentication Code is 6 digits which is sent to your mobile
+                  number.
+                  <br />
+                  <br />
+                </p>
+                <p className="number">{data?.response?.body?.mobileNumber}</p>
+              </div>
+              <div className="otp-wrapper">
+                <div style={{ width: '100%' }}>
+                  <Input
+                    required
+                    type="text"
+                    value={otp.value}
+                    maxLength={6}
+                    onChange={e =>
+                      setOtp({
+                        value: e.currentTarget.value,
+                        isError: false,
+                        errormsg: '',
+                      })
+                    }
+                    error={otp.isError ? true : undefined}
+                  />
+                  {otp.isError && <ErrorMsg formError>{otp.errormsg}</ErrorMsg>}
+                </div>
+                <div className="timer">59</div>
+              </div>
+              <br />
+              <Flex justifyContent="flex-end">
+                <Button
+                  type="submit"
+                  color="default"
+                  size="large"
+                  variant="contained"
+                  onClick={onSubmitVerification}
+                >
+                  Verify
+                </Button>
+              </Flex>
+            </Fragment>
           </Card>
         )}
 
@@ -311,17 +442,21 @@ export function AddMoneyViaBPI() {
             </Button>
           </div>
         </Dialog>
-        <Dialog show={false} size="xsmall">
-          <div style={{ margin: '20px', textAlign: 'center' }}>
+
+        <Dialog show={apiError} size="small">
+          <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+            <Logo size="small" margin="0 0 30px" />
             <CircleIndicator size="medium" color="danger">
               <FontAwesomeIcon icon="times" />
             </CircleIndicator>
-            <H5 margin="10px 0 20px">Transaction failed</H5>
+            <H3 margin="15px 0 30px">{apiErrorMsg}</H3>
+
             <Button
               fullWidth
-              // onClick={onClick}
-              variant="outlined"
-              size="medium"
+              onClick={handlerCloseModal}
+              variant="contained"
+              color="primary"
+              size="large"
             >
               Ok
             </Button>

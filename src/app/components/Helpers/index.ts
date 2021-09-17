@@ -227,8 +227,3 @@ export function maskCharacters(text: any = '') {
   // /\w(?=(?:\W*\w){4})/g
   return text.replace(/\w(?=\w{4,}$)/g, '*');
 }
-
-// Mask mobile number characters inside
-export function maskCharactersInside(text: any = '') {
-  return text.replace(/\w(?=\w{3,6}$)/g, '*');
-}

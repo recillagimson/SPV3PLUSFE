@@ -7,7 +7,13 @@ export interface AddMoneyBpiState {
   loading: boolean;
   error?: object;
   amount: any | null;
-  addMoneyBpi: any;
+  bpiUrl: any;
+  bpiUrlToken: any;
+  accounts: any;
+  accessToken: any;
+  request: any;
+  data: any;
+  processData: any;
 }
 
 export type ContainerState = AddMoneyBpiState;

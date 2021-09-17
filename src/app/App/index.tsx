@@ -88,6 +88,7 @@ import PrivateRoute from './PrivateRoute';
 
 /** selectors, slice */
 import { containerActions as dashboardAction } from 'app/pages/DashboardPage/slice';
+import { containerActions as addMoneyBpiAction } from 'app/pages/AddMoney/AddMoneyViaBPIPage/slice';
 import { useAppSaga } from './slice';
 import {
   selectSessionExpired,
@@ -96,6 +97,7 @@ import {
   setIsUnathenticated,
   selectIsServerError,
 } from './slice/selectors';
+import { getRequestPassphrase } from './slice/saga';
 // import { captureException } from 'utils/sentry';
 // import { usePrevious } from 'app/components/Helpers/Hooks';
 
@@ -170,6 +172,7 @@ export function App() {
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
     const forceUpdate = getCookie('spv_uat_f');
+    const query = new URLSearchParams(location.search).get('code'); // add money
 
     let decrypt: any = false;
     let username: string = '';
@@ -196,7 +199,7 @@ export function App() {
       }, 2000);
 
       history.push('/dashboard');
-    } else if (forceUpdate && path === '/postback') {
+    } else if (query && path === '/postback') {
       dispatch(actions.getClientTokenLoading());
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
@@ -208,6 +211,7 @@ export function App() {
         // dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
         dispatch(dashboardAction.getFetchLoading());
+        dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(query));
       }, 2000);
       history.push('/add-money/bpi/select-account');
     } else if (forceUpdate) {

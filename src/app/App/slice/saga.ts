@@ -60,7 +60,7 @@ export function* getRequestToken() {
     }
 
     return apirequest;
-  } catch (err) {
+  } catch (err: any) {
     yield put(actions.getClientTokenError(err));
     return err;
   }
@@ -177,7 +177,7 @@ export function* getLoggedInUserProfile() {
       }
       return decryptData || true;
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err && err.response && err.response.status === 401) {
       yield put(actions.getIsSessionExpired(true));
     }

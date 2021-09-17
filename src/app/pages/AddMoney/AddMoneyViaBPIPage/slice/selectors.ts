@@ -11,9 +11,39 @@ export const selectAmount = createSelector(
   subState => subState.amount,
 );
 
-export const selectAddMoneyBpi = createSelector(
+export const selectBpiUrl = createSelector(
   [selectDomain],
-  subState => subState.addMoneyBpi,
+  subState => subState.bpiUrl,
+);
+
+export const selectBpiUrlToken = createSelector(
+  [selectDomain],
+  subState => subState.bpiUrlToken,
+);
+
+export const selectAccounts = createSelector(
+  [selectDomain],
+  subState => subState.accounts,
+);
+
+export const selectAccessToken = createSelector(
+  [selectDomain],
+  subState => subState.accessToken,
+);
+
+export const selectRequest = createSelector(
+  [selectDomain],
+  subState => subState.request,
+);
+
+export const selectData = createSelector(
+  [selectDomain],
+  subState => subState.data,
+);
+
+export const selectProcessData = createSelector(
+  [selectDomain],
+  subState => subState.processData,
 );
 
 export const selectLoading = createSelector(

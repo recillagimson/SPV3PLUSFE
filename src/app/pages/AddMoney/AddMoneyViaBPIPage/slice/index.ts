@@ -9,7 +9,13 @@ export const initialState: ContainerState = {
   loading: false,
   error: {},
   amount: null,
-  addMoneyBpi: null,
+  bpiUrl: null,
+  bpiUrlToken: null,
+  accounts: null,
+  accessToken: null,
+  request: null,
+  data: null,
+  processData: null,
 };
 
 const slice = createSlice({
@@ -25,7 +31,41 @@ const slice = createSlice({
       state.loading = false;
       state.error = {};
       state.amount = null;
-      state.addMoneyBpi = action.payload;
+      state.bpiUrl = action.payload;
+    },
+    getAccessToken(state, action: PayloadAction<string | null>) {
+      state.error = {};
+      state.accessToken = action.payload;
+    },
+    getFetchAccessTokenLoading(state, action: PayloadAction<string | null>) {
+      state.loading = true;
+      state.error = {};
+      state.bpiUrlToken = action.payload;
+    },
+    getFetchAccountsSuccess(state, action: PayloadAction<object | null>) {
+      state.loading = false;
+      state.error = {};
+      state.accounts = action.payload;
+    },
+    getFetchFundTopUpLoading(state, action: PayloadAction<object | null>) {
+      state.loading = true;
+      state.error = {};
+      state.request = action.payload;
+    },
+    getFetchFundTopUpSuccess(state, action: PayloadAction<object | null>) {
+      state.loading = false;
+      state.error = {};
+      state.data = action.payload;
+    },
+    getFetchProcessTopUpLoading(state, action: PayloadAction<object | null>) {
+      state.loading = true;
+      state.error = {};
+      state.request = action.payload;
+    },
+    getFetchProcessTopUpSuccess(state, action: PayloadAction<object | null>) {
+      state.loading = false;
+      state.error = {};
+      state.processData = action.payload;
     },
     getFetchError(state, action: PayloadAction<ErrorState>) {
       state.error = action.payload;
@@ -36,7 +76,7 @@ const slice = createSlice({
       state.loading = false;
       state.amount = null;
       state.error = {};
-      state.addMoneyBpi = null;
+      state.bpiUrl = null;
     },
   },
 });
