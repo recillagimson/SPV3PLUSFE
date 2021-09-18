@@ -28,17 +28,16 @@ const slice = createSlice({
       state.amount = action.payload;
     },
     getFetchSuccess(state, action: PayloadAction<object | null>) {
-      state.loading = false;
       state.error = {};
       state.amount = null;
       state.bpiUrl = action.payload;
     },
     getAccessToken(state, action: PayloadAction<string | null>) {
+      state.loading = true;
       state.error = {};
       state.accessToken = action.payload;
     },
     getFetchAccessTokenLoading(state, action: PayloadAction<string | null>) {
-      state.loading = true;
       state.error = {};
       state.bpiUrlToken = action.payload;
     },

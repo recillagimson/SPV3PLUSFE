@@ -54,6 +54,7 @@ export function AddMoneyViaBPI() {
   const [isSelectAccounts, setIsSelectAccounts] = useState(false);
   const [isVerification, setIsVerification] = useState(false);
 
+  const [counter, setCounter] = useState(60);
   const [apiError, setApiError] = useState(false);
   const [apiErrorMsg, setApiErrorMsg] = useState('');
   const [amount, setAmount] = useState({
@@ -99,14 +100,15 @@ export function AddMoneyViaBPI() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  //Redirect to add money landing state and page is not otp screen
   useEffect(() => {
-    //Redirect to add money landing state and page is not otp screen
     if (!isVerification && error && Object.keys(error).length > 0) {
       history.push('/add-money/bpi');
       setIsSelectAccounts(false);
       setIsCashIn(true);
       dispatch(actions.getFetchReset());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVerification, error]);
 
   //Show success modal on /process submit
@@ -117,6 +119,16 @@ export function AddMoneyViaBPI() {
       }
     }
   }, [processData, error]);
+
+  //OTP Timer WIP
+  useEffect(() => {
+    const timer: any =
+      // data === null &&
+      counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, [counter, data]);
 
   const onApiError = (err: any) => {
     let apiError = '';
@@ -272,15 +284,12 @@ export function AddMoneyViaBPI() {
       <Helmet>
         <title>Add Money Via BPI</title>
       </Helmet>
-
       <ProtectedContent>
         {loading && <Loading position="fixed" />}
 
         {isCashIn && (
           <Card title="Online Bank" size="medium">
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              {bpiLogo()}
-            </div>
+            <div className="logo">{bpiLogo()}</div>
             <Field>
               <Label>Amount</Label>
               <InputTextWrapper>
@@ -328,7 +337,9 @@ export function AddMoneyViaBPI() {
             <Fragment>
               <div className="text-center">
                 <p>Cash in amount (₱)</p>
-                <H3 className="total-amount">{numberCommas(amount.value)}</H3>
+                <H3 className="total-amount">
+                  {amount.value ? numberCommas(amount.value) : '0.00'}
+                </H3>
               </div>
               <br />
               <div className="text-left">
@@ -389,10 +400,11 @@ export function AddMoneyViaBPI() {
                 <p className="number">{data?.response?.body?.mobileNumber}</p>
               </div>
               <div className="otp-wrapper">
-                <div style={{ width: '100%' }}>
+                <div>
                   <Input
                     required
                     type="text"
+                    placeholder="Enter SMS Code"
                     value={otp.value}
                     maxLength={6}
                     onChange={e =>
@@ -406,13 +418,14 @@ export function AddMoneyViaBPI() {
                   />
                   {otp.isError && <ErrorMsg formError>{otp.errormsg}</ErrorMsg>}
                 </div>
-                <div className="timer">59</div>
+                <div className="timer">{counter} s</div>
               </div>
+              <br />
               <br />
               <Flex justifyContent="flex-end">
                 <Button
                   type="submit"
-                  color="default"
+                  color="secondary"
                   size="large"
                   variant="contained"
                   onClick={onSubmitVerification}
@@ -425,7 +438,7 @@ export function AddMoneyViaBPI() {
         )}
 
         <Dialog show={isSuccess} size="xsmall">
-          <div style={{ margin: '20px', textAlign: 'center' }}>
+          <div className="text-center" style={{ margin: '20px' }}>
             <Logo size="small" margin="0 0 30px" />
             <CircleIndicator size="medium" color="primary">
               <FontAwesomeIcon icon="check" />
@@ -445,12 +458,12 @@ export function AddMoneyViaBPI() {
 
         <Dialog show={apiError} size="small">
           <div className="text-center" style={{ padding: '20px 20px 30px' }}>
-            <Logo size="small" margin="0 0 30px" />
             <CircleIndicator size="medium" color="danger">
               <FontAwesomeIcon icon="times" />
             </CircleIndicator>
-            <H3 margin="15px 0 30px">{apiErrorMsg}</H3>
-
+            <H3 margin="15px 0 30px">
+              {apiErrorMsg ? apiErrorMsg : 'Transaction Failed'}
+            </H3>
             <Button
               fullWidth
               onClick={handlerCloseModal}

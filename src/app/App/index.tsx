@@ -97,7 +97,6 @@ import {
   setIsUnathenticated,
   selectIsServerError,
 } from './slice/selectors';
-import { getRequestPassphrase } from './slice/saga';
 // import { captureException } from 'utils/sentry';
 // import { usePrevious } from 'app/components/Helpers/Hooks';
 
@@ -176,8 +175,6 @@ export function App() {
 
     let decrypt: any = false;
     let username: string = '';
-
-    // forceUpdate = 'test';
 
     // decrypted the encrypted cookies
     if (phrase && sessionCookie) {
