@@ -32,14 +32,13 @@ const slice = createSlice({
       state.amount = null;
       state.bpiUrl = action.payload;
     },
-    getAccessToken(state, action: PayloadAction<string | null>) {
+    getFetchAccessTokenLoading(state, action: PayloadAction<string | null>) {
       state.loading = true;
       state.error = {};
-      state.accessToken = action.payload;
-    },
-    getFetchAccessTokenLoading(state, action: PayloadAction<string | null>) {
-      state.error = {};
       state.bpiUrlToken = action.payload;
+    },
+    getAccessToken(state, action: PayloadAction<string | null>) {
+      state.accessToken = action.payload;
     },
     getFetchAccountsSuccess(state, action: PayloadAction<object | null>) {
       state.loading = false;

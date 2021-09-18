@@ -79,7 +79,6 @@ export function AddMoneyViaBPI() {
     if (error && Object.keys(error).length > 0) {
       onApiError(error);
     }
-
     if (bpiUrl) {
       sessionStorage.setItem('amount', amount.value);
       window.location.href = bpiUrl.login_url;

@@ -205,7 +205,6 @@ export function App() {
 
       // delay the retrieval of references and user profile
       setTimeout(() => {
-        // dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
         dispatch(dashboardAction.getFetchLoading());
         dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(query));
