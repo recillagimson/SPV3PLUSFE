@@ -51,7 +51,7 @@ export function LoansPage() {
     if (isBronze) {
       setShowUpgrade(true);
     }
-  }, [isBronze, history, setShowUpgrade]);
+  }, [isBronze, setShowUpgrade]);
 
   const { loading, response, goFetch } = useFetch();
 
