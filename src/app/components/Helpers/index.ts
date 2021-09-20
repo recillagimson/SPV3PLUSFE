@@ -172,13 +172,82 @@ export function toTitleCase(text: string = '') {
 }
 
 /**
+ * Sort Array
+ * Use only this helper if you are sorting through an array of objects
+ * @param {array}   arr     the array to sort (length should be greater than 1)
+ * @param {string}  key     Object key name to compare the values
+ * @param {string}  sort    Sort method 'ASC' | 'DESC' default: 'ASC'
+ *
+ * @returns {array}         returns the sorted array
+ */
+export function sortBy(
+  arr: any[] = [],
+  key: string = '',
+  sort: 'ASC' | 'DESC' = 'ASC',
+  key2: string = '',
+) {
+  // return immediately if function doesn't have the proper array and keys
+  if ((arr && arr.length === 0) || key === '') {
+    console.warn(
+      'Sort By function should have an array with length greater than 1 and a key specified',
+    );
+    return null;
+  }
+
+  arr.sort((a, b) => {
+    if (sort === 'ASC') {
+      if (key2 && key2 !== '') {
+        return a[key][key2] < b[key][key2] ? -1 : 1;
+      }
+
+      return a[key] < b[key] ? -1 : 1;
+    }
+
+    if (sort === 'DESC') {
+      if (key2 && key2 !== '') {
+        return b[key][key2] < a[key][key2] ? -1 : 1;
+      }
+
+      return b[key] < a[key] ? -1 : 1;
+    }
+
+    return 0; //default return value (no sorting)
+  });
+
+  return arr;
+}
+
+/**
  * Mask characters
  * @param {string}  text          the string to be masked
- * @param {number}  lastDigits    number of last digits that will not be masked
- *                                default 4
- * @returns masked string
+ *
+ * @returns masked string except last 4 digits
  */
 export function maskCharacters(text: any = '') {
   // /\w(?=(?:\W*\w){4})/g
   return text.replace(/\w(?=\w{4,}$)/g, '*');
+}
+
+/**
+ * Mask Mobile Number
+ * @param {string}  value     Mobile number
+ */
+export function maskMobileNumber(value: string) {
+  const head = value.slice(0, 2);
+  const body = value.slice(2, -4);
+  const tail = value.slice(-4);
+
+  return head + body.replace(/./g, '*') + tail;
+}
+
+/**
+ * Mask Email
+ * @param {string}  value     Email address
+ */
+export function maskEmailAddress(value: string) {
+  const split = value.split('@');
+  const head = split[0].slice(0, 3);
+  const body = split[0].slice(3);
+
+  return head + body.replace(/./g, '*') + '@' + split[1];
 }

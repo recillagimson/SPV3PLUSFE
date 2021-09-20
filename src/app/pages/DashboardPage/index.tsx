@@ -278,7 +278,7 @@ export function DashboardPage() {
             if (flags && !flags.buy_load_enabled) {
               setIsMaintenance(true);
             } else {
-              history.push('/buy/load');
+              history.push('/buy');
             }
           }}
         >
@@ -311,7 +311,7 @@ export function DashboardPage() {
           <QRCode />
           QR Code
         </DashboardButton>
-        <DashboardButton onClick={() => setIsComingSoon(true)}>
+        <DashboardButton onClick={() => setIsMaintenance(true)}>
           <QuickGuide />
           SquidPay Quick Guide
         </DashboardButton>

@@ -48,7 +48,7 @@ function* getDashboard() {
         yield put(appActions.getSaveTier(decryptData.tier));
       }
     }
-  } catch (err) {
+  } catch (err: any) {
     // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
@@ -112,7 +112,7 @@ function* getTransactionHistory() {
         yield put(actions.getTransactionSuccess(recentTransaction));
       }
     }
-  } catch (err) {
+  } catch (err: any) {
     // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();

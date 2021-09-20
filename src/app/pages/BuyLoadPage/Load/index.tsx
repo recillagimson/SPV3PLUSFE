@@ -26,7 +26,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Wrapper from './Wrapper';
 
-import { regExMobile } from 'app/components/Helpers';
+import {
+  maskCharacters,
+  numberCommas,
+  regExMobile,
+} from 'app/components/Helpers';
 
 import { useContainerSaga } from './slice';
 import {
@@ -47,7 +51,7 @@ export function BuyLoadPage() {
 
   const loading = useSelector(selectLoading);
   // const error: any = useSelector(selectError);
-  let success: any = useSelector(selectData);
+  const success: any = useSelector(selectData);
 
   const validateLoading = useSelector(selectValidateLoading);
   const validateSuccess: any = useSelector(selectValidateData);
@@ -81,7 +85,8 @@ export function BuyLoadPage() {
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [isActive, setIsActive] = React.useState({ value: '' });
 
-  const [category, setCategory] = React.useState('Regular');
+  const [category, setCategory] = React.useState('');
+  const [categories, setCategories] = React.useState<any[]>([]);
 
   const [validateApiMsg, setValidateApiMsg] = React.useState({
     msg: '',
@@ -93,93 +98,6 @@ export function BuyLoadPage() {
     error: false,
   });
 
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (e && e.preventDefault) e.preventDefault();
-
-    let error = false;
-
-    // first check if field is not empty
-    if (mobile.value === '') {
-      error = true;
-      setMobile({
-        ...mobile,
-        error: true,
-        msg: 'Please enter your mobile number',
-      });
-    }
-
-    if (mobile.value !== '' && !regExMobile.test(mobile.value)) {
-      error = true;
-      setMobile({
-        ...mobile,
-        error: true,
-        msg:
-          'Please enter valid mobile number (09 + 9 digit number) ie: 09xxxxxxxxx',
-      });
-    }
-
-    if (!error) {
-      const data = {
-        mobile_number: mobile.value,
-      };
-
-      // dispatch payload to saga
-      dispatch(actions.getFetchLoading(data));
-    }
-  };
-
-  // 2nd API
-  const OnClickValidate = () => {
-    let isEmpty = false;
-    if (selectedProduct.productCode === '') {
-      isEmpty = true;
-    }
-
-    if (!isEmpty) {
-      const data = {
-        mobile_number: mobile.value,
-        product_code: selectedProduct.productCode,
-        product_name: selectedProduct.productName,
-        amount: selectedProduct.amount,
-      };
-
-      // dispatch payload to saga
-      dispatch(actions.getValidateLoading(data));
-    }
-  };
-
-  // 3rd API
-  const onClickPay = () => {
-    const data = {
-      mobile_number: mobile.value,
-      product_code: selectedProduct.productCode,
-      product_name: selectedProduct.productName,
-      amount: selectedProduct.amount,
-    };
-
-    // dispatch payload to saga
-    dispatch(actions.getPayLoading(data));
-  };
-
-  const onCloseValidateError = () => {
-    setValidateApiMsg({ msg: '', error: false });
-  };
-
-  const onClosePayError = () => {
-    setPayApiMsg({ msg: '', error: false });
-  };
-
-  const onCloseSuccessDialog = () => {
-    setIsReview(false);
-    setShowProducts(false);
-    setIsSuccess(false);
-    setShowForm(true);
-    dispatch(actions.getFetchReset());
-    dispatch(actions.getValidateReset());
-    dispatch(actions.getPayReset());
-    setMobile({ value: '', error: false, msg: '' });
-  };
-
   React.useEffect(() => {
     return () => {
       dispatch(actions.getFetchReset());
@@ -189,8 +107,27 @@ export function BuyLoadPage() {
       setIsReview(false);
       setShowProducts(false);
       setIsSuccess(false);
+      setCategory('');
+      setCategories([]);
+      setSelectedProduct({
+        productCode: '',
+        productName: '',
+        description: '',
+        amount: '',
+      });
     };
   }, [actions, dispatch]);
+
+  React.useEffect(() => {
+    if (success && success.length > 0) {
+      const cats: string[] = Array.from(new Set(success.map(x => x.category)));
+
+      setCategories(cats);
+      setCategory(cats[0]);
+      setShowForm(false);
+      setShowProducts(true);
+    }
+  }, [success]);
 
   React.useEffect(() => {
     if (validateError && Object.keys(validateError).length > 0) {
@@ -302,10 +239,6 @@ export function BuyLoadPage() {
         }
       }
     }
-    if (success) {
-      setShowForm(false);
-      setShowProducts(true);
-    }
     if (validateSuccess) {
       setShowProducts(false);
       setIsReview(true);
@@ -315,8 +248,99 @@ export function BuyLoadPage() {
     }
   }, [success, validateSuccess, validateError, paySuccess, payError]);
 
-  let replaceFirst7 = (mobileNumber: string) => {
-    return mobileNumber.replace(/^.{1,7}/, m => '*'.repeat(m.length));
+  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (e && e.preventDefault) e.preventDefault();
+
+    let error = false;
+
+    // first check if field is not empty
+    if (mobile.value === '') {
+      error = true;
+      setMobile({
+        ...mobile,
+        error: true,
+        msg: 'Please enter your mobile number',
+      });
+    }
+
+    if (mobile.value !== '' && !regExMobile.test(mobile.value)) {
+      error = true;
+      setMobile({
+        ...mobile,
+        error: true,
+        msg:
+          'Please enter valid mobile number (09 + 9 digit number) ie: 09xxxxxxxxx',
+      });
+    }
+
+    if (!error) {
+      const data = {
+        mobile_number: mobile.value,
+      };
+
+      // dispatch payload to saga
+      dispatch(actions.getFetchLoading(data));
+    }
+  };
+
+  // 2nd API
+  const OnClickValidate = () => {
+    let isEmpty = false;
+    if (selectedProduct.productCode === '') {
+      isEmpty = true;
+    }
+
+    if (!isEmpty) {
+      const data = {
+        mobile_number: mobile.value,
+        product_code: selectedProduct.productCode,
+        product_name: selectedProduct.productName,
+        amount: selectedProduct.amount,
+      };
+
+      // dispatch payload to saga
+      dispatch(actions.getValidateLoading(data));
+    }
+  };
+
+  // 3rd API
+  const onClickPay = () => {
+    const data = {
+      mobile_number: mobile.value,
+      product_code: selectedProduct.productCode,
+      product_name: selectedProduct.productName,
+      amount: selectedProduct.amount,
+    };
+
+    // dispatch payload to saga
+    dispatch(actions.getPayLoading(data));
+  };
+
+  const onCloseValidateError = () => {
+    setValidateApiMsg({ msg: '', error: false });
+  };
+
+  const onClosePayError = () => {
+    setPayApiMsg({ msg: '', error: false });
+  };
+
+  const onCloseSuccessDialog = () => {
+    setIsReview(false);
+    setShowProducts(false);
+    setIsSuccess(false);
+    setShowForm(true);
+    dispatch(actions.getFetchReset());
+    dispatch(actions.getValidateReset());
+    dispatch(actions.getPayReset());
+    setMobile({ value: '', error: false, msg: '' });
+    setSelectedProduct({
+      productCode: '',
+      productName: '',
+      description: '',
+      amount: '',
+    });
+    setCategory('');
+    setCategories([]);
   };
 
   return (
@@ -325,15 +349,15 @@ export function BuyLoadPage() {
         <Helmet>
           <title>Buy Load</title>
         </Helmet>
-        {loading && <Loading position="absolute" />}
-        {validateLoading && <Loading position="absolute" />}
-        {payLoading && <Loading position="absolute" />}
 
         <Wrapper id="buyLoad">
           <Card
             title={!isReview ? 'Buy Load' : 'Review Load Purchase'}
             size="medium"
           >
+            {loading && <Loading position="absolute" />}
+            {validateLoading && <Loading position="absolute" />}
+            {payLoading && <Loading position="absolute" />}
             {showForm && (
               <>
                 <Field>
@@ -380,7 +404,24 @@ export function BuyLoadPage() {
                 </Flex>
                 <H5 className="text-center">{mobile.value}</H5>
                 <br />
-                {success[0].provider === 'SMART' && (
+                {categories && categories.length > 0 && (
+                  <div className="pills">
+                    <Scrollbars style={{ height: 50 }}>
+                      {categories.map((p, i: number) => (
+                        <Button
+                          type="submit"
+                          color="secondary"
+                          size="medium"
+                          variant={category === p ? 'contained' : 'outlined'}
+                          onClick={() => setCategory(p)}
+                        >
+                          {p}
+                        </Button>
+                      ))}
+                    </Scrollbars>
+                  </div>
+                )}
+                {/* {success[0].provider === 'SMART' && (
                   <div className="pills">
                     <Scrollbars style={{ height: 50 }}>
                       <Button
@@ -414,7 +455,7 @@ export function BuyLoadPage() {
                         }
                         onClick={() => setCategory('Call & Text')}
                       >
-                        Call & Text
+                        Call &amp; Text
                       </Button>
                       <Button
                         type="submit"
@@ -503,11 +544,11 @@ export function BuyLoadPage() {
                         }
                         onClick={() => setCategory('Call & Text')}
                       >
-                        Call & Text
+                        Call &amp; Text
                       </Button>
                     </Scrollbars>
                   </div>
-                )}
+                )} */}
 
                 <section>
                   <Scrollbars
@@ -591,25 +632,22 @@ export function BuyLoadPage() {
                       </Flex>
                       <Flex justifyContent="space-between">
                         <p>Load</p>
-                        <p>{selectedProduct.productCode}</p>
+                        <p>{selectedProduct.description}</p>
                       </Flex>
                       <Flex justifyContent="space-between">
                         <p>Amount</p>
-                        <p>PHP {selectedProduct.amount}.00</p>
+                        <p>PHP {numberCommas(selectedProduct.amount)}</p>
                       </Flex>
                     </section>
                     <br />
 
-                    <p className="text-center">Total Amount</p>
-                    <H5 className="text-center">
-                      PHP {selectedProduct.amount}.00
+                    <p className="text-center" style={{ marginBottom: 8 }}>
+                      Total Amount
+                    </p>
+                    <H5 className="text-center" margin="0 0 80px">
+                      PHP {numberCommas(selectedProduct.amount)}
                     </H5>
-                    <br />
-                    <p style={{ marginBottom: '5px' }}>Description</p>
-                    <small>{selectedProduct.description}</small>
-                    <br />
-                    <br />
-                    <br />
+
                     <Button
                       type="submit"
                       color="primary"
@@ -666,17 +704,17 @@ export function BuyLoadPage() {
               </div>
             </Dialog>
 
-            <Dialog show={isSuccess && Boolean(paySuccess)} size="xsmall">
+            <Dialog show={isSuccess && Boolean(paySuccess)} size="small">
               <Receipt
                 title="Load purchase successful!"
-                total={paySuccess.amount + '.00'}
+                total={paySuccess.amount}
                 onClick={onCloseSuccessDialog}
                 date={humanReadable}
               >
                 <Flex justifyContent="space-between">
                   <span>Mobile Number</span>
                   <span>
-                    {replaceFirst7(paySuccess.recipient_mobile_number || '')}
+                    {maskCharacters(paySuccess.recipient_mobile_number || '')}
                   </span>
                 </Flex>
                 <Flex justifyContent="space-between">
@@ -685,7 +723,7 @@ export function BuyLoadPage() {
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Amount</span>
-                  <span>PHP {paySuccess.amount}.00</span>
+                  <span>PHP {numberCommas(paySuccess.amount)}</span>
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Transaction Number</span>

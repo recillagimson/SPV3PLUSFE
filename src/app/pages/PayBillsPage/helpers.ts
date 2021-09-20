@@ -229,6 +229,14 @@ export const getFormData = (formData: any, code: string) => {
         },
       };
       break;
+    case 'CNVRG':
+      payload = {
+        ...formData,
+        otherInfo: {
+          AccountName: formData['otherInfo.AccountName'],
+        },
+      };
+      break;
     default:
       payload = formData;
   }
@@ -246,7 +254,9 @@ export const disconnectionDialogLogo = val => {
     case 4:
     case 6:
     case 13:
+    case 17:
     case 26:
+    case 27:
       return 'times';
     default:
       return 'check';
@@ -263,7 +273,9 @@ export const isPrimaryColorForDisconnection = val => {
     case 4:
     case 6:
     case 13:
+    case 17:
     case 26:
+    case 27:
       return 'danger';
     default:
       return 'primary';
@@ -280,7 +292,9 @@ export const disconnectionTitleMessage = val => {
     case 4:
     case 6:
     case 13:
+    case 17:
     case 26:
+    case 27:
       return 'Oops!';
     default:
       return 'Successful Payment';

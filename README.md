@@ -129,3 +129,23 @@ v1.1.0
 
 - Foreign Exchange Rate
 - Updated FAQs
+
+v1.1.1
+
+- Upload ID UI modifications, limit to 2 files for upload, added validation on invalid files (VVBT-230, VVBT-338)
+- Total transaction amount on Send to Bank. Fix wrong display of adding amount and service fee (VVBT-421)
+- Verify OTP Fix (VVBT-282)
+- Enhance loading of references on Updating profile (VVBT-400)
+- QR Code limit entry on amount (VVBT-245)
+- Added a date picker for Date Field in Pay bill due date (VVBT-242, VVBT-273)
+- Paybills fix on account number (VVBT-291, VVBT-304)
+
+v1.1.2
+
+- Add 2 Decimal Places in the Amount in the Transaction Confirmation Screen of Send Money (VP2-246)
+- Forex - Search parameter should be searching for the 3 char forex symbol, not its description (VP2-285)
+- Buy EPINS load description in Review and Receipt screen (VP2-290)
+- Additional display of error message on Buy EPINs and fix display of amount in receipt modal (VP2-309 & VP2-328)
+- Remove validation of PDF file in Uploading of ids in account upgrade (VP2-300)
+- Removed Verify OTP screen on account upgrade to silver (VP2-316)
+- Masking of characters in email address and mobile number (VP2-324)

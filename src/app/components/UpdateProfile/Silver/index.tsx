@@ -208,38 +208,59 @@ export default function UserProfileForm({
   }, [birthDate]);
 
   React.useEffect(() => {
-    if (refs && Object.keys(refs).length === 0) {
-      dispatch(appActions.getLoadReferences());
-    }
+    // if (refs && Object.keys(refs).length === 0) {
+    //   dispatch(appActions.getLoadAllReferences());
+    // }
 
     if (refs && Object.keys(refs).length > 0) {
       let loadRef = false;
 
       if (!refs.maritalStatus || Object.keys(refs.maritalStatus).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadMaritalRef());
       }
       if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadNationalityRef());
       }
       if (!refs.countries || Object.keys(refs.countries).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadCountryRef());
       }
       if (!refs.sourceOfFunds || Object.keys(refs.sourceOfFunds).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadSourceOfFundsRef());
       }
       if (!refs.natureOfWork || Object.keys(refs.natureOfWork).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadNatureOfWorkRef());
       }
 
-      if (loadRef) {
-        dispatch(appActions.getLoadReferences());
-      }
+      // if (loadRef) {
+      //   dispatch(appActions.getLoadAllReferences());
+      // }
 
       if (!loadRef) {
         setIsLoading(false);
 
         if (profile && Object.keys(profile).length > 0) {
           writeProfileDetails(profile);
+        }
+        if (
+          !profile &&
+          refs.countries &&
+          refs.nationalities &&
+          Object.keys(refs.countries).length > 0 &&
+          Object.keys(refs.nationalities).length > 0
+        ) {
+          const cI = refs.countries.findIndex(
+            j => j.id === '0eceb736-9131-11eb-b44f-1c1b0d14e211',
+          ); // ph id
+          setCountry({ value: cI.toString(), error: false });
+          const nI = refs.nationalities.findIndex(
+            j => j.id === '700217f7-91b1-11eb-8d33-1c1b0d14e211',
+          ); // ph id
+          setNationality({ value: nI.toString(), error: false });
         }
       }
     }
@@ -653,8 +674,8 @@ export default function UserProfileForm({
       id_photos_ids: isTierUpgrade ? idPhotoID : undefined,
       id_selfie_ids: isTierUpgrade ? selfieID : undefined,
     };
-    console.log('payload', data);
-    // dispatch(actions.getFetchLoading(data));
+
+    dispatch(actions.getFetchLoading(data));
   };
 
   // close error dialog
@@ -682,7 +703,20 @@ export default function UserProfileForm({
 
   let hasRefs = false;
   if (refs && Object.keys(refs).length > 0) {
-    hasRefs = true;
+    if (
+      refs.nationalities &&
+      refs.nationalities.length > 0 &&
+      refs.countries &&
+      refs.countries.length > 0 &&
+      refs.natureOfWork &&
+      refs.natureOfWork.length > 0 &&
+      refs.maritalStatus &&
+      refs.maritalStatus.length > 0 &&
+      refs.sourceOfFunds &&
+      refs.sourceOfFunds.length > 0
+    ) {
+      hasRefs = true;
+    }
   }
 
   return (
@@ -1267,6 +1301,7 @@ export default function UserProfileForm({
       {showConfirm && (
         <Box title="Review User Info" titleBorder withPadding>
           {otpLoading && <Loading position="absolute" />}
+          {loading && <Loading position="absolute" />}
           <List divider>
             <ListItem flex>
               <ListItemText
@@ -1499,7 +1534,8 @@ export default function UserProfileForm({
               variant="contained"
               color="primary"
               size="large"
-              onClick={isAuthenticated ? onGenerateOTP : onSubmit}
+              // onClick={isAuthenticated ? onGenerateOTP : onSubmit}
+              onClick={onSubmit}
             >
               Confirm
             </Button>

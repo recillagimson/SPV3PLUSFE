@@ -21,13 +21,13 @@ import { PayBillsState } from 'app/pages/PayBillsPage/slice/types';
 import { TierUpgradeState } from 'app/pages/TierUpgradePage/slice/types';
 import { SendToBankUBPState } from 'app/pages/SendToBankUBP/slice/types';
 import { UpdateEmailState } from 'app/pages/UpdateEmail/slice/types';
-import { TermsAndConditions } from 'app/pages/TermsAndConditionsConsent/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
 import { VerifyOTPState } from 'app/components/VerifyOTP/slice/types';
 import { ProfileBronzeState } from 'app/components/UpdateProfile/Bronze/slice/types';
 import { ProfileSilverState } from 'app/components/UpdateProfile/Silver/slice/types';
+import { UpdateProfileState } from 'app/components/UpdateProfile/Profile/slice/types';
 
 /* 
   Because the redux-injectors injects your reducers asynchronously somewhere in your code
@@ -44,12 +44,11 @@ export interface RootState {
   generateQR?: GenerateQRState;
   buyEpins?: BuyEpinsState;
   buyLoad?: BuyLoadState;
-  profile?: ProfileState;
-  updateProfile?: ProfileState;
+  profilePage?: ProfileState;
   profileBronze?: ProfileBronzeState;
   profileSilver?: ProfileSilverState;
+  updateProfile?: UpdateProfileState;
   notifications?: NotificationsState;
-  termsAndConditions?: TermsAndConditions;
   addMoneyDragonpay: AddMoneyDragonpayState;
   transactionHistory?: TransactionHistoryState;
   foreignExchange?: ForeignExchangeState;

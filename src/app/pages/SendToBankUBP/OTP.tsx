@@ -29,6 +29,7 @@ import * as S from './SendToBankUBP.style';
 // Assets
 import WrapperCuttedCornerBottom from 'app/components/Assets/WrapperCuttedCornerBottom.svg';
 import WrapperCuttedCornerTop from 'app/components/Assets/WrapperCuttedCornerTop.svg';
+import { maskCharacters } from 'app/components/Helpers';
 
 export default function OTP() {
   const history = useHistory();
@@ -48,7 +49,7 @@ export default function OTP() {
   }, [success]);
 
   const calculateTotalAmount = parseToNumber(
-    parseFloat(formData?.amount) + validateTransaction?.service_fee,
+    parseFloat(formData?.amount) + parseFloat(validateTransaction?.service_fee),
   );
 
   const renderReviewContainer = (type?: string) => {
@@ -62,7 +63,7 @@ export default function OTP() {
         </S.ReviewListItem>
         <S.ReviewListItem>
           <p>Account Number</p>
-          <p>{success?.account_number}</p>
+          <p>{maskCharacters(success?.account_number)}</p>
         </S.ReviewListItem>
         <S.ReviewListItem>
           <p>Account Name</p>
@@ -77,6 +78,14 @@ export default function OTP() {
             <S.ReviewListItem>
               <p>Send Receipt To</p>
               <p>{success?.send_receipt_to}</p>
+            </S.ReviewListItem>
+            <S.ReviewListItem>
+              <p>Particulars</p>
+              <p>{success?.particulars}</p>
+            </S.ReviewListItem>
+            <S.ReviewListItem>
+              <p>Remarks</p>
+              <p>{success?.remarks}</p>
             </S.ReviewListItem>
             <S.ReviewListItem>
               <p>Transaction Number</p>

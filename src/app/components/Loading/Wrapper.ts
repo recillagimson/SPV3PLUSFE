@@ -27,7 +27,7 @@ const Wrapper = styled.div<Props>`
   `}
 
   img {
-    width: ${p => (p.big ? '200px' : '120px')};
+    width: ${p => (p.big ? '150px' : '120px')};
   }
 `;
 

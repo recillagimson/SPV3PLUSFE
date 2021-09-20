@@ -169,29 +169,47 @@ export default function UserProfileForm({
   }, [birthDate]);
 
   React.useEffect(() => {
-    if (refs && Object.keys(refs).length === 0) {
-      dispatch(appActions.getLoadReferences());
-    }
+    // if (refs && Object.keys(refs).length === 0) {
+    //   dispatch(appActions.getLoadAllReferences());
+    // }
 
     if (refs && Object.keys(refs).length > 0) {
       let loadRef = false;
 
       if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadNationalityRef());
       }
       if (!refs.countries || Object.keys(refs.countries).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadCountryRef());
       }
 
-      if (loadRef) {
-        dispatch(appActions.getLoadReferences());
-      }
+      // if (loadRef) {
+      //   dispatch(appActions.getLoadAllReferences());
+      // }
 
       if (!loadRef) {
         setIsLoading(false);
 
         if (profile && Object.keys(profile).length > 0) {
           writeProfileDetails(profile);
+        }
+        if (
+          !profile &&
+          refs.countries &&
+          refs.nationalities &&
+          Object.keys(refs.countries).length > 0 &&
+          Object.keys(refs.nationalities).length > 0
+        ) {
+          const cI = refs.countries.findIndex(
+            j => j.id === '0eceb736-9131-11eb-b44f-1c1b0d14e211',
+          ); // ph id
+          setCountry({ value: cI.toString(), error: false });
+          const nI = refs.nationalities.findIndex(
+            j => j.id === '700217f7-91b1-11eb-8d33-1c1b0d14e211',
+          ); // ph id
+          setNationality({ value: nI.toString(), error: false });
         }
       }
     }
@@ -505,10 +523,12 @@ export default function UserProfileForm({
 
   let hasRefs = false;
   if (refs && Object.keys(refs).length > 0) {
-    if (refs.nationalities && Object.keys(refs.nationalities).length > 0) {
-      hasRefs = true;
-    }
-    if (refs.countries && Object.keys(refs.countries).length > 0) {
+    if (
+      refs.nationalities &&
+      refs.nationalities.length > 0 &&
+      refs.countries &&
+      refs.countries.length > 0
+    ) {
       hasRefs = true;
     }
   }

@@ -37,7 +37,10 @@ import {
   validateEmail,
   regExMobile,
   regExIsGonnaBeEmail,
+  maskEmailAddress,
+  maskMobileNumber,
 } from 'app/components/Helpers';
+import { numberWithCommas } from 'utils/common';
 
 /** slice */
 import { useContainerSaga } from './slice';
@@ -556,11 +559,7 @@ export function SendMoney() {
                         </Grid>
                         <Grid item xs={6} className="item">
                           <span className="value">
-                            {' '}
-                            PHP{' '}
-                            {Number.isInteger(validateSuccess.amount)
-                              ? validateSuccess.amount + '.00'
-                              : validateSuccess.amount}
+                            PHP {numberWithCommas(validateSuccess.amount)}
                           </span>
                         </Grid>
                         <Grid item xs={6} className="item">
@@ -599,7 +598,7 @@ export function SendMoney() {
               </>
             )}
 
-            <Dialog show={isSuccess} size="small">
+            <Dialog show={isSuccess} size="medium">
               <Receipt
                 title="Money successfully sent to"
                 total={success.total_amount}
@@ -607,34 +606,36 @@ export function SendMoney() {
                 date={humanReadable}
               >
                 <Grid container>
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <span className="description">Name</span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={8}>
                     <span className="value">
                       {success.first_name} {success.last_name}
                     </span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <span className="description">
                       {isEmail ? 'Email address' : 'Mobile number'}
                     </span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={8}>
                     <span className="value">
-                      {isEmail ? success.email : success.mobile_number}
+                      {isEmail
+                        ? maskEmailAddress(success.email || '')
+                        : maskMobileNumber(success.mobile_number || '')}
                     </span>
                   </Grid>
-                  <Grid item xs={6}>
-                    <span className="description">Message </span>
+                  <Grid item xs={4}>
+                    <span className="description">Message</span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={8}>
                     <span className="value">{success.message}</span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={4}>
                     <span className="description">Transaction Number</span>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={8}>
                     <span className="value">{success.reference_number}</span>
                   </Grid>
                 </Grid>

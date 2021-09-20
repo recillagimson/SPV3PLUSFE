@@ -201,7 +201,7 @@ export const ReviewTotal = styled.div`
 
 export const ReviewListItem = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 10px;
 
@@ -215,10 +215,12 @@ export const ReviewListItem = styled.div`
     font-style: normal;
     line-height: 21px;
     margin: 0;
-    width: 49%;
+    /* width: 45%; */
 
     &:last-child {
       text-align: right;
+      padding-left: 10px;
+      /* width: 53%; */
     }
   }
 `;

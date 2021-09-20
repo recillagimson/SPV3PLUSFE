@@ -13,6 +13,15 @@ export const Container = styled.section`
   }
 `;
 
+export const ContainerTitle = styled.section`
+  color: #38434d;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  text-transform: capitalize;
+  margin: 0;
+`;
+
 export const Wrapper = styled.section<{
   isBoolean?: boolean;
 }>`
@@ -34,14 +43,6 @@ export const WrapperHeader = styled.div<{
 }>`
   padding: 20px;
   border-bottom: 1px solid ${StyleConstants.LIGHT_BORDER_COLOR};
-
-  h3 {
-    color: #38434d;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 24px;
-    margin: 0;
-  }
 
   ${({ isCustom }) =>
     isCustom &&
@@ -192,7 +193,7 @@ export const ReviewTotal = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-self: center;
+  align-items: center;
   margin: 40px 0 0;
   width: 100%;
 
