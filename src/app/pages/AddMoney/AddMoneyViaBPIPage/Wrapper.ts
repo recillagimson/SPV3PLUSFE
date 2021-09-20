@@ -9,6 +9,13 @@ const Wrapper = styled.section`
 
   .list-account-wrapper {
     min-height: 100px;
+
+    &.reverse {
+      .check {
+        position: absolute;
+        right: 30%;
+      }
+    }
     .account-details {
       display: flex;
       justify-content: center;

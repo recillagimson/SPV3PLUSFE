@@ -39,8 +39,7 @@ const Wrapper = styled.label`
     border-radius: ${StyleConstants.BORDER_RADIUS};
     background-color: ${StyleConstants.WHITE};
     margin-right: 3px;
-    position: absolute;
-    right: 30%;
+    position: relative;
 
     &:after {
       content: '';

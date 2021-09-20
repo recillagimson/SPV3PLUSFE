@@ -348,7 +348,7 @@ export function AddMoneyViaBPI() {
                   account and complete the cash in.
                 </p>
               </div>
-              <div className="list-account-wrapper">
+              <div className="list-account-wrapper reverse">
                 {accounts?.body?.transactionalAccounts?.map((item: any) => (
                   <Fragment key={`${item.displayOrder}${item.accountNumber}`}>
                     <RadioComponent
