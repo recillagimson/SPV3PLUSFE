@@ -196,7 +196,10 @@ export function LoansPage() {
           <p style={{ margin: '15px 0 10px' }}>
             <strong>Leave site?</strong>
           </p>
-          <p>Are you you want to leave this page?</p>
+          <p>
+            To process this loan, you need to be redirected to our loan
+            partner’s page. Are you sure you want to proceed?
+          </p>
           <Button
             fullWidth
             variant="contained"
