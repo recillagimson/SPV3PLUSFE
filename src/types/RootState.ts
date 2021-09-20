@@ -22,7 +22,6 @@ import { PayBillsState } from 'app/pages/PayBillsPage/slice/types';
 import { TierUpgradeState } from 'app/pages/TierUpgradePage/slice/types';
 import { SendToBankUBPState } from 'app/pages/SendToBankUBP/slice/types';
 import { UpdateEmailState } from 'app/pages/UpdateEmail/slice/types';
-import { TermsAndConditions } from 'app/pages/TermsAndConditionsConsent/slice/types';
 
 // components
 import { UpdatePasswordState } from 'app/components/UpdatePassword/slice/types';
@@ -51,7 +50,6 @@ export interface RootState {
   profileSilver?: ProfileSilverState;
   updateProfile?: UpdateProfileState;
   notifications?: NotificationsState;
-  termsAndConditions?: TermsAndConditions;
   addMoneyDragonpay: AddMoneyDragonpayState;
   addMoneyBpi: AddMoneyBpiState;
   transactionHistory?: TransactionHistoryState;
