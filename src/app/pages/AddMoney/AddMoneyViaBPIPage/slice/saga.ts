@@ -83,14 +83,13 @@ function* addMoney() {
 function* getAccessToken() {
   yield delay(500);
   const payloadToken = yield select(selectBpiUrlToken);
-  const requestURL = 'https://testoauth.bpi.com.ph/bpi/api/oauth2/token';
+  const requestURL = `${process.env.REACT_APP_BPI_API_URL}/oauth2/token`;
+  const cid = process.env.REACT_APP_BPI_CLIENT_ID || '';
+  const cs = process.env.REACT_APP_BPI_CLIENT_SECRET || '';
+
   const payload = new URLSearchParams();
-
-  const client_id = 'fb5cedef-cfec-4910-9910-d40bc4f36752';
-  const client_secret = 'aC0rI2rN8qV0dX5dL3tG6bI2sY7xD4nO3lW5gF3aH4wT4wW8iO';
-
-  payload.append('client_id', client_id);
-  payload.append('client_secret', client_secret);
+  payload.append('client_id', cid);
+  payload.append('client_secret', cs);
   payload.append('grant_type', 'authorization_code');
   payload.append('code', payloadToken);
 

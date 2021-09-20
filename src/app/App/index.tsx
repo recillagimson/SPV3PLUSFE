@@ -182,21 +182,7 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (!forceUpdate && decrypt && path !== '/postback') {
-      dispatch(actions.getIsAuthenticated(true));
-      dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
-      dispatch(actions.getUserToken(decrypt.user_token));
-      dispatch(actions.getSaveLoginName(username));
-
-      // delay the retrieval of references and user profile
-      setTimeout(() => {
-        // dispatch(actions.getLoadReferences());
-        dispatch(actions.getLoadUserProfile());
-        dispatch(dashboardAction.getFetchLoading());
-      }, 2000);
-
-      history.push('/dashboard');
-    } else if (query && path === '/postback') {
+    if (!forceUpdate && decrypt && query) {
       dispatch(actions.getClientTokenLoading());
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
@@ -210,6 +196,22 @@ export function App() {
         dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(query));
       }, 2000);
       history.push('/add-money/bpi/select-account');
+    }
+
+    if (!forceUpdate && decrypt && path !== '/postback' && !query) {
+      dispatch(actions.getIsAuthenticated(true));
+      dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
+      dispatch(actions.getUserToken(decrypt.user_token));
+      dispatch(actions.getSaveLoginName(username));
+
+      // delay the retrieval of references and user profile
+      setTimeout(() => {
+        // dispatch(actions.getLoadReferences());
+        dispatch(actions.getLoadUserProfile());
+        dispatch(dashboardAction.getFetchLoading());
+      }, 2000);
+
+      history.push('/dashboard');
     } else if (forceUpdate) {
       dispatch(actions.getClientTokenLoading());
       history.push('/register/update-profile');

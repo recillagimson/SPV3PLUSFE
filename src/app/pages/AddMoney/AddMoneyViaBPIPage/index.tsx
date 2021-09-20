@@ -54,7 +54,7 @@ export function AddMoneyViaBPI() {
   const [isSelectAccounts, setIsSelectAccounts] = useState(false);
   const [isVerification, setIsVerification] = useState(false);
 
-  const [counter, setCounter] = useState(60);
+  const [counter, setCounter] = useState(300);
   const [apiError, setApiError] = useState(false);
   const [apiErrorMsg, setApiErrorMsg] = useState('');
   const [amount, setAmount] = useState({
@@ -88,7 +88,6 @@ export function AddMoneyViaBPI() {
   //View select accounts on postback
   useEffect(() => {
     if (window.location.pathname === '/add-money/bpi/select-account') {
-      dispatch(actions.getFetchReset());
       const amountValue: any = sessionStorage.getItem('amount');
       if (amountValue && !isVerification) {
         setAmount({ ...amount, value: amountValue.toString() });
@@ -112,21 +111,22 @@ export function AddMoneyViaBPI() {
 
   //Show success modal on /process submit
   useEffect(() => {
-    if (!error) {
-      if (processData !== null) {
-        setIsSuccess(true);
-      }
+    if (processData !== null) {
+      setIsSuccess(true);
     }
-  }, [processData, error]);
+  }, [processData]);
 
   //OTP Timer WIP
   useEffect(() => {
     const timer: any =
-      // data === null &&
-      counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
+      data !== null &&
+      !loading &&
+      counter > 0 &&
+      setInterval(() => setCounter(counter - 1), 1000);
     return () => {
       clearInterval(timer);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [counter, data]);
 
   const onApiError = (err: any) => {
@@ -445,7 +445,10 @@ export function AddMoneyViaBPI() {
             <H5 margin="10px 0 30px">Transaction successful</H5>
             <Button
               fullWidth
-              onClick={() => history.push('/dashboard')}
+              onClick={() => {
+                history.push('/dashboard');
+                dispatch(actions.getFetchReset());
+              }}
               variant="contained"
               color="primary"
               size="medium"

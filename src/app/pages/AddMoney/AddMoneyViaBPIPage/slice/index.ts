@@ -75,6 +75,7 @@ const slice = createSlice({
       state.amount = null;
       state.error = {};
       state.bpiUrl = null;
+      state.processData = null;
     },
   },
 });
