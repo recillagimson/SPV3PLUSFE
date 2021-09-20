@@ -8,6 +8,7 @@ const Wrapper = styled.section<{
   align?: 'flex-start' | 'center'; // only apply to 1024pixel and up display sizes
 }>`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 100px 10px 10px;
