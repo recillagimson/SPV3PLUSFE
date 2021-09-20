@@ -37,6 +37,7 @@ export function TransactionHistoryPage(props) {
 
   const [isLoading, setLoading] = React.useState(false); // Temporary loading for pagination
   const [noRecords, setNoRecords] = React.useState(false);
+  const [noFiltered, setNoFiltered] = React.useState(false);
   const [records, setRecords] = React.useState<any[]>([]);
   const [transactionType, setTransactionType] = React.useState(
     TRANSACTION_TYPE.ALL,
@@ -78,10 +79,29 @@ export function TransactionHistoryPage(props) {
         // check the filter first for proper handling of loading more data
         if (transactionType === TRANSACTION_TYPE.ALL) {
           setTransactionHistory(newArray);
+        } else if (
+          transactionType === TRANSACTION_TYPE.PENDING ||
+          transactionType === TRANSACTION_TYPE.FAILED
+        ) {
+          const newRecords = [...records];
+          const data = newRecords.filter(
+            transaction => transaction.status === transactionType,
+          );
+          setTransactionHistory(data);
+          if (data.length === 0) {
+            setNoFiltered(true);
+          } else {
+            setNoFiltered(false);
+          }
         } else {
           const data = newArray.filter(
             transaction => transaction.transaction_type === transactionType,
           );
+          if (data.length === 0) {
+            setNoFiltered(true);
+          } else {
+            setNoFiltered(false);
+          }
           setTransactionHistory(data);
         }
 
@@ -107,15 +127,38 @@ export function TransactionHistoryPage(props) {
 
   const filteredTransactionDetails = (type: string) => {
     setTransactionType(type);
+
     if (type === TRANSACTION_TYPE.ALL) {
       setTransactionHistory(records);
-    } else {
+      setNoFiltered(false);
+      return;
+    }
+
+    if (type === TRANSACTION_TYPE.PENDING || type === TRANSACTION_TYPE.FAILED) {
       const newRecords = [...records];
       const data = newRecords.filter(
-        transaction => transaction.transaction_type === type,
+        transaction => transaction.status === type,
       );
       setTransactionHistory(data);
+      if (data.length === 0) {
+        setNoFiltered(true);
+      } else {
+        setNoFiltered(false);
+      }
+      return;
     }
+
+    const newRecords = [...records];
+    const data = newRecords.filter(
+      transaction => transaction.transaction_type === type,
+    );
+    setTransactionHistory(data);
+    if (data.length === 0) {
+      setNoFiltered(true);
+    } else {
+      setNoFiltered(false);
+    }
+    return;
   };
 
   const renderTransactionTypeTitle = () => {
@@ -126,6 +169,10 @@ export function TransactionHistoryPage(props) {
         return 'Received';
       case TRANSACTION_TYPE.SENT:
         return 'Sent';
+      case TRANSACTION_TYPE.PENDING:
+        return 'Pending';
+      case TRANSACTION_TYPE.FAILED:
+        return 'Failed';
       default:
         return 'All Transactions';
     }
@@ -180,13 +227,41 @@ export function TransactionHistoryPage(props) {
             >
               Received
             </Button>
+            <Button
+              onClick={() =>
+                filteredTransactionDetails(TRANSACTION_TYPE.PENDING)
+              }
+              color="secondary"
+              size="medium"
+              variant={
+                transactionType === TRANSACTION_TYPE.PENDING
+                  ? 'contained'
+                  : 'outlined'
+              }
+            >
+              Pending
+            </Button>
+            <Button
+              onClick={() =>
+                filteredTransactionDetails(TRANSACTION_TYPE.FAILED)
+              }
+              color="secondary"
+              size="medium"
+              variant={
+                transactionType === TRANSACTION_TYPE.FAILED
+                  ? 'contained'
+                  : 'outlined'
+              }
+            >
+              Failed
+            </Button>
           </S.ButtonContainer>
           <S.TransactionTitle>
             {renderTransactionTypeTitle()}
             <p>Recent transaction will reflect within 24 hours.</p>
           </S.TransactionTitle>
           <ComponentLoading>
-            {!noRecords && transactionHistory.length > 0 && (
+            {!noRecords && !noFiltered && transactionHistory.length > 0 && (
               <S.TransactionList>
                 {transactionHistory.map((d: any, i) => {
                   const isPostiveAmount =
@@ -266,6 +341,12 @@ export function TransactionHistoryPage(props) {
                 <img src={NoTransactionsLogo} alt="No transactions..." />
                 <h6>No Transactions</h6>
                 <p>You haven't made any transactions yet</p>
+              </S.EmptyWrapper>
+            )}
+            {noFiltered && (
+              <S.EmptyWrapper>
+                <img src={NoTransactionsLogo} alt="No transactions..." />
+                <h6>No Transactions</h6>
               </S.EmptyWrapper>
             )}
           </ComponentLoading>
