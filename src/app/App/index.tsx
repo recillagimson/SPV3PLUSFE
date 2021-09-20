@@ -188,7 +188,7 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (!forceUpdate && decrypt && query) {
+    if (!forceUpdate && decrypt && query && path === '/') {
       dispatch(actions.getClientTokenLoading());
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
