@@ -84,13 +84,8 @@ export function Dragonpay() {
 
   function handlerCloseFrame(url) {
     if (windowObjectReference === null) {
-      // windowObjectReference = window.open(
-      //   url,
-      //   'dragonpayWeb',
-      //   'scrollbars=no,resizable=no,toolbar=no,menubar=no,width=720,height=560,left=200,top=200',
-      // );
       windowObjectReference = window.open(
-        'https://spv3admin.local:3000/postback/dragonpay?txnid=AB0024437&refno=2VAIGEX2&status=S&message=%5b000%5d+BOG+Reference+No%3a+20210917111809+%232VAIGEX2&digest=3b25e00a0a1e5e49056d014a2da60c2d432520e3',
+        url,
         'dragonpayWeb',
         'scrollbars=no,resizable=no,toolbar=no,menubar=no,width=720,height=560,left=200,top=200',
       );
