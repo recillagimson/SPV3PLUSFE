@@ -79,7 +79,7 @@ export function ForgotPasswordPage() {
             if (i === 101 || i === 103) {
               return `The ${
                 isEmail ? 'email' : 'mobile number'
-              } you have entered doesn't exists in our records. Please try again.`;
+              } you have entered doesn't exist in our records. Please try again.`;
             }
             if (i === 102) {
               return `Your account is not yet verified. Please check your ${
@@ -87,7 +87,7 @@ export function ForgotPasswordPage() {
               } for verification process.`;
             }
             if (i === 103) {
-              return 'Account does not exists.';
+              return 'Account does not exist.';
             }
             if (i === 105) {
               return 'Your Account has been locked, Please contact Squidpay Support for assistance in unlocking your account.';
@@ -96,7 +96,7 @@ export function ForgotPasswordPage() {
               return 'Password has already been used.';
             }
             if (i === 107) {
-              return `Password cannot be changed for at least 1 day/s.`;
+              return `Password cannot be changed for at least 1 day.`;
             }
 
             return undefined;
