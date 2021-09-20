@@ -14,7 +14,9 @@ const Wrapper = styled.div`
     padding: 30px 20px;
 
     .logo-container {
-      margin: 0 60px 20px;
+      margin: 0 auto 20px;
+      width: 200px;
+      text-align: center;
     }
     .bg-lightgold {
       background-color: #fff9ddff;
@@ -72,6 +74,18 @@ const Wrapper = styled.div`
     }
   }
 
+  .bg-lightgold:before,
+  .bg-lightgold:after {
+    background-size: 14px 30px;
+    background-repeat: repeat-x;
+    content: '';
+    display: block;
+    height: 33px;
+    width: 100%;
+    position: relative;
+    left: 0px;
+  }
+
   .bg-lightgold:before {
     background: linear-gradient(
         -45deg,
@@ -82,51 +96,14 @@ const Wrapper = styled.div`
       ),
       linear-gradient(45deg, #fff9ddff 16px, transparent 0);
     background-position: left top;
-    background-repeat: repeat-x;
-    background-size: 22px 32px;
-    content: ' ';
-    display: block;
-    height: 32px;
-    width: 100%;
-    position: relative;
-    bottom: 20px;
-    left: 0;
+    bottom: 15px;
   }
-
-  /* #d-wrapper	div > * {
-		margin: 0 40px;
-	} */
-
-  /* .zig-zag-bottom {
-    margin: 32px 0;
-    margin-top: 0;
-    background: #fff9ddff;
-  }
-
-  .zig-zag-top {
-    margin: 32px 0;
-    margin-bottom: 0;
-    background: #fff9ddff;
-  } */
-
-  /* .zig-zag-bottom,
-  .zig-zag-top {
-    padding: 32px 0;
-  } */
 
   .bg-lightgold:after {
     background: linear-gradient(-45deg, transparent 16px, #fff9ddff 0),
       linear-gradient(45deg, transparent 16px, #fff9ddff 0);
-    background-repeat: repeat-x;
     background-position: left bottom;
-    background-size: 22px 32px;
-    content: '';
-    display: block;
-    width: 100%;
-    height: 32px;
-    position: relative;
-    top: 10px;
-    left: 0px;
+    top: 15px;
   }
 `;
 

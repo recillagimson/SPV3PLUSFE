@@ -51,7 +51,12 @@ import {
   TransactionHistoryPage,
   TransactionHistoryDetailsPage,
 } from 'app/pages/TransactionHistoryPage/Loadable';
-import { HelpCenterPage, FAQPage } from 'app/pages/HelpCenterPage/Loadable';
+import {
+  HelpCenterPage,
+  FAQPage,
+  PrivacyPolicyConsent,
+  TermsAndConditionConsent,
+} from 'app/pages/HelpCenterPage/Loadable';
 import { SendToBank } from 'app/pages/SendToBank/Loadable';
 import { SendToBankUBP } from 'app/pages/SendToBankUBP/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
@@ -70,14 +75,17 @@ import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
 // #endregion
 
 import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
-import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent/Loadable';
-import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/Loadable';
+
+import { PrivacyPolicyPage } from 'app/pages/PrivacyPolicyPage/Loadable';
+import { TermsAndConditionPage } from 'app/pages/TermsConditionPage/Loadable';
 
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
 
 import { Page500 } from 'app/components/500/Loadable';
 import { ComingSoonPage } from 'app/components/ComingSoonPage/Loadable';
 
+/** Postback URL */
+import DragonpaySuccessPostback from './DragonpayPostback';
 import SuccessPostBack from './SuccessPostback';
 
 // import pageRoutes from './Routes';
@@ -179,7 +187,12 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (!forceUpdate && decrypt && path !== '/postback') {
+    if (
+      !forceUpdate &&
+      decrypt &&
+      path !== '/postback' &&
+      path !== '/postback/dragonpay'
+    ) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
@@ -252,6 +265,17 @@ export function App() {
   };
 
   const currentLocation = location ? location.pathname : '';
+  let showHeaderFooter = false;
+  if (currentLocation) {
+    if (
+      currentLocation !== '/postback' &&
+      currentLocation !== '/postback/dragonpay' &&
+      currentLocation !== '/privacy-policy' &&
+      currentLocation !== '/terms-and-conditions'
+    ) {
+      showHeaderFooter = true;
+    }
+  }
 
   return (
     <FlagsProvider defaultFlags={defaultFlags}>
@@ -267,7 +291,7 @@ export function App() {
       </Helmet>
 
       <Main className={isAuthenticated ? 'spdin' : undefined}>
-        {currentLocation && currentLocation !== '/postback' && (
+        {showHeaderFooter && (
           <Header
             isLoggedIn={isAuthenticated}
             blankPage={isBlankPage ? true : false}
@@ -311,6 +335,17 @@ export function App() {
               component={UpdateProfileVerificationPage}
             />
             <Route path="/500" component={Page500} />
+            <Route path="/privacy-policy" component={PrivacyPolicyPage} />
+            <Route
+              path="/terms-and-conditions"
+              component={TermsAndConditionPage}
+            />
+            <Route exact path="/postback" component={SuccessPostBack} />
+            <Route
+              exact
+              path="/postback/dragonpay"
+              component={DragonpaySuccessPostback}
+            />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
@@ -356,6 +391,16 @@ export function App() {
               component={HelpCenterPage}
             />
             <PrivateRoute exact path="/help-center/faq" component={FAQPage} />
+            <PrivateRoute
+              exact
+              path="/help-center/privacy-policy"
+              component={PrivacyPolicyConsent}
+            />
+            <PrivateRoute
+              exact
+              path="/help-center/terms-and-condition"
+              component={TermsAndConditionConsent}
+            />
             <PrivateRoute exact path="/send-to-bank" component={SendToBank} />
             <PrivateRoute
               exact
@@ -391,25 +436,13 @@ export function App() {
               path="/tiers/upgrade"
               component={TierUpgradePage}
             />
-            <PrivateRoute
-              exact
-              path="/privacypolicy"
-              component={DataPrivacyConsent}
-            />
-            <PrivateRoute
-              exact
-              path="/terms-and-condition"
-              component={TermsAndConditionConsent}
-            />
 
-            <Route exact path="/postback" component={SuccessPostBack} />
             {/* Not found page should be the last entry for this <Switch /> container */}
             <Route path="/error" component={Page500} />
             <Route path="/comingsoon" component={ComingSoonPage} />
             <Route component={NotFoundPage} />
           </Switch>
-          {(!isBlankPage ||
-            (currentLocation && currentLocation !== '/postback')) && <Footer />}
+          {(!isBlankPage || showHeaderFooter) && <Footer />}
         </Content>
       </Main>
       <Dialog show={isSessionExpired} size="small">

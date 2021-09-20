@@ -13,3 +13,13 @@ export const FAQPage = lazyLoad(
   () => import('./FAQ'),
   module => module.FAQPage,
 );
+
+export const PrivacyPolicyConsent = lazyLoad(
+  () => import('./PrivacyPolicy'),
+  module => module.PrivacyPolicyConsent,
+);
+
+export const TermsAndConditionConsent = lazyLoad(
+  () => import('./TermsConditions'),
+  module => module.TermsAndConditionConsent,
+);

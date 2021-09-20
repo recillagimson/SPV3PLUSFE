@@ -33,6 +33,7 @@ import WrapperCuttedCornerTop from 'app/components/Assets/WrapperCuttedCornerTop
 
 // Styled Components
 import * as S from './SendToBank.style';
+import { maskCharacters } from 'app/components/Helpers';
 
 export function VerifyOTPPage(props) {
   const history = useHistory();
@@ -86,7 +87,7 @@ export function VerifyOTPPage(props) {
         </S.ReviewListItem>
         <S.ReviewListItem>
           <p>Account Number</p>
-          <p>{success.account_number}</p>
+          <p>{maskCharacters(success.account_number)}</p>
         </S.ReviewListItem>
         <S.ReviewListItem>
           <p>Account Name</p>

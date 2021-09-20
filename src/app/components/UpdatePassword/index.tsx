@@ -88,7 +88,7 @@ export default function UpdatePasswordComponent({
               } for verification process.`;
             }
             if (i === 105) {
-              return 'Your Account has been locked, Please contact Squidpay Support for assistance in unlocking your account.';
+              return 'Your account is Locked due to suspicious activity. Please contact support@squid.ph or call (02) 85217035 to request for access.';
             }
             if (i === 106) {
               return 'Password has already been used.';
@@ -98,6 +98,9 @@ export default function UpdatePasswordComponent({
             }
             if (i === 108) {
               return `We encountered an error in processing your data. Please try again.`;
+            }
+            if (i === 109) {
+              return `OTP is expired.`;
             }
 
             return undefined;
@@ -289,8 +292,6 @@ export default function UpdatePasswordComponent({
         {confirmPass.error && (
           <ErrorMsg formError>Please confirm your new password.</ErrorMsg>
         )}
-      </Field>
-      <Field>
         {Boolean(passError) && <ErrorMsg formError>{passError}</ErrorMsg>}
         {isError && <ErrorMsg formError>{apiErrorMsg}</ErrorMsg>}
       </Field>
