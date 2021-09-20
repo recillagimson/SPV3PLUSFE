@@ -190,8 +190,9 @@ export function App() {
     if (
       !forceUpdate &&
       decrypt &&
-      path !== '/postback' &&
-      path !== '/postback/dragonpay'
+      !path.includes('/postback')
+      // path !== '/postback' &&
+      // path !== '/postback/dragonpay'
     ) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
@@ -268,8 +269,9 @@ export function App() {
   let showHeaderFooter = false;
   if (currentLocation) {
     if (
-      currentLocation !== '/postback' &&
-      currentLocation !== '/postback/dragonpay' &&
+      // currentLocation !== '/postback' &&
+      // currentLocation !== '/postback/dragonpay' &&
+      !currentLocation.includes('/postback') &&
       currentLocation !== '/privacy-policy' &&
       currentLocation !== '/terms-and-conditions'
     ) {
