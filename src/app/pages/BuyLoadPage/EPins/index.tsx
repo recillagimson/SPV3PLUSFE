@@ -248,7 +248,8 @@ export function BuyEpinsPage() {
       }
       case 405: {
         return {
-          msg: 'Oh No! You have exceeded your monthly limit.',
+          msg:
+            'You have reached the allowable wallet limit for this month. Please try again next month.',
           error: true,
         };
       }
@@ -279,9 +280,9 @@ export function BuyEpinsPage() {
     }
   };
 
-  let replaceFirst7 = (mobileNumber: string) => {
-    return mobileNumber.replace(/^.{1,7}/, m => '*'.repeat(m.length));
-  };
+  // let replaceFirst7 = (mobileNumber: string) => {
+  //   return mobileNumber.replace(/^.{1,7}/, m => '*'.repeat(m.length));
+  // };
 
   return (
     <>
@@ -498,9 +499,7 @@ export function BuyEpinsPage() {
               >
                 <Flex justifyContent="space-between">
                   <span>Mobile Number</span>
-                  <span>
-                    {replaceFirst7(paySuccess.recipient_mobile_number || '')}
-                  </span>
+                  <span>{paySuccess.recipient_mobile_number || ''}</span>
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Load</span>
