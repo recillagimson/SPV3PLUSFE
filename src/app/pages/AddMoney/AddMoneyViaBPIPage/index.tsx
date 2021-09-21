@@ -41,20 +41,20 @@ export function AddMoneyViaBPI() {
   const { actions } = useContainerSaga();
 
   const dashData: any = useSelector(selectDashData);
-  const bpiUrl: any = useSelector(selectBpiUrl);
-  const accessToken: any = useSelector(selectAccessToken);
-  const accounts: any = useSelector(selectAccounts);
-  const data: any = useSelector(selectData);
-  const processData: any = useSelector(selectProcessData);
+  const bpiUrl: object | any = useSelector(selectBpiUrl);
+  const accessToken: string = useSelector(selectAccessToken);
+  const accounts: object | any = useSelector(selectAccounts);
+  const data: object | any = useSelector(selectData);
+  const processData: object | any = useSelector(selectProcessData);
   const error: any = useSelector(selectError);
-  const loading = useSelector(selectLoading);
+  const loading: boolean = useSelector(selectLoading);
 
   const [isSuccess, setIsSuccess] = useState(false);
   const [isCashIn, setIsCashIn] = useState(true);
   const [isSelectAccounts, setIsSelectAccounts] = useState(false);
   const [isVerification, setIsVerification] = useState(false);
 
-  const [counter, setCounter] = useState(300);
+  // const [counter, setCounter] = useState(0);
   const [apiError, setApiError] = useState(false);
   const [apiErrorMsg, setApiErrorMsg] = useState('');
   const [amount, setAmount] = useState({
@@ -88,7 +88,7 @@ export function AddMoneyViaBPI() {
   //View select accounts on postback
   useEffect(() => {
     if (window.location.pathname === '/add-money/bpi/select-account') {
-      const amountValue: any = sessionStorage.getItem('amount');
+      const amountValue: string | null = sessionStorage.getItem('amount');
       if (amountValue && !isVerification) {
         setAmount({ ...amount, value: amountValue.toString() });
         setIsSelectAccounts(true);
@@ -116,20 +116,31 @@ export function AddMoneyViaBPI() {
     }
   }, [processData]);
 
-  //OTP Timer WIP
-  useEffect(() => {
-    const timer: any =
-      data !== null &&
-      !loading &&
-      counter > 0 &&
-      setInterval(() => setCounter(counter - 1), 1000);
-    return () => {
-      clearInterval(timer);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [counter, data]);
+  //OTP timer from /fundtopup
+  // useEffect(() => {
+  //   if (data?.otpResponse?.body) {
+  //     const now: any = new Date();
+  //     const until: any = new Date(data?.otpResponse?.body?.otpValidUntil);
+  //     const nowTime = now.getMinutes() * 60 + now.getSeconds();
+  //     const untilTime = until.getMinutes() * 60 + now.getSeconds();
+  //     setCounter(untilTime - nowTime);
+  //   }
+  // }, [data]);
 
-  const onApiError = (err: any) => {
+  //OTP Timer CountdownWIP
+  // useEffect(() => {
+  //   const timer: any =
+  //     data !== null &&
+  //     !loading &&
+  //     counter > 0 &&
+  //     setInterval(() => setCounter(counter - 1), 1000);
+  //   return () => {
+  //     clearInterval(timer);
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [counter, data]);
+
+  const onApiError = (err: object | any) => {
     let apiError = '';
     if (err.code && err.code === 422) {
       if (
@@ -349,22 +360,24 @@ export function AddMoneyViaBPI() {
                 </p>
               </div>
               <div className="list-account-wrapper reverse">
-                {accounts?.body?.transactionalAccounts?.map((item: any) => (
-                  <Fragment key={`${item.displayOrder}${item.accountNumber}`}>
-                    <RadioComponent
-                      name={item.accountPreferredName}
-                      value={item.accountNumberToken}
-                      onChange={e => onRadioChange(e)}
-                    >
-                      {bpiLogo()}
-                      <div className="account-details">
-                        <span>{item.accountNumber}</span>
-                        <span>{item.accountType}</span>
-                      </div>
-                    </RadioComponent>
-                    <br />
-                  </Fragment>
-                ))}
+                {accounts?.body?.transactionalAccounts?.map(
+                  (item: object | any) => (
+                    <Fragment key={`${item.displayOrder}${item.accountNumber}`}>
+                      <RadioComponent
+                        name={item.accountPreferredName}
+                        value={item.accountNumberToken}
+                        onChange={e => onRadioChange(e)}
+                      >
+                        {bpiLogo()}
+                        <div className="account-details">
+                          <span>{item.accountNumber}</span>
+                          <span>{item.accountType}</span>
+                        </div>
+                      </RadioComponent>
+                      <br />
+                    </Fragment>
+                  ),
+                )}
               </div>
               {accounts?.status === 'error' && <p>{accounts?.description}</p>}
               {accountNumberToken.isError && (
@@ -417,7 +430,8 @@ export function AddMoneyViaBPI() {
                   />
                   {otp.isError && <ErrorMsg formError>{otp.errormsg}</ErrorMsg>}
                 </div>
-                <div className="timer">{counter} s</div>
+                {/* Comment for now */}
+                {/* <div className="timer">{counter} s</div> */}
               </div>
               <br />
               <br />
