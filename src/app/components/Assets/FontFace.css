@@ -8,11 +8,13 @@
   font-family: 'Museo Sans';
   font-style: normal;
   font-weight: 500;
-  src: url('./fonts/MuseoSans_500.otf') format('opentype');
+  src: url('./fonts/MuseoSans_500.woff2') format('woff2'),
+    url('./fonts/MuseoSans_500.woff') format('woff');
 }
 @font-face {
   font-family: 'Museo Sans';
   font-style: normal;
   font-weight: 700;
-  src: url('./fonts/MuseoSans_700.otf') format('opentype');
+  src: url('./fonts/MuseoSans_700.woff2') format('woff2'),
+    url('./fonts/MuseoSans_700.woff') format('woff');
 }
