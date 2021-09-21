@@ -109,6 +109,14 @@ export function AddMoneyViaBPI() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVerification, error]);
 
+  //Show OTP view on /fundtopup submit
+  useEffect(() => {
+    if (data !== null) {
+      setIsSelectAccounts(false);
+      setIsVerification(true);
+    }
+  }, [data]);
+
   //Show success modal on /process submit
   useEffect(() => {
     if (processData !== null) {
@@ -156,6 +164,9 @@ export function AddMoneyViaBPI() {
           apiError = err.errors.message.join('\n');
         }
       }
+      if (err.errors && err.errors?.amount?.length > 0) {
+        apiError = err.errors.amount[0];
+      }
       setApiErrorMsg(apiError || '');
       setApiError(true);
     }
@@ -190,13 +201,13 @@ export function AddMoneyViaBPI() {
         errormsg: 'Oops! This field cannot be empty.',
       });
     }
-    // Check amount if it's less than
-    if (parseFloat(amount.value) <= 0) {
+    // Check amount if it's less than 10
+    if (parseFloat(amount.value) < 10) {
       error = true;
       setAmount({
         ...amount,
         isError: true,
-        errormsg: 'You entered invalid amount.',
+        errormsg: 'The amount must be at least 10.',
       });
     }
     if (!error) {
@@ -225,8 +236,6 @@ export function AddMoneyViaBPI() {
         token: accessToken,
       };
       dispatch(actions.getFetchFundTopUpLoading(data));
-      setIsSelectAccounts(false);
-      setIsVerification(true);
     }
   };
 
@@ -243,6 +252,14 @@ export function AddMoneyViaBPI() {
         ...otp,
         isError: true,
         errormsg: 'Oops! This field cannot be empty.',
+      });
+    }
+    if (otp.value.length !== 6) {
+      error = true;
+      setOtp({
+        ...otp,
+        isError: true,
+        errormsg: 'You entered invalid OTP.',
       });
     }
     if (!error && data) {
