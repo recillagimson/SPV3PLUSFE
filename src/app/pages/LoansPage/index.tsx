@@ -210,9 +210,8 @@ export function LoansPage() {
               if (Window != null) {
                 Window?.open(
                   'https://apps.rfc.com.ph/rfc360loans/squidpay.php',
-                  '_blank',
-                  'noopener,noreferrer',
-                )?.focus();
+                  '_self',
+                );
                 setShowExitModal(false);
               }
             }}
