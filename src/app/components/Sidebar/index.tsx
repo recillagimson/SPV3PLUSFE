@@ -140,12 +140,12 @@ export default function Sidebar() {
           {flags && flags.send_money_via_qr_enabled ? (
             <NavButton as={NavLink} to="/generateqr">
               <QRCodeIcon />
-              QR Code
+              My QR Code
             </NavButton>
           ) : (
             <NavButton disabled>
               <QRCodeIcon />
-              QR Code
+              My QR Code
             </NavButton>
           )}
 
