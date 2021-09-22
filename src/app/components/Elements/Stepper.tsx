@@ -8,7 +8,7 @@ const Wrapper = styled.div<{
   display: flex;
   width: 100%;
   background-color: #f9f9f9;
-  padding: ${StyleConstants.spacing[12]} ${StyleConstants.spacing[24]};
+  padding: ${StyleConstants.spacing[12]} ${StyleConstants.spacing[12]};
   margin: ${p => (p.margin ? p.margin : '0 0')};
 `;
 

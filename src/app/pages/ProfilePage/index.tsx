@@ -30,8 +30,6 @@ import UserUpdateEmail from './UserUpdateEmail';
 import UserUpdateBirthdate from './UserUpdateBirthdate';
 import UserUpdateName from './UserUpdateName';
 
-// import ProfileForm from './ProfileForm';
-
 export function UserProfilePage() {
   const dispatch = useDispatch();
   const profile: any = useSelector(selectUser);

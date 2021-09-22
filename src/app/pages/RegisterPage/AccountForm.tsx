@@ -138,34 +138,34 @@ export default function AccountForm({
     }
   }, [preFill]);
 
-  React.useEffect(() => {
-    if (password.value !== '') {
-      let validatePass = validatePassword(password.value);
-      if (validatePass && validatePass.error) {
-        setPassword({
-          ...password,
-          error: true,
-          msg: validatePass.msg,
-        });
-      }
-      if (validatePass.errorCodes) {
-        setPasswordValidated(validatePass.errorCodes);
-      }
-    }
-  }, [password.value]);
+  // React.useEffect(() => {
+  //   if (password.value !== '') {
+  //     let validatePass = validatePassword(password.value);
+  //     if (validatePass && validatePass.error) {
+  //       setPassword({
+  //         ...password,
+  //         error: true,
+  //         msg: validatePass.msg,
+  //       });
+  //     }
+  //     if (validatePass.errorCodes) {
+  //       setPasswordValidated(validatePass.errorCodes);
+  //     }
+  //   }
+  // }, [password.value]);
 
-  React.useEffect(() => {
-    if (username.value !== '') {
-      let validateUsername = validateEmailOrMobile(username.value);
-      if (validateUsername && validateUsername.error) {
-        setUsername({
-          ...username,
-          error: true,
-          msg: validateUsername.msg,
-        });
-      }
-    }
-  }, [username.value]);
+  // React.useEffect(() => {
+  //   if (username.value !== '') {
+  //     let validateUsername = validateEmailOrMobile(username.value);
+  //     if (validateUsername && validateUsername.error) {
+  //       setUsername({
+  //         ...username,
+  //         error: true,
+  //         msg: validateUsername.msg,
+  //       });
+  //     }
+  //   }
+  // }, [username.value]);
 
   React.useEffect(() => {
     if (validate.response) {

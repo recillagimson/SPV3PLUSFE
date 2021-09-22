@@ -1,18 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useHistory, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router';
+// import { useSelector } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Loading from 'app/components/Loading';
 import { H4, Paragraph } from 'app/components/Typography';
-import Field from 'app/components/Elements/Fields';
+// import Field from 'app/components/Elements/Fields';
 import Button from 'app/components/Elements/Button';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
-import VerifyOTP from 'app/components/VerifyOTP';
-import UpdateProfile from 'app/components/UpdateProfile/Profile';
+// import VerifyOTP from 'app/components/VerifyOTP';
+// import UpdateProfile from 'app/components/UpdateProfile/Profile';
 
 import Dialog from 'app/components/Dialog';
 import Wrapper from 'app/components/Layouts/AuthWrapper';
@@ -20,8 +20,6 @@ import Wrapper from 'app/components/Layouts/AuthWrapper';
 import Stepper from 'app/components/Elements/Stepper';
 
 /** slice */
-import { selectResendCodeData, selectResendCodeError } from './slice/selectors';
-
 import AccountForm from './AccountForm';
 import PINCreation from './PINCreation';
 import useFetch from 'utils/useFetch';
@@ -31,9 +29,6 @@ export function RegisterPage() {
   const location: any = useLocation();
 
   const { loading, error, response, goFetch, fetchReset } = useFetch();
-
-  const resendSuccess: any = useSelector(selectResendCodeData);
-  const resendError: any = useSelector(selectResendCodeError);
 
   // API related states
   const [isLoading, setIsLoading] = React.useState(false);
@@ -81,55 +76,48 @@ export function RegisterPage() {
       fetchReset();
     }
     if (error && Object.keys(error).length > 0) {
-      apiErrorMessage();
+      // apiErrorMessage();
       fetchReset();
     }
   }, [response, error]);
 
-  React.useEffect(() => {
-    if (resendSuccess || (resendError && Object.keys(resendError).length > 0)) {
-      setIsLoading(false);
-      setResendDialog(true);
-    }
-  }, [resendSuccess, resendError]);
-
   // check the error payload
-  const apiErrorMessage = () => {
-    if (error.code && error.code === 422) {
-      let emailError = '';
-      let passError = '';
-      let mobileError = '';
-      if (error.errors) {
-        if (error.errors.email && error.errors.email.length > 0) {
-          emailError = error.errors.email.join('\n');
-        }
-        if (error.errors.password && error.errors.password.length > 0) {
-          passError = error.errors.password.join('\n');
-        }
-        if (
-          error.errors.mobile_number &&
-          error.errors.mobile_number.length > 0
-        ) {
-          mobileError = error.errros.mobile_number.join('\n');
-        }
-      }
+  // const apiErrorMessage = () => {
+  //   if (error.code && error.code === 422) {
+  //     let emailError = '';
+  //     let passError = '';
+  //     let mobileError = '';
+  //     if (error.errors) {
+  //       if (error.errors.email && error.errors.email.length > 0) {
+  //         emailError = error.errors.email.join('\n');
+  //       }
+  //       if (error.errors.password && error.errors.password.length > 0) {
+  //         passError = error.errors.password.join('\n');
+  //       }
+  //       if (
+  //         error.errors.mobile_number &&
+  //         error.errors.mobile_number.length > 0
+  //       ) {
+  //         mobileError = error.errros.mobile_number.join('\n');
+  //       }
+  //     }
 
-      let msg = `${emailError !== '' ? `${emailError}\n` : ''} ${
-        passError !== '' ? `${passError}\n` : ''
-      } ${mobileError !== '' ? mobileError : ''}`;
-      setApiError(msg);
-    }
+  //     let msg = `${emailError !== '' ? `${emailError}\n` : ''} ${
+  //       passError !== '' ? `${passError}\n` : ''
+  //     } ${mobileError !== '' ? mobileError : ''}`;
+  //     setApiError(msg);
+  //   }
 
-    if (!error.code && error.response && error.response.status !== 422) {
-      setApiError(error.response.statusText);
-    }
+  //   if (!error.code && error.response && error.response.status !== 422) {
+  //     setApiError(error.response.statusText);
+  //   }
 
-    if (!error.code && !error.response) {
-      setApiError(error.message);
-    }
+  //   if (!error.code && !error.response) {
+  //     setApiError(error.message);
+  //   }
 
-    setIsError(true);
-  };
+  //   setIsError(true);
+  // };
 
   // show the correct form based on selection (email or mobile)
   const onSuccessValidation = (
@@ -195,19 +183,19 @@ export function RegisterPage() {
   };
 
   // resend code error message
-  let resendErrorMsg =
-    'We are encountering a problem behind our server. Please bear with use and try again later.';
-  if (resendError && Object.keys(resendError).length > 0) {
-    if (resendError.errors && resendError.errors.error_code) {
-      resendErrorMsg = resendError.errors.error_code.map(i =>
-        i === 103
-          ? `The ${
-              isEmail ? 'email' : 'mobile number'
-            } you have entered doesn't exists. Please try again.`
-          : 'We are encountering a problem behind our server. Please bear with use and try again later.',
-      );
-    }
-  }
+  // let resendErrorMsg =
+  //   'We are encountering a problem behind our server. Please bear with use and try again later.';
+  // if (resendError && Object.keys(resendError).length > 0) {
+  //   if (resendError.errors && resendError.errors.error_code) {
+  //     resendErrorMsg = resendError.errors.error_code.map(i =>
+  //       i === 103
+  //         ? `The ${
+  //             isEmail ? 'email' : 'mobile number'
+  //           } you have entered doesn't exists. Please try again.`
+  //         : 'We are encountering a problem behind our server. Please bear with use and try again later.',
+  //     );
+  //   }
+  // }
 
   const steps = [
     {
@@ -225,7 +213,7 @@ export function RegisterPage() {
   ];
 
   return (
-    <Wrapper align="flex-start">
+    <Wrapper align="center" justify="flex-start">
       <Helmet title="Register" />
       <div className="form-container">
         <Stepper steps={steps} margin="0 0 35px" />
@@ -243,7 +231,7 @@ export function RegisterPage() {
           <PINCreation onSuccessPinCreation={onSubmitCreateAccount} />
         )}
 
-        {showVerifyOTP && (
+        {/* {showVerifyOTP && (
           <div className="text-center" style={{ padding: '0 40px' }}>
             <VerifyOTP
               onSuccess={onCodeVerified}
@@ -288,7 +276,7 @@ export function RegisterPage() {
               Login
             </Button>
           </div>
-        )}
+        )} */}
       </div>
 
       {/* Welcome Squidee */}
@@ -333,7 +321,7 @@ export function RegisterPage() {
         </div>
       </Dialog>
 
-      <Dialog show={resendDialog} size="small">
+      {/* <Dialog show={resendDialog} size="small">
         <div className="text-center" style={{ padding: 20 }}>
           <CircleIndicator
             size="medium"
@@ -364,7 +352,7 @@ export function RegisterPage() {
             Ok
           </Button>
         </div>
-      </Dialog>
+      </Dialog> */}
     </Wrapper>
   );
 }
