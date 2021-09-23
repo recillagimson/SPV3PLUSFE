@@ -12,13 +12,18 @@ import Button from 'app/components/Elements/Button';
 import H3 from 'app/components/Elements/H3';
 import Dialog from 'app/components/Dialog';
 import Logo from 'app/components/Assets/Logo';
+import maintenance from 'app/components/Assets/maintenance.png';
+
+import { useFlags } from 'utils/FlagsProvider';
 
 import { selectUser } from 'app/App/slice/selectors';
 
 export function AddMoney() {
   const history = useHistory();
   const user: any = useSelector(selectUser);
+  const flags: any = useFlags();
 
+  const [isMaintenance, setIsMaintenance] = React.useState(false);
   const [showEmailUpdate, setShowEmailUpdate] = React.useState(false); // added by habs
 
   const onClickDragonpay = () => {
@@ -31,12 +36,6 @@ export function AddMoney() {
     }
   };
 
-  const onClickBPI = () => {
-    if (user) {
-      history.push('/add-money/bpi');
-    }
-  };
-
   return (
     <ProtectedContent>
       <Box title="Web Banking" titleBorder withPadding>
@@ -44,7 +43,13 @@ export function AddMoney() {
           <ListItem flex>
             <ListItemText
               role="presentation"
-              onClick={onClickDragonpay}
+              onClick={() => {
+                if (flags && !flags.add_money_dragon_pay_enabled) {
+                  setIsMaintenance(true);
+                } else {
+                  onClickDragonpay();
+                }
+              }}
               primary="Dragonpay"
               style={{
                 flexGrow: 1,
@@ -55,7 +60,13 @@ export function AddMoney() {
           <ListItem flex>
             <ListItemText
               role="presentation"
-              onClick={onClickBPI}
+              onClick={() => {
+                if (flags && !flags.add_money_bpi_enabled) {
+                  setIsMaintenance(true);
+                } else {
+                  history.push('/add-money/bpi');
+                }
+              }}
               primary="BPI"
               style={{
                 flexGrow: 1,
@@ -103,6 +114,33 @@ export function AddMoney() {
             size="large"
           >
             Cancel
+          </Button>
+        </div>
+      </Dialog>
+
+      {/* Under Maintenance */}
+      <Dialog show={isMaintenance} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <img src={maintenance} alt="Under maintenance" />
+          <H3 margin="30px 0 10px">
+            SquidPay service is temporarily unavailable
+          </H3>
+          <p style={{ marginBottom: 35 }}>
+            Uh-oh, we are unable to provide access at this time. Rest assured
+            that we are resolving this issue, we apologize for the
+            inconvenience.
+          </p>
+          <Button
+            fullWidth
+            onClick={() => setIsMaintenance(false)}
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Close
           </Button>
         </div>
       </Dialog>
