@@ -52,7 +52,7 @@ function* getLoadEpins() {
         }),
       );
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
@@ -115,7 +115,7 @@ function* validateBuyLoad() {
         }),
       );
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
@@ -181,7 +181,7 @@ function* payEpins() {
         }),
       );
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {

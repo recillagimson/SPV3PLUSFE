@@ -147,7 +147,8 @@ export default function IDUploadListComponent({
   }, []);
 
   const onSelectFiles = (files: any) => {
-    const validFileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+    // const validFileTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+    const validFileTypes = ['image/jpeg', 'image/png'];
     if (files && files.length > 0) {
       const validFiles: any[] = [...arrayFiles];
       const invalidFiles: any[] = [...invalidArray];
@@ -210,8 +211,7 @@ export default function IDUploadListComponent({
               !validFileTypes.includes(files[i].type) &&
               files[i].size <= 5242880
             ) {
-              errorMsg =
-                'Invalid file format. Accepted formats .jpg, .png, .pdf';
+              errorMsg = 'Invalid file format. Accepted formats .jpg and .png';
             }
             if (
               !validFileTypes.includes(files[i].type) &&
@@ -342,7 +342,7 @@ export default function IDUploadListComponent({
           apiError += err.errors.id_number.join('\n');
         }
         if (err.errors.id_photos['0'] && err.errors.id_photos['0'].length > 0) {
-          apiError += `\nFile must be jpeg, png or pdf and must not be greated than 1024kb (1mb).`;
+          apiError += `\nFile must be jpeg or png and must not be greated than 5120kb (5mb).`;
         }
       }
       setApiErrorMsg(apiError || '');
@@ -468,7 +468,7 @@ export default function IDUploadListComponent({
               color="primary"
               size="large"
               onClick={uploadFile}
-              disabled={arrayFiles.length < 2}
+              disabled={arrayFiles.length < 2 || loading}
             >
               Upload
             </Button>
@@ -497,7 +497,7 @@ export default function IDUploadListComponent({
           - Must show front and back details of the ID
           <br />
           - Max file size: 5MB (5120kb)
-          <br />- Formats accepted: JPG, PNG and PDF
+          <br />- Formats accepted: JPG and PNG
         </Note>
       </Box>
 

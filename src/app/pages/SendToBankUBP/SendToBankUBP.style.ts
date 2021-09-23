@@ -215,11 +215,12 @@ export const ReviewListItem = styled.div`
     font-style: normal;
     line-height: 21px;
     margin: 0;
-    width: 45%;
+    /* width: 45%; */
 
     &:last-child {
       text-align: right;
-      width: 53%;
+      padding-left: 10px;
+      /* width: 53%; */
     }
   }
 `;

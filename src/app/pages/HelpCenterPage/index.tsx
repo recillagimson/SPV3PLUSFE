@@ -53,11 +53,8 @@ export function HelpCenterPage() {
           </ListItem>
           <ListItem flex>
             <ListItemButton
-              // as="a"
-              // href="https://squidpay.ph/privacypolicy"
-              // target="_blank"
               onClick={() => {
-                history.push('/privacypolicy');
+                history.push('/help-center/privacy-policy');
                 analytics.logEvent(events.helpCenter, {
                   type: 'privacy_policy',
                 });
@@ -71,11 +68,8 @@ export function HelpCenterPage() {
           </ListItem>
           <ListItem flex>
             <ListItemButton
-              // as="a"
-              // href="https://squidpay.ph/tac"
-              // target="_blank"
               onClick={() => {
-                history.push('/terms-and-condition');
+                history.push('/help-center/terms-and-condition');
                 analytics.logEvent(events.helpCenter, {
                   type: 'terms_and_conditions',
                 });

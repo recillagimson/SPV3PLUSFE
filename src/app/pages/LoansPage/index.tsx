@@ -24,6 +24,7 @@ import RfscLogo from 'app/components/Assets/RFSC_Logo.png';
 
 import * as S from './styled/LoansPage';
 import useFetch from 'utils/useFetch';
+import H5 from 'app/components/Elements/H5';
 
 export function LoansPage() {
   const history = useHistory();
@@ -193,10 +194,11 @@ export function LoansPage() {
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="exclamation-circle" />
           </CircleIndicator>
-          <p style={{ margin: '15px 0 10px' }}>
-            <strong>Leave site?</strong>
+          <H5>You are about to leave SquidPay</H5>
+          <p>
+            To process this loan, you need to be redirected to our loan
+            partner’s page. Are you sure you want to proceed?
           </p>
-          <p>Are you you want to leave this page?</p>
           <Button
             fullWidth
             variant="contained"
@@ -207,14 +209,13 @@ export function LoansPage() {
               if (Window != null) {
                 Window?.open(
                   'https://apps.rfc.com.ph/rfc360loans/squidpay.php',
-                  '_blank',
-                  'noopener,noreferrer',
-                )?.focus();
+                  '_self',
+                );
                 setShowExitModal(false);
               }
             }}
           >
-            Leave Page
+            Proceed
           </Button>
           <Button
             style={{ marginTop: '12px' }}
