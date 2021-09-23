@@ -1,21 +1,29 @@
 import * as React from 'react';
 import { createRenderer } from 'react-test-renderer/shallow';
 import '@testing-library/jest-dom';
-
 import { BrowserRouter } from 'react-router-dom';
 
-import { RegisterPage } from '..';
+import 'utils/faLibrary';
+
+import AccountForm from '../AccountForm';
+import { initialState, reducer } from '../slice';
 
 const renderer = createRenderer();
 
-describe('<RegisterPage />', () => {
-  it('should render the initial registration page', () => {
+describe('<AccountForm />', () => {
+  beforeEach(() => {
     renderer.render(
       <BrowserRouter>
-        <RegisterPage />
+        <AccountForm onSuccessValidation={() => {}} />
       </BrowserRouter>,
     );
+  });
+
+  it('should render the form properly', () => {
     const renderedOutput = renderer.getRenderOutput();
     expect(renderedOutput).toMatchSnapshot();
+  });
+  it('should return value of use selector', () => {
+    expect(reducer(undefined, {})).toEqual(initialState);
   });
 });

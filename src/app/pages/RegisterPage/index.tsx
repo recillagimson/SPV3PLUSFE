@@ -81,6 +81,11 @@ export function RegisterPage() {
     }
   }, [response, error]);
 
+  React.useEffect(() => {
+    localStorage.setItem('spv_signup_steps', JSON.stringify(activeSteps));
+    localStorage.setItem('spv_signup_form', JSON.stringify(accountFormData));
+  }, [activeSteps]);
+
   // check the error payload
   // const apiErrorMessage = () => {
   //   if (error.code && error.code === 422) {

@@ -138,6 +138,7 @@ export default function AccountForm({
     }
   }, [preFill]);
 
+  // Enable code below for live checking of password and username
   // React.useEffect(() => {
   //   if (password.value !== '') {
   //     let validatePass = validatePassword(password.value);
@@ -357,7 +358,6 @@ export default function AccountForm({
         false,
         true,
       );
-      // dispatch(actions.getValidateLoading(data));
     }
   };
 
@@ -603,57 +603,6 @@ export default function AccountForm({
           </A>
           .
         </Paragraph>
-        {/* <Field className="agreement text-center" margin="25px 0 0">
-          <span>
-            <input
-              type="checkbox"
-              value={agree.value ? 'yes' : 'no'}
-              onChange={() => setAgree({ value: !agree.value, error: false })}
-              checked={agree.value || (agreePrivacy && agreeTerms)}
-            />
-            By creating an account, I agree to the{' '}
-            <button
-              className="as-link"
-              // href="https://squidpay.ph/tac"
-              // target="_blank"
-              // rel="noreferrer"
-              onClick={e => {
-                if (e && e.preventDefault) e.preventDefault();
-                setShowAgreeTerms(true);
-              }}
-            >
-              Terms and Condition
-            </button>{' '}
-            and{' '}
-            <button
-              className="as-link"
-              // href="https://squidpay.ph/privacypolicy"
-              // target="_blank"
-              // rel="noreferrer"
-              onClick={e => {
-                if (e && e.preventDefault) e.preventDefault();
-                setShowAgreePrivacy(true);
-              }}
-            >
-              Privacy Policy
-            </button>
-          </span>
-          {agree.error && !agreePrivacy && (
-            <ErrorMsg formError>
-              You must agree to our Privacy Policy to continue.
-            </ErrorMsg>
-          )}
-          {agree.error && !agreeTerms && (
-            <ErrorMsg formError>
-              You must agree to our Terms and Conditions to continue.
-            </ErrorMsg>
-          )}
-          {agree.error && agreePrivacy && agreeTerms && (
-            <ErrorMsg formError>
-              {agreePrivacy && agreeTerms && 'Tick the checkbox to continue.'}
-            </ErrorMsg>
-          )}
-        </Field> */}
       </form>
 
       <Dialog show={apiError.show} size="small">
