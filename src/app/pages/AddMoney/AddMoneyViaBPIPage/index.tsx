@@ -77,6 +77,7 @@ export function AddMoneyViaBPI() {
     return () => {
       dispatch(actions.getFetchReset()); // reset store state on unmount
       dispatch(actions.getProcessTopUpReset()); // reset store state on unmount
+      sessionStorage.setItem('amount', '');
       setIsCashIn(true);
       setIsSelectAccounts(false);
       setIsVerification(false);
@@ -93,6 +94,7 @@ export function AddMoneyViaBPI() {
       sessionStorage.setItem('amount', amount.value);
       window.location.href = bpiUrl.login_url;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, bpiUrl, amount.value]);
 
   //View select accounts on postback
@@ -103,6 +105,12 @@ export function AddMoneyViaBPI() {
         setAmount({ ...amount, value: amountValue.toString() });
         setIsSelectAccounts(true);
         setIsCashIn(false);
+        setIsVerification(false);
+      }
+      if (!amountValue) {
+        setIsCashIn(true);
+        setIsSelectAccounts(false);
+        setIsVerification(false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,6 +123,7 @@ export function AddMoneyViaBPI() {
       setIsCashIn(true);
       setIsSelectAccounts(false);
       setIsVerification(false);
+      sessionStorage.setItem('amount', '');
       dispatch(actions.getProcessTopUpReset());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -168,13 +177,19 @@ export function AddMoneyViaBPI() {
         err.errors.error_code &&
         err.errors.error_code.length > 0
       ) {
-        const i405 = err.errors.error_code.findIndex(j => j === 405);
+        const i426 = err.errors.error_code.findIndex(j => j === 426);
         const i412 = err.errors.error_code.findIndex(j => j === 412);
-        //dont display error 412
-        if (i412 === -1) {
+        //dont reset on error i426 && i412
+        if (i426 === -1 && i412 === -1) {
           apiError = err.errors.message.join('\n');
+          setIsCashIn(true);
+          setIsSelectAccounts(false);
+          setIsVerification(false);
+          sessionStorage.setItem('amount', '');
+          dispatch(actions.getProcessTopUpReset());
         }
-        if (i405 !== -1) {
+        //display error on 426
+        if (i426 !== -1) {
           apiError = err.errors.message.join('\n');
         }
       }
@@ -190,6 +205,11 @@ export function AddMoneyViaBPI() {
         'Oops! We are having problem connecting to BPI. Please try again later.',
       );
       setApiError(true);
+      setIsCashIn(true);
+      setIsSelectAccounts(false);
+      setIsVerification(false);
+      sessionStorage.setItem('amount', '');
+      dispatch(actions.getProcessTopUpReset());
     }
     if (err.response && !err.code) {
       apiError = err.response.statusText;
@@ -493,6 +513,7 @@ export function AddMoneyViaBPI() {
               fullWidth
               onClick={() => {
                 history.push('/dashboard');
+                sessionStorage.setItem('amount', '');
                 dispatch(actions.getFetchReset());
                 dispatch(actions.getProcessTopUpReset());
               }}

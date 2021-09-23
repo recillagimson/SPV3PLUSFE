@@ -70,8 +70,12 @@ const slice = createSlice({
       state.error = {};
       state.amount = null;
       state.bpiUrl = null;
+      state.bpiUrlToken = null;
+      state.accounts = null;
       state.data = null;
       state.processData = null;
+      state.request = null;
+      state.accessToken = null;
     },
     getFetchError(state, action: PayloadAction<ErrorState>) {
       state.error = action.payload;
