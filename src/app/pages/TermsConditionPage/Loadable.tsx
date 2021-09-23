@@ -4,7 +4,7 @@
 
 import { lazyLoad } from 'utils/loadable';
 
-export const TermsAndConditionConsent = lazyLoad(
+export const TermsAndConditionPage = lazyLoad(
   () => import('./index'),
-  module => module.TermsAndConditionConsent,
+  module => module.TermsAndConditionPage,
 );

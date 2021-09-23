@@ -57,8 +57,8 @@ import {
 import { getBarangays, getCities, getProvinces } from './addressReferences';
 
 type UserProfileFormProps = {
-  onCancel: () => void;
   onSuccess: () => void;
+  onCancel?: () => void;
   isTierUpgrade?: boolean;
   idPhotoID?: string[];
   selfieID?: string[];
@@ -411,7 +411,7 @@ export default function UserProfileForm({
   // function for looping year on birthday
   const loopYear = (yyyy: number) => {
     const yearArray: number[] = [];
-    let currentYear = new Date().getFullYear() - 15;
+    let currentYear = new Date().getFullYear() - 7; // 15 before, change to 7
     let startYear = yyyy || 1960;
 
     while (startYear <= currentYear) {
@@ -1594,15 +1594,17 @@ export default function UserProfileForm({
             )}
 
             <Flex alignItems="center" justifyContent="flex-end">
-              <Button
-                type="button"
-                variant="outlined"
-                color="secondary"
-                size="large"
-                onClick={onCancel}
-              >
-                Cancel
-              </Button>
+              {onCancel && (
+                <Button
+                  type="button"
+                  variant="outlined"
+                  color="secondary"
+                  size="large"
+                  onClick={onCancel}
+                >
+                  Cancel
+                </Button>
+              )}
               <Button
                 variant="contained"
                 color="primary"

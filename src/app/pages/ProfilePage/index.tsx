@@ -30,8 +30,6 @@ import UserUpdateEmail from './UserUpdateEmail';
 import UserUpdateBirthdate from './UserUpdateBirthdate';
 import UserUpdateName from './UserUpdateName';
 
-// import ProfileForm from './ProfileForm';
-
 export function UserProfilePage() {
   const dispatch = useDispatch();
   const profile: any = useSelector(selectUser);
@@ -162,7 +160,7 @@ export function UserProfilePage() {
   //   />
   // );
   let updateForm = (
-    <ProfileForm
+    <ProfileBronze
       onCancel={() => {
         setShowUpdateProfile(prev => !prev);
         setShowProfile(prev => !prev);
@@ -171,9 +169,23 @@ export function UserProfilePage() {
         setShowUpdateProfile(prev => !prev);
         setShowProfile(prev => !prev);
       }}
-      isBronze={Boolean(tierID) && tierID === TierIDs.bronze}
     />
   );
+
+  if (Boolean(tierID) && tierID !== TierIDs.bronze) {
+    updateForm = (
+      <ProfileSilver
+        onCancel={() => {
+          setShowUpdateProfile(prev => !prev);
+          setShowProfile(prev => !prev);
+        }}
+        onSuccess={() => {
+          setShowUpdateProfile(prev => !prev);
+          setShowProfile(prev => !prev);
+        }}
+      />
+    );
+  }
 
   return (
     <ProtectedContent>

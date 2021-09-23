@@ -14,11 +14,7 @@ import Button from 'app/components/Elements/Button';
 import InputIconWrapper from 'app/components/Elements/InputIconWrapper';
 import IconButton from 'app/components/Elements/IconButton';
 
-import {
-  regExIsGonnaBeEmail,
-  regExMobile,
-  validateEmail,
-} from 'app/components/Helpers';
+import { regExMobile, validateEmail } from 'app/components/Helpers';
 
 import Modal from 'app/components/Modal';
 import { H4, Paragraph } from 'app/components/Typography';
@@ -26,14 +22,9 @@ import { Redirect, useHistory } from 'react-router';
 
 import { useContainerSaga } from './slice';
 import { selectError, selectLoading, selectData } from './slice/selectors';
+import { validateEmailOrMobile } from 'helpers/formValidations';
 
-type LoginFormProps = {
-  /**
-   * Return the user credentials if there is no account detected
-   */
-  onNoAccount?: (isEmail: boolean, username: string, password: string) => void;
-};
-export default function LoginForm({ onNoAccount }: LoginFormProps) {
+export default function LoginForm() {
   const { actions } = useContainerSaga();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -192,59 +183,14 @@ export default function LoginForm({ onNoAccount }: LoginFormProps) {
 
     // check if field is not empty
     if (email.value !== '') {
-      // if a valid email and length is more than 50 characters
-      if (
-        !/\d/g.test(email.value) &&
-        validateEmail(email.value) &&
-        email.value.length > 50
-      ) {
-        error = true;
+      const validateValue = validateEmailOrMobile(email.value);
+      if (validateValue) {
+        error = validateValue.error;
         setEmail({
           ...email,
-          error: true,
-          msg: 'The email must not be greater than 50 characters.',
+          error: validateValue.error,
+          msg: validateValue.msg,
         });
-      }
-      // check if the value inputted doesn't start with a digit and valid email format
-      if (
-        (!/\d/g.test(email.value) ||
-          regExIsGonnaBeEmail.test(email.value.trim())) && // check if we are typing into an email format ie: asb@
-        !validateEmail(email.value) // check if what we type is a valid email format ie: email@example.com)
-      ) {
-        // set error message we did't pass email validation
-        error = true;
-        setEmail({
-          ...email,
-          error: true,
-          msg: 'The email must be a valid email address.',
-        });
-      }
-
-      // check if the value start with a digit and not a valid email
-      if (
-        !regExIsGonnaBeEmail.test(email.value.trim()) && // check if we are not typing into an email format
-        !validateEmail(email.value.trim()) && // validate if it's not valid email
-        /\d/g.test(email.value) // check if we started with a digit
-      ) {
-        if (!regExMobile.test(email.value) && email.value.length > 11) {
-          error = true;
-          setEmail({
-            ...email,
-            error: true,
-            msg: 'The mobile number must not be greater than 11 characters.',
-          });
-        }
-        // we have typed a digit and did not pass the email validation
-        // now check if it's in valid mobile format ie: 09 + 9 digit number
-        if (!regExMobile.test(email.value) && email.value.length <= 11) {
-          error = true;
-          setEmail({
-            ...email,
-            error: true,
-            msg:
-              'The mobile number is invalid. Use the format 09 + 9 digit mobile number.',
-          });
-        }
       }
     }
 
@@ -291,7 +237,7 @@ export default function LoginForm({ onNoAccount }: LoginFormProps) {
             Email or Mobile No. <i>*</i>
           </Label>
           <Input
-            id="loginUsername"
+            id="username"
             required
             type="text"
             value={email.value}
@@ -313,7 +259,7 @@ export default function LoginForm({ onNoAccount }: LoginFormProps) {
           </Label>
           <InputIconWrapper>
             <Input
-              id="loginPassword"
+              id="password"
               type={showPass ? 'text' : 'password'}
               value={password.value}
               placeholder="Password"
@@ -345,6 +291,7 @@ export default function LoginForm({ onNoAccount }: LoginFormProps) {
           fullWidth={true}
           size="large"
           variant="contained"
+          className="form-submit"
         >
           LOGIN
         </Button>
@@ -362,7 +309,7 @@ export default function LoginForm({ onNoAccount }: LoginFormProps) {
         okText="Close"
       />
       <Modal show={noAccount} size="small">
-        <div className="text-center">
+        <div id="noAccount" className="text-center">
           <img src="/img/no-account.png" alt="No account detected" />
           <H4 margin="30px 0 10px" align="center">
             No account detected

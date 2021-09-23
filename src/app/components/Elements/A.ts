@@ -1,18 +1,19 @@
-/**
- * Anchor Link
- * Styled <Link> from react-router-dom
- * @prop {string} color       one of 'default' | 'gold'
- */
 import styled from 'styled-components/macro';
 import { Link } from 'react-router-dom';
 import { StyleConstants } from 'styles/StyleConstants';
 
-type Props = {
+type AProps = {
   color?: 'default' | 'gold';
   underline?: string | undefined;
 };
 
-const A = styled(Link)<Props>`
+/**
+ * Anchor Link
+ * Styled <Link> from react-router-dom
+ *
+ * @typedef AProps;
+ */
+const A = styled(Link)<AProps>`
   color: ${p =>
     p.color === 'gold' ? StyleConstants.LINK_TEXT_GOLD : 'inherit'};
   transition: all 0.3s ease-in-out;

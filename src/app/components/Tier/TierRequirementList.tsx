@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   padding: 5px 0;
 
   h3 {
-    font-weight: 500;
+    font-weight: 400;
     font-size: 1rem;
     margin: 0 0 5px;
   }

@@ -9,7 +9,7 @@ const TitleStyle = styled.div<{ border?: boolean; padded?: boolean }>`
       ? `10px ${StyleConstants.spacing[24]}`
       : `${StyleConstants.spacing[16]} ${StyleConstants.spacing[24]}`};
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   border-bottom: ${p =>
     p.border ? `1px solid ${StyleConstants.divider}` : '0'};
   display: flex;

@@ -12,7 +12,7 @@ const Wrapper = styled.header<Props>`
   width: 100%;
   background-color: ${StyleConstants.WHITE};
   box-shadow: ${StyleConstants.BOX_SHADOW};
-  padding: ${p => (p.isLoggedIn ? '15px 25px' : '20px')};
+  padding: ${p => (p.isLoggedIn ? '15px 25px' : '13px 20px')};
 
   .spdin & {
     position: sticky;

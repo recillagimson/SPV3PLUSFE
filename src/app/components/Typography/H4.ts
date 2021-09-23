@@ -3,7 +3,7 @@ import TypographyProps from './types';
 
 const H4 = styled.h4<TypographyProps>`
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 700;
   font-style: ${p => (p.italic ? 'italic' : 'normal')};
   margin: ${p => (p.margin ? p.margin : '0 0 10px')};
   padding: ${p => (p.padding ? p.padding : '0 0')};

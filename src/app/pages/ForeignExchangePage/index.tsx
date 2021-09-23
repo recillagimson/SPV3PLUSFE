@@ -70,7 +70,7 @@ export function ForeignExchangePage() {
               foreignExchangeData
                 .filter(currency => {
                   return (
-                    currency.name.toLowerCase().includes(value.toLowerCase()) ||
+                    // currency.name.toLowerCase().includes(value.toLowerCase()) ||
                     currency.code.toLowerCase().includes(value.toLowerCase())
                   );
                 })

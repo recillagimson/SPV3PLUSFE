@@ -11,7 +11,7 @@ import loadingImg from 'app/components/Loading/loading_dark.gif';
 import FormElementStyle from './FormElementsStyle';
 import { StyleConstants } from 'styles/StyleConstants';
 
-const Wrapper = styled.div<{ full?: boolean }>`
+const Wrapper = styled.div<{ full?: boolean; noborder?: boolean }>`
   width: ${p => (p.full ? '100%' : 'auto')};
   display: ${p => (p.full ? 'block' : 'inline-block')};
   margin-right: ${p => (!p.full ? '15px' : '0')};
@@ -62,6 +62,7 @@ const Wrapper = styled.div<{ full?: boolean }>`
 interface SelectComponentProps extends React.SelectHTMLAttributes<any> {
   loading?: boolean;
   fullWidth?: boolean;
+  noBorder?: boolean;
   children: React.ReactNodeArray | React.ReactNode;
   value: any;
   onChange?: (o: any) => void;
@@ -70,13 +71,18 @@ interface SelectComponentProps extends React.SelectHTMLAttributes<any> {
 export default function SelectComponent({
   loading,
   fullWidth,
+  noBorder,
   children,
   value,
   onChange,
   ...rest
 }: SelectComponentProps) {
   return (
-    <Wrapper className="select-wrapper" full={fullWidth}>
+    <Wrapper
+      className="select-wrapper"
+      full={fullWidth}
+      noborder={noBorder || undefined}
+    >
       {loading && (
         <span className="loading">
           <img src={loadingImg} alt="Loading..." width="40" />

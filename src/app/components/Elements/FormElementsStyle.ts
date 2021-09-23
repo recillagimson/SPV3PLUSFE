@@ -6,10 +6,11 @@ import { StyleConstants } from 'styles/StyleConstants';
  * NOTE: if all elements will share the same design, modify this
  *       if not, extend this style, and add your css on the elements styled-component ie: Input.ts
  */
-const FormElementStyle = css<{ error?: boolean }>`
+const FormElementStyle = css<{ error?: boolean; noborder?: boolean }>`
   background-color: ${StyleConstants.WHITE};
   border-radius: ${StyleConstants.BORDER_RADIUS};
-  border: 1px solid ${StyleConstants.BORDER_COLOR};
+  border: ${p =>
+    p.noborder ? '0' : `1px solid ${StyleConstants.BORDER_COLOR}`};
   padding: 13px;
   color: ${StyleConstants.MAIN_TEXT};
   outline: none;

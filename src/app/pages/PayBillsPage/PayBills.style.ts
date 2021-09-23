@@ -16,7 +16,7 @@ export const Container = styled.section`
 export const ContainerTitle = styled.section`
   color: #38434d;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 24px;
   text-transform: capitalize;
   margin: 0;
@@ -176,7 +176,7 @@ export const ReviewContainer = styled.div<{
   .review-title {
     color: #38434d;
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 36px;
     text-align: center;
   }

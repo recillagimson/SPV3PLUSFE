@@ -6,7 +6,7 @@ import { StyleConstants } from 'styles/StyleConstants';
 //   font-size: 13px;
 //   display: block;
 //   margin: 5px 0px;
-//   font-weight: 500;
+//   font-weight: 400;
 // `;
 
 const Wrapper = styled.section`

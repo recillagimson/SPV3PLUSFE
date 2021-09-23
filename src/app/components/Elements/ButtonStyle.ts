@@ -209,8 +209,9 @@ const ButtonStyle = css<Props>`
   }
 
   &:disabled {
-    cursor: default;
-    background-color: ${StyleConstants.BODY_COLOR};
+    cursor: not-allowed;
+    /* opacity: 0.8; */
+    background-color: ${StyleConstants.color.tones.mute};
     color: ${StyleConstants.MAIN_TEXT};
   }
 `;
