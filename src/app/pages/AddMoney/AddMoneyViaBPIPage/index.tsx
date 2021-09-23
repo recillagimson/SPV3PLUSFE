@@ -73,6 +73,16 @@ export function AddMoneyViaBPI() {
     errormsg: '',
   });
 
+  useEffect(() => {
+    return () => {
+      dispatch(actions.getFetchReset()); // reset store state on unmount
+      dispatch(actions.getProcessTopUpReset()); // reset store state on unmount
+      setIsCashIn(true);
+      setIsSelectAccounts(false);
+      setIsVerification(false);
+    };
+  }, [actions, dispatch]);
+
   //Error useEffect
   //BPI login redirect useEFfect
   useEffect(() => {
@@ -102,9 +112,10 @@ export function AddMoneyViaBPI() {
   useEffect(() => {
     if (!isVerification && error && Object.keys(error).length > 0) {
       history.push('/add-money/bpi');
-      setIsSelectAccounts(false);
       setIsCashIn(true);
-      dispatch(actions.getFetchReset());
+      setIsSelectAccounts(false);
+      setIsVerification(false);
+      dispatch(actions.getProcessTopUpReset());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVerification, error]);
@@ -112,6 +123,7 @@ export function AddMoneyViaBPI() {
   //Show OTP view on /fundtopup submit
   useEffect(() => {
     if (data !== null) {
+      setIsCashIn(false);
       setIsSelectAccounts(false);
       setIsVerification(true);
     }
@@ -157,13 +169,16 @@ export function AddMoneyViaBPI() {
         err.errors.error_code.length > 0
       ) {
         const i405 = err.errors.error_code.findIndex(j => j === 405);
-        if (err.errors.message) {
+        const i412 = err.errors.error_code.findIndex(j => j === 412);
+        //dont display error 412
+        if (i412 === -1) {
           apiError = err.errors.message.join('\n');
         }
         if (i405 !== -1) {
           apiError = err.errors.message.join('\n');
         }
       }
+      //diplay amount error
       if (err.errors && err.errors?.amount?.length > 0) {
         apiError = err.errors.amount[0];
       }
@@ -479,6 +494,7 @@ export function AddMoneyViaBPI() {
               onClick={() => {
                 history.push('/dashboard');
                 dispatch(actions.getFetchReset());
+                dispatch(actions.getProcessTopUpReset());
               }}
               variant="contained"
               color="primary"

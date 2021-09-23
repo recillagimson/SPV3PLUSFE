@@ -65,17 +65,21 @@ const slice = createSlice({
       state.error = {};
       state.processData = action.payload;
     },
+    getProcessTopUpReset(state) {
+      state.loading = false;
+      state.error = {};
+      state.amount = null;
+      state.bpiUrl = null;
+      state.data = null;
+      state.processData = null;
+    },
     getFetchError(state, action: PayloadAction<ErrorState>) {
       state.error = action.payload;
-      state.amount = null;
       state.loading = false;
     },
     getFetchReset(state) {
       state.loading = false;
-      state.amount = null;
       state.error = {};
-      state.bpiUrl = null;
-      state.processData = null;
     },
   },
 });
