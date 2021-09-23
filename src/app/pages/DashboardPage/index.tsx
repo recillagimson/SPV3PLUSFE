@@ -215,15 +215,7 @@ export function DashboardPage() {
       </Grid>
 
       <ButtonFlexWrapper>
-        <DashboardButton
-          onClick={() => {
-            if (flags && !flags.add_money_dragon_pay_enabled) {
-              setIsMaintenance(true);
-            } else {
-              history.push('/add-money');
-            }
-          }}
-        >
+        <DashboardButton onClick={() => history.push('/add-money')}>
           <AddMoney />
           Add Money
         </DashboardButton>
