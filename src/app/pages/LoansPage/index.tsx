@@ -15,6 +15,8 @@ import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
 import { TierIDs } from 'app/components/Helpers/Tiers';
 import { selectUser } from 'app/App/slice/selectors';
 import CollapsibleContent from './components/CollapsibleContent';
+import H5 from 'app/components/Elements/H5';
+import Loading from 'app/components/Loading';
 // assets
 import LoansComingSoon from 'app/components/Assets/LoansComingSoon';
 import Copy from 'app/components/Assets/Copy';
@@ -24,7 +26,6 @@ import RfscLogo from 'app/components/Assets/RFSC_Logo.png';
 
 import * as S from './styled/LoansPage';
 import useFetch from 'utils/useFetch';
-import H5 from 'app/components/Elements/H5';
 
 export function LoansPage() {
   const history = useHistory();
@@ -156,6 +157,7 @@ export function LoansPage() {
         titleBorder
         withPadding
       >
+        {loading && <Loading position="absolute" />}
         {!selectedPartner ? (
           <React.Fragment>
             <Flex
@@ -194,8 +196,8 @@ export function LoansPage() {
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="exclamation-circle" />
           </CircleIndicator>
-          <H5>You are about to leave SquidPay</H5>
-          <p>
+          <H5 margin="10px 0 10px">You are about to leave SquidPay</H5>
+          <p style={{ margin: '0 0 25px' }}>
             To process this loan, you need to be redirected to our loan
             partner’s page. Are you sure you want to proceed?
           </p>
@@ -211,7 +213,7 @@ export function LoansPage() {
                   'https://apps.rfc.com.ph/rfc360loans/squidpay.php',
                   '_self',
                 );
-                setShowExitModal(false);
+                // setShowExitModal(false);
               }
             }}
           >
