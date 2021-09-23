@@ -157,7 +157,6 @@ export function LoansPage() {
         titleBorder
         withPadding
       >
-        {loading && <Loading position="absolute" />}
         {!selectedPartner ? (
           <React.Fragment>
             <Flex
