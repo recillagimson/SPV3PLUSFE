@@ -168,7 +168,7 @@ export const bpiListData = transactionHistoryDetailsData => {
     {
       label: 'Account Number',
       value: maskCharacters(
-        transactionHistoryDetailsData?.account_number || '',
+        transactionHistoryDetailsData?.bpi_account_number || '',
       ),
     },
     // {
