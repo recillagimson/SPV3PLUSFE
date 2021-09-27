@@ -217,13 +217,37 @@ export function sortBy(
   return arr;
 }
 
-/* Mask characters
+/**
+ * Mask characters
  * @param {string}  text          the string to be masked
- * @param {number}  lastDigits    number of last digits that will not be masked
- *                                default 4
- * @returns masked string
+ *
+ * @returns masked string except last 4 digits
  */
 export function maskCharacters(text: any = '') {
   // /\w(?=(?:\W*\w){4})/g
   return text.replace(/\w(?=\w{4,}$)/g, '*');
+}
+
+/**
+ * Mask Mobile Number
+ * @param {string}  value     Mobile number
+ */
+export function maskMobileNumber(value: string) {
+  const head = value.slice(0, 2);
+  const body = value.slice(2, -4);
+  const tail = value.slice(-4);
+
+  return head + body.replace(/./g, '*') + tail;
+}
+
+/**
+ * Mask Email
+ * @param {string}  value     Email address
+ */
+export function maskEmailAddress(value: string) {
+  const split = value.split('@');
+  const head = split[0].slice(0, 3);
+  const body = split[0].slice(3);
+
+  return head + body.replace(/./g, '*') + '@' + split[1];
 }

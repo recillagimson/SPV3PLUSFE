@@ -75,15 +75,15 @@ import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
 // #endregion
 
 import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
-
+import { LoansPage } from 'app/pages/LoansPage/Loadable';
 import { PrivacyPolicyPage } from 'app/pages/PrivacyPolicyPage/Loadable';
 import { TermsAndConditionPage } from 'app/pages/TermsConditionPage/Loadable';
-
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
-
 import { Page500 } from 'app/components/500/Loadable';
 import { ComingSoonPage } from 'app/components/ComingSoonPage/Loadable';
 
+/** Postback URL */
+import DragonpaySuccessPostback from './DragonpayPostback';
 import SuccessPostBack from './SuccessPostback';
 
 // import pageRoutes from './Routes';
@@ -185,7 +185,12 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (!forceUpdate && decrypt && path !== '/postback') {
+    if (
+      !forceUpdate &&
+      decrypt &&
+      path !== '/postback' &&
+      path !== '/postback/dragonpay'
+    ) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
@@ -262,6 +267,7 @@ export function App() {
   if (currentLocation) {
     if (
       currentLocation !== '/postback' &&
+      currentLocation !== '/postback/dragonpay' &&
       currentLocation !== '/privacy-policy' &&
       currentLocation !== '/terms-and-conditions'
     ) {
@@ -332,6 +338,12 @@ export function App() {
               path="/terms-and-conditions"
               component={TermsAndConditionPage}
             />
+            <Route exact path="/postback" component={SuccessPostBack} />
+            <Route
+              exact
+              path="/postback/dragonpay"
+              component={DragonpaySuccessPostback}
+            />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
@@ -371,6 +383,7 @@ export function App() {
               path="/foreign-exchange"
               component={ForeignExchangePage}
             />
+            <PrivateRoute exact path="/loans" component={LoansPage} />
             <PrivateRoute
               exact
               path="/help-center"
@@ -423,7 +436,6 @@ export function App() {
               component={TierUpgradePage}
             />
 
-            <Route exact path="/postback" component={SuccessPostBack} />
             {/* Not found page should be the last entry for this <Switch /> container */}
             <Route path="/error" component={Page500} />
             <Route path="/comingsoon" component={ComingSoonPage} />

@@ -36,6 +36,7 @@ import {
   faUpload,
   faRedo,
   faHistory,
+  faExclamationCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -60,6 +61,7 @@ library.add(
   faCaretDown,
   faCaretUp,
   faPen,
+  faExclamationCircle,
   faStopwatch,
   faSquare,
   faCheckSquare,
