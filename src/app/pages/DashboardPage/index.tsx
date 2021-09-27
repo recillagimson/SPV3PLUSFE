@@ -333,7 +333,11 @@ export function DashboardPage() {
             isBronze
               ? () => setShowUpgrade(true)
               : () => {
-                  history.push('/loans');
+                  if (flags && !flags.loans_enabled) {
+                    setIsMaintenance(true);
+                  } else {
+                    history.push('/loans');
+                  }
                 }
           }
         >
