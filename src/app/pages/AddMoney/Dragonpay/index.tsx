@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useHistory } from 'react-router';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 import Button from 'app/components/Elements/Button';
 import Input from 'app/components/Elements/Input';
+import InputTextWrapper from 'app/components/Elements/InputTextWrapper';
+import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Loading from 'app/components/Loading';
 import Logo from 'app/components/Assets/Logo';
 import Dialog from 'app/components/Dialog';
@@ -13,12 +16,6 @@ import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import H3 from 'app/components/Elements/H3';
 
 import { numberCommas } from 'app/components/Helpers';
-
-import { StyleConstants } from 'styles/StyleConstants';
-
-// dragonpay own component
-// import AddMoneyModal from '../components/AddMoneyModal';
-// import AddMoneyFrame from '../components/AddMoneyFrame';
 
 import { useContainerSaga } from './slice';
 import {
@@ -29,21 +26,10 @@ import {
 import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
 import { containerActions as dashActions } from 'app/pages/DashboardPage/slice';
 import Label from 'app/components/Elements/Label';
+import Paragraph from 'app/components/Elements/Paragraph';
 
 export function Dragonpay() {
-  const inputEl: any = React.useRef(null);
-  // const [showModal, setShowModal] = React.useState({
-  //   status: '',
-  //   show: false,
-  // });
-  const [showIframe, setShowIframe] = React.useState({
-    show: false,
-    url: '',
-  });
-  const [errorMessage, setErrorMessage] = React.useState('');
-  const [apiError, setApiError] = React.useState(false);
-  const [apiErrorMsg, setApiErrorMsg] = React.useState('');
-
+  const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
@@ -51,16 +37,40 @@ export function Dragonpay() {
   const dashData: any = useSelector(selectDashData);
   const addMoneyDragonpay = useSelector(selectAddMoneyDragonpay);
 
+  const [amount, setAmount] = React.useState({
+    value: '',
+    error: false,
+    msg: '',
+  });
+
+  const [showIframe, setShowIframe] = React.useState({
+    show: false,
+    url: '',
+  });
+  const [apiError, setApiError] = React.useState(false);
+  const [apiErrorMsg, setApiErrorMsg] = React.useState('');
+
   let windowObjectReference: Window | null = null;
 
   function handlerSubmitMoney() {
-    if (inputEl) {
-      setErrorMessage('');
-      if (inputEl.current.value > 0) {
-        dispatch(actions.getFetchLoading(inputEl.current.value));
-      } else {
-        setErrorMessage('Invalid amount.');
-      }
+    let hasError = false;
+
+    if (amount.value === '') {
+      hasError = true;
+      setAmount({ ...amount, error: true, msg: 'Please enter amount.' });
+    }
+
+    if (amount.value !== '' && parseInt(amount.value) < 50) {
+      hasError = true;
+      setAmount({
+        ...amount,
+        error: true,
+        msg: 'The amount must be at least 50 or greater.',
+      });
+    }
+
+    if (!hasError) {
+      dispatch(actions.getFetchLoading(parseInt(amount.value)));
     }
   }
 
@@ -76,21 +86,44 @@ export function Dragonpay() {
     if (windowObjectReference === null) {
       windowObjectReference = window.open(
         url,
-        'dragonpay',
+        'dragonpayWeb',
         'scrollbars=no,resizable=no,toolbar=no,menubar=no,width=720,height=560,left=200,top=200',
       );
     }
     dispatch(actions.getFetchReset());
     setShowIframe({ show: false, url: '' });
+    setAmount({ value: '', error: false, msg: '' });
+
+    if (windowObjectReference) {
+      windowObjectReference.addEventListener(
+        'beforeunload',
+        beforeUnloadListener,
+        { capture: true },
+      );
+    }
   }
+
+  // listener for the opened window
+  const beforeUnloadListener = e => {
+    if (e && e.preventDefault) e.preventDefault();
+    history.push('/dashboard');
+  };
+
+  React.useEffect(() => {
+    return () => {
+      if (windowObjectReference) {
+        windowObjectReference.removeEventListener(
+          'beforeunload',
+          beforeUnloadListener,
+          { capture: true },
+        );
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     if (error && Object.keys(error).length > 0) {
-      // setShowModal({
-      //   status: 'failed',
-      //   show: true,
-      // });
-      // setApiError(true);
       onApiError(error);
     }
 
@@ -99,9 +132,6 @@ export function Dragonpay() {
         show: true,
         url: addMoneyDragonpay.Url,
       });
-      if (inputEl) {
-        inputEl.current.value = '';
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, addMoneyDragonpay]);
@@ -124,6 +154,12 @@ export function Dragonpay() {
         const i405 = err.errors.error_code.findIndex(j => j === 405);
         if (i405 !== -1) {
           apiError = err.errors.message.join('\n');
+        }
+      }
+
+      if (err.errors && !err.errors.error_code) {
+        if (err.errors.amount && err.errors.amount.length > 0) {
+          apiError = err.errors.amount.join('\n');
         }
       }
       setApiErrorMsg(apiError || '');
@@ -183,46 +219,34 @@ export function Dragonpay() {
             style={{ margin: 'auto' }}
           />
         </div>
-        <div id="addMoneyDragonpay">
+        <div id="addMoneyDragonpay" style={{ marginTop: 30 }}>
           <Label htmlFor="amount">Amount</Label>
-          <Input
-            ref={inputEl}
-            id="amount"
-            placeholder="PHP 0.00"
-            type="number"
-            hidespinner={true}
-            onChange={() => setErrorMessage('')}
-            style={{
-              borderColor:
-                errorMessage && `${StyleConstants.BUTTONS.danger.main}`,
-            }}
-          />
-          {errorMessage.length ? (
-            <span
-              style={{
-                fontSize: '12px',
-                color: `${StyleConstants.BUTTONS.danger.main}`,
-              }}
-            >
-              {errorMessage}
-            </span>
-          ) : (
-            <span style={{ fontSize: '12px', fontWeight: 'lighter' }}>
+          <InputTextWrapper>
+            <Input
+              id="amount"
+              placeholder="0.00"
+              type="number"
+              hidespinner
+              value={amount.value}
+              onChange={e =>
+                setAmount({
+                  value: e.currentTarget.value,
+                  error: false,
+                  msg: '',
+                })
+              }
+              error={amount.error}
+            />
+            <span>PHP</span>
+          </InputTextWrapper>
+          {!amount.error && (
+            <Paragraph size="xsmall" color="mute" margin="3px 0 0">
               Available Balance PHP {balanceInfo}
-            </span>
+            </Paragraph>
           )}
+          {amount.error && <ErrorMsg formError>{amount.msg}</ErrorMsg>}
         </div>
       </Box>
-      {/* {showModal.show && (
-        <AddMoneyModal success={showModal.status} onClick={handlerCloseModal} />
-      )} */}
-      {/* {showIframe.show && (
-        <AddMoneyFrame
-          urlLink={showIframe.url}
-          title="Dragonpay"
-          onClick={handlerCloseFrame}
-        />
-      )} */}
 
       <Dialog show={apiError} size="small">
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>

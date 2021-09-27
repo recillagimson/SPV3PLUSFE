@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
@@ -5,6 +6,7 @@ import { DateTime } from 'luxon';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Loading from 'app/components/Loading';
+import H3 from 'app/components/Elements/H3';
 import H5 from 'app/components/Elements/H5';
 import Label from 'app/components/Elements/Label';
 import Field from 'app/components/Elements/Fields';
@@ -18,13 +20,18 @@ import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Card from 'app/components/Elements/Card/Card';
 import Grid from 'app/components/Elements/Grid';
 import Receipt from 'app/components/Receipt';
+import Paragraph from 'app/components/Elements/Paragraph';
 
 import { Scrollbars } from 'react-custom-scrollbars';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Wrapper from './Wrapper';
 
-import { numberCommas, regExMobile } from 'app/components/Helpers';
+import {
+  maskCharacters,
+  numberCommas,
+  regExMobile,
+} from 'app/components/Helpers';
 
 import { useContainerSaga } from './slice';
 import {
@@ -36,13 +43,16 @@ import {
   selectPayData,
   selectPayLoading,
   selectPayError,
+  selectError,
 } from './slice/selectors';
 
 export function BuyEpinsPage() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
-  let success: any = useSelector(selectData);
-  let loading: any = useSelector(selectLoading);
+
+  const success: any = useSelector(selectData);
+  const loading: any = useSelector(selectLoading);
+  const error: any = useSelector(selectError);
 
   const validateLoading = useSelector(selectValidateLoading);
   const validateSuccess: any = useSelector(selectValidateData);
@@ -88,17 +98,21 @@ export function BuyEpinsPage() {
   const [validateApiMsg, setValidateApiMsg] = React.useState<{
     msg: string;
     error: boolean;
+    code: number;
   }>({
     msg: '',
     error: false,
+    code: 0,
   });
 
   const [payApiMsg, setPayApiMsg] = React.useState<{
     msg: string;
     error: boolean;
+    code: number;
   }>({
     msg: '',
     error: false,
+    code: 0,
   });
 
   React.useEffect(() => {
@@ -130,13 +144,24 @@ export function BuyEpinsPage() {
   }, [paySuccess]);
 
   React.useEffect(() => {
+    if (error && Object.keys(error).length > 0) {
+      if (error.code && error.code === 422) {
+        onApiError(error);
+      }
+    }
+  }, [error]);
+
+  React.useEffect(() => {
     if (validateError && Object.keys(validateError).length > 0) {
-      if (validateError.code && validateError.code === 422) {
-        if (validateError.errors && validateError.errors.error_code) {
-          validateError.errors.error_code.forEach((i: any) => {
-            setValidateApiMsg(errorHandler(i));
-          });
-        }
+      if (
+        validateError.code &&
+        validateError.errors &&
+        validateError.errors.error_code &&
+        validateError.errors.error_code.length > 0
+      ) {
+        validateError.errors.error_code.forEach((i: any) => {
+          setValidateApiMsg(errorHandler(i));
+        });
       }
     }
   }, [validateError]);
@@ -144,7 +169,12 @@ export function BuyEpinsPage() {
   React.useEffect(() => {
     if (payError && Object.keys(payError).length > 0) {
       if (payError.code && payError.code === 422) {
-        if (payError.errors && payError.errors.error_code) {
+        if (
+          payError.errors &&
+          payError.errors &&
+          payError.errors.error_code &&
+          payError.errors.error_code.length > 0
+        ) {
           payError.errors.error_code.forEach((i: any) => {
             setPayApiMsg(errorHandler(i));
           });
@@ -152,6 +182,107 @@ export function BuyEpinsPage() {
       }
     }
   }, [payError]);
+
+  const onApiError = err => {
+    const errors = err.errors ? err.errors : false;
+    if (errors && errors.error_code && errors.error_code.length > 0) {
+      errors.error_code.map(i => {
+        if (i === 302) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg: 'Transaction failed. Please try again.',
+          });
+          return null;
+        }
+        if (i === 401) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg: 'User profile not updated.',
+          });
+          return null;
+        }
+        if (i === 402) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg: 'Transaction denied due to insufficient Squidpay Balance.',
+          });
+          return null;
+        }
+        if (i === 405) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg:
+              'You have reached the allowable wallet limit for this month. Please try again next month.',
+          });
+          return null;
+        }
+        if (i === 406) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg:
+              'Oops! To completely access all Squidpay services, please update your profile. Thank you.',
+          });
+          return null;
+        }
+        if (i === 501) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg: 'Mobile number prefix is not supported.',
+          });
+          return null;
+        }
+        if (i === 502) {
+          setMobile({
+            ...mobile,
+            error: true,
+            msg: 'Mobile number is not supported.',
+          });
+          return null;
+        }
+
+        setMobile({
+          ...mobile,
+          error: false,
+          msg: '',
+        });
+        return null;
+      });
+    }
+    if (errors && !errors.error_code) {
+      let errMsg = '';
+      if (errors.mobile_number) {
+        errMsg = errors.mobile_number.join('\n');
+      }
+      if (errors.product_code) {
+        errMsg = errors.product_code.join('\n');
+      }
+      if (errors.product_name) {
+        errMsg = errors.product_name.join('\n');
+      }
+      if (errors.amount) {
+        errMsg = errors.amount.join('\n');
+      }
+      setMobile({
+        ...mobile,
+        error: errMsg !== '' ? true : false,
+        msg: errMsg,
+      });
+    }
+
+    if (!errors && err.response) {
+      setMobile({
+        ...mobile,
+        error: true,
+        msg: err.reponse.statusText,
+      });
+    }
+  };
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -211,11 +342,22 @@ export function BuyEpinsPage() {
   };
 
   const onCloseValidateError = () => {
-    setValidateApiMsg({ msg: '', error: false });
+    if (validateApiMsg.code === 501 || validateApiMsg.code === 502) {
+      setShowForm(true);
+      setShowProducts(false);
+      setSelectedProduct({
+        productCode: '',
+        productName: '',
+        description: '',
+        amount: '',
+      });
+      dispatch(actions.getValidateReset());
+    }
+    setValidateApiMsg({ msg: '', error: false, code: 0 });
   };
 
   const onClosePayError = () => {
-    setPayApiMsg({ msg: '', error: false });
+    setPayApiMsg({ msg: '', error: false, code: 0 });
   };
 
   const onCloseSuccessDialog = () => {
@@ -227,6 +369,12 @@ export function BuyEpinsPage() {
     dispatch(actions.getValidateReset());
     dispatch(actions.getPayReset());
     setMobile({ value: '', error: false, msg: '' });
+    setSelectedProduct({
+      productCode: '',
+      productName: '',
+      description: '',
+      amount: '',
+    });
   };
 
   const errorHandler = i => {
@@ -235,18 +383,21 @@ export function BuyEpinsPage() {
         return {
           msg: 'Transaction failed. Please try again.',
           error: true,
+          code: 302,
         };
 
       case 401: {
         return {
           msg: 'User profile not updated.',
           error: true,
+          code: 401,
         };
       }
       case 402: {
         return {
           msg: 'Transaction denied due to insufficient Squidpay Balance.',
           error: true,
+          code: 402,
         };
       }
       case 405: {
@@ -254,6 +405,7 @@ export function BuyEpinsPage() {
           msg:
             'You have reached the allowable wallet limit for this month. Please try again next month.',
           error: true,
+          code: 405,
         };
       }
       case 406: {
@@ -261,24 +413,28 @@ export function BuyEpinsPage() {
           msg:
             'Oops! To completely access all Squidpay services, please update your profile. Thank you.',
           error: true,
+          code: 406,
         };
       }
       case 501: {
         return {
           msg: 'Mobile number prefix is not supported.',
           error: true,
+          code: 501,
         };
       }
       case 502: {
         return {
           msg: 'Mobile number is not supported.',
           error: true,
+          code: 502,
         };
       }
       default:
         return {
           msg: 'Something went wrong',
           error: true,
+          code: 1,
         };
     }
   };
@@ -348,36 +504,37 @@ export function BuyEpinsPage() {
                 <H5 className="text-center">{mobile.value}</H5>
                 <br />
                 <section>
-                  <Scrollbars style={{ height: 300 }}>
-                    {success
-                      .slice()
-                      .sort((a, b) =>
-                        a.denomination > b.denomination ? 1 : -1,
-                      )
-                      .map((promo, idx) => (
-                        <div
-                          key={idx}
-                          className={
-                            selectedProduct.productName === ''
-                              ? 'product-list'
-                              : selectedProduct.productName ===
-                                promo.productCode
-                              ? 'active product-list'
-                              : 'product-list'
-                          }
-                          onClick={() => {
-                            setSelectedProduct({
-                              productCode: promo.productCode,
-                              productName: promo.productCode,
-                              description: promo.description,
-                              amount: promo.denomination,
-                            });
-                          }}
-                        >
-                          <div>{promo.description}</div>
-                          <div>PHP {promo.denomination}.00</div>
-                        </div>
-                      ))}
+                  <Scrollbars style={{ maxHeight: '40vh', height: '600px' }}>
+                    {success &&
+                      success
+                        .slice()
+                        .sort((a, b) =>
+                          a.productCode > b.productCode ? 1 : -1,
+                        )
+                        .map((promo, idx) => (
+                          <div
+                            key={idx}
+                            className={
+                              selectedProduct.productName === ''
+                                ? 'product-list'
+                                : selectedProduct.productName ===
+                                  promo.productCode
+                                ? 'active product-list'
+                                : 'product-list'
+                            }
+                            onClick={() => {
+                              setSelectedProduct({
+                                productCode: promo.productCode,
+                                productName: promo.productCode,
+                                description: promo.description,
+                                amount: promo.denomination,
+                              });
+                            }}
+                          >
+                            <div>{promo.description}</div>
+                            <div>PHP {promo.denomination}.00</div>
+                          </div>
+                        ))}
                   </Scrollbars>
                   <br />
                   <Flex justifyContent="flex-end">
@@ -457,10 +614,11 @@ export function BuyEpinsPage() {
                 <CircleIndicator size="medium" color="danger">
                   <FontAwesomeIcon icon="times" />
                 </CircleIndicator>
-                <H5 margin="10px 0 5px">Oops! Transaction Error</H5>
-                <small>{validateApiMsg.msg}</small>
-                <br />
-                <br />
+                <H3 margin="20px 0 5px">Oops! Transaction Error</H3>
+                <Paragraph size="small" align="center" margin="0 0 30px">
+                  {validateApiMsg.msg}
+                </Paragraph>
+
                 <Button
                   fullWidth
                   onClick={onCloseValidateError}
@@ -477,10 +635,11 @@ export function BuyEpinsPage() {
                 <CircleIndicator size="medium" color="danger">
                   <FontAwesomeIcon icon="times" />
                 </CircleIndicator>
-                <H5 margin="10px 0 5px">Oops! Transaction Error</H5>
-                <small>{payApiMsg.msg}</small>
-                <br />
-                <br />
+                <H3 margin="20px 0 5px">Oops! Transaction Error</H3>
+                <Paragraph size="small" align="center" margin="0 0 30px">
+                  {payApiMsg.msg}
+                </Paragraph>
+
                 <Button
                   fullWidth
                   onClick={onClosePayError}
@@ -495,17 +654,19 @@ export function BuyEpinsPage() {
             <Dialog show={showPay && Boolean(paySuccess)} size="small">
               <Receipt
                 title="Load purchase successful!"
-                total={numberCommas(paySuccess.amount)}
+                total={paySuccess.amount}
                 onClick={onCloseSuccessDialog}
                 date={humanReadable}
               >
                 <Flex justifyContent="space-between">
                   <span>Mobile Number</span>
-                  <span>{paySuccess.recipient_mobile_number || ''}</span>
+                  <span>
+                    {maskCharacters(paySuccess.recipient_mobile_number || '')}
+                  </span>
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Load</span>
-                  <span>{paySuccess.product_name}</span>
+                  <span>{selectedProduct.description}</span>
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Amount</span>
