@@ -20,7 +20,7 @@ import Button from 'app/components/Elements/Button';
 
 const Wrapper = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 60px);
   background-color: #fff;
   display: flex;
   align-items: center;
@@ -53,7 +53,7 @@ export default function DragonpaySuccessPostback() {
       window.resizeTo(380, window.outerHeight);
     }
   }, [location]);
-  console.log(window.name);
+
   return (
     <Wrapper>
       <div
