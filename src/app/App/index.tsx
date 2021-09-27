@@ -201,7 +201,9 @@ export function App() {
         dispatch(dashboardAction.getFetchLoading());
         dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(query));
       }, 2000);
-      history.push('/add-money/bpi/select-account');
+      setTimeout(() => {
+        history.push('/add-money/bpi/select-account');
+      }, 1500);
     }
 
     if (!forceUpdate && decrypt && path !== '/postback' && !query) {
