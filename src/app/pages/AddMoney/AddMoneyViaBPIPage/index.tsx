@@ -169,7 +169,7 @@ export function AddMoneyViaBPI() {
       clearInterval(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [counter, data]);
+  }, [counter, data, apiError]);
 
   const onApiError = (err: object | any) => {
     let apiError = '';
@@ -340,10 +340,6 @@ export function AddMoneyViaBPI() {
     setApiError(false);
     setApiErrorMsg('');
     dispatch(actions.getFetchReset());
-    //resume OTP countdown
-    if (counter > 0) {
-      setCounter(counter + 1);
-    }
   };
 
   let balanceInfo = '000.00';
