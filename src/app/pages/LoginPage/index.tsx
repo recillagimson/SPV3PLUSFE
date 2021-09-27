@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -41,6 +41,7 @@ import {
 } from './slice/selectors';
 
 export function LoginPage() {
+  const location = useLocation();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
@@ -60,7 +61,7 @@ export function LoginPage() {
   const [resendDialog, setResendDialog] = React.useState(false);
 
   // login, show verification and success
-  const [showLogin, setShowLogin] = React.useState(true);
+  const [showLogin, setShowLogin] = React.useState(false);
   const [toVerify, setToVerify] = React.useState(false);
   const [showVerify, setShowVerify] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false); // use to show the success message after activation
@@ -80,6 +81,11 @@ export function LoginPage() {
   });
 
   React.useEffect(() => {
+    const query = new URLSearchParams(location.search).get('code'); // add money
+    if (!query) {
+      setShowLogin(true);
+    }
+
     return () => {
       dispatch(actions.getFetchReset()); // reset store state on unmount
     };

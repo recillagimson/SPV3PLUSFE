@@ -203,9 +203,8 @@ export function App() {
         dispatch(dashboardAction.getFetchLoading());
         dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(query));
       }, 2000);
-      setTimeout(() => {
-        history.push('/add-money/bpi/select-account');
-      }, 1500);
+
+      history.push('/add-money/bpi/select-account');
     }
 
     if (!forceUpdate && decrypt && path !== '/postback' && !query) {
@@ -280,6 +279,7 @@ export function App() {
     })(document, 'script', 'facebook-jssdk');
   };
 
+  const bpiCode = new URLSearchParams(location.search).get('code'); // add money
   const currentLocation = location ? location.pathname : '';
   let showHeaderFooter = false;
   if (currentLocation) {
@@ -288,7 +288,8 @@ export function App() {
       // currentLocation !== '/postback/dragonpay' &&
       !currentLocation.includes('/postback') &&
       currentLocation !== '/privacy-policy' &&
-      currentLocation !== '/terms-and-conditions'
+      currentLocation !== '/terms-and-conditions' &&
+      !bpiCode
     ) {
       showHeaderFooter = true;
     }
