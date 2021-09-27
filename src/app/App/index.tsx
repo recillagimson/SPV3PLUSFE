@@ -75,12 +75,10 @@ import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
 // #endregion
 
 import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
-
+import { LoansPage } from 'app/pages/LoansPage/Loadable';
 import { PrivacyPolicyPage } from 'app/pages/PrivacyPolicyPage/Loadable';
 import { TermsAndConditionPage } from 'app/pages/TermsConditionPage/Loadable';
-
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
-
 import { Page500 } from 'app/components/500/Loadable';
 import { ComingSoonPage } from 'app/components/ComingSoonPage/Loadable';
 
@@ -413,6 +411,7 @@ export function App() {
               path="/foreign-exchange"
               component={ForeignExchangePage}
             />
+            <PrivateRoute exact path="/loans" component={LoansPage} />
             <PrivateRoute
               exact
               path="/help-center"
