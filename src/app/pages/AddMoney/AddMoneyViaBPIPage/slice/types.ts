@@ -14,6 +14,7 @@ export interface AddMoneyBpiState {
   request: object | any;
   data: object | any;
   processData: object | any;
+  otp: object | any;
 }
 
 export type ContainerState = AddMoneyBpiState;

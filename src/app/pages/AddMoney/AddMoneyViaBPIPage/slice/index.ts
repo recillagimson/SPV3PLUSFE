@@ -16,6 +16,7 @@ export const initialState: ContainerState = {
   request: null,
   data: null,
   processData: null,
+  otp: null,
 };
 
 const slice = createSlice({
@@ -64,6 +65,16 @@ const slice = createSlice({
       state.loading = false;
       state.error = {};
       state.processData = action.payload;
+    },
+    getFetchResendOTPLoading(state, action: PayloadAction<object | null>) {
+      state.loading = true;
+      state.error = {};
+      state.request = action.payload;
+    },
+    getFetchResendOTPSuccess(state, action: PayloadAction<object | null>) {
+      state.loading = false;
+      state.error = {};
+      state.otp = action.payload;
     },
     getProcessTopUpReset(state) {
       state.loading = false;

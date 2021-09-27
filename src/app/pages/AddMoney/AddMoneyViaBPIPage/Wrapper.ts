@@ -56,6 +56,15 @@ const Wrapper = styled.section`
       justify-content: center;
     }
   }
+
+  .verify-button-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    button {
+      margin-left: auto;
+    }
+  }
 `;
 
 export default Wrapper;
