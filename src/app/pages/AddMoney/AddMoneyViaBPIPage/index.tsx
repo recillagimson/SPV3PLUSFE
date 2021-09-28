@@ -33,7 +33,9 @@ import {
   selectLoading,
   selectError,
   selectProcessData,
+  selectResendOTP,
 } from './slice/selectors';
+import A from 'app/components/Elements/A';
 
 export function AddMoneyViaBPI() {
   const dispatch = useDispatch();
@@ -46,6 +48,7 @@ export function AddMoneyViaBPI() {
   const accounts: object | any = useSelector(selectAccounts);
   const data: object | any = useSelector(selectData);
   const processData: object | any = useSelector(selectProcessData);
+  const resendOTP: object | any = useSelector(selectResendOTP);
   const error: any = useSelector(selectError);
   const loading: boolean = useSelector(selectLoading);
 
@@ -54,7 +57,7 @@ export function AddMoneyViaBPI() {
   const [isSelectAccounts, setIsSelectAccounts] = useState(false);
   const [isVerification, setIsVerification] = useState(false);
 
-  // const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(0);
   const [apiError, setApiError] = useState(false);
   const [apiErrorMsg, setApiErrorMsg] = useState('');
   const [amount, setAmount] = useState({
@@ -145,29 +148,28 @@ export function AddMoneyViaBPI() {
     }
   }, [processData]);
 
-  //OTP timer from /fundtopup
-  // useEffect(() => {
-  //   if (data?.otpResponse?.body) {
-  //     const now: any = new Date();
-  //     const until: any = new Date(data?.otpResponse?.body?.otpValidUntil);
-  //     const nowTime = now.getMinutes() * 60 + now.getSeconds();
-  //     const untilTime = until.getMinutes() * 60 + now.getSeconds();
-  //     setCounter(untilTime - nowTime);
-  //   }
-  // }, [data]);
+  //OTP timer from /fundtopup and /resendotp
+  useEffect(() => {
+    if (data?.otpResponse?.body) {
+      setCounter(59);
+    }
+    if (resendOTP?.body) {
+      setCounter(59);
+    }
+  }, [data, resendOTP]);
 
-  //OTP Timer CountdownWIP
-  // useEffect(() => {
-  //   const timer: any =
-  //     data !== null &&
-  //     !loading &&
-  //     counter > 0 &&
-  //     setInterval(() => setCounter(counter - 1), 1000);
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [counter, data]);
+  //OTP Timer Countdown
+  useEffect(() => {
+    const timer: any =
+      data !== null &&
+      !loading &&
+      counter > 0 &&
+      setInterval(() => setCounter(counter - 1), 1000);
+    return () => {
+      clearInterval(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [counter, data, apiError]);
 
   const onApiError = (err: object | any) => {
     let apiError = '';
@@ -178,9 +180,8 @@ export function AddMoneyViaBPI() {
         err.errors.error_code.length > 0
       ) {
         const i426 = err.errors.error_code.findIndex(j => j === 426);
-        const i412 = err.errors.error_code.findIndex(j => j === 412);
-        //dont reset on error i426 && i412
-        if (i426 === -1 && i412 === -1) {
+        //dont reset on error i426
+        if (i426 === -1) {
           apiError = err.errors.message.join('\n');
           setIsCashIn(true);
           setIsSelectAccounts(false);
@@ -277,6 +278,7 @@ export function AddMoneyViaBPI() {
   //Process TopUp
   const onSubmitVerification = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    resend = false,
   ) => {
     if (e && e.preventDefault) e.preventDefault();
 
@@ -297,16 +299,31 @@ export function AddMoneyViaBPI() {
         errormsg: 'You entered invalid OTP.',
       });
     }
-    if (!error && data) {
+    if (!error && data && !resend) {
       const { transactionId, refId } = data;
       const payload = {
         token: accessToken,
         otp: otp.value,
-        transactionId: transactionId,
+        transactionId,
         amount: parseFloat(amount.value),
-        refId: refId,
+        refId,
       };
       dispatch(actions.getFetchProcessTopUpLoading(payload));
+    }
+
+    if (data && resend) {
+      setOtp({
+        ...otp,
+        isError: false,
+        errormsg: '',
+      });
+      const { transactionId, response } = data;
+      const payload = {
+        token: accessToken,
+        mobileNumberToken: response?.body?.mobileNumberToken,
+        transactionId,
+      };
+      dispatch(actions.getFetchResendOTPLoading(payload));
     }
   };
 
@@ -356,6 +373,7 @@ export function AddMoneyViaBPI() {
               <Label>Amount</Label>
               <InputTextWrapper>
                 <Input
+                  data-testid="amount"
                   type="number"
                   placeholder="0.00"
                   value={amount.value}
@@ -482,22 +500,33 @@ export function AddMoneyViaBPI() {
                   />
                   {otp.isError && <ErrorMsg formError>{otp.errormsg}</ErrorMsg>}
                 </div>
-                {/* Comment for now */}
-                {/* <div className="timer">{counter} s</div> */}
+                <div className="timer">{counter} s</div>
               </div>
               <br />
               <br />
-              <Flex justifyContent="flex-end">
+              <div className="verify-button-wrapper">
+                {data !== null && counter === 0 && resendOTP === null && (
+                  <div>
+                    Need a new code?{' '}
+                    <A
+                      color="gold"
+                      to=""
+                      onClick={(e: any) => onSubmitVerification(e, true)}
+                    >
+                      Resend code
+                    </A>
+                  </div>
+                )}
                 <Button
                   type="submit"
                   color="secondary"
                   size="large"
                   variant="contained"
-                  onClick={onSubmitVerification}
+                  onClick={e => onSubmitVerification(e)}
                 >
                   Verify
                 </Button>
-              </Flex>
+              </div>
             </Fragment>
           </Card>
         )}

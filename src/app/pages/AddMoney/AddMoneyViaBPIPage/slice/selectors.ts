@@ -46,6 +46,11 @@ export const selectProcessData = createSelector(
   subState => subState.processData,
 );
 
+export const selectResendOTP = createSelector(
+  [selectDomain],
+  subState => subState.otp,
+);
+
 export const selectLoading = createSelector(
   [selectDomain],
   subState => subState.loading,
