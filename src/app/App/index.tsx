@@ -177,7 +177,7 @@ export function App() {
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
     const forceUpdate = getCookie('spv_uat_f');
-    const query = new URLSearchParams(location.search).get('code'); // add money
+    const bpiCode = new URLSearchParams(location.search).get('code'); // add money
 
     let decrypt: any = false;
     let username: string = '';
@@ -188,7 +188,7 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (!forceUpdate && decrypt && query && path === '/') {
+    if (!forceUpdate && decrypt && bpiCode && path === '/') {
       dispatch(actions.getClientTokenLoading());
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
@@ -199,14 +199,14 @@ export function App() {
       setTimeout(() => {
         dispatch(actions.getLoadUserProfile());
         dispatch(dashboardAction.getFetchLoading());
-        dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(query));
+        dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(bpiCode));
       }, 2000);
       setTimeout(() => {
         history.push('/add-money/bpi/select-account');
       }, 1500);
     }
 
-    if (!forceUpdate && decrypt && path !== '/postback' && !query) {
+    if (!forceUpdate && decrypt && !path.includes('/postback') && !bpiCode) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
