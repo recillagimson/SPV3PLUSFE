@@ -81,8 +81,8 @@ export function LoginPage() {
   });
 
   React.useEffect(() => {
-    const query = new URLSearchParams(location.search).get('code'); // add money
-    if (!query) {
+    const bpiCode = new URLSearchParams(location.search).get('code'); // add money
+    if (!bpiCode) {
       setShowLogin(true);
     }
 
