@@ -201,9 +201,8 @@ export function App() {
         dispatch(dashboardAction.getFetchLoading());
         dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(bpiCode));
       }, 2000);
-      setTimeout(() => {
-        history.push('/add-money/bpi/select-account');
-      }, 1500);
+
+      history.push('/add-money/bpi/select-account');
     }
 
     if (!forceUpdate && decrypt && !path.includes('/postback') && !bpiCode) {
@@ -282,7 +281,7 @@ export function App() {
   let showHeaderFooter = false;
   if (currentLocation) {
     if (
-      currentLocation !== '/postback' &&
+      !currentLocation.includes('/postback') &&
       currentLocation !== '/privacy-policy' &&
       currentLocation !== '/terms-and-conditions'
     ) {
