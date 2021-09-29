@@ -57,6 +57,7 @@ export function AddMoneyViaBPI() {
   const [isSelectAccounts, setIsSelectAccounts] = useState(false);
   const [isVerification, setIsVerification] = useState(false);
 
+  const [isError412, setIsError412] = useState(false);
   const [counter, setCounter] = useState(0);
   const [apiError, setApiError] = useState(false);
   const [apiErrorMsg, setApiErrorMsg] = useState('');
@@ -80,13 +81,13 @@ export function AddMoneyViaBPI() {
     setIsCashIn(true);
     setIsSelectAccounts(false);
     setIsVerification(false);
-    sessionStorage.setItem('amount', '');
     setAmount({
       ...amount,
       value: '',
       isError: false,
       errormsg: '',
     });
+    setIsError412(false);
     dispatch(actions.getProcessTopUpReset());
   };
 
@@ -94,6 +95,8 @@ export function AddMoneyViaBPI() {
     return () => {
       dispatch(actions.getFetchReset()); // reset store state on unmount
       resetAddMoney();
+      sessionStorage.setItem('amount', '');
+      sessionStorage.setItem('url', '');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actions, dispatch]);
@@ -106,6 +109,7 @@ export function AddMoneyViaBPI() {
     }
     if (bpiUrl) {
       sessionStorage.setItem('amount', amount.value);
+      sessionStorage.setItem('url', bpiUrl?.login_url);
       window.location.href = bpiUrl.login_url;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -117,8 +121,8 @@ export function AddMoneyViaBPI() {
       const amountValue: string | null = sessionStorage.getItem('amount');
       if (amountValue && !isVerification) {
         setAmount({ ...amount, value: amountValue.toString() });
-        setIsSelectAccounts(true);
         setIsCashIn(false);
+        setIsSelectAccounts(true);
         setIsVerification(false);
       }
       if (!amountValue) {
@@ -129,15 +133,6 @@ export function AddMoneyViaBPI() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  //Redirect to add money landing state and page is not otp screen
-  useEffect(() => {
-    if (!isVerification && error && Object.keys(error).length > 0) {
-      history.push('/add-money/bpi');
-      resetAddMoney();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVerification, error]);
 
   //Show OTP view on /fundtopup submit
   useEffect(() => {
@@ -187,8 +182,9 @@ export function AddMoneyViaBPI() {
         err.errors.error_code.length > 0
       ) {
         const i426 = err.errors.error_code.findIndex(j => j === 426);
-        //dont reset on error i426
-        if (i426 === -1) {
+        const i412 = err.errors.error_code.findIndex(j => j === 412);
+        //dont reset on error i426 & i412
+        if (i426 === -1 && i412 === -1) {
           apiError = err.errors.message.join('\n');
           resetAddMoney();
         }
@@ -196,10 +192,16 @@ export function AddMoneyViaBPI() {
         if (i426 !== -1) {
           apiError = err.errors.message.join('\n');
         }
+        //display error on 412
+        if (i412 !== -1) {
+          apiError = err.errors.message.join('\n');
+          setIsError412(true);
+        }
       }
       //diplay amount error
       if (err.errors && err.errors?.amount?.length > 0) {
         apiError = err.errors.amount[0];
+        resetAddMoney();
       }
       setApiErrorMsg(apiError || '');
       setApiError(true);
@@ -215,11 +217,13 @@ export function AddMoneyViaBPI() {
       apiError = err.response.statusText;
       setApiErrorMsg(apiError || '');
       setApiError(true);
+      resetAddMoney();
     }
     if (!err.response && !err.code) {
       apiError = err.message;
       setApiErrorMsg(apiError || '');
       setApiError(true);
+      resetAddMoney();
     }
   };
 
@@ -339,6 +343,11 @@ export function AddMoneyViaBPI() {
     setApiError(false);
     setApiErrorMsg('');
     dispatch(actions.getFetchReset());
+    if (isError412) {
+      const url: any = sessionStorage.getItem('url');
+      dispatch(actions.getFetchRedirectLoading());
+      window.location.href = url;
+    }
   };
 
   let balanceInfo = '000.00';
@@ -542,6 +551,8 @@ export function AddMoneyViaBPI() {
               onClick={() => {
                 history.push('/dashboard');
                 resetAddMoney();
+                sessionStorage.setItem('amount', '');
+                sessionStorage.setItem('url', '');
               }}
               variant="contained"
               color="primary"
