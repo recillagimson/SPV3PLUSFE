@@ -21,6 +21,7 @@ import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import H3 from 'app/components/Elements/H3';
 import RadioComponent from 'app/components/Elements/Radio';
 import Loading from 'app/components/Loading';
+import A from 'app/components/Elements/A';
 
 import Wrapper from './Wrapper';
 import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
@@ -35,7 +36,6 @@ import {
   selectProcessData,
   selectResendOTP,
 } from './slice/selectors';
-import A from 'app/components/Elements/A';
 
 export function AddMoneyViaBPI() {
   const dispatch = useDispatch();
@@ -76,15 +76,26 @@ export function AddMoneyViaBPI() {
     errormsg: '',
   });
 
+  const resetAddMoney = () => {
+    setIsCashIn(true);
+    setIsSelectAccounts(false);
+    setIsVerification(false);
+    sessionStorage.setItem('amount', '');
+    setAmount({
+      ...amount,
+      value: '',
+      isError: false,
+      errormsg: '',
+    });
+    dispatch(actions.getProcessTopUpReset());
+  };
+
   useEffect(() => {
     return () => {
       dispatch(actions.getFetchReset()); // reset store state on unmount
-      dispatch(actions.getProcessTopUpReset()); // reset store state on unmount
-      sessionStorage.setItem('amount', '');
-      setIsCashIn(true);
-      setIsSelectAccounts(false);
-      setIsVerification(false);
+      resetAddMoney();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actions, dispatch]);
 
   //Error useEffect
@@ -123,11 +134,7 @@ export function AddMoneyViaBPI() {
   useEffect(() => {
     if (!isVerification && error && Object.keys(error).length > 0) {
       history.push('/add-money/bpi');
-      setIsCashIn(true);
-      setIsSelectAccounts(false);
-      setIsVerification(false);
-      sessionStorage.setItem('amount', '');
-      dispatch(actions.getProcessTopUpReset());
+      resetAddMoney();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVerification, error]);
@@ -183,11 +190,7 @@ export function AddMoneyViaBPI() {
         //dont reset on error i426
         if (i426 === -1) {
           apiError = err.errors.message.join('\n');
-          setIsCashIn(true);
-          setIsSelectAccounts(false);
-          setIsVerification(false);
-          sessionStorage.setItem('amount', '');
-          dispatch(actions.getProcessTopUpReset());
+          resetAddMoney();
         }
         //display error on 426
         if (i426 !== -1) {
@@ -206,11 +209,7 @@ export function AddMoneyViaBPI() {
         'Oops! We are having problem connecting to BPI. Please try again later.',
       );
       setApiError(true);
-      setIsCashIn(true);
-      setIsSelectAccounts(false);
-      setIsVerification(false);
-      sessionStorage.setItem('amount', '');
-      dispatch(actions.getProcessTopUpReset());
+      resetAddMoney();
     }
     if (err.response && !err.code) {
       apiError = err.response.statusText;
@@ -237,13 +236,13 @@ export function AddMoneyViaBPI() {
         errormsg: 'Oops! This field cannot be empty.',
       });
     }
-    // Check amount if it's less than 10
-    if (parseFloat(amount.value) < 10) {
+    // Check amount if it's less than 1
+    if (parseFloat(amount.value) < 1) {
       error = true;
       setAmount({
         ...amount,
         isError: true,
-        errormsg: 'The amount must be at least 10.',
+        errormsg: 'The amount must be at least 1.',
       });
     }
     if (!error) {
@@ -542,9 +541,7 @@ export function AddMoneyViaBPI() {
               fullWidth
               onClick={() => {
                 history.push('/dashboard');
-                sessionStorage.setItem('amount', '');
-                dispatch(actions.getFetchReset());
-                dispatch(actions.getProcessTopUpReset());
+                resetAddMoney();
               }}
               variant="contained"
               color="primary"
