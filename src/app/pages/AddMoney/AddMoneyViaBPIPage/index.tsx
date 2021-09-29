@@ -121,8 +121,8 @@ export function AddMoneyViaBPI() {
       const amountValue: string | null = sessionStorage.getItem('amount');
       if (amountValue && !isVerification) {
         setAmount({ ...amount, value: amountValue.toString() });
-        setIsSelectAccounts(true);
         setIsCashIn(false);
+        setIsSelectAccounts(true);
         setIsVerification(false);
       }
       if (!amountValue) {
@@ -133,20 +133,6 @@ export function AddMoneyViaBPI() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  //Redirect to add money landing state and page is not otp screen
-  useEffect(() => {
-    if (
-      !isVerification &&
-      !isError412 &&
-      error &&
-      Object.keys(error).length > 0
-    ) {
-      history.push('/add-money/bpi');
-      resetAddMoney();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVerification, isError412]);
 
   //Show OTP view on /fundtopup submit
   useEffect(() => {
@@ -231,11 +217,13 @@ export function AddMoneyViaBPI() {
       apiError = err.response.statusText;
       setApiErrorMsg(apiError || '');
       setApiError(true);
+      resetAddMoney();
     }
     if (!err.response && !err.code) {
       apiError = err.message;
       setApiErrorMsg(apiError || '');
       setApiError(true);
+      resetAddMoney();
     }
   };
 
