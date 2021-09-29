@@ -96,6 +96,10 @@ const slice = createSlice({
       state.loading = false;
       state.error = {};
     },
+    getFetchRedirectLoading(state) {
+      state.loading = true;
+      state.error = {};
+    },
   },
 });
 
