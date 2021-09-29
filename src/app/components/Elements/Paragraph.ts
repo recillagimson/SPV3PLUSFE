@@ -67,6 +67,7 @@ const Paragraph = styled.p<ParagraphProps>`
   margin: ${p => (p.margin ? p.margin : '0 0 15px')};
   padding: ${p => (p.padding ? p.padding : '0 0')};
   color: ${p => (p.color ? colors[p.color] : colors['default'])};
+  white-space: pre-wrap;
 `;
 
 export default Paragraph;
