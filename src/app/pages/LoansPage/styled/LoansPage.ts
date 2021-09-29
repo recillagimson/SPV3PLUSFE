@@ -53,7 +53,8 @@ export const Spacer = styled.span`
 export const ReferenceNumberContainer = styled.section`
   display: flex;
   flex-direction: row;
-  padding: 13px 12px;
+  min-height: 60px;
+  padding: 10px 15px;
   font-size: 16px;
   width: 100%;
   justify-content: space-between;

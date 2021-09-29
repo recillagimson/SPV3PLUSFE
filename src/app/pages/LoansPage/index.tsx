@@ -17,15 +17,16 @@ import { selectUser } from 'app/App/slice/selectors';
 import CollapsibleContent from './components/CollapsibleContent';
 import H5 from 'app/components/Elements/H5';
 import Loading from 'app/components/Loading';
+
+import useFetch from 'utils/useFetch';
+
 // assets
 import LoansComingSoon from 'app/components/Assets/LoansComingSoon';
 import Copy from 'app/components/Assets/Copy';
 // partner logos
 import RfscLogo from 'app/components/Assets/RFSC_Logo.png';
 // styles
-
 import * as S from './styled/LoansPage';
-import useFetch from 'utils/useFetch';
 
 export function LoansPage() {
   const history = useHistory();
@@ -55,17 +56,51 @@ export function LoansPage() {
     }
   }, [isBronze, setShowUpgrade]);
 
-  const { loading, response, goFetch } = useFetch();
+  const { loading, response, error, goFetch } = useFetch();
 
   const [selectedPartner, setSelectedPartner] = React.useState<string>('');
   const [showExitModal, setShowExitModal] = React.useState<boolean>(false);
   const [partnerStep, setPartnerStep] = React.useState<number>(0);
+  const [loanID, setLoanID] = React.useState({
+    value: '',
+    error: false,
+    msg: '',
+  });
 
   React.useEffect(() => {
     if (partnerStep === 1) {
-      goFetch('/loans/get/reference_number', 'GET', '', '', true, true);
+      onFetchLoanID();
     }
-  }, [partnerStep, goFetch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [partnerStep]);
+
+  React.useEffect(() => {
+    if (response && response.reference_number) {
+      setLoanID({ value: response.reference_number, error: false, msg: '' });
+    }
+
+    if (error) {
+      if (
+        error.errors &&
+        error.errors.error_code &&
+        error.errors.error_code.length > 0
+      ) {
+        setLoanID({
+          value: '',
+          error: true,
+          msg: error.errors.message.join('\n'),
+        });
+      }
+      if (error && error.errors && !error.errors.error_code) {
+        setLoanID({ value: '', error: true, msg: error.message.join('\n') });
+      }
+    }
+  }, [response, error]);
+
+  const onFetchLoanID = React.useCallback(() => {
+    setLoanID({ value: '', error: false, msg: '' });
+    goFetch('/loans/get/reference_number', 'GET', '', '', true, true);
+  }, [goFetch]);
 
   const isPartner = React.useMemo(() => {
     return selection === 'partners';
@@ -126,11 +161,23 @@ export function LoansPage() {
               </Paragraph>
               <S.ReferenceNumberContainer>
                 <span>{response?.reference_number}</span>
-                {!loading && <Copy toCopy={response?.reference_number} />}
+                {loanID.value !== '' && (
+                  <Copy toCopy={response?.reference_number} />
+                )}
               </S.ReferenceNumberContainer>
+              {loanID.value === '' && loanID.error && (
+                <Paragraph
+                  size="small"
+                  color="danger"
+                  align="left"
+                  margin="1px 0 0"
+                >
+                  {loanID.msg}
+                </Paragraph>
+              )}
             </Flex>
-            <Flex justifyContent="flex-end" style={{ margin: '24px 0 0' }}>
-              {!loading && (
+            <Flex justifyContent="flex-end" style={{ margin: '18px 0 0' }}>
+              {loanID.value !== '' && (
                 <Button
                   variant="contained"
                   color="primary"
@@ -139,13 +186,29 @@ export function LoansPage() {
                   Next
                 </Button>
               )}
+              {loanID.value === '' && loanID.error && (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={e => onFetchLoanID()}
+                >
+                  Try Again
+                </Button>
+              )}
             </Flex>
           </React.Fragment>
         );
       default:
         return null;
     }
-  }, [partnerStep, setPartnerStep, response, loading]);
+  }, [
+    partnerStep,
+    response.reference_number,
+    loanID.value,
+    loanID.error,
+    loanID.msg,
+    onFetchLoanID,
+  ]);
 
   return (
     <ProtectedContent>
@@ -157,6 +220,7 @@ export function LoansPage() {
         titleBorder
         withPadding
       >
+        {loading && <Loading position="absolute" />}
         {!selectedPartner ? (
           <React.Fragment>
             <Flex
@@ -204,17 +268,19 @@ export function LoansPage() {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={e => {
-              e.preventDefault();
-              const Window = window;
-              if (Window != null) {
-                Window?.open(
-                  'https://apps.rfc.com.ph/rfc360loans/squidpay.php',
-                  '_self',
-                );
-                // setShowExitModal(false);
-              }
-            }}
+            as="a"
+            href="https://apps.rfc.com.ph/rfc360loans/squidpay.php"
+            // onClick={e => {
+            //   e.preventDefault();
+            //   const Window = window;
+            //   if (Window != null) {
+            //     Window?.open(
+            //       'https://apps.rfc.com.ph/rfc360loans/squidpay.php',
+            //       '_self',
+            //     );
+            //     // setShowExitModal(false);
+            //   }
+            // }}
           >
             Proceed
           </Button>

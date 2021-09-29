@@ -147,8 +147,8 @@ const CollapsibleContent = ({ setPartnerStep }: Props) => {
                   maxWidth: '382px',
                 }}
               >
-                {details.map(detail => (
-                  <li>{detail}</li>
+                {details.map((detail, idx) => (
+                  <li key={idx}>{detail}</li>
                 ))}
               </ul>
             </React.Fragment>
@@ -193,8 +193,8 @@ const CollapsibleContent = ({ setPartnerStep }: Props) => {
                   margin: '0 0 12px',
                 }}
               >
-                {details.map(detail => (
-                  <li>{detail}</li>
+                {details.map((detail, idx) => (
+                  <li key={idx}>{detail}</li>
                 ))}
               </ul>
               {note && (
