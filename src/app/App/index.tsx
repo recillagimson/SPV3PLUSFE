@@ -93,9 +93,10 @@ import SuccessPostBack from './SuccessPostback';
 import PrivateRoute from './PrivateRoute';
 
 /** selectors, slice */
-import { containerActions as dashboardAction } from 'app/pages/DashboardPage/slice';
 import { containerActions as addMoneyBpiAction } from 'app/pages/AddMoney/AddMoneyViaBPIPage/slice';
 import { useAppSaga } from './slice';
+import { useContainerSaga } from 'app/pages/DashboardPage/slice';
+
 import {
   selectSessionExpired,
   selectIsAuthenticated,
@@ -124,6 +125,7 @@ export function App() {
 
   // sample usage of slice (react redux)
   const { actions } = useAppSaga();
+  const { actions: dashboardAction } = useContainerSaga();
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -195,7 +197,7 @@ export function App() {
       dispatch(actions.getUserToken(decrypt.user_token));
       dispatch(actions.getSaveLoginName(username));
 
-      // delay the retrieval of references and user profile
+      // delay the retrieval of dashboard and user profile
       setTimeout(() => {
         dispatch(actions.getLoadUserProfile());
         dispatch(dashboardAction.getFetchLoading());
@@ -215,7 +217,6 @@ export function App() {
       setTimeout(() => {
         // dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
-        dispatch(dashboardAction.getFetchLoading());
       }, 2000);
 
       history.push('/dashboard');
