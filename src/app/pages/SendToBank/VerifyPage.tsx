@@ -131,21 +131,15 @@ export function VerifyOTPPage(props) {
         margin="20px auto"
       >
         <VerifyOTP
-          apiURL="/auth/verify/otp"
-          otpType="send2bank"
           onSuccess={() => dispatch(actions.sendToBankLoading())}
-          isUserToken
+          verifyURL="/auth/verify/otp"
+          isVerifyUserToken
+          otpType="send2bank"
+          resendURL="/auth/generate/otp"
+          resendPayload={JSON.stringify({
+            otp_type: 'send2bank',
+          })}
         />
-        <p className="resend-code">
-          Need a new code?{' '}
-          <span
-            onClick={() => {
-              dispatch(actions.generateSendToBankOTPLoading());
-            }}
-          >
-            Resend code
-          </span>
-        </p>
       </S.Wrapper>
       {/* Show success Dialog */}
       <Dialog show={isSuccessDialog} size="small">

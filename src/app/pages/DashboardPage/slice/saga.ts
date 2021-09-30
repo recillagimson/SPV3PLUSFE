@@ -1,4 +1,4 @@
-import { delay, call, put, select, takeLatest } from 'redux-saga/effects';
+import { delay, call, put, select, takeLatest, fork } from 'redux-saga/effects';
 import { request } from 'utils/request';
 
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
@@ -41,10 +41,10 @@ function* getDashboard() {
         apirequest.data.payload,
         decryptPhrase.passPhrase,
       );
-
-      yield put(actions.getFetchSuccess(decryptData));
+      yield fork(getTransactionHistory);
 
       if (decryptData && decryptData.tier) {
+        yield put(actions.getFetchSuccess(decryptData));
         yield put(appActions.getSaveTier(decryptData.tier));
       }
     }
