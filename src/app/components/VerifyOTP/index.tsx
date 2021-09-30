@@ -192,6 +192,8 @@ export default function VerifyOTPComponent({
   };
 
   const onResendOTP = () => {
+    setCode({ ...code, error: false, msg: '' });
+
     resend.goFetch(
       resendURL,
       'POST',

@@ -156,3 +156,4 @@ v1.1.3
 - Fix on Dragonpay postback url (VVBT-496)
 - Arrange alphabetically Buy EPINs products (VP2-371)
 - High Resolution Loader (VP2-245)
+- Verify OTP Clearing error message and added response when Resend Code is clicked (VP2-241)
