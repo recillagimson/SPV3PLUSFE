@@ -167,7 +167,9 @@ export const bpiListData = transactionHistoryDetailsData => {
     },
     {
       label: 'Account Number',
-      value: transactionHistoryDetailsData?.transactable?.account_number || '',
+      value: maskCharacters(
+        transactionHistoryDetailsData?.transactable?.account_number || '',
+      ),
     },
     // {
     //   label: 'Account Name',
