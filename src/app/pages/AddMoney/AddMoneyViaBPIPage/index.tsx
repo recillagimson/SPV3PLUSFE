@@ -66,8 +66,22 @@ export function AddMoneyViaBPI() {
     isError: false,
     errormsg: '',
   });
-  const [accountNumberToken, setAccountNumberToken] = useState({
-    value: '',
+  const [accountDetail, setAccountDetail] = useState<{
+    value: {
+      accountNumberToken: string;
+      accountNumber: string;
+      accountPreferredName: string;
+      accountType: string;
+    };
+    isError: Boolean;
+    errormsg: string;
+  }>({
+    value: {
+      accountNumberToken: '',
+      accountNumber: '',
+      accountPreferredName: '',
+      accountType: '',
+    },
     isError: false,
     errormsg: '',
   });
@@ -260,10 +274,10 @@ export function AddMoneyViaBPI() {
   //Fund TopUp
   const onSubmitCashIn = () => {
     let error = false;
-    if (accountNumberToken.value === '') {
+    if (accountDetail.value.accountNumberToken === '') {
       error = true;
-      setAccountNumberToken({
-        ...accountNumberToken,
+      setAccountDetail({
+        ...accountDetail,
         isError: true,
         errormsg: 'Oops! Please select an account.',
       });
@@ -271,7 +285,7 @@ export function AddMoneyViaBPI() {
     if (!error) {
       const data = {
         amount: parseFloat(amount.value),
-        accountNumberToken: accountNumberToken.value,
+        accountNumberToken: accountDetail.value.accountNumberToken,
         token: accessToken,
       };
       dispatch(actions.getFetchFundTopUpLoading(data));
@@ -310,6 +324,7 @@ export function AddMoneyViaBPI() {
         transactionId,
         amount: parseFloat(amount.value),
         refId,
+        accountNumber: accountDetail.value.accountNumber,
       };
       dispatch(actions.getFetchProcessTopUpLoading(payload));
     }
@@ -331,10 +346,18 @@ export function AddMoneyViaBPI() {
   };
 
   //Select accounts
-  const onRadioChange = (e: any) => {
-    setAccountNumberToken({
-      ...accountNumberToken,
-      value: e.target.value,
+  const onRadioChange = (
+    _e: any,
+    item: {
+      accountNumberToken: string;
+      accountNumber: string;
+      accountPreferredName: string;
+      accountType: string;
+    },
+  ) => {
+    setAccountDetail({
+      ...accountDetail,
+      value: item,
     });
   };
 
@@ -444,7 +467,7 @@ export function AddMoneyViaBPI() {
                       <RadioComponent
                         name={item.accountPreferredName}
                         value={item.accountNumberToken}
-                        onChange={e => onRadioChange(e)}
+                        onChange={e => onRadioChange(e, item)}
                       >
                         {bpiLogo()}
                         <div className="account-details">
@@ -458,8 +481,8 @@ export function AddMoneyViaBPI() {
                 )}
               </div>
               {accounts?.status === 'error' && <p>{accounts?.description}</p>}
-              {accountNumberToken.isError && (
-                <ErrorMsg formError>{accountNumberToken.errormsg}</ErrorMsg>
+              {accountDetail.isError && (
+                <ErrorMsg formError>{accountDetail.errormsg}</ErrorMsg>
               )}
               <Flex justifyContent="flex-end">
                 <Button
