@@ -137,7 +137,11 @@ export default function VerifyOTPComponent({
       }
 
       if (!errorCode && err.errors) {
-        setCode({ ...code, error: true, msg: err.message });
+        if (err.errors.code && err.errors.code.length > 0) {
+          setCode({ ...code, error: true, msg: err.errors.code.join('\n') });
+        } else {
+          setCode({ ...code, error: true, msg: err.message });
+        }
       }
 
       if (!errorCode && !err.errors && err.response) {
@@ -167,6 +171,7 @@ export default function VerifyOTPComponent({
   const onVerifyOTP = () => {
     let hasError = false;
     if (code.value === '' || (code.value && code.value.length < 4)) {
+      hasError = true;
       setCode({ ...code, error: true, msg: 'Please enter 4 Digit OTP.' });
     }
 
