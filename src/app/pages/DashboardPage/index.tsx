@@ -75,25 +75,6 @@ export function DashboardPage() {
 
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());
-    dispatch(actions.getTransactionLoading());
-
-    // const remoteFlags = {
-    //   add_money_dragon_pay_enabled: remoteConfig
-    //     .getValue('add_money_dragon_pay_enabled')
-    //     .asBoolean(),
-    //   buy_load_enabled: remoteConfig.getValue('buy_load_enabled').asBoolean(),
-    //   send_money_enabled: remoteConfig
-    //     .getValue('send_money_enabled')
-    //     .asBoolean(),
-    //   send_money_via_qr_enabled: remoteConfig
-    //     .getValue('send_money_via_qr_enabled')
-    //     .asBoolean(),
-    //   send_to_bank_ubp_enabled: remoteConfig
-    //     .getValue('send_to_bank_ubp_enabled')
-    //     .asBoolean(),
-    //   pay_bills_enabled: remoteConfig.getValue('pay_bills_enabled').asBoolean(),
-    // };
-    // setFlags(remoteFlags);
   }, [actions, dispatch]);
 
   let balanceInfo = '000.00';

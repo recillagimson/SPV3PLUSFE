@@ -15,7 +15,6 @@ import Input from 'app/components/Elements/Input';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Note from 'app/components/Elements/Note';
 import Button from 'app/components/Elements/Button';
-import A from 'app/components/Elements/A';
 import Logo from 'app/components/Assets/Logo';
 
 import H3 from 'app/components/Elements/H3';
@@ -287,17 +286,17 @@ export function SettingsChangePasswordPage() {
     }
   };
 
-  const onResendCode = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (e && e.preventDefault) e.preventDefault();
+  // const onResendCode = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  //   if (e && e.preventDefault) e.preventDefault();
 
-    const data = {
-      current_password: currentPass.value,
-      new_password: newPass.value,
-      new_password_confirmation: confirmPass.value,
-    };
+  //   const data = {
+  //     current_password: currentPass.value,
+  //     new_password: newPass.value,
+  //     new_password_confirmation: confirmPass.value,
+  //   };
 
-    dispatch(actions.getValidateLoading(data));
-  };
+  //   dispatch(actions.getValidateLoading(data));
+  // };
 
   const onSubmitPassword = () => {
     const data = {
@@ -515,16 +514,16 @@ export function SettingsChangePasswordPage() {
           >
             <VerifyOTP
               onSuccess={onSubmitPassword}
-              apiURL="/user/password/verify"
-              isUserToken
+              verifyURL="/user/password/verify"
+              isVerifyUserToken
+              resendURL="/user/password/validate"
+              resendPayload={JSON.stringify({
+                current_password: currentPass.value,
+                new_password: newPass.value,
+                new_password_confirmation: confirmPass.value,
+              })}
+              isResendUserToken
             />
-
-            <Field className="text-center f-small" margin="20px 0 10px">
-              Need a new code?{' '}
-              <A to="#" className="link" onClick={onResendCode} color="gold">
-                Resend Code
-              </A>
-            </Field>
           </div>
         </Box>
       )}
