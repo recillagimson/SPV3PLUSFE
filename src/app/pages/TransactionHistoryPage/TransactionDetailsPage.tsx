@@ -10,7 +10,7 @@ import Dialog from 'app/components/Dialog';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
 // Utils
-import { parseToNumber, numberWithCommas } from 'utils/common';
+import { numberWithCommas } from 'utils/common';
 
 /** slice */
 import { useContainerSaga } from './slice';
@@ -183,20 +183,17 @@ function TransactionHistoryDetailsPage(props) {
                       }`}
                     >
                       PHP&nbsp;
+                      {isPostiveAmount && '+'}
                       {numberWithCommas(
-                        parseToNumber(
-                          transactionHistoryDetailsData.signed_total_amount,
-                        ),
+                        transactionHistoryDetailsData.signed_total_amount,
                       )}
                     </p>
                     {hasServiceFee && (
                       <p>
                         Service Fee: PHP&nbsp;
                         {numberWithCommas(
-                          parseToNumber(
-                            transactionHistoryDetailsData.transactable
-                              .service_fee,
-                          ),
+                          transactionHistoryDetailsData.transactable
+                            .service_fee,
                         )}
                       </p>
                     )}

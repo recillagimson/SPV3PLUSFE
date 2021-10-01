@@ -148,17 +148,17 @@ export const bpiListData = transactionHistoryDetailsData => {
   // ) {
   //   name = `${transactionHistoryDetailsData.transactable.user_details.first_name} ${transactionHistoryDetailsData.transactable.user_details.last_name}`;
   // }
-  let bank = 'None';
-  if (
-    transactionHistoryDetailsData.transactable &&
-    transactionHistoryDetailsData.transactable.transaction_response &&
-    JSON.parse(transactionHistoryDetailsData.transactable.transaction_response)
-  ) {
-    let transactionResponse = JSON.parse(
-      transactionHistoryDetailsData.transactable.transaction_response,
-    );
-    bank = transactionResponse.iss ? transactionResponse.iss : 'BPI';
-  }
+  let bank = transactionHistoryDetailsData.transactable.bank_name || 'None';
+  // if (
+  //   transactionHistoryDetailsData.transactable &&
+  //   transactionHistoryDetailsData.transactable.transaction_response &&
+  //   JSON.parse(transactionHistoryDetailsData.transactable.transaction_response)
+  // ) {
+  //   let transactionResponse = JSON.parse(
+  //     transactionHistoryDetailsData.transactable.transaction_response,
+  //   );
+  //   bank = transactionResponse.iss ? transactionResponse.iss : 'BPI';
+  // }
 
   return [
     {
@@ -175,15 +175,15 @@ export const bpiListData = transactionHistoryDetailsData => {
     //   label: 'Account Name',
     //   value: name,
     // },
-    {
-      label: 'Send Receipt To',
-      value: 'None',
-    },
-    {
-      label: 'Purpose of Transaction',
-      value:
-        transactionHistoryDetailsData?.transactable.transaction_remarks || '',
-    },
+    // {
+    //   label: 'Send Receipt To',
+    //   value: 'None',
+    // },
+    // {
+    //   label: 'Purpose of Transaction',
+    //   value:
+    //     transactionHistoryDetailsData?.transactable.transaction_remarks || '',
+    // },
     {
       label: 'Transaction Number',
       value: transactionHistoryDetailsData?.reference_number || '',
