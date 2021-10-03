@@ -54,7 +54,7 @@ export default function QrUserInfo(props: Props) {
             profile.user_account.mobile_number || profile.user_account.email,
           )}
       </Grid>
-      {/* amount */}
+      {/* amount to enter */}
       {amount && (
         <>
           <Grid item md={3} justify="flex-start">
