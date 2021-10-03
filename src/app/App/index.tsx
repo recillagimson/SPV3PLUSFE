@@ -365,7 +365,8 @@ export function App() {
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
-
+            <PrivateRoute path="/qr-code" component={QrPages} />
+            <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute exact path="/buy" component={BuyLoadIndexPage} />
             <PrivateRoute exact path="/buy/load" component={BuyLoadPage} />
