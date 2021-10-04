@@ -156,3 +156,7 @@ v1.1.3
 - Fix on Dragonpay postback url (VVBT-496)
 - Arrange alphabetically Buy EPINs products (VP2-371)
 - High Resolution Loader (VP2-245)
+
+v1.1.4
+
+- Prevent multiple clicks on money transactions (VP2-441)

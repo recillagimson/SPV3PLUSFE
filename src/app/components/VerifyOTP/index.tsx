@@ -163,28 +163,31 @@ export default function VerifyOTPComponent({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     if (e && e.preventDefault) e.preventDefault();
-    let error = false;
 
-    if (code.value === '') {
-      error = true;
-      setCode({ ...code, error: true });
-    }
+    if (!loading) {
+      let error = false;
 
-    if (!error) {
-      setApiError('');
-      const data = {
-        url: apiURL,
-        isUser: isUserToken,
-        body: {
-          // code_type: codeType ? codeType : 'password_recovery',
-          mobile_number: viaValue && !isEmail ? viaValue : undefined,
-          email: viaValue && isEmail ? viaValue : undefined,
-          code: code.value,
-          otp_type: otpType ? otpType : undefined,
-        },
-      };
+      if (code.value === '') {
+        error = true;
+        setCode({ ...code, error: true });
+      }
 
-      dispatch(actions.getFetchLoading(data));
+      if (!error) {
+        setApiError('');
+        const data = {
+          url: apiURL,
+          isUser: isUserToken,
+          body: {
+            // code_type: codeType ? codeType : 'password_recovery',
+            mobile_number: viaValue && !isEmail ? viaValue : undefined,
+            email: viaValue && isEmail ? viaValue : undefined,
+            code: code.value,
+            otp_type: otpType ? otpType : undefined,
+          },
+        };
+
+        dispatch(actions.getFetchLoading(data));
+      }
     }
   };
 
@@ -227,6 +230,7 @@ export default function VerifyOTPComponent({
         fullWidth={true}
         size="large"
         variant="contained"
+        disabled={loading}
       >
         VERIFY
       </Button>

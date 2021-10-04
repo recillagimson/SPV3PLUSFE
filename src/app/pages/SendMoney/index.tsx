@@ -4,8 +4,10 @@ import { DateTime } from 'luxon';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import ProtectedContent from 'app/components/Layouts/ProtectedContent';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import ProtectedContent from 'app/components/Layouts/ProtectedContent';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Loading from 'app/components/Loading';
 import H3 from 'app/components/Elements/H3';
 import Label from 'app/components/Elements/Label';
@@ -43,6 +45,7 @@ import {
 import { numberWithCommas } from 'utils/common';
 
 /** slice */
+import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
@@ -55,11 +58,14 @@ import {
   // selectGenerateError,
   selectGenerateLoading,
 } from './slice/selectors';
+import Paragraph from 'app/components/Elements/Paragraph';
 
 export function SendMoney() {
   const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
+
+  const dashData: any = useSelector(selectDashData);
 
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
@@ -81,15 +87,19 @@ export function SendMoney() {
   });
 
   // api related state
-  // const [isError, setIsError] = React.useState(false);
-  // const [apiErrorMsg, setApiErrorMsg] = React.useState('');
+  const [isError, setIsError] = React.useState(false);
+  const [apiErrorMsg, setApiErrorMsg] = React.useState('');
 
   const [email, setEmail] = React.useState({
     value: '',
     error: false,
     msg: '',
   });
-  const [amount, setAmount] = React.useState({ value: '', error: false });
+  const [amount, setAmount] = React.useState({
+    value: '',
+    error: false,
+    msg: '',
+  });
   const [message, setMessage] = React.useState({ value: '', error: false });
 
   const [isVerification, setIsVerification] = React.useState(false);
@@ -102,12 +112,12 @@ export function SendMoney() {
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
 
-    let error = false;
+    let hasError = false;
     let anEmail = false;
 
     // first check if field is not empty
     if (email.value === '') {
-      error = true;
+      hasError = true;
       setEmail({
         ...email,
         error: true,
@@ -122,7 +132,7 @@ export function SendMoney() {
       !validateEmail(email.value) // check if what we type is a valid email format ie: email@example.com
     ) {
       // set error message we didn't pass email validation
-      error = true;
+      hasError = true;
       setEmail({
         ...email,
         error: true,
@@ -140,7 +150,7 @@ export function SendMoney() {
       // we have typed a digit and did not pass the email validation
       // now check if it's in valid mobile format ie: 09 + 9 digit number
       if (!regExMobile.test(email.value)) {
-        error = true;
+        hasError = true;
         setEmail({
           ...email,
           error: true,
@@ -160,17 +170,33 @@ export function SendMoney() {
 
     // Check amount if it's valid
     if (amount.value === '') {
-      error = true;
-      setAmount({ ...amount, error: true });
+      hasError = true;
+      setAmount({ ...amount, error: true, msg: 'Please enter amount.' });
     }
 
     // Check amount if it's less than
     if (parseFloat(amount.value) <= 0) {
-      error = true;
-      setAmount({ ...amount, error: true });
+      hasError = true;
+      setAmount({ ...amount, error: true, msg: 'Invalid amount.' });
     }
 
-    if (!error) {
+    if (amount.value !== '') {
+      if (
+        dashData &&
+        dashData.balance_info &&
+        parseFloat(amount.value).toFixed(2) >
+          parseFloat(dashData.balance_info.available_balance).toFixed(2)
+      ) {
+        hasError = true;
+        setAmount({
+          ...amount,
+          error: true,
+          msg: 'Your account balance is insufficient.',
+        });
+      }
+    }
+
+    if (!hasError) {
       const data = {
         email: anEmail ? email.value : undefined,
         mobile_number: !anEmail ? email.value : undefined,
@@ -209,16 +235,18 @@ export function SendMoney() {
   };
 
   const finalSend = () => {
-    const data = {
-      email: isEmail ? email.value : undefined,
-      mobile_number: !isEmail ? email.value : undefined,
-      amount: parseFloat(amount.value),
-      message: message.value,
-    };
+    if (!loading) {
+      const data = {
+        email: isEmail ? email.value : undefined,
+        mobile_number: !isEmail ? email.value : undefined,
+        amount: parseFloat(amount.value),
+        message: message.value,
+      };
 
-    // dispatch payload to saga
-    dispatch(actions.getFetchLoading(data));
-    // enable code below to integrate api
+      // dispatch payload to saga
+      dispatch(actions.getFetchLoading(data));
+      // enable code below to integrate api
+    }
   };
 
   const onCodeVerified = () => {
@@ -252,7 +280,21 @@ export function SendMoney() {
     setIsVerification(false);
     setIsSuccess(false);
     setEmail({ value: '', error: false, msg: '' });
-    setAmount({ value: '', error: false });
+    setAmount({ value: '', error: false, msg: '' });
+    setMessage({ value: '', error: false });
+    setValidateApiMsg({ msg: '', code: '', error: false });
+    dispatch(actions.getFetchReset());
+    dispatch(actions.getGenerateReset());
+    dispatch(actions.getValidateReset());
+    history.push('/dashboard');
+  };
+
+  const onCloseErrorDialog = () => {
+    // setShowModal({ status: '', show: false });
+    setIsVerification(false);
+    setIsSuccess(false);
+    setEmail({ value: '', error: false, msg: '' });
+    setAmount({ value: '', error: false, msg: '' });
     setMessage({ value: '', error: false });
     setValidateApiMsg({ msg: '', code: '', error: false });
     dispatch(actions.getFetchReset());
@@ -343,6 +385,49 @@ export function SendMoney() {
 
     if (success) {
       setIsSuccess(true);
+    }
+
+    if (error && Object.keys(error).length > 0) {
+      if (error.code && error.code === 422) {
+        if (error.errors && error.errors.error_code) {
+          error.errors.error_code.forEach((i: any) => {
+            if (i === 103) {
+              setApiErrorMsg('Recipient does not have a Squidpay account');
+              setIsError(true);
+              return;
+            }
+            if (i === 301) {
+              setApiErrorMsg('Not allowed to send to your own account.');
+              setIsError(true);
+              return;
+            }
+            if (i === 402) {
+              setApiErrorMsg(
+                'Your account balance is insufficient to continue this transaction. Please try again later.',
+              );
+              setIsError(true);
+              return;
+            }
+            if (i === 404) {
+              setApiErrorMsg('Oops! User not found');
+              setIsError(true);
+              return;
+            }
+            if (i === 405) {
+              setApiErrorMsg('Oh No! You have exceeded your monthly limit.');
+              setIsError(true);
+              return;
+            }
+            if (i === 409) {
+              setApiErrorMsg('Receiver Transaction Limit reached.');
+              setIsError(true);
+              return;
+            }
+            setApiErrorMsg('Please try again later.');
+            setIsError(true);
+          });
+        }
+      }
     }
   }, [validateError, validateSuccess, generateSuccess, error, success]);
 
@@ -450,7 +535,7 @@ export function SendMoney() {
                   <InputTextWrapper>
                     <Input
                       type="number"
-                      min="1"
+                      min="0"
                       placeholder="0.00"
                       value={amount.value}
                       autoComplete="off"
@@ -458,16 +543,14 @@ export function SendMoney() {
                         setAmount({
                           value: e.currentTarget.value,
                           error: false,
+                          msg: '',
                         })
                       }
                       error={validateApiMsg.code === '402' ? true : undefined}
                     />
-
                     <span>PHP</span>
                   </InputTextWrapper>
-                  {amount.error && (
-                    <ErrorMsg formError>* Invalid Amount</ErrorMsg>
-                  )}
+                  {amount.error && <ErrorMsg formError>{amount.msg}</ErrorMsg>}
 
                   {/* API Error Message */}
                   {validateApiMsg.code === '402' && !amount.error && (
@@ -575,10 +658,7 @@ export function SendMoney() {
                       <br />
                       <p>Total amount</p>
                       <H3 className="total-amount">
-                        PHP{' '}
-                        {Number.isInteger(validateSuccess.amount)
-                          ? validateSuccess.amount + '.00'
-                          : validateSuccess.amount}
+                        PHP {numberWithCommas(validateSuccess.amount)}
                       </H3>
                       <br />
                       <Button
@@ -597,52 +677,74 @@ export function SendMoney() {
                 </div>
               </>
             )}
-
-            <Dialog show={isSuccess} size="medium">
-              <Receipt
-                title="Money successfully sent to"
-                total={success.total_amount}
-                onClick={onCloseSuccessDialog}
-                date={humanReadable}
-              >
-                <Grid container>
-                  <Grid item xs={4}>
-                    <span className="description">Name</span>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <span className="value">
-                      {success.first_name} {success.last_name}
-                    </span>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <span className="description">
-                      {isEmail ? 'Email address' : 'Mobile number'}
-                    </span>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <span className="value">
-                      {isEmail
-                        ? maskEmailAddress(success.email || '')
-                        : maskMobileNumber(success.mobile_number || '')}
-                    </span>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <span className="description">Message</span>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <span className="value">{success.message}</span>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <span className="description">Transaction Number</span>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <span className="value">{success.reference_number}</span>
-                  </Grid>
-                </Grid>
-              </Receipt>
-            </Dialog>
           </Card>
         </Wrapper>
+
+        <Dialog show={isSuccess} size="medium">
+          <Receipt
+            title="Money successfully sent to"
+            total={success.total_amount}
+            onClick={onCloseSuccessDialog}
+            date={humanReadable}
+          >
+            <Grid container>
+              <Grid item xs={4}>
+                <span className="description">Name</span>
+              </Grid>
+              <Grid item xs={8}>
+                <span className="value">
+                  {success.first_name} {success.last_name}
+                </span>
+              </Grid>
+              <Grid item xs={4}>
+                <span className="description">
+                  {isEmail ? 'Email address' : 'Mobile number'}
+                </span>
+              </Grid>
+              <Grid item xs={8}>
+                <span className="value">
+                  {isEmail
+                    ? maskEmailAddress(success.email || '')
+                    : maskMobileNumber(success.mobile_number || '')}
+                </span>
+              </Grid>
+              <Grid item xs={4}>
+                <span className="description">Message</span>
+              </Grid>
+              <Grid item xs={8}>
+                <span className="value">{success.message}</span>
+              </Grid>
+              <Grid item xs={4}>
+                <span className="description">Transaction Number</span>
+              </Grid>
+              <Grid item xs={8}>
+                <span className="value">{success.reference_number}</span>
+              </Grid>
+            </Grid>
+          </Receipt>
+        </Dialog>
+
+        <Dialog show={isError} size="small">
+          <div className="text-center" style={{ padding: '30px 20px' }}>
+            <CircleIndicator size="medium" color="danger">
+              <FontAwesomeIcon icon="times" />
+            </CircleIndicator>
+            <H3 margin="15px 0 10px">Oops, Send Money Error</H3>
+            <Paragraph align="center" margin="0 0 30px">
+              {apiErrorMsg}
+            </Paragraph>
+
+            <Button
+              fullWidth
+              onClick={onCloseErrorDialog}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              Ok
+            </Button>
+          </div>
+        </Dialog>
       </ProtectedContent>
     </>
   );
