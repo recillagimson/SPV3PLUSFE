@@ -149,3 +149,10 @@ v1.1.2
 - Remove validation of PDF file in Uploading of ids in account upgrade (VP2-300)
 - Removed Verify OTP screen on account upgrade to silver (VP2-316)
 - Masking of characters in email address and mobile number (VP2-324)
+
+v1.1.3
+
+- Buy load fix stuck in page (VVBT-498)
+- Fix on Dragonpay postback url (VVBT-496)
+- Arrange alphabetically Buy EPINs products (VP2-371)
+- High Resolution Loader (VP2-245)

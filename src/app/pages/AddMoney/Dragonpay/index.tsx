@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useHistory } from 'react-router';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
@@ -28,6 +29,14 @@ import Label from 'app/components/Elements/Label';
 import Paragraph from 'app/components/Elements/Paragraph';
 
 export function Dragonpay() {
+  const history = useHistory();
+  const { actions } = useContainerSaga();
+  const dispatch = useDispatch();
+  const loading = useSelector(selectLoading);
+  const error: any = useSelector(selectError);
+  const dashData: any = useSelector(selectDashData);
+  const addMoneyDragonpay = useSelector(selectAddMoneyDragonpay);
+
   const [amount, setAmount] = React.useState({
     value: '',
     error: false,
@@ -40,13 +49,6 @@ export function Dragonpay() {
   });
   const [apiError, setApiError] = React.useState(false);
   const [apiErrorMsg, setApiErrorMsg] = React.useState('');
-
-  const { actions } = useContainerSaga();
-  const dispatch = useDispatch();
-  const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
-  const dashData: any = useSelector(selectDashData);
-  const addMoneyDragonpay = useSelector(selectAddMoneyDragonpay);
 
   let windowObjectReference: Window | null = null;
 
@@ -84,14 +86,41 @@ export function Dragonpay() {
     if (windowObjectReference === null) {
       windowObjectReference = window.open(
         url,
-        'dragonpay',
+        'dragonpayWeb',
         'scrollbars=no,resizable=no,toolbar=no,menubar=no,width=720,height=560,left=200,top=200',
       );
     }
     dispatch(actions.getFetchReset());
     setShowIframe({ show: false, url: '' });
     setAmount({ value: '', error: false, msg: '' });
+
+    if (windowObjectReference) {
+      windowObjectReference.addEventListener(
+        'beforeunload',
+        beforeUnloadListener,
+        { capture: true },
+      );
+    }
   }
+
+  // listener for the opened window
+  const beforeUnloadListener = e => {
+    if (e && e.preventDefault) e.preventDefault();
+    history.push('/dashboard');
+  };
+
+  React.useEffect(() => {
+    return () => {
+      if (windowObjectReference) {
+        windowObjectReference.removeEventListener(
+          'beforeunload',
+          beforeUnloadListener,
+          { capture: true },
+        );
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
     if (error && Object.keys(error).length > 0) {

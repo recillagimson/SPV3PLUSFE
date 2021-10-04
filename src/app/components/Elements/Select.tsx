@@ -5,8 +5,9 @@
 import * as React from 'react';
 import styled from 'styled-components/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Lottie from 'react-lottie-player/dist/LottiePlayerLight';
 
-import loadingImg from 'app/components/Loading/loading_dark.gif';
+import loadingBlack from 'app/components/Loading/loading_black.json';
 
 import FormElementStyle from './FormElementsStyle';
 import { StyleConstants } from 'styles/StyleConstants';
@@ -79,7 +80,15 @@ export default function SelectComponent({
     <Wrapper className="select-wrapper" full={fullWidth}>
       {loading && (
         <span className="loading">
-          <img src={loadingImg} alt="Loading..." width="40" />
+          <Lottie
+            play
+            loop
+            animationData={loadingBlack}
+            style={{
+              width: 40,
+              height: 40,
+            }}
+          />
         </span>
       )}
       <select {...rest} value={value} onChange={onChange} tabIndex={0}>
