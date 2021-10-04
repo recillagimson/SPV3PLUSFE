@@ -145,6 +145,10 @@ v1.1.2
 - Add 2 Decimal Places in the Amount in the Transaction Confirmation Screen of Send Money (VP2-246)
 - Forex - Search parameter should be searching for the 3 char forex symbol, not its description (VP2-285)
 - Buy EPINS load description in Review and Receipt screen (VP2-290)
+- Additional display of error message on Buy EPINs and fix display of amount in receipt modal (VP2-309 & VP2-328)
+- Remove validation of PDF file in Uploading of ids in account upgrade (VP2-300)
+- Removed Verify OTP screen on account upgrade to silver (VP2-316)
+- Masking of characters in email address and mobile number (VP2-324)
 
 v1.1.3
 

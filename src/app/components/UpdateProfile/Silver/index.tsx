@@ -1301,6 +1301,7 @@ export default function UserProfileForm({
       {showConfirm && (
         <Box title="Review User Info" titleBorder withPadding>
           {otpLoading && <Loading position="absolute" />}
+          {loading && <Loading position="absolute" />}
           <List divider>
             <ListItem flex>
               <ListItemText
@@ -1533,7 +1534,8 @@ export default function UserProfileForm({
               variant="contained"
               color="primary"
               size="large"
-              onClick={isAuthenticated ? onGenerateOTP : onSubmit}
+              // onClick={isAuthenticated ? onGenerateOTP : onSubmit}
+              onClick={onSubmit}
             >
               Confirm
             </Button>

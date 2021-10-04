@@ -849,7 +849,7 @@ export function RegisterPage() {
         okText="Agree"
         cancelText="Disagree"
       >
-        <div style={{ padding: 20 }}>
+        <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
           <TermsCondition />
         </div>
       </Dialog>
@@ -871,7 +871,7 @@ export function RegisterPage() {
         okText="Agree"
         cancelText="Disagree"
       >
-        <div style={{ padding: 20 }}>
+        <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
           <PrivacyPolicy />
         </div>
       </Dialog>
