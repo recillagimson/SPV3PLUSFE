@@ -3,11 +3,23 @@ import { Helmet } from 'react-helmet-async';
 import Box from 'app/components/Box';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import AddQrCodeImg from 'app/components/Assets/add_qr_code.png';
+import SpLogoHorizontal from 'app/components/Assets/sp-logo-horizontal.png';
+// #region assets
+import Facebook from './assets/fb.png';
+import Bluetooth from './assets/bluetooth.png';
+import Discord from './assets/discord.png';
+import GMail from './assets/gmail.png';
+import Instagram from './assets/instagram.png';
+import Messenger from './assets/messenger.png';
+import Viber from './assets/viber.png';
+
+// #endregion assets
 import Flex from 'app/components/Elements/Flex';
 import Paragraph from 'app/components/Elements/Paragraph';
 import QrReceiveMoney from 'app/components/Assets/QrReceiveMoney';
 import QrPayMoney from 'app/components/Assets/QrPayMoney';
 import QRCode from 'qrcode.react';
+import Dialog from 'app/components/Dialog';
 import Field from 'app/components/Elements/Fields';
 import Grid from '@material-ui/core/Grid';
 import Button from 'app/components/Elements/Button';
@@ -42,6 +54,7 @@ export function QrPages() {
   const [purpose, setPurpose] = React.useState({
     value: '',
   });
+  const [showShare, setShowShare] = React.useState(false);
   const dashData: any = useSelector(selectDashData);
   const [activeStep, setActiveStep] = React.useState<Keys>('landing');
 
@@ -261,6 +274,7 @@ export function QrPages() {
                     variant="outlined"
                     color="secondary"
                     size="large"
+                    onClick={() => setShowShare(true)}
                   >
                     Share
                   </Button>
@@ -316,6 +330,140 @@ export function QrPages() {
       >
         {activeLayout}
       </Box>
+      <Dialog show={showShare} size="small">
+        <div className="text-center" style={{ padding: '25px 0' }}>
+          <section style={{ padding: '0 25px' }}>
+            <img
+              src={SpLogoHorizontal}
+              alt="add qr code"
+              width="150px"
+              height="53.75px"
+            />
+            <QRCode
+              value={receiveMoneyQrCode}
+              size={200}
+              id="QRCode"
+              includeMargin
+            />
+            <p style={{ margin: '15px 0 34px' }}>
+              <strong>Share QR Code</strong>
+            </p>
+          </section>
+          <section style={{ padding: '0 16px' }}>
+            <Grid container justify="center">
+              {/* top row */}
+              <Grid item md={3}>
+                <img
+                  src={Facebook}
+                  alt="add qr code"
+                  width="48px"
+                  height="48px"
+                  style={{ marginBlockEnd: '10px' }}
+                />
+                <Paragraph align="center" size="xsmall">
+                  News Feed
+                </Paragraph>
+              </Grid>
+              <Grid item md={3}>
+                <img
+                  src={Messenger}
+                  alt="add qr code"
+                  width="48px"
+                  height="48px"
+                  style={{ marginBlockEnd: '10px' }}
+                />
+                <Paragraph align="center" size="xsmall">
+                  Messenger
+                </Paragraph>
+              </Grid>
+              <Grid item md={3}>
+                <img
+                  src={Discord}
+                  alt="add qr code"
+                  width="48px"
+                  height="48px"
+                  style={{ marginBlockEnd: '10px' }}
+                />
+                <Paragraph align="center" size="xsmall">
+                  Discord
+                </Paragraph>
+              </Grid>
+              <Grid item md={3}>
+                <img
+                  src={Viber}
+                  alt="add qr code"
+                  width="48px"
+                  height="48px"
+                  style={{ marginBlockEnd: '10px' }}
+                />
+                <Paragraph align="center" size="xsmall">
+                  Viber
+                </Paragraph>
+              </Grid>
+              {/* bottom row */}
+              <Grid item md={3}>
+                <img
+                  src={Instagram}
+                  alt="add qr code"
+                  width="48px"
+                  height="48px"
+                  style={{ marginBlockEnd: '10px' }}
+                />
+                <Paragraph align="center" size="xsmall">
+                  Direct Message
+                </Paragraph>
+              </Grid>
+              <Grid item md={3}>
+                <img
+                  src={GMail}
+                  alt="add qr code"
+                  width="48px"
+                  height="48px"
+                  style={{ marginBlockEnd: '10px' }}
+                />
+                <Paragraph align="center" size="xsmall">
+                  Gmail
+                </Paragraph>
+              </Grid>
+              <Grid item md={3}>
+                <img
+                  src={Bluetooth}
+                  alt="add qr code"
+                  width="48px"
+                  height="48px"
+                  style={{ marginBlockEnd: '10px' }}
+                />
+                <Paragraph align="center" size="xsmall">
+                  Bluetooth
+                </Paragraph>
+              </Grid>
+              <Grid item md={3}>
+                <img
+                  src={Instagram}
+                  alt="add qr code"
+                  width="48px"
+                  height="48px"
+                  style={{ marginBlockEnd: '10px' }}
+                />
+                <Paragraph align="center" size="xsmall">
+                  Instagram
+                </Paragraph>
+              </Grid>
+            </Grid>
+          </section>
+          <section style={{ padding: '0 48px' }}>
+            <Button
+              style={{ margin: '10px 0 0' }}
+              fullWidth
+              onClick={() => setShowShare(false)}
+              variant="contained"
+              color="primary"
+            >
+              Close
+            </Button>
+          </section>
+        </div>
+      </Dialog>
     </ProtectedContent>
   );
 }
