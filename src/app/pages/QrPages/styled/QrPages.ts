@@ -21,3 +21,10 @@ export const ButtonWrapper = styled.section`
     opacity: 0.4;
   }
 `;
+
+export const Title = styled.div`
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 1.2;
+  margin: 0 0 20px;
+`;

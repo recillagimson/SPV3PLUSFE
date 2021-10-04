@@ -4,6 +4,9 @@ import Box from 'app/components/Box';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import AddQrCodeImg from 'app/components/Assets/add_qr_code.png';
 import SpLogoHorizontal from 'app/components/Assets/sp-logo-horizontal.png';
+import { faQrcode } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // #region assets
 import Facebook from './assets/fb.png';
 import Bluetooth from './assets/bluetooth.png';
@@ -12,7 +15,7 @@ import GMail from './assets/gmail.png';
 import Instagram from './assets/instagram.png';
 import Messenger from './assets/messenger.png';
 import Viber from './assets/viber.png';
-
+import comingSoon from 'app/components/Assets/coming-soon.png';
 // #endregion assets
 import Flex from 'app/components/Elements/Flex';
 import Paragraph from 'app/components/Elements/Paragraph';
@@ -38,6 +41,7 @@ type Keys =
   | 'generate-qr'
   | 'receive-money'
   | 'receive-money-qr-code'
+  | 'pay-via-qr-code'
   | 'add-amount';
 export function QrPages() {
   const { response, goFetch } = useFetch();
@@ -189,7 +193,10 @@ export function QrPages() {
                 Receive Money via QR
               </Paragraph>
             </S.ButtonWrapper>
-            <S.ButtonWrapper role="button">
+            <S.ButtonWrapper
+              role="button"
+              onClick={clickSetStep('pay-via-qr-code')}
+            >
               <QrPayMoney />
               <Paragraph align="center" weight="light">
                 Pay via QR
@@ -219,7 +226,8 @@ export function QrPages() {
                     size="large"
                     onClick={clickSetStep('add-amount')}
                   >
-                    Amount
+                    <FontAwesomeIcon icon={faPlus} />
+                    &nbsp; Amount
                   </Button>
                 </Grid>
                 <Grid item>
@@ -230,7 +238,8 @@ export function QrPages() {
                     size="large"
                     onClick={downloadQR}
                   >
-                    Download QR Code
+                    <FontAwesomeIcon icon={faQrcode} />
+                    &nbsp; Download QR Code
                   </Button>
                 </Grid>
               </Grid>
@@ -283,6 +292,28 @@ export function QrPages() {
             </span>
           </Field>
         );
+      case 'pay-via-qr-code':
+        return (
+          <section className="text-center" style={{ width: '100%' }}>
+            <div style={{ width: '382px', margin: '0 auto' }}>
+              <img src={comingSoon} alt="Coming Soon!" loading="lazy" />
+              <S.Title>Coming Soon</S.Title>
+              <p style={{ margin: 0 }}>
+                Hey Squidee! Come back soon for more efficient and convenient
+                cashless experience.
+              </p>
+              <Button
+                style={{ margin: '24px 0 0' }}
+                fullWidth
+                onClick={clickSetStep('generate-qr')}
+                variant="contained"
+                color="primary"
+              >
+                Back to Generate QR Code
+              </Button>
+            </div>
+          </section>
+        );
       default:
         return null;
     }
@@ -296,6 +327,8 @@ export function QrPages() {
         return 'Add Amount';
       case 'receive-money-qr-code':
         return 'Personal QR Code';
+      case 'pay-via-qr-code':
+        return 'Pay via QR Code';
       default:
         return 'QR Code';
     }
