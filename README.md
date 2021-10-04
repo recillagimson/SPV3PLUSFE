@@ -152,9 +152,15 @@ v1.1.2
 
 v1.1.3
 
-- Add Money via BPI (VP2-42)
 - Buy load fix stuck in page (VVBT-498)
 - Fix on Dragonpay postback url (VVBT-496)
 - Arrange alphabetically Buy EPINs products (VP2-371)
 - High Resolution Loader (VP2-245)
 - Verify OTP Clearing error message and added response when Resend Code is clicked (VP2-241)
+
+v1.1.4
+
+- Display of avatar on send money and buy load (VP2-338, VP2-251)
+- Loans (VP2-265, VP2-266, VP2-267, VP2-268, 277)
+- Add Money via BPI (VP2-42)
+- If no Load ID generated, disable next button (VP2-427)
