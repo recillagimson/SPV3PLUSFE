@@ -36,6 +36,7 @@ import QRCode from 'app/components/Assets/QRCode';
 import QuickGuide from 'app/components/Assets/QuickGuide';
 // import Others from 'app/components/Assets/Others';
 import Forex from 'app/components/Assets/Forex';
+import Loans from 'app/components/Assets/Loans';
 import NewsUpdate from 'app/components/Assets/NewsUpdate';
 import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
 import comingSoon from 'app/components/Assets/coming-soon.png';
@@ -74,25 +75,6 @@ export function DashboardPage() {
 
   React.useEffect(() => {
     dispatch(actions.getFetchLoading());
-    dispatch(actions.getTransactionLoading());
-
-    // const remoteFlags = {
-    //   add_money_dragon_pay_enabled: remoteConfig
-    //     .getValue('add_money_dragon_pay_enabled')
-    //     .asBoolean(),
-    //   buy_load_enabled: remoteConfig.getValue('buy_load_enabled').asBoolean(),
-    //   send_money_enabled: remoteConfig
-    //     .getValue('send_money_enabled')
-    //     .asBoolean(),
-    //   send_money_via_qr_enabled: remoteConfig
-    //     .getValue('send_money_via_qr_enabled')
-    //     .asBoolean(),
-    //   send_to_bank_ubp_enabled: remoteConfig
-    //     .getValue('send_to_bank_ubp_enabled')
-    //     .asBoolean(),
-    //   pay_bills_enabled: remoteConfig.getValue('pay_bills_enabled').asBoolean(),
-    // };
-    // setFlags(remoteFlags);
   }, [actions, dispatch]);
 
   let balanceInfo = '000.00';
@@ -215,15 +197,7 @@ export function DashboardPage() {
       </Grid>
 
       <ButtonFlexWrapper>
-        <DashboardButton
-          onClick={() => {
-            if (flags && !flags.add_money_dragon_pay_enabled) {
-              setIsMaintenance(true);
-            } else {
-              history.push('/add-money');
-            }
-          }}
-        >
+        <DashboardButton onClick={() => history.push('/add-money')}>
           <AddMoney />
           Add Money
         </DashboardButton>
@@ -334,6 +308,22 @@ export function DashboardPage() {
         >
           <Forex />
           Foreign Exchange
+        </DashboardButton>
+        <DashboardButton
+          onClick={
+            isBronze
+              ? () => setShowUpgrade(true)
+              : () => {
+                  if (flags && !flags.loans_enabled) {
+                    setIsMaintenance(true);
+                  } else {
+                    history.push('/loans');
+                  }
+                }
+          }
+        >
+          <Loans />
+          Loans
         </DashboardButton>
       </ButtonFlexWrapper>
 

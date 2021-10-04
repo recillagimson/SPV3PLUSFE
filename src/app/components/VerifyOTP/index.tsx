@@ -1,191 +1,212 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/**
- * This will verify OTP code
- * NOTE: this will only render the input fields and submit button
- * @prop {boolean}    isEmail       If OTP code came from email or via sms
- * @prop {string}     viaValue      Email or mobile number of the requestor
- * @prop {function}   onSuccess     callback when code is verified
- * @prop {string}     apiURL        pass the API endpoint ie: /auth/verify/password
- * @prop {string}     otpType       otp type ie: send_money
- *                                  NOTE: do not include the /api in the endpoint
- * @prop {boolean}    isUserToken   True/false to use user token instead of client token
- */
 import * as React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components/macro';
-import ReactCodeInput from 'react-code-input';
-import { StyleConstants } from 'styles/StyleConstants';
+import { useSelector } from 'react-redux';
+import OtpInput from 'react-otp-input';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Loading from 'app/components/Loading';
-import Field from 'app/components/Elements/Fields';
-import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
+import A from 'app/components/Elements/A';
+import Dialog from 'app/components/Dialog';
+import H3 from 'app/components/Elements/H3';
+import Paragraph from 'app/components/Elements/Paragraph';
 
-/** slice */
-import { useComponentSaga } from './slice';
-import { selectLoading, selectError, selectData } from './slice/selectors';
+/** selector */
 import { selectOTPDetails } from 'app/App/slice/selectors';
-import H3 from '../Elements/H3';
 
-const Wrapper = styled.div`
-  text-align: center;
+import useFetch from 'utils/useFetch';
 
-  /** pin input styles */
-  .pin-input {
-    margin: 0 0 5px;
-
-    input {
-      border-radius: ${StyleConstants.BUTTON_RADIUS};
-      background-color: ${StyleConstants.GRAY_BG};
-      appearance: textfield;
-      border: 1px solid transparent;
-      margin: 2px 5px;
-      font-size: 1.25rem;
-      width: 50px;
-      height: 50px;
-      text-align: center;
-      outline: 0;
-
-      &:hover,
-      &:focus-visible {
-        border-color: ${StyleConstants.GOLD};
-      }
-
-      &[data-valid='false'] {
-        background-color: transparent;
-        color: ${StyleConstants.BUTTONS.danger.main};
-        border-color: ${StyleConstants.BUTTONS.danger.main};
-      }
-    }
-  }
-`;
+import Wrapper from './Wrapper';
+import Timer from './Timer';
 
 type VerifyOTPComponentProps = {
-  /** If we are passing as email or mobile number, use only on registration, component will auto detect details once logged in */
-  isEmail?: boolean;
-  /** If this prop is defined, email or mobile will be pass on the request payload, this should be use with isEmail props */
-  viaValue?: string;
-  /** Function callback when OTP is verified, parent should handle this callback */
+  /**
+   * Callback when verify otp is successfull
+   */
   onSuccess: () => void;
-  /** Pass the BE API endpoint */
-  apiURL: string;
-  /** Where the OTP will be use */
+  /**
+   * API Endpoint for Verifying OTP
+   * @default ''
+   */
+  verifyURL: string;
+  /**
+   * If using User Token on Verifying OTP
+   * @default false
+   */
+  isVerifyUserToken?: boolean;
+  /**
+   * API Endpoint for resending OTP
+   * NOTE: if this is not defined, resend otp message will not be shown
+   * @default ''
+   */
+  resendURL: string;
+  /**
+   * Payload for Resending OTP
+   * Should pass a JSON.stringified payload
+   * @default ''
+   */
+  resendPayload: string;
+  /**
+   * If using User Token on Resending OTP
+   */
+  isResendUserToken?: boolean;
+  /**
+   * OTP Type, refer to API Documentation on this value,
+   * This will be added to the payload when verifying the OTP
+   * NOTE: don't defined if not specified in documentation
+   */
   otpType?: string;
-  /** If to use user token instead of client token */
-  isUserToken?: boolean;
+  /**
+   * Pass this value, if we are coming from unauthenticated routes (ie: /login, /register, etc)
+   * NOTE: don't pass this prop if we are already logged in (this will be done automatically)
+   */
+  isEmail?: boolean;
+  /**
+   * Pass this value, if we are coming from unauthenticated routes (ie: /login, /register, etc)
+   * NOTE: don't pass this prop if we are already logged in (this will be done automatically)
+   */
+  viaValue?: string;
+  /**
+   * Verify OTP title heading
+   * @default 'Enter 4-digit One-Time PIN'
+   */
+  title?: string;
 };
+
+/**
+ * This will verify OTP code and Resend Code
+ *
+ * @typedef VerifyOTPComponentProps
+ */
 export default function VerifyOTPComponent({
+  onSuccess,
+  verifyURL,
+  isVerifyUserToken,
+  resendURL,
+  resendPayload,
+  isResendUserToken,
+  otpType,
   isEmail,
   viaValue,
-  onSuccess,
-  apiURL,
-  otpType,
-  isUserToken,
+  title,
 }: VerifyOTPComponentProps) {
-  const { actions } = useComponentSaga();
-  const dispatch = useDispatch();
+  const verify = useFetch();
+  const resend = useFetch();
+
   const otpDetails = useSelector(selectOTPDetails);
 
-  const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
-  const success = useSelector(selectData);
+  const [code, setCode] = React.useState({ value: '', error: false, msg: '' });
+  const [isLimit, setIsLimit] = React.useState(false);
+  const [showDialog, setShowDialog] = React.useState(false);
 
-  const [isCodeValid, setIsCodeValid] = React.useState(true); // set to true
-  const [code, setCode] = React.useState({ value: '', error: false });
-  const [apiError, setApiError] = React.useState('');
+  const onApiError = React.useCallback(
+    (err: any) => {
+      let errorCode =
+        err.errors && err.errors.error_code ? err.errors.error_code : false;
 
-  React.useEffect(
-    () => () => {
-      dispatch(actions.getFetchReset());
+      if (errorCode && errorCode.length > 0) {
+        errorCode.map(i => {
+          if (i === 108) {
+            setCode({
+              ...code,
+              error: true,
+              msg: err.errors.message.join('\n'),
+            });
+            return null;
+          }
+          if (i === 109) {
+            setCode({
+              ...code,
+              error: true,
+              msg: err.errors.message.join('\n'),
+            });
+            return null;
+          }
+
+          if (i === 110) {
+            setCode({
+              ...code,
+              error: true,
+              msg: err.errors.message.join('\n'),
+            });
+            setIsLimit(true);
+            return null;
+          }
+          return null;
+        });
+      }
+
+      if (!errorCode && err.errors) {
+        if (err.errors.code && err.errors.code.length > 0) {
+          setCode({ ...code, error: true, msg: err.errors.code.join('\n') });
+        } else {
+          setCode({ ...code, error: true, msg: err.message });
+        }
+      }
+
+      if (!errorCode && !err.errors && err.response) {
+        setCode({ ...code, error: true, msg: err.response.statusText });
+      }
     },
-    [],
+    [code],
   );
 
   React.useEffect(() => {
-    if (error && Object.keys(error).length > 0) {
-      setIsCodeValid(false);
-      apiErrorMessage(error);
+    if (verify.error) {
+      onApiError(verify.error);
+      verify.fetchReset();
     }
 
-    if (success) {
+    if (verify.response) {
       onSuccess();
-    }
-  }, [success, error]);
-
-  const apiErrorMessage = (err: any) => {
-    if (err.code && err.code === 422) {
-      if (err.errors.error_code && err.errors.error_code.length > 0) {
-        err.errors.error_code.map((i: number) => {
-          if (i === 103 || i === 105 || i === 107) {
-            setApiError(err.errors.payload);
-            return i;
-          }
-          if (i === 108 || i === 109) {
-            setApiError(err.errors.message);
-            return i;
-          }
-          return i;
-        });
-      }
-      if (err.errors && !err.errors.error_code) {
-        let apiErrorMsg = '';
-        if (err.code && err.code.length > 0) {
-          apiErrorMsg += err.code.join('\n');
-        }
-        if (err.email && err.email.length > 0) {
-          apiErrorMsg += err.email.join('\n');
-        }
-        if (err.mobile_number && err.mobile_number.length > 0) {
-          apiErrorMsg += err.mobile_number.join('\n');
-        }
-        setApiError(apiErrorMsg);
-      }
+      verify.fetchReset();
     }
 
-    if (!err.code && err.response) {
-      setApiError(err.response.statusText);
-      return;
+    if (resend.error || resend.response) {
+      setShowDialog(true);
+      resend.fetchReset();
+    }
+  }, [onApiError, onSuccess, verify, resend]);
+
+  const onVerifyOTP = () => {
+    let hasError = false;
+    if (code.value === '' || (code.value && code.value.length < 4)) {
+      hasError = true;
+      setCode({ ...code, error: true, msg: 'Please enter 4 Digit OTP.' });
     }
 
-    if (!err.code && !err.response) {
-      setApiError(err.message);
-    }
-  };
+    if (!hasError) {
+      setCode({ ...code, error: false, msg: '' });
 
-  const onChangePin = (val: any) => {
-    setCode({ value: val, error: false });
-    setIsCodeValid(true);
-  };
-
-  const onSubmitVerify = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    if (e && e.preventDefault) e.preventDefault();
-    let error = false;
-
-    if (code.value === '') {
-      error = true;
-      setCode({ ...code, error: true });
-    }
-
-    if (!error) {
-      setApiError('');
-      const data = {
-        url: apiURL,
-        isUser: isUserToken,
-        body: {
-          // code_type: codeType ? codeType : 'password_recovery',
-          mobile_number: viaValue && !isEmail ? viaValue : undefined,
-          email: viaValue && isEmail ? viaValue : undefined,
-          code: code.value,
-          otp_type: otpType ? otpType : undefined,
-        },
+      const payload = {
+        mobile_number: viaValue && !isEmail ? viaValue : undefined,
+        email: viaValue && isEmail ? viaValue : undefined,
+        code: code.value,
+        otp_type: otpType ? otpType : undefined,
       };
 
-      dispatch(actions.getFetchLoading(data));
+      verify.goFetch(
+        verifyURL,
+        'POST',
+        JSON.stringify(payload),
+        '',
+        isVerifyUserToken,
+        true,
+      );
     }
+  };
+
+  const onResendOTP = () => {
+    setCode({ ...code, error: false, msg: '' });
+
+    resend.goFetch(
+      resendURL,
+      'POST',
+      resendPayload,
+      '',
+      isResendUserToken,
+      true,
+    );
   };
 
   let otpMessage = otpDetails.isEmail
@@ -195,41 +216,105 @@ export default function VerifyOTPComponent({
     otpMessage = isEmail ? `email: ${viaValue}` : `mobile number: ${viaValue}`;
   }
 
+  if (verifyURL === '') {
+    return null;
+  }
+
   return (
     <Wrapper id="verifyOtp">
+      {(verify.loading || resend.loading) && <Loading position="absolute" />}
+
       <CircleIndicator size="large">
         <FontAwesomeIcon icon="lock" />
       </CircleIndicator>
 
-      <H3 margin="35px 0 10px">Enter 4-digit One-Time PIN</H3>
-      <p className="f-small" style={{ margin: '0 0 25px' }}>
+      <H3 margin="35px 0 10px">{title || 'Enter 4-digit One-Time PIN'}</H3>
+      <Paragraph align="center" margin="0 0 45px">
         A One-Time PIN has been sent to your {otpMessage}
-      </p>
-      {loading && <Loading position="absolute" />}
-      <Field className="code">
-        <ReactCodeInput
-          name="verify"
-          inputMode="numeric"
-          type="text"
-          fields={4}
-          onChange={onChangePin}
-          className="pin-input"
-          isValid={isCodeValid}
-        />
-        {code.error && <ErrorMsg formError>Please input your code</ErrorMsg>}
-        {Boolean(apiError) && <ErrorMsg formError>{apiError}</ErrorMsg>}
-      </Field>
+      </Paragraph>
+
+      <OtpInput
+        value={code.value}
+        onChange={c => setCode({ value: c, error: false, msg: '' })}
+        numInputs={4}
+        isInputNum
+        hasErrored={code.error}
+        containerStyle="otp-input"
+        inputStyle={{ width: 50 }}
+        errorStyle={code.error ? 'error-otp' : undefined}
+      />
+
+      <Paragraph
+        align="center"
+        color="danger"
+        margin="0 0 0"
+        style={{ minHeight: 44 }}
+      >
+        {code.msg || ' '}
+      </Paragraph>
 
       <Button
         type="submit"
-        onClick={onSubmitVerify}
+        onClick={onVerifyOTP}
         color="primary"
         fullWidth={true}
         size="large"
         variant="contained"
+        // disabled={code.value.length < 4}
       >
         VERIFY
       </Button>
+
+      {resendURL !== '' && (
+        <Paragraph size="small" margin="20px 0" align="center">
+          Need a new code?{' '}
+          {isLimit && (
+            <>
+              Please wait{' '}
+              <Timer
+                onStop={() => setIsLimit(false)}
+                count={99}
+                start={isLimit}
+              />
+              s
+            </>
+          )}
+          {!isLimit && (
+            <A as="a" onClick={onResendOTP} color="gold">
+              Resend code
+            </A>
+          )}
+        </Paragraph>
+      )}
+
+      <Dialog show={showDialog} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <CircleIndicator color="danger" size="large">
+            <FontAwesomeIcon icon={resend.error ? 'times' : 'check'} />
+          </CircleIndicator>
+
+          <H3 margin="30px 0 10px">
+            Resend OTP {resend.error ? 'Failed' : 'Success'}
+          </H3>
+          <p style={{ marginBottom: 35 }}>
+            {resend.error
+              ? 'We are having problem resending the OTP. Please try again later.'
+              : `OTP has successfully been resent to your ${otpMessage}.`}
+          </p>
+          <Button
+            fullWidth
+            onClick={() => setShowDialog(false)}
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
     </Wrapper>
   );
 }

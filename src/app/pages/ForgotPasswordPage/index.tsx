@@ -204,16 +204,16 @@ export function ForgotPasswordPage() {
     }
   };
 
-  const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    // send the previous entered information if this is the approach for this
-    if (e && e.preventDefault) e.preventDefault();
+  // const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  //   // send the previous entered information if this is the approach for this
+  //   if (e && e.preventDefault) e.preventDefault();
 
-    const data = {
-      mobile_number: !isEmail ? mobile.value : undefined,
-      email: isEmail ? email.value : undefined,
-    };
-    dispatch(actions.getFetchLoading(data));
-  };
+  //   const data = {
+  //     mobile_number: !isEmail ? mobile.value : undefined,
+  //     email: isEmail ? email.value : undefined,
+  //   };
+  //   dispatch(actions.getFetchLoading(data));
+  // };
 
   const onCloseDialog = () => {
     setIsError(false);
@@ -369,18 +369,18 @@ export function ForgotPasswordPage() {
         {showVerify && (
           <div className="content">
             <VerifyOTP
+              verifyURL="/auth/verify/password"
+              otpType="update_profile"
               onSuccess={onSuccessVerify}
+              isVerifyUserToken
+              resendURL="/auth/forgot/password"
+              resendPayload={JSON.stringify({
+                mobile_number: !isEmail ? mobile.value : undefined,
+                email: isEmail ? email.value : undefined,
+              })}
               isEmail={isEmail}
               viaValue={isEmail ? email.value : mobile.value}
-              apiURL="/auth/verify/password"
             />
-
-            <Field className="text-center" margin="20px 0 10px">
-              Need a new code?{' '}
-              <button className="link" onClick={onResendCode}>
-                Resend Code
-              </button>
-            </Field>
           </div>
         )}
         {showUpdate && (

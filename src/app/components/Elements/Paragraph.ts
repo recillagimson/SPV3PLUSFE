@@ -63,10 +63,11 @@ const colors = {
 const Paragraph = styled.p<ParagraphProps>`
   font-size: ${p => (p.size ? fontSize[p.size] : fontSize['regular'])};
   font-weight: ${p => (p.weight ? weights[p.weight] : weights['normal'])};
-  text-align: ${p => (p.align ? p.align : 'left')};
+  text-align: ${p => (p.align ? p.align : 'inherit')};
   margin: ${p => (p.margin ? p.margin : '0 0 15px')};
   padding: ${p => (p.padding ? p.padding : '0 0')};
   color: ${p => (p.color ? colors[p.color] : colors['default'])};
+  white-space: pre-wrap;
 `;
 
 export default Paragraph;

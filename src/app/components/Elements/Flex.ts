@@ -25,7 +25,7 @@ export interface FlexProps {
   direction?: 'row' | 'column' | 'column-reverser' | 'row-reverse';
 }
 
-const Flex = styled.div<FlexProps>`
+const Flex = styled.div<Partial<FlexProps>>`
   display: flex;
   align-items: ${p => (p.alignItems ? p.alignItems : 'flex-start')};
   justify-content: ${p => (p.justifyContent ? p.justifyContent : 'flex-start')};
