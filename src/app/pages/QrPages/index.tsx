@@ -6,15 +6,16 @@ import AddQrCodeImg from 'app/components/Assets/add_qr_code.png';
 import SpLogoHorizontal from 'app/components/Assets/sp-logo-horizontal.png';
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faShare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // #region assets
-import Facebook from './assets/fb.png';
-import Bluetooth from './assets/bluetooth.png';
-import Discord from './assets/discord.png';
-import GMail from './assets/gmail.png';
-import Instagram from './assets/instagram.png';
-import Messenger from './assets/messenger.png';
-import Viber from './assets/viber.png';
+import Facebook from 'app/components/Assets/fb.png';
+import Bluetooth from 'app/components/Assets/bluetooth.png';
+import Discord from 'app/components/Assets/discord.png';
+import GMail from 'app/components/Assets//gmail.png';
+import Instagram from 'app/components/Assets/instagram.png';
+import Messenger from 'app/components/Assets/messenger.png';
+import Viber from 'app/components/Assets/viber.png';
 import comingSoon from 'app/components/Assets/coming-soon.png';
 // #endregion assets
 import Flex from 'app/components/Elements/Flex';
@@ -274,7 +275,8 @@ export function QrPages() {
                     size="large"
                     onClick={downloadQR}
                   >
-                    Download QR Code
+                    <FontAwesomeIcon icon={faQrcode} />
+                    &nbsp; Download QR Code
                   </Button>
                 </Grid>
                 <Grid item>
@@ -285,7 +287,8 @@ export function QrPages() {
                     size="large"
                     onClick={() => setShowShare(true)}
                   >
-                    Share
+                    <FontAwesomeIcon icon={faShare} />
+                    &nbsp; Share
                   </Button>
                 </Grid>
               </Grid>
