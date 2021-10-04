@@ -38,7 +38,7 @@ import { RegisterPage } from 'app/pages/RegisterPage/Loadable';
 import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
-import { AddMoneyViaBPI } from 'app/pages/AddMoneyViaBPIPage/Loadable';
+import { AddMoneyViaBPI } from 'app/pages/AddMoney/AddMoneyViaBPIPage/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import {
   BuyLoadIndexPage,
@@ -93,8 +93,10 @@ import SuccessPostBack from './SuccessPostback';
 import PrivateRoute from './PrivateRoute';
 
 /** selectors, slice */
-import { containerActions as dashboardAction } from 'app/pages/DashboardPage/slice';
+import { containerActions as addMoneyBpiAction } from 'app/pages/AddMoney/AddMoneyViaBPIPage/slice';
 import { useAppSaga } from './slice';
+import { useContainerSaga } from 'app/pages/DashboardPage/slice';
+
 import {
   selectSessionExpired,
   selectIsAuthenticated,
@@ -113,6 +115,7 @@ const defaultFlags = {
   send_money_via_qr_enabled: true,
   send_to_bank_ubp_enabled: true,
   pay_bills_enabled: true,
+  add_money_bpi_enabled: true,
 };
 
 export function App() {
@@ -122,6 +125,7 @@ export function App() {
 
   // sample usage of slice (react redux)
   const { actions } = useAppSaga();
+  const { actions: dashboardAction } = useContainerSaga();
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -175,6 +179,7 @@ export function App() {
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
     const forceUpdate = getCookie('spv_uat_f');
+    const bpiCode = new URLSearchParams(location.search).get('code'); // add money
 
     let decrypt: any = false;
     let username: string = '';
@@ -185,12 +190,24 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (
-      !forceUpdate &&
-      decrypt &&
-      path !== '/postback' &&
-      path !== '/postback/dragonpay'
-    ) {
+    if (!forceUpdate && decrypt && bpiCode && path === '/') {
+      dispatch(actions.getClientTokenLoading());
+      dispatch(actions.getIsAuthenticated(true));
+      dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
+      dispatch(actions.getUserToken(decrypt.user_token));
+      dispatch(actions.getSaveLoginName(username));
+
+      // delay the retrieval of dashboard and user profile
+      setTimeout(() => {
+        dispatch(actions.getLoadUserProfile());
+        dispatch(dashboardAction.getFetchLoading());
+        dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(bpiCode));
+      }, 2000);
+
+      history.push('/add-money/bpi/select-account');
+    }
+
+    if (!forceUpdate && decrypt && !path.includes('/postback') && !bpiCode) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
@@ -200,7 +217,6 @@ export function App() {
       setTimeout(() => {
         // dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
-        dispatch(dashboardAction.getFetchLoading());
       }, 2000);
 
       history.push('/dashboard');
@@ -266,8 +282,7 @@ export function App() {
   let showHeaderFooter = false;
   if (currentLocation) {
     if (
-      currentLocation !== '/postback' &&
-      currentLocation !== '/postback/dragonpay' &&
+      !currentLocation.includes('/postback') &&
       currentLocation !== '/privacy-policy' &&
       currentLocation !== '/terms-and-conditions'
     ) {
@@ -347,7 +362,7 @@ export function App() {
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
-            <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
+
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute exact path="/buy" component={BuyLoadIndexPage} />
             <PrivateRoute exact path="/buy/load" component={BuyLoadPage} />
@@ -367,6 +382,16 @@ export function App() {
               exact
               path="/add-money/dragonpay"
               component={Dragonpay}
+            />
+            <PrivateRoute
+              exact
+              path="/add-money/bpi"
+              component={AddMoneyViaBPI}
+            />
+            <PrivateRoute
+              exact
+              path="/add-money/bpi/select-account"
+              component={AddMoneyViaBPI}
             />
             <PrivateRoute
               exact

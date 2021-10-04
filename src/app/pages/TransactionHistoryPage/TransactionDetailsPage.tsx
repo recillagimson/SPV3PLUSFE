@@ -31,6 +31,7 @@ import {
   loadListtData,
   paybillsData,
   drCrMemoData,
+  bpiListData,
 } from './helpers';
 import { toTitleCase } from 'app/components/Helpers';
 
@@ -79,6 +80,11 @@ function TransactionHistoryDetailsPage(props) {
       'Dragonpay',
     ) !== -1;
 
+  const isBpiTransaction =
+    transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
+      'BPI',
+    ) !== -1;
+
   const isLoadTransaction =
     transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
       'Load',
@@ -100,6 +106,7 @@ function TransactionHistoryDetailsPage(props) {
       return receivedMoneyListData(transactionHistoryDetailsData);
     if (isDragonpayTransaction)
       return dragonpayListData(transactionHistoryDetailsData);
+    if (isBpiTransaction) return bpiListData(transactionHistoryDetailsData);
     if (isLoadTransaction) return loadListtData(transactionHistoryDetailsData);
     if (isPayBillsTransaction)
       return paybillsData(transactionHistoryDetailsData);

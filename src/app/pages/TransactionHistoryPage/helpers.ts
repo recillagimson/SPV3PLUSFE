@@ -138,6 +138,57 @@ export const dragonpayListData = transactionHistoryDetailsData => {
   ];
 };
 
+export const bpiListData = transactionHistoryDetailsData => {
+  // let name = 'None';
+  // if (
+  //   transactionHistoryDetailsData.transactable &&
+  //   transactionHistoryDetailsData.transactable.user_details &&
+  //   transactionHistoryDetailsData.transactable.user_details.first_name &&
+  //   transactionHistoryDetailsData.transactable.user_details.last_name
+  // ) {
+  //   name = `${transactionHistoryDetailsData.transactable.user_details.first_name} ${transactionHistoryDetailsData.transactable.user_details.last_name}`;
+  // }
+  let bank = 'None';
+  if (
+    transactionHistoryDetailsData.transactable &&
+    transactionHistoryDetailsData.transactable.transaction_response &&
+    JSON.parse(transactionHistoryDetailsData.transactable.transaction_response)
+  ) {
+    let transactionResponse = JSON.parse(
+      transactionHistoryDetailsData.transactable.transaction_response,
+    );
+    bank = transactionResponse.iss ? transactionResponse.iss : 'BPI';
+  }
+
+  return [
+    {
+      label: 'Bank',
+      value: bank,
+    },
+    {
+      label: 'Account Number',
+      value: transactionHistoryDetailsData?.transactable?.account_number || '',
+    },
+    // {
+    //   label: 'Account Name',
+    //   value: name,
+    // },
+    {
+      label: 'Send Receipt To',
+      value: 'None',
+    },
+    {
+      label: 'Purpose of Transaction',
+      value:
+        transactionHistoryDetailsData?.transactable.transaction_remarks || '',
+    },
+    {
+      label: 'Transaction Number',
+      value: transactionHistoryDetailsData?.reference_number || '',
+    },
+  ];
+};
+
 export const loadListtData = transactionHistoryDetailsData => {
   return [
     {
