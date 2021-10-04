@@ -251,16 +251,16 @@ export function LoginPage() {
     }
   };
 
-  const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    // since we already have the login information, send the user email or mobile number to receive activation code
-    const data = {
-      email: isEmail ? email.value.trim() : undefined,
-      mobile_number: !isEmail ? email.value.trim() : undefined,
-      otp_type: 'registration',
-    };
+  // const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  //   // since we already have the login information, send the user email or mobile number to receive activation code
+  //   const data = {
+  //     email: isEmail ? email.value.trim() : undefined,
+  //     mobile_number: !isEmail ? email.value.trim() : undefined,
+  //     otp_type: 'registration',
+  //   };
 
-    dispatch(actions.getResendCodeLoading(data));
-  };
+  //   dispatch(actions.getResendCodeLoading(data));
+  // };
 
   const onSuccessVerify = () => {
     setToVerify(false);
@@ -396,17 +396,17 @@ export function LoginPage() {
           <div className="text-center">
             <VerifyOTP
               onSuccess={onSuccessVerify}
+              verifyURL="/auth/verify/account"
+              resendURL="/auth/resend/otp"
+              resendPayload={JSON.stringify({
+                email: isEmail ? email.value.trim() : undefined,
+                mobile_number: !isEmail ? email.value.trim() : undefined,
+                otp_type: 'registration',
+              })}
               isEmail={isEmail}
               viaValue={email.value}
-              apiURL="/auth/verify/account"
+              title="Authentication"
             />
-
-            <Field className="text-center f-small" margin="20px 0 10px">
-              Need a new code?{' '}
-              <button className="link" onClick={onResendCode}>
-                Resend Code
-              </button>
-            </Field>
           </div>
         )}
         {showSuccess && (

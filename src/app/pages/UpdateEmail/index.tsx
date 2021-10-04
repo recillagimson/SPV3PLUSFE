@@ -198,16 +198,16 @@ export function UpdateEmailPage() {
     }
   };
 
-  const onResendCode = () => {
-    // const data = {
-    //   otp_type: 'update_email',
-    // };
-    // dispatch(actions.getResendLoading(data));
-    const data = {
-      email: email.value,
-    };
-    dispatch(actions.getResendLoading(data));
-  };
+  // const onResendCode = () => {
+  //   // const data = {
+  //   //   otp_type: 'update_email',
+  //   // };
+  //   // dispatch(actions.getResendLoading(data));
+  //   const data = {
+  //     email: email.value,
+  //   };
+  //   dispatch(actions.getResendLoading(data));
+  // };
 
   const onCodeVerified = () => {
     const data = {
@@ -305,22 +305,20 @@ export function UpdateEmailPage() {
             <VerifyOTP
               onSuccess={onCodeVerified}
               otpType="update_email"
-              apiURL="/auth/verify/otp"
+              verifyURL="/auth/verify/otp"
+              isVerifyUserToken
+              resendURL="/user/email/validate"
+              resendPayload={JSON.stringify({
+                email: email.value,
+              })}
+              isResendUserToken
+              isEmail={fromPath.channel === 'dragonpay'}
               viaValue={
                 fromPath.channel === 'dragonpay'
                   ? email.value.trim()
                   : undefined
               }
-              isEmail={fromPath.channel === 'dragonpay'}
-              isUserToken
             />
-
-            <Field className="text-center f-small" margin="20px 0 10px">
-              Need a new code?{' '}
-              <button className="btn-resend-code" onClick={onResendCode}>
-                Resend Code
-              </button>
-            </Field>
           </div>
         </Box>
       )}

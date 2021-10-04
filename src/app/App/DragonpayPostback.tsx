@@ -16,10 +16,11 @@ import H3 from 'app/components/Elements/H3';
 // import { selectUserToken } from './slice/selectors';
 // import { getRequestPassphrase } from './slice/saga';
 import Loading from 'app/components/Loading';
+import Button from 'app/components/Elements/Button';
 
 const Wrapper = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 60px);
   background-color: #fff;
   display: flex;
   align-items: center;
@@ -49,6 +50,7 @@ export default function DragonpaySuccessPostback() {
         setPending(true);
       }
       setLoading(false);
+      window.resizeTo(420, window.outerHeight);
     }
   }, [location]);
 
@@ -69,7 +71,7 @@ export default function DragonpaySuccessPostback() {
             >
               <FontAwesomeIcon icon="check" />
             </CircleIndicator>
-            <H3 margin="15px 0 10px" style={{ textAlign: 'center' }}>
+            <H3 margin="15px 0 25px" style={{ textAlign: 'center' }}>
               Transaction Successfull
             </H3>
           </>
@@ -90,11 +92,22 @@ export default function DragonpaySuccessPostback() {
               Awesome! Your Add money transaction will reflect once you’ve
               processed the payment through your chosen bank.
             </p>
-            <p style={{ marginBottom: 20, textAlign: 'center' }}>
+            <p style={{ marginBottom: 25, textAlign: 'center' }}>
               Please make sure to follow the instructions sent to your email or
               mobile number to complete your transaction.
             </p>
           </>
+        )}
+        {window.name === 'dragonpayWeb' && (
+          <Button
+            fullWidth
+            color="primary"
+            variant="contained"
+            size="large"
+            onClick={() => window.close()}
+          >
+            OK
+          </Button>
         )}
       </div>
     </Wrapper>

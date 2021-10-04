@@ -278,13 +278,15 @@ export function App() {
     })(document, 'script', 'facebook-jssdk');
   };
 
+  const bpiCode = new URLSearchParams(location.search).get('code'); // add money
   const currentLocation = location ? location.pathname : '';
   let showHeaderFooter = false;
   if (currentLocation) {
     if (
       !currentLocation.includes('/postback') &&
       currentLocation !== '/privacy-policy' &&
-      currentLocation !== '/terms-and-conditions'
+      currentLocation !== '/terms-and-conditions' &&
+      !bpiCode
     ) {
       showHeaderFooter = true;
     }

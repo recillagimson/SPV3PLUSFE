@@ -13,6 +13,7 @@ type Props = {
 };
 
 const A = styled(Link)<Props>`
+  cursor: pointer;
   color: ${p =>
     p.color === 'gold' ? StyleConstants.LINK_TEXT_GOLD : 'inherit'};
   transition: all 0.3s ease-in-out;

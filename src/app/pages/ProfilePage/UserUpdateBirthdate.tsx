@@ -1,13 +1,15 @@
 import * as React from 'react';
-// import styled from 'styled-components/macro';
-// import { useHistory } from 'react-router-dom';
-// import { StyleConstants } from 'styles/StyleConstants';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Box from 'app/components/Box';
 import Field from 'app/components/Elements/Fields';
 import Input from 'app/components/Elements/Input';
 import Label from 'app/components/Elements/Label';
+import Button from 'app/components/Elements/Button';
+import Dialog from 'app/components/Dialog';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import { IconExclamation } from 'app/components/Icons';
+import H3 from 'app/components/Elements/H3';
+import Paragraph from 'app/components/Elements/Paragraph';
 
 type UserBirthDateProps = {
   birthDate: string;
@@ -16,23 +18,71 @@ type UserBirthDateProps = {
 export default function UserUpdateBirthDateComponent({
   birthDate,
 }: UserBirthDateProps) {
+  const [showMessage, setShowMessage] = React.useState(false);
+
   let bdate = '-';
   if (birthDate) {
     let bd = birthDate.split('-');
     bdate = `${bd[1]}/${bd[2]}/${bd[0]}`;
   }
   return (
-    <Box title="Change Date of Birth" titleBorder>
-      <div style={{ padding: '20px 25px' }}>
-        <p>
-          For account maintenance, send us a request at{' '}
-          {'support|squid.ph'.replace('|', '@')}
-        </p>
-        <Field>
-          <Label>Date of Birth</Label>
-          <Input value={bdate} disabled />
-        </Field>
-      </div>
-    </Box>
+    <>
+      <Box
+        title="Change Date of Birth"
+        titleBorder
+        footer={
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setShowMessage(true)}
+            size="large"
+          >
+            Send Request
+          </Button>
+        }
+        footerAlign="right"
+      >
+        <div style={{ padding: '20px 25px' }}>
+          <p>
+            For account maintenance, send us a request at{' '}
+            {'support|squid.ph'.replace('|', '@')}
+          </p>
+          <Field>
+            <Label>Date of Birth</Label>
+            <Input value={bdate} disabled />
+          </Field>
+        </div>
+      </Box>
+      <Dialog show={showMessage} size="small">
+        <div className="text-center" style={{ padding: '40px 20px 30px' }}>
+          <CircleIndicator size="large" color="primary">
+            <IconExclamation />
+          </CircleIndicator>
+          <H3 margin="30px 0 10px" align="center">
+            Update your Date of Birth
+          </H3>
+          <Paragraph align="center" margin="0 0 35px">
+            Hi Squidee! Updating your date of birth requires you to send us an
+            email for us to evaluate your request. If you wish to proceed, you
+            will receive feedback within the next 24-48 hours.
+          </Paragraph>
+          <Button
+            fullWidth
+            onClick={() => {
+              setShowMessage(false);
+              window.open(
+                `mailto:${'support|squid.ph'.replace('|', '@')}`,
+                'sendEmail',
+              );
+            }}
+            variant="contained"
+            color="primary"
+            size="large"
+          >
+            Send Email
+          </Button>
+        </div>
+      </Dialog>
+    </>
   );
 }

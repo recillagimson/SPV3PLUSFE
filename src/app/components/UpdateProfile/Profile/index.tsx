@@ -1875,18 +1875,16 @@ export default function UserProfileForm({
             style={{ maxWidth: 380, margin: '0 auto' }}
           >
             <VerifyOTP
-              apiURL="/auth/verify/otp"
+              verifyURL="/auth/verify/otp"
               otpType="update_profile"
               onSuccess={onSubmit}
-              isUserToken
+              isVerifyUserToken
+              resendURL="/auth/generate/otp"
+              resendPayload={JSON.stringify({
+                otp_type: 'update_profile',
+              })}
+              isResendUserToken
             />
-
-            <Field className="text-center f-small" margin="20px 0 10px">
-              Need a new code?{' '}
-              <button className="btn-resend-code" onClick={onGenerateOTP}>
-                Resend Code
-              </button>
-            </Field>
           </div>
         </Box>
       )}

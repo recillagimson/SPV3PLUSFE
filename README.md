@@ -152,4 +152,9 @@ v1.1.2
 
 v1.1.3
 
-- Add Money via BPI
+- Add Money via BPI (VP2-42)
+- Buy load fix stuck in page (VVBT-498)
+- Fix on Dragonpay postback url (VVBT-496)
+- Arrange alphabetically Buy EPINs products (VP2-371)
+- High Resolution Loader (VP2-245)
+- Verify OTP Clearing error message and added response when Resend Code is clicked (VP2-241)

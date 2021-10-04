@@ -404,16 +404,16 @@ export function RegisterPage() {
     setApiError('');
   };
 
-  const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    setIsLoading(true);
-    // since we already have the information, send the user email or mobile number to receive activation code
-    const data = {
-      email: isEmail ? username.value : undefined,
-      mobile_number: !isEmail ? username.value : undefined,
-      otp_type: 'registration',
-    };
-    dispatch(actions.getResendCodeLoading(data));
-  };
+  // const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  //   setIsLoading(true);
+  //   // since we already have the information, send the user email or mobile number to receive activation code
+  //   const data = {
+  //     email: isEmail ? username.value : undefined,
+  //     mobile_number: !isEmail ? username.value : undefined,
+  //     otp_type: 'registration',
+  //   };
+  //   dispatch(actions.getResendCodeLoading(data));
+  // };
 
   const onCloseResendDialog = () => {
     setResendDialog(false);
@@ -748,17 +748,17 @@ export function RegisterPage() {
           <div className="text-center" style={{ padding: '0 40px' }}>
             <VerifyOTP
               onSuccess={onCodeVerified}
+              verifyURL="/auth/verify/account"
+              resendURL="/auth/resend/otp"
+              resendPayload={JSON.stringify({
+                email: isEmail ? username.value : undefined,
+                mobile_number: !isEmail ? username.value : undefined,
+                otp_type: 'registration',
+              })}
               isEmail={isEmail}
               viaValue={username.value}
-              apiURL="/auth/verify/account"
+              title="Authentication"
             />
-
-            <Field className="text-center f-small" margin="20px 0 10px">
-              Need a new code?{' '}
-              <button className="link" onClick={onResendCode}>
-                Resend Code
-              </button>
-            </Field>
           </div>
         )}
 
