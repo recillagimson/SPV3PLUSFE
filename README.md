@@ -159,4 +159,4 @@ v1.1.3
 
 v1.1.4
 
-- Prevent multiple clicks on money transactions (VP2-441)
+- Prevent multiple clicks on money transactions (VP2-461, VP2-459, VP2-447, VP2-444, VP2-441)
