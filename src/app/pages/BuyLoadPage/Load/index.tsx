@@ -411,6 +411,7 @@ export function BuyLoadPage() {
                     <Scrollbars style={{ height: 50 }}>
                       {categories.map((p, i: number) => (
                         <Button
+                          key={i}
                           type="submit"
                           color="secondary"
                           size="medium"
@@ -435,8 +436,9 @@ export function BuyLoadPage() {
                       .sort((a, b) =>
                         a.denomination > b.denomination ? 1 : -1,
                       )
-                      .map(promo => (
+                      .map((promo, i) => (
                         <div
+                          key={i}
                           onClick={() => {
                             setSelectedProduct({
                               productCode: promo.productCode,

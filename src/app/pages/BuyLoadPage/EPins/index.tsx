@@ -534,7 +534,7 @@ export function BuyEpinsPage() {
                             }}
                           >
                             <div>{promo.description}</div>
-                            <div>PHP {promo.denomination}.00</div>
+                            <div>PHP {numberCommas(promo.denomination)}</div>
                           </div>
                         ))}
                   </Scrollbars>
