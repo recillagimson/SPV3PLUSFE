@@ -161,7 +161,7 @@ export default function IDUploadListComponent({
         };
         const chunkCount = await read(reader);
       }
-    } catch (error) {
+    } catch (error: any) {
       // console.log(error.message);
       setError(error);
     }

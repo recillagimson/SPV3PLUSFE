@@ -235,7 +235,7 @@ export default function UserProfileForm({
     const nI = refs.nationalities.findIndex(j => j.id === p.nationality_id);
     setNationality({ value: nI !== -1 ? nI : '', error: false });
 
-    const cI = refs.countries.findIndex(j => j.id === p.country_id);
+    // const cI = refs.countries.findIndex(j => j.id === p.country_id);
     setCountry({ value: nI !== -1 ? nI : '', error: false });
 
     setHouseNo({ value: p.house_no_street, error: false });
@@ -376,11 +376,11 @@ export default function UserProfileForm({
   };
 
   // loop days for select option dropdown
-  const days = Array.from(new Array(31), (v, i) => (
-    <option key={i} value={i < 9 ? `0${i + 1}` : i + 1}>
-      {i < 9 ? `0${i + 1}` : i + 1}
-    </option>
-  ));
+  // const days = Array.from(new Array(31), (v, i) => (
+  //   <option key={i} value={i < 9 ? `0${i + 1}` : i + 1}>
+  //     {i < 9 ? `0${i + 1}` : i + 1}
+  //   </option>
+  // ));
 
   let hasRefs = false;
   if (refs && Object.keys(refs).length > 0) {
