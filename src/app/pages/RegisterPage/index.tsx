@@ -5,6 +5,12 @@ import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faMobile,
+  faEnvelope,
+  faEye,
+  faEyeSlash,
+} from '@fortawesome/free-solid-svg-icons';
 
 import Loading from 'app/components/Loading';
 import H1 from 'app/components/Elements/H1';
@@ -456,7 +462,7 @@ export function RegisterPage() {
               size="large"
               variant="contained"
             >
-              <FontAwesomeIcon icon="mobile" /> Mobile Number
+              <FontAwesomeIcon icon={faMobile} /> Mobile Number
             </Button>
             <Field margin="10px 0">Or</Field>
             <Button
@@ -467,7 +473,7 @@ export function RegisterPage() {
               size="large"
               variant="contained"
             >
-              <FontAwesomeIcon icon="envelope" /> Email
+              <FontAwesomeIcon icon={faEnvelope} /> Email
             </Button>
           </div>
         )}
@@ -533,7 +539,7 @@ export function RegisterPage() {
                     onClick={() => setShowPass(prev => !prev)}
                     tabIndex={-1}
                   >
-                    <FontAwesomeIcon icon={!showPass ? 'eye-slash' : 'eye'} />
+                    <FontAwesomeIcon icon={!showPass ? faEyeSlash : faEye} />
                   </IconButton>
                 </InputIconWrapper>
 
@@ -569,9 +575,7 @@ export function RegisterPage() {
                     onClick={() => setShowConfirm(prev => !prev)}
                     tabIndex={-1}
                   >
-                    <FontAwesomeIcon
-                      icon={!showConfirm ? 'eye-slash' : 'eye'}
-                    />
+                    <FontAwesomeIcon icon={!showConfirm ? faEyeSlash : faEye} />
                   </IconButton>
                 </InputIconWrapper>
 

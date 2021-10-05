@@ -45,14 +45,16 @@ export default function FlagsProvider({
       .then(activated => {
         return remoteConfig.getAll();
       })
-      .then(remoteFlags => {
+      .then((remoteFlags): any => {
         const newFlags = {
           ...flags,
         };
         // loop to each flags and save as boolean
-        for (const [key, config] of Object.entries(remoteFlags)) {
+        Object.entries(remoteFlags).map((item: any) => {
+          const [key, config] = item;
           newFlags[key] = config.asBoolean();
-        }
+          return false;
+        });
 
         setFlags(newFlags);
         setRefetch(false);

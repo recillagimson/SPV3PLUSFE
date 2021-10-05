@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { DateTime } from 'luxon';
 
 import Loading from 'app/components/Loading';
@@ -171,7 +172,7 @@ export function DashboardPage() {
               color="primary"
               onClick={() => history.push('/add-money')}
             >
-              <FontAwesomeIcon icon="plus" />
+              <FontAwesomeIcon icon={faPlus} />
             </IconButton>
           </Balance>
         </Box>

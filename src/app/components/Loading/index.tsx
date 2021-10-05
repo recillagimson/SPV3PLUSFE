@@ -30,6 +30,7 @@ export default function Loading(props: Props) {
 
   return (
     <Wrapper
+      role="loading"
       position={props.position || 'relative'}
       big={props.big || undefined}
       invert={props.invert || undefined}

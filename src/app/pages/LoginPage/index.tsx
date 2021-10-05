@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import * as React from 'react';
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Redirect, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 import Loading from 'app/components/Loading';
 import Logo from 'app/components/Assets/Logo';
@@ -325,6 +326,7 @@ export function LoginPage() {
                 Email or Mobile No. <i>*</i>
               </Label>
               <Input
+                data-testid="emailOrMobile"
                 required
                 type="text"
                 value={email.value}
@@ -346,6 +348,7 @@ export function LoginPage() {
               </Label>
               <InputIconWrapper>
                 <Input
+                  data-testid="password"
                   type={showPass ? 'text' : 'password'}
                   value={password.value}
                   placeholder="Password"
@@ -363,7 +366,7 @@ export function LoginPage() {
                   type="button"
                   onClick={() => setShowPass(prev => !prev)}
                 >
-                  <FontAwesomeIcon icon={!showPass ? 'eye-slash' : 'eye'} />
+                  <FontAwesomeIcon icon={!showPass ? faEyeSlash : faEye} />
                 </IconButton>
               </InputIconWrapper>
 
