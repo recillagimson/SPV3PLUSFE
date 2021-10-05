@@ -103,13 +103,18 @@ function* getTransactionHistory() {
         decryptPhrase.passPhrase,
       );
 
-      if (decryptData && decryptData.data && decryptData.data.length > 0) {
-        const recentTransaction =
-          decryptData.data.length > 2
-            ? decryptData.data.slice(0, 2)
-            : decryptData.data;
+      if (decryptData && decryptData.data) {
+        if (decryptData.data.length > 0) {
+          const recentTransaction =
+            decryptData.data.length > 2
+              ? decryptData.data.slice(0, 2)
+              : decryptData.data;
 
-        yield put(actions.getTransactionSuccess(recentTransaction));
+          yield put(actions.getTransactionSuccess(recentTransaction));
+        }
+        if (decryptData.data.length === 0) {
+          yield put(actions.getTransactionSuccess([]));
+        }
       }
     }
   } catch (err: any) {
