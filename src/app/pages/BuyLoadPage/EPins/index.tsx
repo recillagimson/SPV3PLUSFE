@@ -332,13 +332,15 @@ export function BuyEpinsPage() {
   };
 
   const onClickPay = () => {
-    const data = {
-      mobile_number: mobile.value,
-      product_code: selectedProduct.productCode,
-      product_name: selectedProduct.productName,
-      amount: selectedProduct.amount,
-    };
-    dispatch(actions.getPayLoading(data));
+    if (!payLoading) {
+      const data = {
+        mobile_number: mobile.value,
+        product_code: selectedProduct.productCode,
+        product_name: selectedProduct.productName,
+        amount: selectedProduct.amount,
+      };
+      dispatch(actions.getPayLoading(data));
+    }
   };
 
   const onCloseValidateError = () => {

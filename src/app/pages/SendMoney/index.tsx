@@ -602,22 +602,6 @@ export function SendMoney() {
                         </Field>
                       </Field>
                     </Flex>
-                    {/* <p className="text-center">Please enter your pin code</p>
-                  {otp.error && <ErrorMsg formError>* Error</ErrorMsg>}
-                  <Button
-                    type="button"
-                    onClick={onPinNext}
-                    color="primary"
-                    fullWidth
-                    size="large"
-                    variant="contained"
-                  >
-                    Next
-                  </Button>
-                  <br />
-                  <br />
-                  <small className="text-center">Forgot your pin code?</small>
-                  <br /> */}
                   </Grid>
                 </Grid>
               </div>
