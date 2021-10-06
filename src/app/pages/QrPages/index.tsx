@@ -8,6 +8,7 @@ import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faShare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import isEmpty from 'lodash/isEmpty';
 // #region assets
 import Facebook from 'app/components/Assets/fb.png';
 import Bluetooth from 'app/components/Assets/bluetooth.png';
@@ -23,6 +24,7 @@ import Paragraph from 'app/components/Elements/Paragraph';
 import QrReceiveMoney from 'app/components/Assets/QrReceiveMoney';
 import QrPayMoney from 'app/components/Assets/QrPayMoney';
 import QRCode from 'qrcode.react';
+import QrReader from 'react-qr-reader';
 import Dialog from 'app/components/Dialog';
 import Field from 'app/components/Elements/Fields';
 import Grid from '@material-ui/core/Grid';
@@ -42,11 +44,14 @@ type Keys =
   | 'generate-qr'
   | 'receive-money'
   | 'receive-money-qr-code'
+  | 'upload-qr-code'
   | 'pay-via-qr-code'
   | 'add-amount';
 export function QrPages() {
   const { response, goFetch } = useFetch();
+  const qrRef = React.useRef<any>(null);
   const { response: receiveResponse, goFetch: receiveGoFetch } = useFetch();
+  const { response: scanQrResponse, goFetch: scanQrFetch } = useFetch();
   const [amount, setAmount] = React.useState<{
     value: string;
     error: boolean;
@@ -148,12 +153,51 @@ export function QrPages() {
     }
   };
 
+  const handleErrorFile = e => {
+    console.log(e);
+  };
+
+  const handleScanFile = React.useCallback(
+    result => {
+      if (result) {
+        const data = {
+          id: result,
+        };
+
+        scanQrFetch(
+          '/send/money/scan/qr',
+          'POST',
+          JSON.stringify(data),
+          '',
+          true,
+          true,
+        );
+      }
+    },
+    [scanQrFetch],
+  );
+
+  React.useEffect(() => {
+    if (!isEmpty(scanQrResponse)) {
+      console.log(scanQrResponse); // need update on screens for how to display this data;
+      // setActiveStep('upload-qr-code');
+    }
+  }, [scanQrResponse]);
+
+  const onScanFile = () => {
+    if (qrRef) {
+      if (qrRef.current) {
+        qrRef?.current?.openImageDialog();
+      }
+    }
+  };
+
   const activeLayout = React.useMemo(() => {
     switch (activeStep) {
       case 'landing':
         return (
           <Flex justifyContent="flex-start">
-            <S.ButtonWrapper role="button">
+            <S.ButtonWrapper role="button" onClick={onScanFile}>
               <img
                 src={AddQrCodeImg}
                 alt="add qr code"
@@ -180,6 +224,14 @@ export function QrPages() {
                 Generate Qr Code
               </Paragraph>
             </S.ButtonWrapper>
+            <QrReader
+              ref={qrRef}
+              delay={3000}
+              style={{ width: '0%' }}
+              onError={handleErrorFile}
+              onScan={handleScanFile}
+              legacyMode
+            />
           </Flex>
         );
       case 'generate-qr':
@@ -317,10 +369,24 @@ export function QrPages() {
             </div>
           </section>
         );
+      case 'upload-qr-code':
+        return (
+          <AddAmountForm
+            {...{ amount, setAmount, balanceInfo, purpose, setPurpose }}
+          />
+        );
       default:
         return null;
     }
-  }, [activeStep, response, amount, balanceInfo, purpose, receiveMoneyQrCode]);
+  }, [
+    activeStep,
+    handleScanFile,
+    response.qr_code,
+    amount,
+    balanceInfo,
+    purpose,
+    receiveMoneyQrCode,
+  ]);
 
   const cardTitle = React.useMemo((): string => {
     switch (activeStep) {

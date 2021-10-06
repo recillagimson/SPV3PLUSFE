@@ -8,14 +8,13 @@ import * as React from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
-
 import Dialog from 'app/components/Dialog';
 import Avatar from 'app/components/Elements/Avatar';
 import IconButton from 'app/components/Elements/IconButton';
-
+import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
 import Loading from 'app/components/Loading';
 import Button from 'app/components/Elements/Button';
-
+import H3 from 'app/components/Elements/H3';
 import HomeIcon from 'app/components/Assets/Home';
 import QRCodeIcon from 'app/components/Assets/QRCodeSmall';
 // import AccountIcon from 'app/components/Assets/Account';
@@ -42,6 +41,7 @@ import { useFlags } from 'utils/FlagsProvider';
 
 export default function Sidebar() {
   const history = useHistory();
+  const [showUpgrade, setShowUpgrade] = React.useState(false);
   // const location = useLocation();
   const profile: any = useSelector(selectUser);
   const flags: any = useFlags();
@@ -138,7 +138,15 @@ export default function Sidebar() {
           </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
           {flags && flags.send_money_via_qr_enabled ? (
-            <NavButton as={NavLink} to="/my-qr-code">
+            <NavButton
+              onClick={
+                tierName.toLowerCase() === 'bronze'
+                  ? () => setShowUpgrade(true)
+                  : () => {
+                      history.push('/my-qr-code');
+                    }
+              }
+            >
               <QRCodeIcon />
               My QR Code
             </NavButton>
@@ -210,6 +218,40 @@ export default function Sidebar() {
             </button>
           </div>
         </LogoutWrapper>
+      </Dialog>
+      <Dialog show={showUpgrade} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <img
+            src={tierUpgrade}
+            alt="Upgrade your tier to unlock other services"
+          />
+          <H3 margin="30px 0 10px">Oops!</H3>
+          <p style={{ marginBottom: 35 }}>
+            Uh-no! You need to upgrade your account to unlock other SquidPay
+            services.
+          </p>
+          <Button
+            fullWidth
+            onClick={() => history.push('/tiers')}
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Upgrade Now
+          </Button>
+          <Button
+            fullWidth
+            onClick={() => setShowUpgrade(false)}
+            variant="outlined"
+            color="secondary"
+            size="large"
+          >
+            Upgrade Later
+          </Button>
+        </div>
       </Dialog>
     </>
   );
