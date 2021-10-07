@@ -158,9 +158,11 @@ v1.1.3
 - High Resolution Loader (VP2-245)
 - Verify OTP Clearing error message and added response when Resend Code is clicked (VP2-241)
 
-v1.1.4
+v1.2.0
 
 - Display of avatar on send money and buy load (VP2-338, VP2-251)
 - Loans (VP2-265, VP2-266, VP2-267, VP2-268, 277)
 - Add Money via BPI (VP2-42)
 - If no Load ID generated, disable next button (VP2-427)
+- Fix resend icon indicator when success (VP2-498)
+- Forgot Password - OTP session timeout (VVBT-523)
