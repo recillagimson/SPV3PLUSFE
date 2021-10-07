@@ -9,6 +9,9 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faShare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import isEmpty from 'lodash/isEmpty';
+import { useHistory } from 'react-router-dom';
+import H3 from 'app/components/Elements/H3';
+import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
 // #region assets
 import Facebook from 'app/components/Assets/fb.png';
 import Bluetooth from 'app/components/Assets/bluetooth.png';
@@ -36,8 +39,11 @@ import useFetch from 'utils/useFetch';
 import { numberCommas } from 'app/components/Helpers';
 import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
 import { useSelector } from 'react-redux';
+import { selectUser } from 'app/App/slice/selectors';
 import AddAmountForm from './components/AddAmountForm';
+import ScanQrInfo from './components/ScanQrInfo';
 import QrUserInfo from './components/QrUserInfo';
+import { TierIDs } from 'app/components/Helpers/Tiers';
 
 type Keys =
   | 'landing'
@@ -50,6 +56,9 @@ type Keys =
 export function QrPages() {
   const { response, goFetch } = useFetch();
   const qrRef = React.useRef<any>(null);
+  const history = useHistory();
+  const user: any = useSelector(selectUser);
+  const [showUpgrade, setShowUpgrade] = React.useState(false);
   const { response: receiveResponse, goFetch: receiveGoFetch } = useFetch();
   const { response: scanQrResponse, goFetch: scanQrFetch } = useFetch();
   const [amount, setAmount] = React.useState<{
@@ -73,6 +82,15 @@ export function QrPages() {
     setActiveStep(step);
   };
 
+  let isBronze = false;
+  if (
+    user &&
+    user.user_account &&
+    user.user_account.tier_id &&
+    user.user_account.tier_id !== ''
+  ) {
+    isBronze = user.user_account.tier_id === TierIDs.bronze;
+  }
   const downloadQR = () => {
     const canvas: any = document.getElementById('QRCode');
     const pngUrl = canvas
@@ -179,8 +197,7 @@ export function QrPages() {
 
   React.useEffect(() => {
     if (!isEmpty(scanQrResponse)) {
-      console.log(scanQrResponse); // need update on screens for how to display this data;
-      // setActiveStep('upload-qr-code');
+      setActiveStep('upload-qr-code');
     }
   }, [scanQrResponse]);
 
@@ -197,7 +214,12 @@ export function QrPages() {
       case 'landing':
         return (
           <Flex justifyContent="flex-start">
-            <S.ButtonWrapper role="button" onClick={onScanFile}>
+            <S.ButtonWrapper
+              role="button"
+              onClick={
+                isBronze ? () => setShowUpgrade(true) : () => onScanFile()
+              }
+            >
               <img
                 src={AddQrCodeImg}
                 alt="add qr code"
@@ -370,11 +392,7 @@ export function QrPages() {
           </section>
         );
       case 'upload-qr-code':
-        return (
-          <AddAmountForm
-            {...{ amount, setAmount, balanceInfo, purpose, setPurpose }}
-          />
-        );
+        return <ScanQrInfo scanQrResponse={scanQrResponse} />;
       default:
         return null;
     }
@@ -383,9 +401,11 @@ export function QrPages() {
     handleScanFile,
     response.qr_code,
     amount,
+    isBronze,
     balanceInfo,
     purpose,
     receiveMoneyQrCode,
+    scanQrResponse,
   ]);
 
   const cardTitle = React.useMemo((): string => {
@@ -398,6 +418,8 @@ export function QrPages() {
         return 'Personal QR Code';
       case 'pay-via-qr-code':
         return 'Pay via QR Code';
+      case 'upload-qr-code':
+        return 'Confirm Payment';
       default:
         return 'QR Code';
     }
@@ -564,6 +586,40 @@ export function QrPages() {
               Close
             </Button>
           </section>
+        </div>
+      </Dialog>
+      <Dialog show={showUpgrade} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <img
+            src={tierUpgrade}
+            alt="Upgrade your tier to unlock other services"
+          />
+          <H3 margin="30px 0 10px">Oops!</H3>
+          <p style={{ marginBottom: 35 }}>
+            Uh-no! You need to upgrade your account to unlock other SquidPay
+            services.
+          </p>
+          <Button
+            fullWidth
+            onClick={() => history.push('/tiers')}
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Upgrade Now
+          </Button>
+          <Button
+            fullWidth
+            onClick={() => setShowUpgrade(false)}
+            variant="outlined"
+            color="secondary"
+            size="large"
+          >
+            Upgrade Later
+          </Button>
         </div>
       </Dialog>
     </ProtectedContent>
