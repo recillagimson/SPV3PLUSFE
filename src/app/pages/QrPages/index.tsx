@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import isEmpty from 'lodash/isEmpty';
 import { useHistory } from 'react-router-dom';
 import H3 from 'app/components/Elements/H3';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
 // #region assets
 import Facebook from 'app/components/Assets/fb.png';
@@ -26,7 +27,7 @@ import Flex from 'app/components/Elements/Flex';
 import Paragraph from 'app/components/Elements/Paragraph';
 import QrReceiveMoney from 'app/components/Assets/QrReceiveMoney';
 import QrPayMoney from 'app/components/Assets/QrPayMoney';
-import QRCode from 'qrcode.react';
+import QRCode from 'qrcode';
 import QrReader from 'react-qr-reader';
 import Dialog from 'app/components/Dialog';
 import Field from 'app/components/Elements/Fields';
@@ -41,6 +42,7 @@ import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/sele
 import { useSelector } from 'react-redux';
 import { selectUser } from 'app/App/slice/selectors';
 import AddAmountForm from './components/AddAmountForm';
+import SuccessSentDialog from './components/SuccessSentDialog';
 import ScanQrInfo from './components/ScanQrInfo';
 import QrUserInfo from './components/QrUserInfo';
 import { TierIDs } from 'app/components/Helpers/Tiers';
@@ -61,6 +63,103 @@ export function QrPages() {
   const [showUpgrade, setShowUpgrade] = React.useState(false);
   const { response: receiveResponse, goFetch: receiveGoFetch } = useFetch();
   const { response: scanQrResponse, goFetch: scanQrFetch } = useFetch();
+  const {
+    response: validateSendResponse,
+    error: validateError,
+    goFetch: validateFetch,
+  } = useFetch();
+  const { response: sendMoneyResponse, goFetch: sendMoneyFetch } = useFetch();
+
+  const [showSendSucess, setShowSendSucces] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (sendMoneyResponse && typeof sendMoneyResponse === 'object') {
+      setShowSendSucces(true);
+    }
+  }, [sendMoneyResponse]);
+
+  const sendMoney = React.useCallback(
+    ({ email, mobile_number, amount, message }) => {
+      const data = {
+        ...(email ? { email } : { mobile_number }),
+        amount,
+        message: message ?? '',
+      };
+      sendMoneyFetch(
+        '/send/money',
+        'POST',
+        JSON.stringify(data),
+        '',
+        true,
+        true,
+      );
+    },
+    [sendMoneyFetch],
+  );
+
+  React.useEffect(() => {
+    if (validateSendResponse && typeof validateSendResponse === 'object') {
+      const { email, mobile_number, amount, message } = validateSendResponse;
+      sendMoney({ email, mobile_number, amount, message });
+    }
+  }, [validateSendResponse, sendMoney]);
+
+  const [isFailedDialog, setFailedDialog] = React.useState(false);
+  const uploadError = React.useMemo(() => {
+    let errors: string[] = [];
+    if (validateError) {
+      if (validateError?.errors) {
+        setFailedDialog(true);
+        Object.keys(validateError.errors).forEach(key => {
+          const error = validateError.errors[key][0];
+          errors.push(error as string);
+        });
+      }
+    } else {
+      setFailedDialog(false);
+    }
+    return errors;
+  }, [validateError]);
+
+  const [imageSource, setSource] = React.useState({ value: '', key: '' });
+
+  const renderQrCode = React.useCallback((value, key) => {
+    if (value) {
+      QRCode.toDataURL(value)
+        .then(result => {
+          setSource({ value: result, key });
+        })
+        .catch(e => console.log(e));
+    }
+
+    return null;
+  }, []);
+
+  const imageCode = React.useMemo(() => {
+    if (imageSource?.value) {
+      const { value, key } = imageSource;
+      return (
+        <>
+          {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
+          <a
+            href={value}
+            style={{ visibility: 'hidden' }}
+            download
+            className={`Qr-${key}`}
+          />
+          <img
+            src={value}
+            alt="qr-code"
+            width="200px"
+            height="200px"
+            style={{ margin: '0 auto' }}
+          />
+        </>
+      );
+    }
+    return <></>;
+  }, [imageSource]);
+
   const [amount, setAmount] = React.useState<{
     value: string;
     error: boolean;
@@ -91,18 +190,9 @@ export function QrPages() {
   ) {
     isBronze = user.user_account.tier_id === TierIDs.bronze;
   }
-  const downloadQR = () => {
-    const canvas: any = document.getElementById('QRCode');
-    const pngUrl = canvas
-      .toDataURL('image/png')
-      .replace('image/png', 'image/octet-stream');
-
-    let downloadLink = document.createElement('a');
-    downloadLink.href = pngUrl;
-    downloadLink.download = `my-qr-code.png`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+  const downloadQR = (key?: string) => {
+    const downloadLink: any = document.querySelector(`.Qr-${key}`);
+    if (downloadLink) downloadLink.click();
   };
 
   let balanceInfo = '000.00';
@@ -114,9 +204,10 @@ export function QrPages() {
 
   React.useEffect(() => {
     if (receiveMoneyQrCode && typeof receiveMoneyQrCode !== 'undefined') {
+      renderQrCode(receiveMoneyQrCode, 'receive-money');
       setActiveStep('receive-money-qr-code');
     }
-  }, [receiveMoneyQrCode]);
+  }, [receiveMoneyQrCode, renderQrCode]);
 
   React.useEffect(() => {
     goFetch('/send/money/get/qr', 'GET', '', '', true, true);
@@ -177,6 +268,7 @@ export function QrPages() {
 
   const handleScanFile = React.useCallback(
     result => {
+      console.log(result);
       if (result) {
         const data = {
           id: result,
@@ -194,6 +286,26 @@ export function QrPages() {
     },
     [scanQrFetch],
   );
+
+  const handleValidateSendMoney = React.useCallback(() => {
+    const { email, amount, mobile_number, message } = scanQrResponse;
+    const data = {
+      ...(mobile_number ? { mobile_number } : { email }),
+      amount,
+      ...(message && { message }),
+    };
+
+    validateFetch(
+      '/send/money/validate',
+      'POST',
+      JSON.stringify(data),
+      '',
+      true,
+      true,
+    );
+  }, [scanQrResponse, validateFetch]);
+
+  // console.log(validateSendResponse);
 
   React.useEffect(() => {
     if (!isEmpty(scanQrResponse)) {
@@ -261,7 +373,10 @@ export function QrPages() {
           <Flex justifyContent="flex-start">
             <S.ButtonWrapper
               role="button"
-              onClick={clickSetStep('receive-money')}
+              onClick={function () {
+                renderQrCode(response?.qr_code, 'receive-money');
+                setActiveStep('receive-money');
+              }}
             >
               <QrReceiveMoney />
               <Paragraph align="center" weight="light">
@@ -282,14 +397,6 @@ export function QrPages() {
       case 'receive-money':
         return (
           <Field id="qrCodeDisplay" style={{ maxWidth: 400, margin: '0 auto' }}>
-            <Flex justifyContent="center">
-              <QRCode
-                value={response?.qr_code}
-                size={200}
-                id="QRCode"
-                includeMargin
-              />
-            </Flex>
             <span className="text-center">
               <QrUserInfo />
               <Grid container justify="center" direction="column" spacing={2}>
@@ -311,7 +418,7 @@ export function QrPages() {
                     variant="outlined"
                     color="secondary"
                     size="large"
-                    onClick={downloadQR}
+                    onClick={() => downloadQR('receive-money')}
                   >
                     <FontAwesomeIcon icon={faQrcode} />
                     &nbsp; Download QR Code
@@ -330,14 +437,6 @@ export function QrPages() {
       case 'receive-money-qr-code':
         return (
           <Field id="qrCodeDisplay" style={{ maxWidth: 400, margin: '0 auto' }}>
-            <Flex justifyContent="center">
-              <QRCode
-                value={receiveMoneyQrCode}
-                size={200}
-                id="QRCode"
-                includeMargin
-              />
-            </Flex>
             <span className="text-center">
               <QrUserInfo amount={amount.value} />
               <Grid container justify="center" direction="column" spacing={2}>
@@ -347,7 +446,7 @@ export function QrPages() {
                     variant="contained"
                     color="primary"
                     size="large"
-                    onClick={downloadQR}
+                    onClick={() => downloadQR('receive-money')}
                   >
                     <FontAwesomeIcon icon={faQrcode} />
                     &nbsp; Download QR Code
@@ -398,14 +497,14 @@ export function QrPages() {
     }
   }, [
     activeStep,
-    handleScanFile,
-    response.qr_code,
-    amount,
     isBronze,
+    handleScanFile,
+    amount,
     balanceInfo,
     purpose,
-    receiveMoneyQrCode,
     scanQrResponse,
+    renderQrCode,
+    response.qr_code,
   ]);
 
   const cardTitle = React.useMemo((): string => {
@@ -443,15 +542,33 @@ export function QrPages() {
                 variant="contained"
                 type="submit"
                 color="primary"
-                size="medium"
+                size="large"
                 onClick={onSubmit}
               >
                 Save
               </Button>
             )}
+            {activeStep === 'upload-qr-code' && (
+              <div style={{ width: 382, margin: '0 auto' }}>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  size="large"
+                  fullWidth
+                  color="primary"
+                  onClick={handleValidateSendMoney}
+                >
+                  Confirm Payment
+                </Button>
+              </div>
+            )}
           </>
         }
       >
+        {(activeStep === 'receive-money' ||
+          activeStep === 'receive-money-qr-code') && (
+          <Flex justifyContent="center">{imageCode}</Flex>
+        )}
         {activeLayout}
       </Box>
       <Dialog show={showShare} size="small">
@@ -463,12 +580,7 @@ export function QrPages() {
               width="150px"
               height="53.75px"
             />
-            <QRCode
-              value={receiveMoneyQrCode}
-              size={200}
-              id="QRCode"
-              includeMargin
-            />
+            {imageCode}
             <p style={{ margin: '15px 0 34px' }}>
               <strong>Share QR Code</strong>
             </p>
@@ -578,7 +690,6 @@ export function QrPages() {
           <section style={{ padding: '0 48px' }}>
             <Button
               style={{ margin: '10px 0 0' }}
-              fullWidth
               onClick={() => setShowShare(false)}
               variant="contained"
               color="primary"
@@ -622,6 +733,42 @@ export function QrPages() {
           </Button>
         </div>
       </Dialog>
+      {/* Failed transaction dailog  */}
+      <Dialog show={isFailedDialog} size="small">
+        <S.DetailsWrapper padding="15px">
+          <div className="text-center">
+            <CircleIndicator size="medium" color="danger">
+              <FontAwesomeIcon icon="times" />
+            </CircleIndicator>
+            <H3 margin="15px 0 10px">Transaction Error</H3>
+            <p>
+              {Array.isArray(uploadError)
+                ? uploadError[uploadError.length - 1]
+                : uploadError}
+            </p>
+            <Button
+              fullWidth
+              onClick={() => {
+                setFailedDialog(false);
+              }}
+              variant="outlined"
+              color="secondary"
+              size="large"
+            >
+              Cancel
+            </Button>
+          </div>
+        </S.DetailsWrapper>
+      </Dialog>
+      {/* Success Sent Dialog */}
+      <SuccessSentDialog
+        name={`${sendMoneyResponse?.first_name ?? ''} ${
+          sendMoneyResponse?.middlename ?? ''
+        } ${sendMoneyResponse?.last_name ?? ''}`}
+        show={showSendSucess}
+        setShow={setShowSendSucces}
+        {...sendMoneyResponse}
+      />
     </ProtectedContent>
   );
 }

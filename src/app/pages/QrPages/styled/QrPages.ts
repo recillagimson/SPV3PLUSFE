@@ -1,4 +1,14 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+export const DetailsWrapper = styled.div<{
+  padding?: string;
+}>`
+  ${({ padding }) =>
+    padding &&
+    css`
+      padding: ${padding};
+    `}
+`;
 
 export const ButtonWrapper = styled.section`
   width: 183px;

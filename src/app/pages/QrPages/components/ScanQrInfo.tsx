@@ -1,7 +1,12 @@
 import React from 'react';
 import Flex from 'app/components/Elements/Flex';
 import Paragraph from 'app/components/Elements/Paragraph';
-import { numberCommas, maskMobileNumber } from 'app/components/Helpers';
+import {
+  numberCommas,
+  maskMobileNumber,
+  maskEmailAddress,
+  validateEmail,
+} from 'app/components/Helpers';
 import Grid from '@material-ui/core/Grid';
 
 type Props = {
@@ -15,11 +20,26 @@ type Props = {
     name_extension: string;
     selfie_location: string;
     user_account_id: string;
+    email?: string;
   };
 };
 
 export default function ScanQrInfo({ scanQrResponse }: Props) {
-  const { first_name, last_name, mobile_number, amount } = scanQrResponse;
+  const {
+    first_name,
+    last_name,
+    mobile_number,
+    amount,
+    email,
+  } = scanQrResponse;
+
+  const maskCharacter = (username = '') => {
+    if (validateEmail(username)) {
+      return maskEmailAddress(username);
+    }
+    return maskMobileNumber(username);
+  };
+
   return (
     <Flex direction="column" alignItems="center">
       <Flex
@@ -32,7 +52,7 @@ export default function ScanQrInfo({ scanQrResponse }: Props) {
             {first_name} {last_name}
           </Paragraph>
           <Paragraph align="center" weight="light" style={{ width: '100%' }}>
-            {maskMobileNumber(mobile_number)}
+            {maskCharacter(mobile_number || email)}
           </Paragraph>
         </Flex>
       </Flex>
@@ -41,7 +61,7 @@ export default function ScanQrInfo({ scanQrResponse }: Props) {
         justify="center"
         style={{ marginBlockEnd: '48px', width: '473px', maxWidth: '473px' }}
       >
-        <Grid item md={3} justify="flex-start">
+        <Grid item container md={3} justify="flex-start">
           <Flex direction="column" alignItems="flex-start">
             {amount && <span> Amount</span>}
           </Flex>

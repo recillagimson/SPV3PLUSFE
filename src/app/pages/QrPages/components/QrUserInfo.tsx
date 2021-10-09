@@ -26,7 +26,7 @@ export default function QrUserInfo(props: Props) {
 
   return (
     <Grid container justify="center" style={{ marginBlockEnd: '48px' }}>
-      <Grid item md={3} justify="flex-start">
+      <Grid item container md={3} justify="flex-start">
         <Flex direction="column" alignItems="flex-start">
           <span style={{ marginBlockEnd: '16px' }}>Name</span>
           <span

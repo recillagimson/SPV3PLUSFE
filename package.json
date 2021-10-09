@@ -47,6 +47,7 @@
     "node-plop": "0.26.2",
     "plop": "2.7.4",
     "prettier": "2.1.1",
+    "qrcode": "1.4.4",
     "qrcode.react": "1.0.1",
     "react": "16.13.1",
     "react-app-polyfill": "1.0.6",
