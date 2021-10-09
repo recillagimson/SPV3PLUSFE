@@ -74,6 +74,7 @@ import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
 import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
 import { AddMoney } from 'app/pages/AddMoney/Loadable';
 import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
+import { ECPay } from 'app/pages/AddMoney/ECPay/Loadable';
 // #endregion
 
 import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
@@ -400,6 +401,7 @@ export function App() {
               path="/add-money/bpi/select-account"
               component={AddMoneyViaBPI}
             />
+            <PrivateRoute exact path="/add-money/ecpay" component={ECPay} />
             <PrivateRoute
               exact
               path="/transaction-history"
