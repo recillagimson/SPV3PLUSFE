@@ -77,6 +77,28 @@ export function AddMoney() {
         </List>
       </Box>
 
+      <Box title="Over the Counter" titleBorder withPadding>
+        <List divider>
+          <ListItem flex>
+            <ListItemText
+              role="presentation"
+              onClick={() => {
+                if (flags && !flags.add_money_bpi_enabled) {
+                  setIsMaintenance(true);
+                } else {
+                  history.push('/add-money/ecpay');
+                }
+              }}
+              primary="ECPay"
+              style={{
+                flexGrow: 1,
+              }}
+              icon
+            />
+          </ListItem>
+        </List>
+      </Box>
+
       <Dialog show={showEmailUpdate} size="small">
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>
           <Logo size="small" margin="0 0 30px" />
