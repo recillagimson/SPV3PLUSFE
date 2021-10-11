@@ -53,6 +53,7 @@ type Keys =
   | 'receive-money'
   | 'receive-money-qr-code'
   | 'upload-qr-code'
+  | 'send-enter-amount'
   | 'pay-via-qr-code'
   | 'add-amount';
 export function QrPages() {
@@ -268,7 +269,6 @@ export function QrPages() {
 
   const handleScanFile = React.useCallback(
     result => {
-      console.log(result);
       if (result) {
         const data = {
           id: result,
@@ -287,14 +287,21 @@ export function QrPages() {
     [scanQrFetch],
   );
 
+  const [newAmount, setNewAmount] = React.useState<string>('');
+
   const handleValidateSendMoney = React.useCallback(() => {
-    const { email, amount, mobile_number, message } = scanQrResponse;
+    const {
+      email,
+      amount: scanAmount,
+      mobile_number,
+      message,
+    } = scanQrResponse;
+
     const data = {
       ...(mobile_number ? { mobile_number } : { email }),
-      amount,
+      amount: scanAmount > 0 ? scanAmount : newAmount,
       ...(message && { message }),
     };
-
     validateFetch(
       '/send/money/validate',
       'POST',
@@ -303,13 +310,16 @@ export function QrPages() {
       true,
       true,
     );
-  }, [scanQrResponse, validateFetch]);
-
-  // console.log(validateSendResponse);
+  }, [scanQrResponse, validateFetch, newAmount]);
 
   React.useEffect(() => {
     if (!isEmpty(scanQrResponse)) {
-      setActiveStep('upload-qr-code');
+      const { amount } = scanQrResponse;
+      if (amount && amount > 0) {
+        setActiveStep('upload-qr-code');
+      } else {
+        setActiveStep('send-enter-amount');
+      }
     }
   }, [scanQrResponse]);
 
@@ -431,6 +441,7 @@ export function QrPages() {
       case 'add-amount':
         return (
           <AddAmountForm
+            scanQr={false}
             {...{ amount, setAmount, balanceInfo, purpose, setPurpose }}
           />
         );
@@ -491,7 +502,19 @@ export function QrPages() {
           </section>
         );
       case 'upload-qr-code':
-        return <ScanQrInfo scanQrResponse={scanQrResponse} />;
+        return (
+          <ScanQrInfo scanQrResponse={scanQrResponse} newAmount={newAmount} />
+        );
+      case 'send-enter-amount':
+        return (
+          <ScanQrInfo
+            scanQrResponse={scanQrResponse}
+            enterAmount
+            amount={amount}
+            balanceInfo={balanceInfo}
+            setAmount={setAmount}
+          />
+        );
       default:
         return null;
     }
@@ -503,6 +526,7 @@ export function QrPages() {
     balanceInfo,
     purpose,
     scanQrResponse,
+    newAmount,
     renderQrCode,
     response.qr_code,
   ]);
@@ -559,6 +583,24 @@ export function QrPages() {
                   onClick={handleValidateSendMoney}
                 >
                   Confirm Payment
+                </Button>
+              </div>
+            )}
+            {activeStep === 'send-enter-amount' && (
+              <div style={{ width: 382, margin: '0 auto' }}>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  size="large"
+                  fullWidth
+                  color="primary"
+                  disabled={Number(amount.value) <= 0}
+                  onClick={() => {
+                    setNewAmount(amount.value);
+                    setActiveStep('upload-qr-code');
+                  }}
+                >
+                  Next
                 </Button>
               </div>
             )}

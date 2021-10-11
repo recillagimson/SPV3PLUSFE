@@ -10,25 +10,29 @@ type Amount = {
   errormsg: string;
 };
 type Props = {
+  scanQr: boolean;
   setAmount: React.Dispatch<React.SetStateAction<Amount>>;
   amount: Amount;
-  setPurpose: React.Dispatch<
+  hasPurpose?: boolean;
+  setPurpose?: React.Dispatch<
     React.SetStateAction<{
       value: string;
     }>
   >;
-  purpose: {
+  purpose?: {
     value: string;
   };
   balanceInfo: string;
 };
 
 export default function AddAmountForm({
+  hasPurpose = true,
   setAmount,
   amount,
   setPurpose,
   purpose,
   balanceInfo,
+  scanQr = false,
 }: Props) {
   const onChangeAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.currentTarget.value;
@@ -46,12 +50,16 @@ export default function AddAmountForm({
   };
   const onChangePurpose = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.currentTarget.value;
-    setPurpose({
-      value: val,
-    });
+    if (setPurpose) {
+      setPurpose({
+        value: val,
+      });
+    }
   };
+
+  const style = scanQr ? { width: 382, margin: '0 auto' } : {};
   return (
-    <Field id="generateQRCode">
+    <Field id="generateQRCode" style={style}>
       <Label>Enter Amount</Label>
       <InputTextWrapper>
         <Input
@@ -70,17 +78,21 @@ export default function AddAmountForm({
         Available Balance PHP {balanceInfo}
       </span>
       {amount.error && <ErrorMsg formError>{amount.errormsg}</ErrorMsg>}
-      <span style={{ margin: '24px 0' }} />
-      <Label>Purpose (optional)</Label>
-      <InputTextWrapper>
-        <Input
-          type="text"
-          value={purpose.value}
-          autoComplete="off"
-          onChange={onChangePurpose}
-          hidespinner
-        />
-      </InputTextWrapper>
+      {hasPurpose && purpose && (
+        <>
+          <span style={{ margin: '24px 0' }} />
+          <Label>Purpose (optional)</Label>
+          <InputTextWrapper>
+            <Input
+              type="text"
+              value={purpose.value}
+              autoComplete="off"
+              onChange={onChangePurpose}
+              hidespinner
+            />
+          </InputTextWrapper>
+        </>
+      )}
     </Field>
   );
 }
