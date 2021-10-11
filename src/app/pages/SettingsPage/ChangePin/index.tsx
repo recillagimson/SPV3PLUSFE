@@ -17,7 +17,6 @@ import Label from 'app/components/Elements/Label';
 import Input from 'app/components/Elements/Input';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Button from 'app/components/Elements/Button';
-import A from 'app/components/Elements/A';
 import Logo from 'app/components/Assets/Logo';
 
 import H3 from 'app/components/Elements/H3';
@@ -296,17 +295,17 @@ export function SettingsChangePinPage() {
     }
   };
 
-  const onResendCode = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (e && e.preventDefault) e.preventDefault();
+  // const onResendCode = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  //   if (e && e.preventDefault) e.preventDefault();
 
-    const data = {
-      current_pin_code: currentPin.value,
-      new_pin_code: newPin.value,
-      new_pin_code_confirmation: confirmPin.value,
-    };
+  //   const data = {
+  //     current_pin_code: currentPin.value,
+  //     new_pin_code: newPin.value,
+  //     new_pin_code_confirmation: confirmPin.value,
+  //   };
 
-    dispatch(actions.getValidateLoading(data));
-  };
+  //   dispatch(actions.getValidateLoading(data));
+  // };
 
   const onSubmitPassword = () => {
     const data = {
@@ -528,16 +527,16 @@ export function SettingsChangePinPage() {
           >
             <VerifyOTP
               onSuccess={onSubmitPassword}
-              apiURL="/user/pin/verify"
-              isUserToken
+              verifyURL="/user/pin/verify"
+              isVerifyUserToken
+              resendURL="/user/pin/validate"
+              resendPayload={JSON.stringify({
+                current_pin_code: currentPin.value,
+                new_pin_code: newPin.value,
+                new_pin_code_confirmation: confirmPin.value,
+              })}
+              isResendUserToken
             />
-
-            <Field className="text-center f-small" margin="20px 0 10px">
-              Need a new code?{' '}
-              <A to="#" className="link" onClick={onResendCode} color="gold">
-                Resend Code
-              </A>
-            </Field>
           </div>
         </Box>
       )}

@@ -27,7 +27,6 @@ const slice = createSlice({
       state.error = {};
     },
     getFetchSuccess(state, action: PayloadAction<object>) {
-      state.loading = false;
       state.data = action.payload;
     },
     getFetchError(state, action: PayloadAction<ErrorState>) {
@@ -44,10 +43,12 @@ const slice = createSlice({
       state.transaction.error = {};
     },
     getTransactionSuccess(state, action: PayloadAction<[]>) {
+      state.loading = false;
       state.transaction.loading = false;
       state.transaction.data = action.payload;
     },
     getTransactionError(state, action: PayloadAction<ErrorState>) {
+      state.loading = false;
       state.transaction.error = action.payload;
       state.transaction.loading = false;
     },

@@ -23,8 +23,8 @@ import { ReferenceTypes } from './types';
  * Global function for user data or other data
  */
 export function* getRequestToken() {
-  const client_id = process.env.REACT_APP_CLIENT_ID || '';
-  const client_secret = process.env.REACT_APP_CLIENT_SECRET || '';
+  const client_id = process.env.REACT_APP_SPCID || '';
+  const client_secret = process.env.REACT_APP_SPCS || '';
 
   // payload URL params
   const payload = new URLSearchParams();
@@ -60,7 +60,7 @@ export function* getRequestToken() {
     }
 
     return apirequest;
-  } catch (err) {
+  } catch (err: any) {
     yield put(actions.getClientTokenError(err));
     return err;
   }
@@ -177,7 +177,7 @@ export function* getLoggedInUserProfile() {
       }
       return decryptData || true;
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err && err.response && err.response.status === 401) {
       yield put(actions.getIsSessionExpired(true));
     }

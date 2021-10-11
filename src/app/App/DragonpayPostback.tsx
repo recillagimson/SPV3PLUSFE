@@ -50,7 +50,7 @@ export default function DragonpaySuccessPostback() {
         setPending(true);
       }
       setLoading(false);
-      window.resizeTo(380, window.outerHeight);
+      window.resizeTo(420, window.outerHeight);
     }
   }, [location]);
 
