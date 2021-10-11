@@ -84,7 +84,7 @@
     "web-vitals": "0.2.4"
   },
   "scripts": {
-    "start": "PORT=3001 react-scripts start",
+    "start": "react-scripts start",
     "build": "node generate-build.js && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -135,9 +135,7 @@
       "!src/**/*/Loadable.{js,jsx,ts,tsx}",
       "!src/**/*/messages.ts",
       "!src/**/*/types.ts",
-      "!src/index.tsx",
-      "!src/**/*/firebase.ts",
-      "!src/**/*/FlagsProvider.tsx"
+      "!src/index.tsx"
     ],
     "coverageThreshold": {
       "global": {
@@ -148,7 +146,5 @@
       }
     }
   },
-  "devDependencies": {
-    "jest-canvas-mock": "2.3.1"
-  }
+  "devDependencies": {}
 }
