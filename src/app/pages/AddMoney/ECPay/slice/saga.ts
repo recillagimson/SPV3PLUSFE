@@ -39,9 +39,6 @@ function* addMoney() {
     },
     body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
   };
-  console.log(payload, 'payload');
-  console.log(options, 'options');
-  console.log(requestURL, 'requestURL');
 
   try {
     const apirequest = yield call(request, requestURL, options);

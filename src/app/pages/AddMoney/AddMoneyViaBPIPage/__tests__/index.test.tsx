@@ -1,7 +1,13 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
+import {
+  act,
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+} from '@testing-library/react';
 
 import { configureAppStore } from 'store/configureStore';
 import { containerActions as actions } from '../slice';
@@ -9,14 +15,17 @@ import { AddMoneyViaBPI } from '../index';
 import { accountsResponseMock, fundTopUpResponseMock } from '../mocks';
 
 const store = configureAppStore();
-const renderAddMoneyViaBPIPage = () =>
-  render(
-    <Provider store={store}>
-      <HelmetProvider>
-        <AddMoneyViaBPI />
-      </HelmetProvider>
-    </Provider>,
-  );
+const renderAddMoneyViaBPIPage = () => {
+  act(() => {
+    render(
+      <Provider store={store}>
+        <HelmetProvider>
+          <AddMoneyViaBPI />
+        </HelmetProvider>
+      </Provider>,
+    );
+  });
+};
 
 describe('AddMoney/AddMoneyViaBPIPage', () => {
   test('cash in view - show validation', () => {
@@ -30,7 +39,7 @@ describe('AddMoney/AddMoneyViaBPIPage', () => {
     expect(screen.queryByText('Login to BPI Online')).toBeFalsy();
   });
 
-  test('cash in view - submit with amount value', () => {
+  test('cash in view - submit with amount value', async () => {
     renderAddMoneyViaBPIPage();
     const amountInput: any = screen.getByTestId('amount');
     fireEvent.change(amountInput, {
@@ -41,6 +50,7 @@ describe('AddMoney/AddMoneyViaBPIPage', () => {
     expect(screen.queryByText('Online Bank')).toBeTruthy();
     expect(amountInput.value).toBe('10');
     fireEvent.click(screen.getByText('Next'), { bubbles: true });
+    await waitFor(() => screen.queryByRole('loading'));
     expect(screen.queryByText('Oops! This field cannot be empty.')).toBeFalsy();
   });
 
