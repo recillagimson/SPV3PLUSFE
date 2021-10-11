@@ -17,6 +17,8 @@ import {
   selectPayRequest,
 } from './selectors';
 import { appActions } from 'app/App/slice';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
 
 function* getLoadProducts() {
   yield delay(500);
@@ -65,7 +67,7 @@ function* getLoadProducts() {
         yield put(actions.getFetchSuccess(decryptData));
       }
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
@@ -118,7 +120,7 @@ function* validateBuyLoad() {
     if (apirequest && apirequest.data) {
       yield put(actions.getValidateSuccess(true));
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
@@ -183,9 +185,10 @@ function* payLoad() {
 
       if (decryptData) {
         yield put(actions.getPaySuccess(decryptData));
+        analytics.logEvent(events.buyLoad, { type: 'load' });
       }
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {

@@ -369,6 +369,12 @@ export function BuyEpinsPage() {
     dispatch(actions.getValidateReset());
     dispatch(actions.getPayReset());
     setMobile({ value: '', error: false, msg: '' });
+    setSelectedProduct({
+      productCode: '',
+      productName: '',
+      description: '',
+      amount: '',
+    });
   };
 
   const errorHandler = i => {
@@ -490,7 +496,7 @@ export function BuyEpinsPage() {
               <>
                 <Flex justifyContent="center">
                   <Avatar
-                    image=""
+                    image={validateSuccess.avatar_link || ''}
                     size="medium"
                     style={{ marginBottom: '10px' }}
                   />
@@ -498,12 +504,12 @@ export function BuyEpinsPage() {
                 <H5 className="text-center">{mobile.value}</H5>
                 <br />
                 <section>
-                  <Scrollbars style={{ height: 300 }}>
+                  <Scrollbars style={{ maxHeight: '40vh', height: '600px' }}>
                     {success &&
                       success
                         .slice()
                         .sort((a, b) =>
-                          a.denomination > b.denomination ? 1 : -1,
+                          a.productCode > b.productCode ? 1 : -1,
                         )
                         .map((promo, idx) => (
                           <div
@@ -660,7 +666,7 @@ export function BuyEpinsPage() {
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Load</span>
-                  <span>{paySuccess.product_name}</span>
+                  <span>{selectedProduct.description}</span>
                 </Flex>
                 <Flex justifyContent="space-between">
                   <span>Amount</span>

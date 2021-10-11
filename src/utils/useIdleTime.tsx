@@ -3,16 +3,17 @@
  * @prop {number}   idle        idle time in seconds (default: 300000) 5mins
  */
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
-
-import { appActions } from 'app/App/slice';
+// import { useDispatch } from 'react-redux';
+// import { appActions } from 'app/App/slice';
 
 export default function IdleTimer({
   idle = 300000,
+  onTimeout,
 }: {
   idle?: number | string;
+  onTimeout: () => void;
 }) {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   let startTimerInterval = React.useRef<any>();
 
@@ -32,7 +33,8 @@ export default function IdleTimer({
   const onSetTimeout = () => {
     const timer = typeof idle === 'string' ? parseInt(idle) : idle;
     startTimerInterval.current = setTimeout(() => {
-      dispatch(appActions.getIsSessionExpired(true));
+      // dispatch(appActions.getIsSessionExpired(true));
+      onTimeout();
     }, timer);
   };
 

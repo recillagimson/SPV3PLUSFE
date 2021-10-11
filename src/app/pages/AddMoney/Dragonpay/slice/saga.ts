@@ -61,7 +61,7 @@ function* addMoney() {
       yield put(actions.getFetchSuccess(decryptData));
       analytics.logEvent(events.addMoney, { type: 'dragonpay' });
     }
-  } catch (err) {
+  } catch (err: any) {
     if (
       err &&
       err.response &&

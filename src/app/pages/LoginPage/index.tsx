@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -41,6 +41,7 @@ import {
 } from './slice/selectors';
 
 export function LoginPage() {
+  const location = useLocation();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const loading = useSelector(selectLoading);
@@ -60,7 +61,7 @@ export function LoginPage() {
   const [resendDialog, setResendDialog] = React.useState(false);
 
   // login, show verification and success
-  const [showLogin, setShowLogin] = React.useState(true);
+  const [showLogin, setShowLogin] = React.useState(false);
   const [toVerify, setToVerify] = React.useState(false);
   const [showVerify, setShowVerify] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false); // use to show the success message after activation
@@ -80,6 +81,11 @@ export function LoginPage() {
   });
 
   React.useEffect(() => {
+    const bpiCode = new URLSearchParams(location.search).get('code'); // add money
+    if (!bpiCode) {
+      setShowLogin(true);
+    }
+
     return () => {
       dispatch(actions.getFetchReset()); // reset store state on unmount
     };
@@ -245,16 +251,16 @@ export function LoginPage() {
     }
   };
 
-  const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    // since we already have the login information, send the user email or mobile number to receive activation code
-    const data = {
-      email: isEmail ? email.value.trim() : undefined,
-      mobile_number: !isEmail ? email.value.trim() : undefined,
-      otp_type: 'registration',
-    };
+  // const onResendCode = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  //   // since we already have the login information, send the user email or mobile number to receive activation code
+  //   const data = {
+  //     email: isEmail ? email.value.trim() : undefined,
+  //     mobile_number: !isEmail ? email.value.trim() : undefined,
+  //     otp_type: 'registration',
+  //   };
 
-    dispatch(actions.getResendCodeLoading(data));
-  };
+  //   dispatch(actions.getResendCodeLoading(data));
+  // };
 
   const onSuccessVerify = () => {
     setToVerify(false);
@@ -390,17 +396,17 @@ export function LoginPage() {
           <div className="text-center">
             <VerifyOTP
               onSuccess={onSuccessVerify}
+              verifyURL="/auth/verify/account"
+              resendURL="/auth/resend/otp"
+              resendPayload={JSON.stringify({
+                email: isEmail ? email.value.trim() : undefined,
+                mobile_number: !isEmail ? email.value.trim() : undefined,
+                otp_type: 'registration',
+              })}
               isEmail={isEmail}
               viaValue={email.value}
-              apiURL="/auth/verify/account"
+              title="Authentication"
             />
-
-            <Field className="text-center f-small" margin="20px 0 10px">
-              Need a new code?{' '}
-              <button className="link" onClick={onResendCode}>
-                Resend Code
-              </button>
-            </Field>
           </div>
         )}
         {showSuccess && (

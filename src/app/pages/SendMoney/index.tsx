@@ -196,17 +196,17 @@ export function SendMoney() {
     // enable code below to integrate api
   };
 
-  const resendOTP = () => {
-    setResendOTPCode(true);
-    const otp_type = 'send_money';
-    const getOTP = {
-      otp_type: otp_type,
-    };
+  // const resendOTP = () => {
+  //   setResendOTPCode(true);
+  //   const otp_type = 'send_money';
+  //   const getOTP = {
+  //     otp_type: otp_type,
+  //   };
 
-    // dispatch payload to saga
-    dispatch(actions.getGenerateLoading(getOTP));
-    // enable code below to integrate api
-  };
+  //   // dispatch payload to saga
+  //   dispatch(actions.getGenerateLoading(getOTP));
+  //   // enable code below to integrate api
+  // };
 
   const finalSend = () => {
     const data = {
@@ -504,19 +504,15 @@ export function SendMoney() {
                       /> */}
                         <VerifyOTP
                           onSuccess={onCodeVerified}
-                          apiURL="/auth/verify/otp"
+                          verifyURL="/auth/verify/otp"
                           otpType="send_money"
-                          isUserToken
+                          isVerifyUserToken
+                          resendURL="/auth/generate/otp"
+                          resendPayload={JSON.stringify({
+                            otp_type: 'send_money',
+                          })}
+                          isResendUserToken
                         />
-
-                        <Field className="text-center" margin="20px 0 10px">
-                          Need a new code?{' '}
-                          <button className="link" onClick={resendOTP}>
-                            <span style={{ color: '#E0AC3B' }}>
-                              Resend Code
-                            </span>
-                          </button>
-                        </Field>
                       </Field>
                     </Flex>
                     {/* <p className="text-center">Please enter your pin code</p>
@@ -546,7 +542,7 @@ export function SendMoney() {
                   <Grid container justify="center" spacing={3}>
                     <Grid item xs={12} md={8}>
                       <Avatar
-                        image={validateSuccess.selfie_location}
+                        image={validateSuccess.avatar_link || ''}
                         size="large"
                       />
                       <p className="email">{validateSuccess.first_name}</p>
