@@ -1,5 +1,7 @@
 import { delay, call, put, select, takeLatest } from 'redux-saga/effects';
 import { request } from 'utils/request';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
 
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
@@ -172,6 +174,7 @@ function* payEpins() {
 
       if (decryptData) {
         yield put(actions.getPaySuccess(decryptData));
+        analytics.logEvent(events.buyLoad, { type: 'epins' });
       }
     } else {
       yield put(

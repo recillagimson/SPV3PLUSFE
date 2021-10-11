@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 
@@ -21,7 +21,9 @@ const renderAddMoneyViaBPIPage = () =>
 describe('AddMoney/AddMoneyViaBPIPage', () => {
   test('cash in view - show validation', () => {
     renderAddMoneyViaBPIPage();
-    fireEvent.click(screen.getByText('Next'), { bubbles: true });
+    act(() => {
+      fireEvent.click(screen.getByText('Next'), { bubbles: true });
+    });
     expect(screen.queryByText('Online Bank')).toBeTruthy();
     expect(screen.queryByText('Amount')).toBeTruthy();
     expect(
@@ -33,14 +35,18 @@ describe('AddMoney/AddMoneyViaBPIPage', () => {
   test('cash in view - submit with amount value', () => {
     renderAddMoneyViaBPIPage();
     const amountInput: any = screen.getByTestId('amount');
-    fireEvent.change(amountInput, {
-      bubbles: true,
-      target: { value: 10 },
+    act(() => {
+      fireEvent.change(amountInput, {
+        bubbles: true,
+        target: { value: 10 },
+      });
     });
 
     expect(screen.queryByText('Online Bank')).toBeTruthy();
     expect(amountInput.value).toBe('10');
-    fireEvent.click(screen.getByText('Next'), { bubbles: true });
+    act(() => {
+      fireEvent.click(screen.getByText('Next'), { bubbles: true });
+    });
     expect(screen.queryByText('Oops! This field cannot be empty.')).toBeFalsy();
   });
 
@@ -53,7 +59,11 @@ describe('AddMoney/AddMoneyViaBPIPage', () => {
       },
     });
     window.sessionStorage.setItem('amount', '20');
-    store.dispatch(actions.getFetchAccountsSuccess(accountsResponseMock));
+
+    act(() => {
+      store.dispatch(actions.getFetchAccountsSuccess(accountsResponseMock));
+    });
+
     renderAddMoneyViaBPIPage();
 
     expect(window.location.pathname).toEqual(url);

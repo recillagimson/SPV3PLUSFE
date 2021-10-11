@@ -35,7 +35,7 @@ import {
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
-  // selectError,
+  selectError,
   selectData,
   selectValidateLoading,
   selectValidateData,
@@ -50,7 +50,7 @@ export function BuyLoadPage() {
   const dispatch = useDispatch();
 
   const loading = useSelector(selectLoading);
-  // const error: any = useSelector(selectError);
+  const error: any = useSelector(selectError);
   const success: any = useSelector(selectData);
 
   const validateLoading = useSelector(selectValidateLoading);
@@ -130,6 +130,9 @@ export function BuyLoadPage() {
   }, [success]);
 
   React.useEffect(() => {
+    if (error && Object.keys(error).length > 0) {
+      onApiError(error);
+    }
     if (validateError && Object.keys(validateError).length > 0) {
       if (validateError.code && validateError.code === 422) {
         if (
@@ -246,7 +249,78 @@ export function BuyLoadPage() {
     if (paySuccess) {
       setIsSuccess(true);
     }
-  }, [success, validateSuccess, validateError, paySuccess, payError]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error, success, validateSuccess, validateError, paySuccess, payError]);
+
+  const onApiError = (err: any) => {
+    if (err.code && err.code === 422) {
+      if (
+        err.errors &&
+        err.errors.error_code &&
+        err.errors.error_code.length > 0
+      ) {
+        err.errors.error_code.forEach((i: any) => {
+          if (i === 302) {
+            setMobile({
+              ...mobile,
+              msg: 'Transaction failed. Please try again.',
+              error: true,
+            });
+            return;
+          }
+          if (i === 401) {
+            setMobile({
+              ...mobile,
+              msg: 'User profile not updated.',
+              error: true,
+            });
+            return;
+          }
+          if (i === 402) {
+            setMobile({
+              ...mobile,
+              msg: 'Transaction denied due to insufficient Squidpay Balance.',
+              error: true,
+            });
+            return;
+          }
+          if (i === 405) {
+            setMobile({
+              ...mobile,
+              msg: 'Oh No! You have exceeded your monthly limit.',
+              error: true,
+            });
+            return;
+          }
+          if (i === 406) {
+            setMobile({
+              ...mobile,
+              msg:
+                'Oops! To completely access all Squidpay services, please update your profile. Thank you.',
+              error: true,
+            });
+            return;
+          }
+          if (i === 501) {
+            setMobile({
+              ...mobile,
+              msg: 'Mobile number prefix is not supported.',
+              error: true,
+            });
+            return;
+          }
+          if (i === 502) {
+            setMobile({
+              ...mobile,
+              msg: 'Mobile number is not supported.',
+              error: true,
+            });
+            return;
+          }
+        });
+      }
+    }
+  };
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -409,6 +483,7 @@ export function BuyLoadPage() {
                     <Scrollbars style={{ height: 50 }}>
                       {categories.map((p, i: number) => (
                         <Button
+                          key={i}
                           type="submit"
                           color="secondary"
                           size="medium"
@@ -561,8 +636,9 @@ export function BuyLoadPage() {
                       .sort((a, b) =>
                         a.denomination > b.denomination ? 1 : -1,
                       )
-                      .map(promo => (
+                      .map((promo, n) => (
                         <div
+                          key={n}
                           onClick={() => {
                             setSelectedProduct({
                               productCode: promo.productCode,
@@ -575,7 +651,6 @@ export function BuyLoadPage() {
                         >
                           {category === promo.category ? (
                             <div
-                              key={promo.productCode}
                               className={
                                 isActive.value === ''
                                   ? 'product-list'

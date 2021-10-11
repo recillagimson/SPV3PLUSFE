@@ -372,7 +372,6 @@ export function ForgotPasswordPage() {
               verifyURL="/auth/verify/password"
               otpType="update_profile"
               onSuccess={onSuccessVerify}
-              isVerifyUserToken
               resendURL="/auth/forgot/password"
               resendPayload={JSON.stringify({
                 mobile_number: !isEmail ? mobile.value : undefined,
