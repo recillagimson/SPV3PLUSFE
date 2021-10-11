@@ -166,3 +166,4 @@ v1.2.0
 - If no Load ID generated, disable next button (VP2-427)
 - Fix resend icon indicator when success (VP2-498)
 - Forgot Password - OTP session timeout (VVBT-523)
+- Fix BE error to display for non-supported prefix in buy load (VP2-516)
