@@ -12,7 +12,7 @@ import {
 } from 'utils/useRequestPassphrase';
 
 const clientToken: any = getCookie('spv_cat');
-const token = JSON.parse(clientToken).access_token;
+const token: any = clientToken ? JSON.parse(clientToken) : '';
 
 /**
  * Get Regions
@@ -23,7 +23,7 @@ export const getRegions = async () => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token.access_token}`,
     },
   };
 

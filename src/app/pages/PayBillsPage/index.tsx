@@ -68,6 +68,7 @@ export function PayBillsPage() {
   const validatedBiller: any = useSelector(selectValidatedBiller);
   const createdPayBills: any = useSelector(selectCreatedPayBills);
   const [steps, setSteps] = React.useState(0);
+  const [selectedCategory, setCategory] = React.useState('');
   const [selectedBillers, setSelectedBillers] = React.useState([]);
   const [filteredBillers, setSelectedFilteredBillers] = React.useState([]);
   const [isDialogErrorOpen, setDialogError] = React.useState(false);
@@ -346,6 +347,7 @@ export function PayBillsPage() {
         biller.active === '1',
     );
 
+    setCategory(category || 'Others');
     setSelectedBillers(filtered);
     setSelectedFilteredBillers(filtered);
     setSteps(1);
@@ -417,7 +419,7 @@ export function PayBillsPage() {
       case 0:
         return (
           <React.Fragment>
-            <h3 className="title">Categories</h3>
+            <S.ContainerTitle className="title">Categories</S.ContainerTitle>
             <S.BillersOptions>
               {activeCategories()?.map(
                 (category: BillerStateOptions, i: number) => {
@@ -620,11 +622,17 @@ export function PayBillsPage() {
     switch (step) {
       case 0:
       case 2:
-        return <h3>Pay Bills</h3>;
+        return (
+          <S.ContainerTitle className="container-title">
+            Pay Bills
+          </S.ContainerTitle>
+        );
       case 1:
         return (
           <React.Fragment>
-            <h3>Electric Utility</h3>
+            <S.ContainerTitle className="container-title">
+              {selectedCategory}
+            </S.ContainerTitle>
             {false && ( // Temporary hidden
               <Input
                 type="text"
@@ -635,7 +643,7 @@ export function PayBillsPage() {
           </React.Fragment>
         );
       case 3:
-        return <h3>Review Payments</h3>;
+        return <S.ContainerTitle>Review Payments</S.ContainerTitle>;
       default:
         return <React.Fragment />;
     }
@@ -648,11 +656,14 @@ export function PayBillsPage() {
       </Helmet>
       <S.Container>
         <S.Wrapper data-id="Paybills-Wrapper">
-          <S.WrapperHeader isCustom={steps === 1}>
+          {/* <S.WrapperHeader isCustom={steps === 1}>
             <div>
               {renderHeader(steps)}
               <Button onClick={() => setSteps(0)}>Back</Button>
             </div>
+          </S.WrapperHeader> */}
+          <S.WrapperHeader isCustom={steps === 1}>
+            {renderHeader(steps)}
           </S.WrapperHeader>
           <ComponentLoading isLoading={loading}>
             <S.WrapperContent>{renderView(steps)}</S.WrapperContent>

@@ -18,7 +18,7 @@ export const GlobalStyle = createGlobalStyle`
     color: ${StyleConstants.MAIN_TEXT};
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 1.4;
     overflow-x: hidden;
     /* min-width: 420px; */
@@ -81,13 +81,13 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   .text-red {
-    color: ${StyleConstants.NEGATIVE} !important; 
+    color: ${StyleConstants.color.tones.red} !important; 
   }
   .text-green {
-    color: ${StyleConstants.POSITIVE} !important; 
+    color: ${StyleConstants.color.tones.green} !important; 
   }
   .text-yellow {
-    color: ${StyleConstants.GOLD} !important; 
+    color: ${StyleConstants.color.primaryyellow} !important; 
   }
 
   /** margins */

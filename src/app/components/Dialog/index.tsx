@@ -23,6 +23,7 @@ type Props = {
   size?: 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | undefined;
   show: boolean;
   title?: string;
+  titleAction?: React.ReactNode;
   message?: string;
   children?: React.ReactNode;
   onClick?: () => void;
@@ -35,6 +36,7 @@ export default function DialogComponent({
   size,
   show,
   title,
+  titleAction,
   message,
   children,
   okText,
@@ -53,7 +55,7 @@ export default function DialogComponent({
       <Button
         onClick={onClick}
         color="primary"
-        size="medium"
+        size="large"
         variant="contained"
       >
         {okText || 'OK'}
@@ -64,7 +66,7 @@ export default function DialogComponent({
   if (onClose) {
     buttons = true;
     cancelButton = (
-      <Button onClick={onClose} size="medium" variant="outlined" color="danger">
+      <Button onClick={onClose} size="large" variant="outlined" color="danger">
         {cancelText || 'CANCEL'}
       </Button>
     );
@@ -81,7 +83,11 @@ export default function DialogComponent({
     >
       <Wrapper ref={nodeRef} size={size || undefined}>
         <div className="dialog-child">
-          {title && <Title>{title}</Title>}
+          {title && (
+            <Title>
+              <h3>{title}</h3> {titleAction || undefined}
+            </Title>
+          )}
           <div className="dialog-content">
             {message && <p>{message}</p>}
             {(!message || message === '') &&

@@ -111,7 +111,6 @@ export default function VerifyOTPComponent({
 
     if (success) {
       onSuccess();
-      dispatch(actions.getFetchReset());
     }
   }, [success, error]);
 
@@ -157,6 +156,7 @@ export default function VerifyOTPComponent({
 
   const onChangePin = (val: any) => {
     setCode({ value: val, error: false });
+    setApiError('');
     setIsCodeValid(true);
   };
 
@@ -172,6 +172,7 @@ export default function VerifyOTPComponent({
     }
 
     if (!error) {
+      setApiError('');
       const data = {
         url: apiURL,
         isUser: isUserToken,

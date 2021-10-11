@@ -169,23 +169,25 @@ export default function UserProfileForm({
   }, [birthDate]);
 
   React.useEffect(() => {
-    if (refs && Object.keys(refs).length === 0) {
-      dispatch(appActions.getLoadReferences());
-    }
+    // if (refs && Object.keys(refs).length === 0) {
+    //   dispatch(appActions.getLoadAllReferences());
+    // }
 
     if (refs && Object.keys(refs).length > 0) {
       let loadRef = false;
 
       if (!refs.nationalities || Object.keys(refs.nationalities).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadNationalityRef());
       }
       if (!refs.countries || Object.keys(refs.countries).length === 0) {
         loadRef = true;
+        dispatch(appActions.getLoadCountryRef());
       }
 
-      if (loadRef) {
-        dispatch(appActions.getLoadReferences());
-      }
+      // if (loadRef) {
+      //   dispatch(appActions.getLoadAllReferences());
+      // }
 
       if (!loadRef) {
         setIsLoading(false);
@@ -521,10 +523,12 @@ export default function UserProfileForm({
 
   let hasRefs = false;
   if (refs && Object.keys(refs).length > 0) {
-    if (refs.nationalities && Object.keys(refs.nationalities).length > 0) {
-      hasRefs = true;
-    }
-    if (refs.countries && Object.keys(refs.countries).length > 0) {
+    if (
+      refs.nationalities &&
+      refs.nationalities.length > 0 &&
+      refs.countries &&
+      refs.countries.length > 0
+    ) {
       hasRefs = true;
     }
   }

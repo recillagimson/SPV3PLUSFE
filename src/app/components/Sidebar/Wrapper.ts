@@ -82,7 +82,7 @@ const SidebarWrapper = styled.aside`
       margin-bottom: 3px;
       strong {
         color: ${StyleConstants.GOLD};
-        font-weight: 500;
+        font-weight: 400;
       }
     }
 

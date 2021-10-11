@@ -19,6 +19,18 @@ export interface GlobalState {
   isSessionExpired: boolean;
   isBlankPage: boolean;
   isServerError: boolean;
-  references: {};
+  references: ReferenceTypes;
   tier: {} | boolean;
 }
+
+export type ReferenceTypes =
+  | {}
+  | {
+      nationalities: any;
+      countries: any;
+      maritalStatus: any;
+      natureOfWork: any;
+      signUpHost: any;
+      currency: any;
+      sourceOfFunds: any;
+    };

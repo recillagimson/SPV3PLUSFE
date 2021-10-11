@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Footer /> renders correctly 1`] = `
+.c1 {
+  text-align: center;
+  padding: 20px;
+  font-size: 0.9em;
+}
+
+.c1 p {
+  margin: 0 0;
+  color: #a9b1b8;
+}
+
+.c1 p .small {
+  display: inline-block;
+  font-size: 0.8em;
+  opacity: 0.75;
+  padding-left: 5px;
+}
+
+.authenticated .c0 {
+  margin-top: auto;
+  border-top: 1px solid #CED4DA;
+}
+
+<body>
+  <div>
+    <footer
+      class="c0 c1 site-footer"
+    >
+      <p>
+        © 
+        2021
+         SquidPay Technology Inc.
+        <span
+          class="small"
+        >
+          (v
+          1.2.0
+           build: 
+          1077
+          )
+        </span>
+      </p>
+    </footer>
+  </div>
+</body>
+`;

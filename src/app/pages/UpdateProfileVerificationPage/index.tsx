@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 
 import Wrapper from 'app/components/Layouts/AuthWrapper';
 
-import UpdateProfile from 'app/components/UpdateProfile/Profile';
+import UpdateProfile from 'app/components/UpdateProfile/Bronze';
 
 import { appActions } from 'app/App/slice';
 import { deleteCookie, doSignOut, getCookie } from 'app/components/Helpers';
@@ -49,7 +49,6 @@ export function UpdateProfileVerificationPage() {
         onSuccess={onSuccessUpdate}
         onCancel={onCancelUpdate}
         firstTime
-        isBronze
       />
     </Wrapper>
   );

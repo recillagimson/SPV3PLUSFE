@@ -24,7 +24,7 @@ export const TransactionHeader = styled.div`
 
   h3 {
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 24px;
     margin: 0;
   }
@@ -87,7 +87,7 @@ export const ButtonContainer = styled.div<{
 export const TransactionTitle = styled.div`
   color: #000;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 24px;
   margin: 24px 0;
 
@@ -217,7 +217,7 @@ export const TransactionDetailsWrapperContent = styled.div`
 
   h6 {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 21px;
     margin: 0 auto;
     text-align: center;
@@ -253,7 +253,7 @@ export const TransactionDetailsListItem = styled.li`
 
     &:last-child {
       flex: 1;
-      font-weight: 600;
+      font-weight: 700;
       text-align: right;
       padding-left: 10px;
     }
@@ -293,7 +293,7 @@ export const TotalTransactions = styled.div`
 
   .total {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     margin: 10px 0;
   }
 
@@ -318,7 +318,7 @@ export const EmptyWrapper = styled.div`
 
   h6 {
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 24px;
     margin: 40px 0 10px;
   }

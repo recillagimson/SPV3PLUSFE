@@ -18,6 +18,7 @@ type Props = {
 function Loading(props: Props) {
   return (
     <Wrapper
+      id="loadingIndicator"
       position={props.position || 'relative'}
       big={props.big || undefined}
       invert={props.invert || undefined}

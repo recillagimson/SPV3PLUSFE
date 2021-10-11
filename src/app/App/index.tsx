@@ -51,7 +51,12 @@ import {
   TransactionHistoryPage,
   TransactionHistoryDetailsPage,
 } from 'app/pages/TransactionHistoryPage/Loadable';
-import { HelpCenterPage, FAQPage } from 'app/pages/HelpCenterPage/Loadable';
+import {
+  HelpCenterPage,
+  FAQPage,
+  PrivacyPolicyConsent,
+  TermsAndConditionConsent,
+} from 'app/pages/HelpCenterPage/Loadable';
 import { SendToBank } from 'app/pages/SendToBank/Loadable';
 import { SendToBankUBP } from 'app/pages/SendToBankUBP/Loadable';
 import { SettingsPage } from 'app/pages/SettingsPage/Loadable';
@@ -70,8 +75,9 @@ import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
 // #endregion
 
 import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
-import { DataPrivacyConsent } from 'app/pages/DataPrivacyConsent/Loadable';
-import { TermsAndConditionConsent } from 'app/pages/TermsAndConditionsConsent/Loadable';
+
+import { PrivacyPolicyPage } from 'app/pages/PrivacyPolicyPage/Loadable';
+import { TermsAndConditionPage } from 'app/pages/TermsConditionPage/Loadable';
 
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
 
@@ -127,6 +133,42 @@ export function App() {
   // const [flags, setFlags] = React.useState(defaultFlags);
 
   React.useEffect(() => {
+    /**
+     * Check if we have the references in the local storage
+     * this will reduce the load time
+     * TODO: references update behind the background
+     */
+    let refs = {
+      maritalStatus: localStorage.getItem('spv_marital')
+        ? JSON.parse(localStorage.getItem('spv_marital') || '')
+        : false,
+      natureOfWork: localStorage.getItem('spv_nature')
+        ? JSON.parse(localStorage.getItem('spv_nature') || '')
+        : false,
+      nationalities: localStorage.getItem('spv_nationalities')
+        ? JSON.parse(localStorage.getItem('spv_nationalities') || '')
+        : false,
+      countries: localStorage.getItem('spv_countries')
+        ? JSON.parse(localStorage.getItem('spv_countries') || '')
+        : false,
+      signUpHost: localStorage.getItem('spv_signup')
+        ? JSON.parse(localStorage.getItem('spv_signup') || '')
+        : false,
+      currency: localStorage.getItem('spv_currencies')
+        ? JSON.parse(localStorage.getItem('spv_currencies') || '')
+        : false,
+      sourceOfFunds: localStorage.getItem('spv_source')
+        ? JSON.parse(localStorage.getItem('spv_source') || '')
+        : false,
+    };
+
+    if (refs) {
+      dispatch(actions.getSaveAllReferences(refs));
+    }
+
+    /**
+     * Check Session and necessary cookies for the token
+     */
     const path: string | boolean = location ? location.pathname : '/dashboard';
     const phrase = getCookie('spv_uat_hmc'); // retrieve the passphrase use for encrypting
     const sessionCookie = getCookie('spv_uat'); // user token
@@ -157,10 +199,6 @@ export function App() {
       }, 2000);
 
       history.push('/dashboard');
-
-      // if (process.env.NODE_ENV === 'production') {
-      //   loadFbAsync(); // load fb
-      // }
     } else if (forceUpdate) {
       dispatch(actions.getClientTokenLoading());
       history.push('/register/update-profile');
@@ -220,6 +258,16 @@ export function App() {
   };
 
   const currentLocation = location ? location.pathname : '';
+  let showHeaderFooter = false;
+  if (currentLocation) {
+    if (
+      currentLocation !== '/postback' &&
+      currentLocation !== '/privacy-policy' &&
+      currentLocation !== '/terms-and-conditions'
+    ) {
+      showHeaderFooter = true;
+    }
+  }
 
   return (
     <FlagsProvider defaultFlags={defaultFlags}>
@@ -235,7 +283,7 @@ export function App() {
       </Helmet>
 
       <Main className={isAuthenticated ? 'spdin' : undefined}>
-        {currentLocation && currentLocation !== '/postback' && (
+        {showHeaderFooter && (
           <Header
             isLoggedIn={isAuthenticated}
             blankPage={isBlankPage ? true : false}
@@ -279,6 +327,11 @@ export function App() {
               component={UpdateProfileVerificationPage}
             />
             <Route path="/500" component={Page500} />
+            <Route path="/privacy-policy" component={PrivacyPolicyPage} />
+            <Route
+              path="/terms-and-conditions"
+              component={TermsAndConditionPage}
+            />
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
@@ -324,6 +377,16 @@ export function App() {
               component={HelpCenterPage}
             />
             <PrivateRoute exact path="/help-center/faq" component={FAQPage} />
+            <PrivateRoute
+              exact
+              path="/help-center/privacy-policy"
+              component={PrivacyPolicyConsent}
+            />
+            <PrivateRoute
+              exact
+              path="/help-center/terms-and-condition"
+              component={TermsAndConditionConsent}
+            />
             <PrivateRoute exact path="/send-to-bank" component={SendToBank} />
             <PrivateRoute
               exact
@@ -359,16 +422,6 @@ export function App() {
               path="/tiers/upgrade"
               component={TierUpgradePage}
             />
-            <PrivateRoute
-              exact
-              path="/privacypolicy"
-              component={DataPrivacyConsent}
-            />
-            <PrivateRoute
-              exact
-              path="/terms-and-condition"
-              component={TermsAndConditionConsent}
-            />
 
             <Route exact path="/postback" component={SuccessPostBack} />
             {/* Not found page should be the last entry for this <Switch /> container */}
@@ -376,8 +429,7 @@ export function App() {
             <Route path="/comingsoon" component={ComingSoonPage} />
             <Route component={NotFoundPage} />
           </Switch>
-          {(!isBlankPage ||
-            (currentLocation && currentLocation !== '/postback')) && <Footer />}
+          {(!isBlankPage || showHeaderFooter) && <Footer />}
         </Content>
       </Main>
       <Dialog show={isSessionExpired} size="small">

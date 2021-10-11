@@ -16,7 +16,7 @@ const Wrapper = styled.section`
       text-align: center;
       color: ${StyleConstants.MAIN_TEXT};
       font-size: 18px;
-      font-weight: 500;
+      font-weight: 400;
       margin-top: 10px;
       margin-bottom: 5px;
     }

@@ -183,7 +183,7 @@ const ButtonStyle = css<Props>`
   ${p =>
     p.size === 'small' &&
     `
-    padding: 7px 15px;
+    padding: 8px 15px;
     font-size: 0.8rem;
   `}
 
@@ -209,8 +209,9 @@ const ButtonStyle = css<Props>`
   }
 
   &:disabled {
-    cursor: default;
-    background-color: ${StyleConstants.BODY_COLOR};
+    cursor: not-allowed;
+    /* opacity: 0.8; */
+    background-color: ${StyleConstants.color.tones.mute};
     color: ${StyleConstants.MAIN_TEXT};
   }
 `;
