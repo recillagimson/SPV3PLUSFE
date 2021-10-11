@@ -1,6 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { delay, call, put, select, takeLatest } from 'redux-saga/effects';
 import { request } from 'utils/request';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
 
 import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 
@@ -83,9 +85,9 @@ function* addMoney() {
 function* getAccessToken() {
   yield delay(500);
   const payloadToken = yield select(selectBpiUrlToken);
-  const requestURL = `${process.env.REACT_APP_BPI_API_URL}/oauth2/token`;
-  const cid = process.env.REACT_APP_BPI_CLIENT_ID || '';
-  const cs = process.env.REACT_APP_BPI_CLIENT_SECRET || '';
+  const requestURL = `${process.env.REACT_APP_BURL}/oauth2/token`;
+  const cid = process.env.REACT_APP_BCID || '';
+  const cs = process.env.REACT_APP_BCS || '';
 
   const payload = new URLSearchParams();
   payload.append('client_id', cid);
@@ -285,6 +287,7 @@ function* processTopUp() {
 
       if (decryptData) {
         yield put(actions.getFetchProcessTopUpSuccess(decryptData));
+        analytics.logEvent(events.addMoney, { type: 'bpi' });
       }
     } else {
       yield put(

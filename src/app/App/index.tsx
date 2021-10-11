@@ -136,6 +136,7 @@ export function App() {
   const clientTokenExpired = useSelector(setIsUnathenticated); // use this only on users who hasn't logged in yet
 
   // const [flags, setFlags] = React.useState(defaultFlags);
+  const [isTimeout, setIsTimeout] = React.useState(false);
 
   React.useEffect(() => {
     /**
@@ -473,7 +474,7 @@ export function App() {
           {(!isBlankPage || showHeaderFooter) && <Footer />}
         </Content>
       </Main>
-      <Dialog show={isSessionExpired} size="small">
+      <Dialog show={isTimeout} size="small">
         <div className="text-center" style={{ padding: '25px' }}>
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="stopwatch" />
@@ -482,6 +483,26 @@ export function App() {
             <strong>Oops, Your session has expired.</strong>
           </p>
           <p>You have been automatically logged out due to inactivity.</p>
+          <Button
+            fullWidth
+            onClick={onClickSessionExpired}
+            variant="contained"
+            color="primary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog show={isSessionExpired} size="small">
+        <div className="text-center" style={{ padding: '25px' }}>
+          <CircleIndicator size="medium" color="primary">
+            <FontAwesomeIcon icon="stopwatch" />
+          </CircleIndicator>
+          <p style={{ margin: '15px 0 10px' }}>
+            <strong>Oops, Your session has expired.</strong>
+          </p>
+          <p>You have been automatically logged out due to session expiry.</p>
           <Button
             fullWidth
             onClick={onClickSessionExpired}
@@ -516,7 +537,10 @@ export function App() {
 
       {/* Idle Timer */}
       {isAuthenticated && (
-        <IdleTimer idle={process.env.REACT_APP_IDLE_TIME || 3000000} />
+        <IdleTimer
+          idle={process.env.REACT_APP_IDLE_TIME || 3000000}
+          onTimeout={() => setIsTimeout(true)}
+        />
       )}
 
       {/*  FB element containers */}

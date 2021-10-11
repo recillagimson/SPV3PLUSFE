@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import OtpInput from 'react-otp-input';
@@ -94,10 +95,20 @@ export default function VerifyOTPComponent({
   const resend = useFetch();
 
   const otpDetails = useSelector(selectOTPDetails);
+  let otpMessage = otpDetails.isEmail
+    ? `email: ${otpDetails.value}`
+    : `mobile number: ${otpDetails.value}`;
+  if (isEmail && viaValue) {
+    otpMessage = isEmail ? `email: ${viaValue}` : `mobile number: ${viaValue}`;
+  }
 
   const [code, setCode] = React.useState({ value: '', error: false, msg: '' });
   const [isLimit, setIsLimit] = React.useState(false);
-  const [showDialog, setShowDialog] = React.useState(false);
+  const [showDialog, setShowDialog] = React.useState({
+    show: false,
+    error: false,
+  });
+  const [resendMsg, setResendMsg] = React.useState('');
 
   const onApiError = React.useCallback(
     (err: any) => {
@@ -163,10 +174,19 @@ export default function VerifyOTPComponent({
     }
 
     if (resend.error || resend.response) {
-      setShowDialog(true);
+      if (resend.error) {
+        setShowDialog({ show: true, error: true });
+        setResendMsg(
+          `We are having problem resending the OTP to your ${otpMessage}. Please try again later.`,
+        );
+      }
+      if (resend.response) {
+        setShowDialog({ show: true, error: false });
+        setResendMsg(`OTP has successfully been resent to your ${otpMessage}.`);
+      }
       resend.fetchReset();
     }
-  }, [onApiError, onSuccess, verify, resend]);
+  }, [verify, resend]);
 
   const onVerifyOTP = () => {
     let hasError = false;
@@ -208,13 +228,6 @@ export default function VerifyOTPComponent({
       true,
     );
   };
-
-  let otpMessage = otpDetails.isEmail
-    ? `email: ${otpDetails.value}`
-    : `mobile number: ${otpDetails.value}`;
-  if (isEmail && viaValue) {
-    otpMessage = isEmail ? `email: ${viaValue}` : `mobile number: ${viaValue}`;
-  }
 
   if (verifyURL === '') {
     return null;
@@ -287,23 +300,22 @@ export default function VerifyOTPComponent({
         </Paragraph>
       )}
 
-      <Dialog show={showDialog} size="small">
+      <Dialog show={showDialog.show} size="small">
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>
-          <CircleIndicator color="danger" size="large">
+          <CircleIndicator
+            color={showDialog.error ? 'danger' : 'primary'}
+            size="large"
+          >
             <FontAwesomeIcon icon={resend.error ? 'times' : 'check'} />
           </CircleIndicator>
 
-          <H3 margin="30px 0 10px">
-            Resend OTP {resend.error ? 'Failed' : 'Success'}
+          <H3 margin="30px 0 10px" align="center">
+            Resend OTP {showDialog.error ? 'Failed' : 'Success'}
           </H3>
-          <p style={{ marginBottom: 35 }}>
-            {resend.error
-              ? 'We are having problem resending the OTP. Please try again later.'
-              : `OTP has successfully been resent to your ${otpMessage}.`}
-          </p>
+          <p style={{ marginBottom: 35 }}>{resendMsg}</p>
           <Button
             fullWidth
-            onClick={() => setShowDialog(false)}
+            onClick={() => setShowDialog({ show: false, error: false })}
             variant="contained"
             color="primary"
             size="large"

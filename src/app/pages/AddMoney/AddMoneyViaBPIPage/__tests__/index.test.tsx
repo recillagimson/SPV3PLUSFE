@@ -30,7 +30,9 @@ const renderAddMoneyViaBPIPage = () => {
 describe('AddMoney/AddMoneyViaBPIPage', () => {
   test('cash in view - show validation', () => {
     renderAddMoneyViaBPIPage();
-    fireEvent.click(screen.getByText('Next'), { bubbles: true });
+    act(() => {
+      fireEvent.click(screen.getByText('Next'), { bubbles: true });
+    });
     expect(screen.queryByText('Online Bank')).toBeTruthy();
     expect(screen.queryByText('Amount')).toBeTruthy();
     expect(
@@ -42,9 +44,11 @@ describe('AddMoney/AddMoneyViaBPIPage', () => {
   test('cash in view - submit with amount value', async () => {
     renderAddMoneyViaBPIPage();
     const amountInput: any = screen.getByTestId('amount');
-    fireEvent.change(amountInput, {
-      bubbles: true,
-      target: { value: 10 },
+    act(() => {
+      fireEvent.change(amountInput, {
+        bubbles: true,
+        target: { value: 10 },
+      });
     });
 
     expect(screen.queryByText('Online Bank')).toBeTruthy();
@@ -63,7 +67,11 @@ describe('AddMoney/AddMoneyViaBPIPage', () => {
       },
     });
     window.sessionStorage.setItem('amount', '20');
-    store.dispatch(actions.getFetchAccountsSuccess(accountsResponseMock));
+
+    act(() => {
+      store.dispatch(actions.getFetchAccountsSuccess(accountsResponseMock));
+    });
+
     renderAddMoneyViaBPIPage();
 
     expect(window.location.pathname).toEqual(url);
