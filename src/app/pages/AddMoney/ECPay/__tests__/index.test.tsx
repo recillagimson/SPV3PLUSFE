@@ -1,18 +1,10 @@
 import React from 'react';
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  waitFor,
-} from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { HelmetProvider } from 'react-helmet-async';
 
 import { configureAppStore } from 'store/configureStore';
 import { ECPay } from '../index';
-import { mockData } from '../mocks';
-import { containerActions as actions } from '../slice';
 
 const store = configureAppStore();
 const renderECPay = () => {
@@ -48,16 +40,28 @@ describe('AddMoney/ECPay', () => {
     expect(screen.queryByText('Amount')).toBeTruthy();
   });
 
-  // test('submit', async () => {
-  //   renderECPay();
-  //   fireEvent.click(screen.getByText('Next'), { bubbles: true });
-  //   const amountInput: any = screen.getByTestId('amount');
-  //   fireEvent.change(amountInput, {
-  //     bubbles: true,
-  //     target: { value: 200 },
-  //   });
-  //   fireEvent.click(screen.getByText('Nextx'), { bubbles: true });
-  //   expect(screen.queryByText('Service Fee')).toBeTruthy();
-  //   expect(screen.queryByText('Expiration Date')).toBeTruthy();
-  // });
+  test('submit validation', () => {
+    renderECPay();
+    fireEvent.click(screen.getByText('Next'), { bubbles: true });
+    const submit: any = screen.getByTestId('submit');
+    fireEvent.click(submit, { bubbles: true });
+    expect(
+      screen.queryByText('Oops! This field cannot be empty.'),
+    ).toBeTruthy();
+  });
+
+  test('submit validation less than', () => {
+    renderECPay();
+    fireEvent.click(screen.getByText('Next'), { bubbles: true });
+    const amountInput: any = screen.getByTestId('amount');
+    fireEvent.change(amountInput, {
+      bubbles: true,
+      target: { value: 49 },
+    });
+    const submit: any = screen.getByTestId('submit');
+    fireEvent.click(submit, { bubbles: true });
+    expect(
+      screen.queryByText('The amount must be at least 50.00.'),
+    ).toBeTruthy();
+  });
 });

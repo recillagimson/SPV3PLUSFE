@@ -30,7 +30,7 @@ import WrapperCuttedCornerBottom from 'app/components/Assets/WrapperCuttedCorner
 import Loading from 'app/components/Loading';
 
 import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
-import { selectLoading, selectData } from './slice/selectors';
+import { selectError, selectLoading, selectData } from './slice/selectors';
 import { useContainerSaga } from './slice';
 import { STEPS } from './helpers';
 
@@ -88,6 +88,7 @@ export function ECPay() {
 
   const history = useHistory();
   const loading: boolean = useSelector(selectLoading);
+  const error: any = useSelector(selectError);
   const data: any = useSelector(selectData);
   const dashData: any = useSelector(selectDashData);
 
@@ -105,16 +106,27 @@ export function ECPay() {
   useEffect(() => {
     return () => {
       dispatch(actions.getFetchReset()); // reset store state on unmount
+      setIsLanding(true);
+      setIsEnterAmount(false);
+      setIsSuccess(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actions, dispatch]);
 
   useEffect(() => {
     if (data) {
+      setIsLanding(false);
+      setIsEnterAmount(false);
       setIsSuccess(true);
-      console.log(data, 'response');
     }
   }, [data]);
+
+  useEffect(() => {
+    if (error && Object.keys(error).length > 0) {
+      onApiError(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
@@ -128,12 +140,12 @@ export function ECPay() {
         errormsg: 'Oops! This field cannot be empty.',
       });
     }
-    if (parseFloat(amount.value) < 100) {
+    if (parseFloat(amount.value) < 50) {
       error = true;
       setAmount({
         ...amount,
         isError: true,
-        errormsg: 'The amount must be at least 100.00.',
+        errormsg: 'The amount must be at least 50.00.',
       });
     }
     if (parseFloat(amount.value) > 50000) {
@@ -152,19 +164,47 @@ export function ECPay() {
     }
   };
 
-  const downloadFile = () => {
-    const canvas: any = document.getElementById('QRCode');
-    const pngUrl = canvas
-      .toDataURL('image/png')
-      .replace('image/png', 'image/octet-stream');
+  const onDownload = () => {
+    history.push('/dashboard');
+  };
 
-    let downloadLink = document.createElement('a');
-    downloadLink.href = pngUrl;
-    downloadLink.download = `${amount.value}-qrcode.png`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-    // history.push('/dashboard');
+  const onApiError = (err: object | any) => {
+    let apiError = '';
+    if (err.code && err.code === 422) {
+      if (
+        err.errors &&
+        err.errors.error_code &&
+        err.errors.error_code.length > 0
+      ) {
+        const i405 = err.errors.error_code.findIndex(j => j === 405);
+        //display error on 405
+        if (i405 !== -1) {
+          apiError = err.errors.message.join('\n');
+        }
+      }
+      //diplay amount error
+      if (err.errors && err.errors?.amount?.length > 0) {
+        apiError = err.errors.amount[0];
+      }
+      setApiErrorMsg(apiError || '');
+      setApiError(true);
+    }
+    if (err.code && err.code === 500) {
+      setApiErrorMsg(
+        'Oops! We are having problem connecting to BPI. Please try again later.',
+      );
+      setApiError(true);
+    }
+    if (err.response && !err.code) {
+      apiError = err.response.statusText;
+      setApiErrorMsg(apiError || '');
+      setApiError(true);
+    }
+    if (!err.response && !err.code) {
+      apiError = err.message;
+      setApiErrorMsg(apiError || '');
+      setApiError(true);
+    }
   };
 
   let balanceInfo = '000.00';
@@ -180,8 +220,8 @@ export function ECPay() {
   }
 
   const renderListItems = () => {
-    if (data) {
-      const { amount, expiry_date, reference_number } = data;
+    if (data && isSuccess) {
+      const { amount, expiry_date, ec_pay_reference_number } = data;
       const expDate = new Date(expiry_date).toLocaleString('default', {
         day: '2-digit',
         month: 'long',
@@ -194,7 +234,7 @@ export function ECPay() {
         },
         {
           label: 'Reference Number',
-          value: reference_number || 'None',
+          value: ec_pay_reference_number || 'None',
         },
         {
           label: 'Expiration Date',
@@ -206,7 +246,7 @@ export function ECPay() {
   };
 
   const renderSteps = (data, large = false) => {
-    return data.map(item => {
+    return data.map((item: any) => {
       return (
         <StyledStepsWrapper key={item.value} large={large}>
           <img src={item.icon} alt={item.value} />
@@ -297,13 +337,14 @@ export function ECPay() {
               <br />
               <Flex justifyContent="flex-end">
                 <Button
+                  data-testid="submit"
                   type="submit"
                   color="primary"
                   size="large"
                   variant="contained"
                   onClick={onSubmit}
                 >
-                  Nextx
+                  Next
                 </Button>
               </Flex>
             </Field>
@@ -367,7 +408,7 @@ export function ECPay() {
 
             <Button
               fullWidth
-              onClick={downloadFile}
+              onClick={onDownload}
               variant="contained"
               color="primary"
               size="medium"
@@ -411,7 +452,9 @@ export function ECPay() {
             </H3>
             <Button
               fullWidth
-              onClick={() => console.log('test')}
+              onClick={() => {
+                history.push('/dashboard');
+              }}
               variant="contained"
               color="primary"
               size="large"

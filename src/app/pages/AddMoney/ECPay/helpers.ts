@@ -1,8 +1,8 @@
 import { StyleConstants } from 'styles/StyleConstants';
-
 import Enter from 'app/components/Assets/ecpay/enter.svg';
 import Kiosk from 'app/components/Assets/ecpay/kiosk.svg';
 import Receipt from 'app/components/Assets/ecpay/receipt.svg';
+
 const colorstyle = `color:${StyleConstants.color.primaryyellow}`;
 
 export const STEPS = [
