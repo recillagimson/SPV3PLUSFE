@@ -27,6 +27,7 @@ import { numberCommas } from 'app/components/Helpers';
 import ECPayLogo from 'app/components/Assets/ecpay/ecpay.svg';
 import WrapperCuttedCornerTop from 'app/components/Assets/WrapperCuttedCornerTop.svg';
 import WrapperCuttedCornerBottom from 'app/components/Assets/WrapperCuttedCornerBottom.svg';
+import TransactionScreenshotLogo from 'app/components/Assets/TransactionScreenshotLogo.svg';
 import Loading from 'app/components/Loading';
 
 import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
@@ -41,6 +42,7 @@ import {
   TransactionDetailsWrapperContent,
   TransactionDetailsList,
   TransactionDetailsListItem,
+  PaddingWrapper,
 } from 'app/pages/TransactionHistoryPage/TransactionHistory.style';
 
 const StyledTransactionDetailsWrapper = styled(TransactionDetailsWrapper)`
@@ -95,6 +97,7 @@ export function ECPay() {
   const [isLanding, setIsLanding] = useState(true);
   const [isEnterAmount, setIsEnterAmount] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isDownloadGuideOpen, setIsDownloadGuideOpen] = useState(false);
   const [apiError, setApiError] = useState(false);
   const [apiErrorMsg, setApiErrorMsg] = useState('');
   const [amount, setAmount] = useState({
@@ -162,10 +165,6 @@ export function ECPay() {
       };
       dispatch(actions.getFetchLoading(data));
     }
-  };
-
-  const onDownload = () => {
-    history.push('/dashboard');
   };
 
   const onApiError = (err: object | any) => {
@@ -408,7 +407,9 @@ export function ECPay() {
 
             <Button
               fullWidth
-              onClick={onDownload}
+              onClick={() => {
+                setIsDownloadGuideOpen(!isDownloadGuideOpen);
+              }}
               variant="contained"
               color="primary"
               size="medium"
@@ -422,6 +423,7 @@ export function ECPay() {
               fullWidth
               onClick={() => {
                 setIsSuccess(false);
+                history.push('/dashboard');
               }}
               variant="contained"
               color="secondary"
@@ -440,6 +442,23 @@ export function ECPay() {
               your device.
             </Paragraph>
           </div>
+        </Dialog>
+
+        <Dialog show={isDownloadGuideOpen} size="small">
+          <PaddingWrapper>
+            <h3>Instructions</h3>
+            <p>Capture and Save your receipt.</p>
+            <img src={TransactionScreenshotLogo} alt="Squid pay transaction" />
+            <Button
+              size="large"
+              color="primary"
+              variant="contained"
+              onClick={() => setIsDownloadGuideOpen(!isDownloadGuideOpen)}
+              fullWidth
+            >
+              Ok
+            </Button>
+          </PaddingWrapper>
         </Dialog>
 
         <Dialog show={apiError} size="small">
