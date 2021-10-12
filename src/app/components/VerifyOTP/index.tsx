@@ -190,6 +190,10 @@ export default function VerifyOTPComponent({
 
   const onVerifyOTP = () => {
     let hasError = false;
+    if (verify.loading) {
+      return;
+    }
+
     if (code.value === '' || (code.value && code.value.length < 4)) {
       hasError = true;
       setCode({ ...code, error: true, msg: 'Please enter 4 Digit OTP.' });
@@ -218,6 +222,10 @@ export default function VerifyOTPComponent({
 
   const onResendOTP = () => {
     setCode({ ...code, error: false, msg: '' });
+
+    if (verify.loading || resend.loading) {
+      return;
+    }
 
     resend.goFetch(
       resendURL,
@@ -273,11 +281,7 @@ export default function VerifyOTPComponent({
         fullWidth={true}
         size="large"
         variant="contained"
-<<<<<<< HEAD
-        disabled={loading}
-=======
         // disabled={code.value.length < 4}
->>>>>>> 0b629367c739d4f02fdcbfff7cae214b397ee71d
       >
         VERIFY
       </Button>

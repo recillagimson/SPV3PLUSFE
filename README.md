@@ -167,3 +167,7 @@ v1.2.0
 - Fix resend icon indicator when success (VP2-498)
 - Forgot Password - OTP session timeout (VVBT-523)
 - Fix BE error to display for non-supported prefix in buy load (VP2-516)
+
+v1.2.1
+
+- Fix double click (VP2-441, VP2-444, VP2-447, VP2-459, VP2-461)
