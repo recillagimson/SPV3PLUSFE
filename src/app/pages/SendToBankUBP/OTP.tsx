@@ -115,23 +115,18 @@ export default function OTP() {
         margin="20px auto"
       >
         <VerifyOTP
-          apiURL="/auth/verify/otp"
+          verifyURL="/auth/verify/otp"
           otpType="send2bank"
           onSuccess={() => {
             dispatch(actions.sendToBankLoading());
           }}
-          isUserToken
+          isVerifyUserToken
+          resendURL="/auth/generate/otp"
+          resendPayload={JSON.stringify({
+            otp_type: 'send2bank',
+          })}
+          isResendUserToken
         />
-        <p className="resend-code">
-          Need a new code?{' '}
-          <span
-            onClick={() => {
-              dispatch(actions.generateSendToBankOTPLoading());
-            }}
-          >
-            Resend code
-          </span>
-        </p>
       </S.OTPWrapper>
       {/* Show success Dialog */}
       <Dialog show={isSuccessDialog} size="small">

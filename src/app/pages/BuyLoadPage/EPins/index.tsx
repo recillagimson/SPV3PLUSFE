@@ -498,7 +498,7 @@ export function BuyEpinsPage() {
               <>
                 <Flex justifyContent="center">
                   <Avatar
-                    image=""
+                    image={validateSuccess.avatar_link || ''}
                     size="medium"
                     style={{ marginBottom: '10px' }}
                   />

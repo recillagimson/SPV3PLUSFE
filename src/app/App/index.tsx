@@ -38,7 +38,7 @@ import { RegisterPage } from 'app/pages/RegisterPage/Loadable';
 import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
-import { AddMoneyViaBPI } from 'app/pages/AddMoneyViaBPIPage/Loadable';
+import { AddMoneyViaBPI } from 'app/pages/AddMoney/AddMoneyViaBPIPage/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import {
   BuyLoadIndexPage,
@@ -75,12 +75,10 @@ import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
 // #endregion
 
 import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
-
+import { LoansPage } from 'app/pages/LoansPage/Loadable';
 import { PrivacyPolicyPage } from 'app/pages/PrivacyPolicyPage/Loadable';
 import { TermsAndConditionPage } from 'app/pages/TermsConditionPage/Loadable';
-
 import { NotFoundPage } from 'app/components/NotFoundPage/Loadable';
-
 import { Page500 } from 'app/components/500/Loadable';
 import { ComingSoonPage } from 'app/components/ComingSoonPage/Loadable';
 
@@ -95,8 +93,10 @@ import SuccessPostBack from './SuccessPostback';
 import PrivateRoute from './PrivateRoute';
 
 /** selectors, slice */
-import { containerActions as dashboardAction } from 'app/pages/DashboardPage/slice';
+import { containerActions as addMoneyBpiAction } from 'app/pages/AddMoney/AddMoneyViaBPIPage/slice';
 import { useAppSaga } from './slice';
+import { useContainerSaga } from 'app/pages/DashboardPage/slice';
+
 import {
   selectSessionExpired,
   selectIsAuthenticated,
@@ -115,6 +115,7 @@ const defaultFlags = {
   send_money_via_qr_enabled: true,
   send_to_bank_ubp_enabled: true,
   pay_bills_enabled: true,
+  add_money_bpi_enabled: true,
 };
 
 export function App() {
@@ -124,6 +125,7 @@ export function App() {
 
   // sample usage of slice (react redux)
   const { actions } = useAppSaga();
+  const { actions: dashboardAction } = useContainerSaga();
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -133,6 +135,7 @@ export function App() {
   const clientTokenExpired = useSelector(setIsUnathenticated); // use this only on users who hasn't logged in yet
 
   // const [flags, setFlags] = React.useState(defaultFlags);
+  const [isTimeout, setIsTimeout] = React.useState(false);
 
   React.useEffect(() => {
     /**
@@ -177,6 +180,7 @@ export function App() {
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
     const forceUpdate = getCookie('spv_uat_f');
+    const bpiCode = new URLSearchParams(location.search).get('code'); // add money
 
     let decrypt: any = false;
     let username: string = '';
@@ -187,13 +191,24 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (
-      !forceUpdate &&
-      decrypt &&
-      !path.includes('/postback')
-      // path !== '/postback' &&
-      // path !== '/postback/dragonpay'
-    ) {
+    if (!forceUpdate && decrypt && bpiCode && path === '/') {
+      dispatch(actions.getClientTokenLoading());
+      dispatch(actions.getIsAuthenticated(true));
+      dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
+      dispatch(actions.getUserToken(decrypt.user_token));
+      dispatch(actions.getSaveLoginName(username));
+
+      // delay the retrieval of dashboard and user profile
+      setTimeout(() => {
+        dispatch(actions.getLoadUserProfile());
+        dispatch(dashboardAction.getFetchLoading());
+        dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(bpiCode));
+      }, 2000);
+
+      history.push('/add-money/bpi/select-account');
+    }
+
+    if (!forceUpdate && decrypt && !path.includes('/postback') && !bpiCode) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
@@ -203,7 +218,6 @@ export function App() {
       setTimeout(() => {
         // dispatch(actions.getLoadReferences());
         dispatch(actions.getLoadUserProfile());
-        dispatch(dashboardAction.getFetchLoading());
       }, 2000);
 
       history.push('/dashboard');
@@ -265,15 +279,15 @@ export function App() {
     })(document, 'script', 'facebook-jssdk');
   };
 
+  const bpiCode = new URLSearchParams(location.search).get('code'); // add money
   const currentLocation = location ? location.pathname : '';
   let showHeaderFooter = false;
   if (currentLocation) {
     if (
-      // currentLocation !== '/postback' &&
-      // currentLocation !== '/postback/dragonpay' &&
       !currentLocation.includes('/postback') &&
       currentLocation !== '/privacy-policy' &&
-      currentLocation !== '/terms-and-conditions'
+      currentLocation !== '/terms-and-conditions' &&
+      !bpiCode
     ) {
       showHeaderFooter = true;
     }
@@ -351,7 +365,7 @@ export function App() {
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
-            <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
+
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute exact path="/buy" component={BuyLoadIndexPage} />
             <PrivateRoute exact path="/buy/load" component={BuyLoadPage} />
@@ -374,6 +388,16 @@ export function App() {
             />
             <PrivateRoute
               exact
+              path="/add-money/bpi"
+              component={AddMoneyViaBPI}
+            />
+            <PrivateRoute
+              exact
+              path="/add-money/bpi/select-account"
+              component={AddMoneyViaBPI}
+            />
+            <PrivateRoute
+              exact
               path="/transaction-history"
               component={TransactionHistoryPage}
             />
@@ -387,6 +411,7 @@ export function App() {
               path="/foreign-exchange"
               component={ForeignExchangePage}
             />
+            <PrivateRoute exact path="/loans" component={LoansPage} />
             <PrivateRoute
               exact
               path="/help-center"
@@ -447,7 +472,7 @@ export function App() {
           {(!isBlankPage || showHeaderFooter) && <Footer />}
         </Content>
       </Main>
-      <Dialog show={isSessionExpired} size="small">
+      <Dialog show={isTimeout} size="small">
         <div className="text-center" style={{ padding: '25px' }}>
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="stopwatch" />
@@ -456,6 +481,26 @@ export function App() {
             <strong>Oops, Your session has expired.</strong>
           </p>
           <p>You have been automatically logged out due to inactivity.</p>
+          <Button
+            fullWidth
+            onClick={onClickSessionExpired}
+            variant="contained"
+            color="primary"
+          >
+            Ok
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog show={isSessionExpired} size="small">
+        <div className="text-center" style={{ padding: '25px' }}>
+          <CircleIndicator size="medium" color="primary">
+            <FontAwesomeIcon icon="stopwatch" />
+          </CircleIndicator>
+          <p style={{ margin: '15px 0 10px' }}>
+            <strong>Oops, Your session has expired.</strong>
+          </p>
+          <p>You have been automatically logged out due to session expiry.</p>
           <Button
             fullWidth
             onClick={onClickSessionExpired}
@@ -490,7 +535,10 @@ export function App() {
 
       {/* Idle Timer */}
       {isAuthenticated && (
-        <IdleTimer idle={process.env.REACT_APP_IDLE_TIME || 3000000} />
+        <IdleTimer
+          idle={process.env.REACT_APP_IDLE_TIME || 3000000}
+          onTimeout={() => setIsTimeout(true)}
+        />
       )}
 
       {/*  FB element containers */}

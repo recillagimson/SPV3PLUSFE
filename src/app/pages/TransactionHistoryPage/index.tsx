@@ -11,7 +11,7 @@ import Loading from 'app/components/Loading';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
 // Utils
-import { parseToNumber, numberWithCommas } from 'utils/common';
+import { numberWithCommas } from 'utils/common';
 
 /** slice */
 import { useContainerSaga } from './slice';
@@ -303,10 +303,8 @@ export function TransactionHistoryPage(props) {
                           isPositive={isPostiveAmount}
                           isNegative={isNegativeAmount}
                         >
-                          PHP{' '}
-                          {numberWithCommas(
-                            parseToNumber(d.signed_total_amount),
-                          )}
+                          PHP {isPostiveAmount && '+'}
+                          {numberWithCommas(d.signed_total_amount)}
                         </S.ListTitle>
                         <Button
                           onClick={() =>
