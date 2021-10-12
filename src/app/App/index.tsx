@@ -119,6 +119,7 @@ const defaultFlags = {
   send_to_bank_ubp_enabled: true,
   pay_bills_enabled: true,
   add_money_bpi_enabled: true,
+  add_money_ecpay_enabled: true,
 };
 
 export function App() {

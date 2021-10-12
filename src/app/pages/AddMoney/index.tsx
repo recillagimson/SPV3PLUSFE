@@ -81,7 +81,7 @@ export function AddMoney() {
             <ListItemText
               role="presentation"
               onClick={() => {
-                if (flags && !flags.add_money_bpi_enabled) {
+                if (flags && !flags.add_money_ecpay_enabled) {
                   setIsMaintenance(true);
                 } else {
                   history.push('/add-money/ecpay');
