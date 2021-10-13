@@ -5,6 +5,15 @@ import Paragraph from 'app/components/Elements/Paragraph';
 import IconChevron from 'app/components/Assets/icon-chevron';
 import * as S from '../styled/LoansPage';
 
+const uuidv4 = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      // eslint-disable-next-line eqeqeq
+      v = c == 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
 const PersonalLoan = [
   {
     title: 'Overview',
@@ -134,8 +143,8 @@ const CollapsibleContent = ({ setPartnerStep }: Props) => {
           />
         </S.CollapsibleHeader>
         <S.CollapsibleContent selected={selectedTab === 0}>
-          {PersonalLoan.map(({ title, details }) => (
-            <React.Fragment key={title}>
+          {PersonalLoan.map(({ title, details }, index) => (
+            <React.Fragment key={uuidv4()}>
               <Paragraph align="left" weight="light" margin="0 0 12px">
                 {title}:
               </Paragraph>
@@ -148,7 +157,7 @@ const CollapsibleContent = ({ setPartnerStep }: Props) => {
                 }}
               >
                 {details.map((detail, idx) => (
-                  <li key={idx}>{detail}</li>
+                  <li key={uuidv4()}>{detail}</li>
                 ))}
               </ul>
             </React.Fragment>
@@ -181,7 +190,7 @@ const CollapsibleContent = ({ setPartnerStep }: Props) => {
             Requirements
           </Paragraph>
           {BusinessLoan.map(({ title, details, note }) => (
-            <React.Fragment key={title}>
+            <React.Fragment key={uuidv4()}>
               <Paragraph align="left" weight="light" margin="0 0 12px">
                 {title}:
               </Paragraph>
@@ -194,7 +203,7 @@ const CollapsibleContent = ({ setPartnerStep }: Props) => {
                 }}
               >
                 {details.map((detail, idx) => (
-                  <li key={idx}>{detail}</li>
+                  <li key={uuidv4()}>{detail}</li>
                 ))}
               </ul>
               {note && (
