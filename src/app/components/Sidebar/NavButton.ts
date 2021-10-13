@@ -21,6 +21,7 @@ const NavButton = styled.button`
   cursor: pointer;
   width: 100%;
   font-size: 1rem;
+  font-family: inherit;
   outline: 0;
 
   svg {
