@@ -5,7 +5,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 
 import { configureAppStore } from 'store/configureStore';
-import { RegisterPage } from '../index';
+import { RegisterPage } from '..';
 
 const store = configureAppStore();
 

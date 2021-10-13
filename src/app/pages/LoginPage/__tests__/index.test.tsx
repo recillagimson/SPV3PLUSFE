@@ -11,7 +11,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 
 import { configureAppStore } from 'store/configureStore';
-import { LoginPage } from '../index';
+import { LoginPage } from '..';
 
 const store = configureAppStore();
 const renderLoginPage = () => {

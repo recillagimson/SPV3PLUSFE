@@ -223,6 +223,7 @@ export function Dragonpay() {
           <Label htmlFor="amount">Amount</Label>
           <InputTextWrapper>
             <Input
+              data-testid="amount"
               id="amount"
               placeholder="0.00"
               type="number"

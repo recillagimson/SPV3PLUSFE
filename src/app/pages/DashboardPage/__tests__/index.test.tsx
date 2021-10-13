@@ -5,7 +5,7 @@ import { HelmetProvider } from 'react-helmet-async';
 
 import { configureAppStore } from 'store/configureStore';
 import { containerActions as actions } from '../slice';
-import { DashboardPage } from '../index';
+import { DashboardPage } from '..';
 
 const store = configureAppStore();
 
