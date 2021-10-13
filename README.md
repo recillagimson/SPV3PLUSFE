@@ -167,3 +167,8 @@ v1.2.0
 - Fix resend icon indicator when success (VP2-498)
 - Forgot Password - OTP session timeout (VVBT-523)
 - Fix BE error to display for non-supported prefix in buy load (VP2-516)
+
+v1.2.1
+
+- Success Modal when user click Resend Code in Verify OTP (VP2-242)
+- Display Avatar on Buy Load and Send Money (VP2-251, VP2-338)
