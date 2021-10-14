@@ -69,7 +69,7 @@ export function QrPages() {
     error: scanQrError,
     goFetch: scanQrFetch,
   } = useFetch();
-  console.log(scanQrError);
+
   const {
     response: validateSendResponse,
     error: validateError,
@@ -121,9 +121,10 @@ export function QrPages() {
   const [isFailedDialog, setFailedDialog] = React.useState(false);
   const uploadError = React.useMemo(() => {
     let errors: string[] = [];
-    if (validateError || sendMoneyError) {
+    if (validateError || sendMoneyError || scanQrError) {
       setLoading(false);
-      const errors = validateError?.errors ?? sendMoneyError?.errors;
+      const errors =
+        validateError?.errors || sendMoneyError?.errors || scanQrError?.errors;
       if (errors) {
         setFailedDialog(true);
         Object.keys(errors).forEach(key => {
@@ -135,7 +136,7 @@ export function QrPages() {
       setFailedDialog(false);
     }
     return errors;
-  }, [validateError, sendMoneyError]);
+  }, [validateError, sendMoneyError, scanQrError]);
 
   const [imageSource, setSource] = React.useState({ value: '', key: '' });
 
