@@ -33,6 +33,7 @@ import Dialog from 'app/components/Dialog';
 import Field from 'app/components/Elements/Fields';
 import Grid from '@material-ui/core/Grid';
 import Button from 'app/components/Elements/Button';
+import Loading from 'app/components/Loading';
 
 // styles
 import * as S from './styled/QrPages';
@@ -63,18 +64,30 @@ export function QrPages() {
   const user: any = useSelector(selectUser);
   const [showUpgrade, setShowUpgrade] = React.useState(false);
   const { response: receiveResponse, goFetch: receiveGoFetch } = useFetch();
-  const { response: scanQrResponse, goFetch: scanQrFetch } = useFetch();
+  const {
+    response: scanQrResponse,
+    error: scanQrError,
+    goFetch: scanQrFetch,
+  } = useFetch();
+  console.log(scanQrError);
   const {
     response: validateSendResponse,
     error: validateError,
     goFetch: validateFetch,
   } = useFetch();
-  const { response: sendMoneyResponse, goFetch: sendMoneyFetch } = useFetch();
+
+  const [loading, setLoading] = React.useState(false);
+  const {
+    response: sendMoneyResponse,
+    error: sendMoneyError,
+    goFetch: sendMoneyFetch,
+  } = useFetch();
 
   const [showSendSucess, setShowSendSucces] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (sendMoneyResponse && typeof sendMoneyResponse === 'object') {
+      setLoading(false);
       setShowSendSucces(true);
     }
   }, [sendMoneyResponse]);
@@ -108,11 +121,13 @@ export function QrPages() {
   const [isFailedDialog, setFailedDialog] = React.useState(false);
   const uploadError = React.useMemo(() => {
     let errors: string[] = [];
-    if (validateError) {
-      if (validateError?.errors) {
+    if (validateError || sendMoneyError) {
+      setLoading(false);
+      const errors = validateError?.errors ?? sendMoneyError?.errors;
+      if (errors) {
         setFailedDialog(true);
-        Object.keys(validateError.errors).forEach(key => {
-          const error = validateError.errors[key][0];
+        Object.keys(errors).forEach(key => {
+          const error = errors[key][0];
           errors.push(error as string);
         });
       }
@@ -120,7 +135,7 @@ export function QrPages() {
       setFailedDialog(false);
     }
     return errors;
-  }, [validateError]);
+  }, [validateError, sendMoneyError]);
 
   const [imageSource, setSource] = React.useState({ value: '', key: '' });
 
@@ -302,6 +317,7 @@ export function QrPages() {
       amount: scanAmount > 0 ? scanAmount : newAmount,
       ...(message && { message }),
     };
+    setLoading(true);
     validateFetch(
       '/send/money/validate',
       'POST',
@@ -310,7 +326,7 @@ export function QrPages() {
       true,
       true,
     );
-  }, [scanQrResponse, validateFetch, newAmount]);
+  }, [scanQrResponse, validateFetch, newAmount, setLoading]);
 
   React.useEffect(() => {
     if (!isEmpty(scanQrResponse)) {
@@ -551,8 +567,9 @@ export function QrPages() {
   return (
     <ProtectedContent>
       <Helmet>
-        <title>QR Qode</title>
+        <title>QR Code</title>
       </Helmet>
+      {loading && <Loading position="fixed" />}
       <Box
         title={cardTitle}
         titleBorder
