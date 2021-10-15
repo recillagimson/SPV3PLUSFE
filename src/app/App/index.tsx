@@ -74,6 +74,7 @@ import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
 import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
 import { AddMoney } from 'app/pages/AddMoney/Loadable';
 import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
+import { ECPay } from 'app/pages/AddMoney/ECPay/Loadable';
 // #endregion
 
 import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
@@ -118,6 +119,7 @@ const defaultFlags = {
   send_to_bank_ubp_enabled: true,
   pay_bills_enabled: true,
   add_money_bpi_enabled: true,
+  add_money_ecpay_enabled: true,
 };
 
 export function App() {
@@ -400,6 +402,7 @@ export function App() {
               path="/add-money/bpi/select-account"
               component={AddMoneyViaBPI}
             />
+            <PrivateRoute exact path="/add-money/ecpay" component={ECPay} />
             <PrivateRoute
               exact
               path="/transaction-history"
