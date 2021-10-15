@@ -79,19 +79,17 @@ export default function AddAmountForm({
       </span>
       {amount.error && <ErrorMsg formError>{amount.errormsg}</ErrorMsg>}
       {hasPurpose && purpose && (
-        <>
+        <Field>
           <span style={{ margin: '24px 0' }} />
           <Label>Purpose (optional)</Label>
-          <InputTextWrapper>
-            <Input
-              type="text"
-              value={purpose.value}
-              autoComplete="off"
-              onChange={onChangePurpose}
-              hidespinner
-            />
-          </InputTextWrapper>
-        </>
+          <Input
+            type="text"
+            value={purpose.value}
+            autoComplete="off"
+            onChange={onChangePurpose}
+            hidespinner
+          />
+        </Field>
       )}
     </Field>
   );
