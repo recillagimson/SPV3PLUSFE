@@ -119,7 +119,10 @@ export function QrPages() {
   }, [validateSendResponse, sendMoney]);
 
   const [isFailedDialog, setFailedDialog] = React.useState(false);
-  const uploadError = React.useMemo(() => {
+  const [uploadError, setUploadError] = React.useState<string | Array<string>>(
+    '',
+  );
+  React.useEffect(() => {
     let result;
     if (validateError || sendMoneyError || scanQrError) {
       setLoading(false);
@@ -133,14 +136,15 @@ export function QrPages() {
           const error = errors[key][0];
           result.push(error as string);
         });
+        setUploadError(result);
       } else if (typeof errors === 'object') {
-        setFailedDialog(true);
         result = errors.message[0];
+        setFailedDialog(true);
+        setUploadError(result);
       }
     } else {
       setFailedDialog(false);
     }
-    return result;
   }, [validateError, sendMoneyError, scanQrError]);
 
   const [imageSource, setSource] = React.useState({ value: '', key: '' });
@@ -270,6 +274,9 @@ export function QrPages() {
           true,
           true,
         );
+      } else {
+        setFailedDialog(true);
+        setUploadError('Invalid Qr Code');
       }
     },
     [scanQrFetch],
