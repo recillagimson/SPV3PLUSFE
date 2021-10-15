@@ -213,19 +213,16 @@ export function ECPay() {
 
   let monthDateYearTime = '';
   if (data) {
-    const dd = new Date(data.transaction_date).toISOString();
-    let ddSQL = DateTime.fromISO(dd);
-    monthDateYearTime = ddSQL.toLocaleString(DateTime.DATETIME_MED);
+    let rawDate = DateTime.fromSQL(data.transaction_date);
+    monthDateYearTime = rawDate.toLocaleString(DateTime.DATETIME_MED);
   }
 
   const renderListItems = () => {
+    let expDate = '';
     if (data && isSuccess) {
       const { amount, expiry_date, ec_pay_reference_number } = data;
-      const expDate = new Date(expiry_date).toLocaleString('default', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-      });
+      let rawDate = DateTime.fromSQL(expiry_date);
+      expDate = rawDate.toLocaleString(DateTime.DATE_MED);
       return [
         {
           label: 'Amount',
