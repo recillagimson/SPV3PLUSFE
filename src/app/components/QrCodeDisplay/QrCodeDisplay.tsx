@@ -34,7 +34,7 @@ export default function QrCodeDisplay(props: Props) {
       <a
         href={imageValue}
         style={{ visibility: 'hidden' }}
-        download
+        download={`Qr-${qrKey}`}
         className={`Qr-${qrKey}`}
       />
       <img
