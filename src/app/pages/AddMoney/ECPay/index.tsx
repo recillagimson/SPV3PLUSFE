@@ -52,7 +52,7 @@ const StyledTransactionDetailsWrapper = styled(TransactionDetailsWrapper)`
 const StyledTransactionDetailsWrapperContent = styled(
   TransactionDetailsWrapperContent,
 )`
-  margin: 10px 0px;
+  margin: 24px 0px 10px;
 `;
 
 const StyleTransactionDetailsList = styled(TransactionDetailsList)`
@@ -347,7 +347,7 @@ export function ECPay() {
         )}
 
         <Dialog show={isSuccess} size="small">
-          <div style={{ margin: '10px' }}>
+          <div style={{ margin: ' 0px 20px' }}>
             <StyledTransactionDetailsWrapper>
               <CuttedImageWrapper
                 src={WrapperCuttedCornerTop}
@@ -430,7 +430,7 @@ export function ECPay() {
             </Button>
             <Paragraph
               size="xsmall"
-              margin="0 auto 10px"
+              margin="0 auto 24px"
               align="center"
               style={{ width: '300px' }}
             >
