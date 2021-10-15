@@ -60,7 +60,6 @@ const StyleTransactionDetailsList = styled(TransactionDetailsList)`
 `;
 
 const StyledStepsTitleWrapper = styled.div`
-  width: 340px;
   background: #fff;
   padding: 10px 20px;
   border-radius: 12px;
@@ -348,7 +347,7 @@ export function ECPay() {
         )}
 
         <Dialog show={isSuccess} size="small">
-          <div style={{ margin: '10px', overflow: 'scroll', maxHeight: 600 }}>
+          <div style={{ margin: '10px' }}>
             <StyledTransactionDetailsWrapper>
               <CuttedImageWrapper
                 src={WrapperCuttedCornerTop}
