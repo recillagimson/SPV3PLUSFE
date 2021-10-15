@@ -52,6 +52,7 @@ export const ReviewListItem = styled.div`
   align-items: flex-start;
   justify-content: space-between;
   margin-bottom: 10px;
+  width: 100%;
 
   &:last-child {
     margin-bottom: 0;

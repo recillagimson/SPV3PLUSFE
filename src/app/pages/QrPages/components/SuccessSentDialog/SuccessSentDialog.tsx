@@ -48,7 +48,9 @@ export default function SuccessSentDialog({
           <CircleIndicator size="medium" color="primary">
             <FontAwesomeIcon icon="check" />
           </CircleIndicator>
-          <p className="success-message">Payment Successful</p>
+          <p className="success-message" style={{ marginBlockEnd: '48px' }}>
+            Payment Successful
+          </p>
 
           <S.ReviewListItem>
             <p>Name</p>
@@ -70,7 +72,7 @@ export default function SuccessSentDialog({
             <p>Transaction Number</p>
             <p>{reference_number}</p>
           </S.ReviewListItem>
-          <S.ReviewTotal>
+          <S.ReviewTotal style={{ marginBlockStart: 81 }}>
             <p className="total-description">Total amount</p>
             <p className="total-amount">
               PHP {numberWithCommas(calculateTotalAmount)}

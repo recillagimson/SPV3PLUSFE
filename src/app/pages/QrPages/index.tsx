@@ -3,10 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import Box from 'app/components/Box';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import AddQrCodeImg from 'app/components/Assets/add_qr_code.png';
-import SpLogoHorizontal from 'app/components/Assets/sp-logo-horizontal.png';
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { faShare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import isEmpty from 'lodash/isEmpty';
 import { useHistory } from 'react-router-dom';
@@ -14,13 +12,6 @@ import H3 from 'app/components/Elements/H3';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
 // #region assets
-import Facebook from 'app/components/Assets/fb.png';
-import Bluetooth from 'app/components/Assets/bluetooth.png';
-import Discord from 'app/components/Assets/discord.png';
-import GMail from 'app/components/Assets//gmail.png';
-import Instagram from 'app/components/Assets/instagram.png';
-import Messenger from 'app/components/Assets/messenger.png';
-import Viber from 'app/components/Assets/viber.png';
 import comingSoon from 'app/components/Assets/coming-soon.png';
 // #endregion assets
 import Flex from 'app/components/Elements/Flex';
@@ -162,10 +153,11 @@ export function QrPages() {
     error: false,
     errormsg: '',
   });
+
   const [purpose, setPurpose] = React.useState({
     value: '',
   });
-  const [showShare, setShowShare] = React.useState(false);
+
   const dashData: any = useSelector(selectDashData);
   const [activeStep, setActiveStep] = React.useState<Keys>('landing');
 
@@ -459,18 +451,6 @@ export function QrPages() {
                     &nbsp; Download QR Code
                   </Button>
                 </Grid>
-                <Grid item>
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    color="secondary"
-                    size="large"
-                    onClick={() => setShowShare(true)}
-                  >
-                    <FontAwesomeIcon icon={faShare} />
-                    &nbsp; Share
-                  </Button>
-                </Grid>
               </Grid>
             </span>
           </Field>
@@ -612,134 +592,6 @@ export function QrPages() {
         )}
         {activeLayout}
       </Box>
-      <Dialog show={showShare} size="small">
-        <div className="text-center" style={{ padding: '25px 0' }}>
-          <section style={{ padding: '0 25px' }}>
-            <img
-              src={SpLogoHorizontal}
-              alt="add qr code"
-              width="150px"
-              height="53.75px"
-            />
-            <QrCodeDisplay value={imageSource.value} qrKey={imageSource.key} />
-            <p style={{ margin: '15px 0 34px' }}>
-              <strong>Share QR Code</strong>
-            </p>
-          </section>
-          <section style={{ padding: '0 16px' }}>
-            <Grid container justify="center">
-              {/* top row */}
-              <Grid item md={3}>
-                <img
-                  src={Facebook}
-                  alt="add qr code"
-                  width="48px"
-                  height="48px"
-                  style={{ marginBlockEnd: '10px' }}
-                />
-                <Paragraph align="center" size="xsmall">
-                  News Feed
-                </Paragraph>
-              </Grid>
-              <Grid item md={3}>
-                <img
-                  src={Messenger}
-                  alt="add qr code"
-                  width="48px"
-                  height="48px"
-                  style={{ marginBlockEnd: '10px' }}
-                />
-                <Paragraph align="center" size="xsmall">
-                  Messenger
-                </Paragraph>
-              </Grid>
-              <Grid item md={3}>
-                <img
-                  src={Discord}
-                  alt="add qr code"
-                  width="48px"
-                  height="48px"
-                  style={{ marginBlockEnd: '10px' }}
-                />
-                <Paragraph align="center" size="xsmall">
-                  Discord
-                </Paragraph>
-              </Grid>
-              <Grid item md={3}>
-                <img
-                  src={Viber}
-                  alt="add qr code"
-                  width="48px"
-                  height="48px"
-                  style={{ marginBlockEnd: '10px' }}
-                />
-                <Paragraph align="center" size="xsmall">
-                  Viber
-                </Paragraph>
-              </Grid>
-              {/* bottom row */}
-              <Grid item md={3}>
-                <img
-                  src={Instagram}
-                  alt="add qr code"
-                  width="48px"
-                  height="48px"
-                  style={{ marginBlockEnd: '10px' }}
-                />
-                <Paragraph align="center" size="xsmall">
-                  Direct Message
-                </Paragraph>
-              </Grid>
-              <Grid item md={3}>
-                <img
-                  src={GMail}
-                  alt="add qr code"
-                  width="48px"
-                  height="48px"
-                  style={{ marginBlockEnd: '10px' }}
-                />
-                <Paragraph align="center" size="xsmall">
-                  Gmail
-                </Paragraph>
-              </Grid>
-              <Grid item md={3}>
-                <img
-                  src={Bluetooth}
-                  alt="add qr code"
-                  width="48px"
-                  height="48px"
-                  style={{ marginBlockEnd: '10px' }}
-                />
-                <Paragraph align="center" size="xsmall">
-                  Bluetooth
-                </Paragraph>
-              </Grid>
-              <Grid item md={3}>
-                <img
-                  src={Instagram}
-                  alt="add qr code"
-                  width="48px"
-                  height="48px"
-                  style={{ marginBlockEnd: '10px' }}
-                />
-                <Paragraph align="center" size="xsmall">
-                  Instagram
-                </Paragraph>
-              </Grid>
-            </Grid>
-          </section>
-          <section style={{ padding: '0 48px' }}>
-            <Button
-              style={{ margin: '10px 0 0' }}
-              onClick={() => setShowShare(false)}
-              variant="contained"
-              color="primary"
-            >
-              Close
-            </Button>
-          </section>
-        </div>
-      </Dialog>
       <Dialog show={showUpgrade} size="small">
         <div className="text-center" style={{ padding: '20px 20px 30px' }}>
           <img
