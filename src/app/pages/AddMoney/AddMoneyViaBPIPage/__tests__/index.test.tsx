@@ -1,21 +1,21 @@
 import React from 'react';
-import { Provider } from 'react-redux';
-import { HelmetProvider } from 'react-helmet-async';
 import {
   act,
+  fireEvent,
   render,
   screen,
-  fireEvent,
   waitFor,
 } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { HelmetProvider } from 'react-helmet-async';
 
 import { configureAppStore } from 'store/configureStore';
 import { containerActions as actions } from '../slice';
-import { AddMoneyViaBPI } from '../index';
+import { AddMoneyViaBPI } from '..';
 import { accountsResponseMock, fundTopUpResponseMock } from '../mocks';
 
 const store = configureAppStore();
-const renderAddMoneyViaBPIPage = () => {
+const renderAddMoneyViaBPIPage = () =>
   act(() => {
     render(
       <Provider store={store}>
@@ -25,14 +25,11 @@ const renderAddMoneyViaBPIPage = () => {
       </Provider>,
     );
   });
-};
 
 describe('AddMoney/AddMoneyViaBPIPage', () => {
   test('cash in view - show validation', () => {
     renderAddMoneyViaBPIPage();
-    act(() => {
-      fireEvent.click(screen.getByText('Next'), { bubbles: true });
-    });
+    fireEvent.click(screen.getByText('Next'), { bubbles: true });
     expect(screen.queryByText('Online Bank')).toBeTruthy();
     expect(screen.queryByText('Amount')).toBeTruthy();
     expect(
@@ -44,11 +41,9 @@ describe('AddMoney/AddMoneyViaBPIPage', () => {
   test('cash in view - submit with amount value', async () => {
     renderAddMoneyViaBPIPage();
     const amountInput: any = screen.getByTestId('amount');
-    act(() => {
-      fireEvent.change(amountInput, {
-        bubbles: true,
-        target: { value: 10 },
-      });
+    fireEvent.change(amountInput, {
+      bubbles: true,
+      target: { value: 10 },
     });
 
     expect(screen.queryByText('Online Bank')).toBeTruthy();
@@ -67,11 +62,7 @@ describe('AddMoney/AddMoneyViaBPIPage', () => {
       },
     });
     window.sessionStorage.setItem('amount', '20');
-
-    act(() => {
-      store.dispatch(actions.getFetchAccountsSuccess(accountsResponseMock));
-    });
-
+    store.dispatch(actions.getFetchAccountsSuccess(accountsResponseMock));
     renderAddMoneyViaBPIPage();
 
     expect(window.location.pathname).toEqual(url);
