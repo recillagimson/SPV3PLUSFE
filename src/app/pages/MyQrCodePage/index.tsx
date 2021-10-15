@@ -23,6 +23,7 @@ import Instagram from 'app/components/Assets/instagram.png';
 import Messenger from 'app/components/Assets/messenger.png';
 import Viber from 'app/components/Assets/viber.png';
 import Loading from 'app/components/Loading';
+import QrCodeDisplay from 'app/components/QrCodeDisplay';
 
 export function MyQrCodePage() {
   const { response, goFetch, loading } = useFetch();
@@ -30,18 +31,9 @@ export function MyQrCodePage() {
     goFetch('/send/money/get/qr', 'GET', '', '', true, true);
   }, [goFetch]);
 
-  const downloadQR = () => {
-    const canvas: any = document.getElementById('QRCode');
-    const pngUrl = canvas
-      .toDataURL('image/png')
-      .replace('image/png', 'image/octet-stream');
-
-    let downloadLink = document.createElement('a');
-    downloadLink.href = pngUrl;
-    downloadLink.download = `my-qr-code.png`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+  const downloadQR = (key?: string) => {
+    const downloadLink: any = document.querySelector(`.Qr-${key}`);
+    if (downloadLink) downloadLink.click();
   };
 
   const [showShare, setShowShare] = React.useState(false);
@@ -55,12 +47,7 @@ export function MyQrCodePage() {
         {response?.qr_code && (
           <Field id="qrCodeDisplay" style={{ maxWidth: 400, margin: '0 auto' }}>
             <Flex justifyContent="center">
-              <QRCode
-                value={response?.qr_code}
-                size={200}
-                id="QRCode"
-                includeMargin
-              />
+              <QrCodeDisplay value={response?.qr_code} qrKey="my-qr-code" />
             </Flex>
             <span className="text-center">
               <QrUserInfo />
@@ -71,7 +58,7 @@ export function MyQrCodePage() {
                     variant="outlined"
                     color="secondary"
                     size="large"
-                    onClick={downloadQR}
+                    onClick={() => downloadQR('my-qr-code')}
                   >
                     <FontAwesomeIcon icon={faQrcode} />
                     &nbsp; Download QR Code

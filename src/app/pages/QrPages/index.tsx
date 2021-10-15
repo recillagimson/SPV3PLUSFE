@@ -27,7 +27,6 @@ import Flex from 'app/components/Elements/Flex';
 import Paragraph from 'app/components/Elements/Paragraph';
 import QrReceiveMoney from 'app/components/Assets/QrReceiveMoney';
 import QrPayMoney from 'app/components/Assets/QrPayMoney';
-import QRCode from 'qrcode';
 import QrReader from 'react-qr-reader';
 import Dialog from 'app/components/Dialog';
 import Field from 'app/components/Elements/Fields';
@@ -47,6 +46,7 @@ import SuccessSentDialog from './components/SuccessSentDialog';
 import ScanQrInfo from './components/ScanQrInfo';
 import QrUserInfo from './components/QrUserInfo';
 import { TierIDs } from 'app/components/Helpers/Tiers';
+import QrCodeDisplay from 'app/components/QrCodeDisplay';
 
 type Keys =
   | 'landing'
@@ -120,62 +120,34 @@ export function QrPages() {
 
   const [isFailedDialog, setFailedDialog] = React.useState(false);
   const uploadError = React.useMemo(() => {
-    let errors: string[] = [];
+    let result;
     if (validateError || sendMoneyError || scanQrError) {
       setLoading(false);
       const errors =
         validateError?.errors || sendMoneyError?.errors || scanQrError?.errors;
-      if (errors) {
+
+      if (Array.isArray(errors)) {
         setFailedDialog(true);
+        result = [];
         Object.keys(errors).forEach(key => {
           const error = errors[key][0];
-          errors.push(error as string);
+          result.push(error as string);
         });
+      } else if (typeof errors === 'object') {
+        setFailedDialog(true);
+        result = errors.message[0];
       }
     } else {
       setFailedDialog(false);
     }
-    return errors;
+    return result;
   }, [validateError, sendMoneyError, scanQrError]);
 
   const [imageSource, setSource] = React.useState({ value: '', key: '' });
 
   const renderQrCode = React.useCallback((value, key) => {
-    if (value) {
-      QRCode.toDataURL(value)
-        .then(result => {
-          setSource({ value: result, key });
-        })
-        .catch(e => console.log(e));
-    }
-
-    return null;
+    setSource({ value, key });
   }, []);
-
-  const imageCode = React.useMemo(() => {
-    if (imageSource?.value) {
-      const { value, key } = imageSource;
-      return (
-        <>
-          {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
-          <a
-            href={value}
-            style={{ visibility: 'hidden' }}
-            download
-            className={`Qr-${key}`}
-          />
-          <img
-            src={value}
-            alt="qr-code"
-            width="200px"
-            height="200px"
-            style={{ margin: '0 auto' }}
-          />
-        </>
-      );
-    }
-    return <></>;
-  }, [imageSource]);
 
   const [amount, setAmount] = React.useState<{
     value: string;
@@ -627,7 +599,9 @@ export function QrPages() {
       >
         {(activeStep === 'receive-money' ||
           activeStep === 'receive-money-qr-code') && (
-          <Flex justifyContent="center">{imageCode}</Flex>
+          <Flex justifyContent="center">
+            <QrCodeDisplay value={imageSource.value} qrKey={imageSource.key} />
+          </Flex>
         )}
         {activeLayout}
       </Box>
@@ -640,7 +614,7 @@ export function QrPages() {
               width="150px"
               height="53.75px"
             />
-            {imageCode}
+            <QrCodeDisplay value={imageSource.value} qrKey={imageSource.key} />
             <p style={{ margin: '15px 0 34px' }}>
               <strong>Share QR Code</strong>
             </p>
