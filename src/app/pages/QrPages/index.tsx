@@ -495,20 +495,7 @@ export function QrPages() {
           <>
             {link && (
               <div style={{ width: '100%' }}>
-                <div
-                  style={{
-                    backgroundImage: `url(${link})`,
-                    backgroundPosition: 'center',
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    margin: '0 auto',
-                    display: 'block',
-                    borderRadius: '50%',
-                    height: '100px',
-                    width: '100px',
-                    marginBlockEnd: '16px',
-                  }}
-                />
+                <S.ImageAvatar url={link} />
               </div>
             )}
             <ScanQrInfo scanQrResponse={scanQrResponse} newAmount={newAmount} />
@@ -519,20 +506,7 @@ export function QrPages() {
           <>
             {link && (
               <div style={{ width: '100%' }}>
-                <div
-                  style={{
-                    backgroundImage: `url(${link})`,
-                    backgroundPosition: 'center',
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    margin: '0 auto',
-                    display: 'block',
-                    borderRadius: '50%',
-                    height: '100px',
-                    width: '100px',
-                    marginBlockEnd: '16px',
-                  }}
-                />
+                <S.ImageAvatar url={link} />
               </div>
             )}
             <ScanQrInfo
