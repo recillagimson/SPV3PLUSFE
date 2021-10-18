@@ -38,3 +38,21 @@ export const Title = styled.div`
   line-height: 1.2;
   margin: 0 0 20px;
 `;
+
+interface ImageAvatarProps {
+  url?: string;
+}
+
+export const ImageAvatar = styled.div<ImageAvatarProps>`
+  background-image: ${({ url }) => `url(${url})`};
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0 auto;
+  display: block;
+  border-radius: 50%;
+  height: 64px;
+  width: 64px;
+  border: 1px solid #f0f0f0;
+  margin-block-end: 12px;
+`;
