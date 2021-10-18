@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,7 +18,6 @@ import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import { numberCommas } from 'app/components/Helpers';
 import Logo from 'app/components/Assets/Logo';
 import UbpLogoImage from 'app/components/Assets/ubp-logo-add.png';
-import UbpBigLogo from 'app/components/Assets/ubp-big.png';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import H3 from 'app/components/Elements/H3';
 import RadioComponent from 'app/components/Elements/Radio';
@@ -41,6 +40,8 @@ import {
 export function AddMoneyViaUBP() {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const location = useLocation();
   const { actions } = useContainerSaga();
 
   const dashData: any = useSelector(selectDashData);
@@ -52,13 +53,18 @@ export function AddMoneyViaUBP() {
   const loading: boolean = useSelector(selectLoading);
   const authUrlPayload: string | any = useSelector(selectAuthUrl);
   const [isError901, setIsError901] = useState(false);
-  const [showLinkForm, setShowLinkForm] = useState(false);
+
+  useEffect(() => {
+    const { state } = location;
+    if (state) {
+      console.log(state);
+      // show modal
+    }
+  }, [location]);
 
   useEffect(() => {
     if (isError901) {
-      setIsCashIn(false);
       dispatch(actions.getGenerateAuthUrlLoading());
-      setShowLinkForm(isError901);
     }
   }, [actions, dispatch, isError901]);
 
@@ -116,14 +122,14 @@ export function AddMoneyViaUBP() {
   };
 
   useEffect(() => {
-    return () => {
-      dispatch(actions.getFetchReset()); // reset store state on unmount
-      resetAddMoney();
-      sessionStorage.setItem('amount', '');
-      sessionStorage.setItem('url', '');
-    };
+    if (authUrlPayload?.authorizeUrl) {
+      sessionStorage.setItem('amount', amount.value);
+      sessionStorage.setItem('url', authUrlPayload?.authorizeUrl);
+      window.location.href = authUrlPayload?.authorizeUrl;
+    }
+    return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actions, dispatch]);
+  }, [authUrlPayload, amount]);
 
   //Error useEffect
   //BPI login redirect useEFfect
@@ -286,7 +292,7 @@ export function AddMoneyViaUBP() {
 
   //Fund TopUp
   const onSubmitCashIn = () => {
-    let error = false;
+    // let error = false;
     // if (accountDetail.value.accountNumberToken === '') {
     //   error = true;
     //   setAccountDetail({
@@ -448,20 +454,6 @@ export function AddMoneyViaUBP() {
                 </Button>
               </Flex>
             </Field>
-          </Card>
-        )}
-
-        {showLinkForm && (
-          <Card title="Login to UnionBank">
-            <Flex alignItems="center" direction="column">
-              <img
-                src={UbpBigLogo}
-                alt="UBP Logo"
-                width="300px"
-                height="auto"
-              />
-              <h2 className="text-center">Confirm Your Online Payment</h2>
-            </Flex>
           </Card>
         )}
 
