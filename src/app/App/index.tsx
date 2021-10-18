@@ -39,6 +39,7 @@ import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
 import { AddMoneyViaBPI } from 'app/pages/AddMoney/AddMoneyViaBPIPage/Loadable';
+import { AddMoneyViaUBP } from 'app/pages/AddMoney/AddMoneyViaUBPPage/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import {
   BuyLoadIndexPage,
@@ -390,6 +391,11 @@ export function App() {
               exact
               path="/add-money/bpi"
               component={AddMoneyViaBPI}
+            />
+            <PrivateRoute
+              exact
+              path="/add-money/ubp"
+              component={AddMoneyViaUBP}
             />
             <PrivateRoute
               exact
