@@ -41,6 +41,7 @@ import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
 import { AddMoneyViaBPI } from 'app/pages/AddMoney/AddMoneyViaBPIPage/Loadable';
 import { MyQrCodePage } from 'app/pages/MyQrCodePage/Loadable';
 import { QrPages } from 'app/pages/QrPages/Loadable';
+import { AddMoneyViaUBP } from 'app/pages/AddMoney/AddMoneyViaUBPPage/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import {
   BuyLoadIndexPage,
@@ -394,6 +395,11 @@ export function App() {
               exact
               path="/add-money/bpi"
               component={AddMoneyViaBPI}
+            />
+            <PrivateRoute
+              exact
+              path="/add-money/ubp"
+              component={AddMoneyViaUBP}
             />
             <PrivateRoute
               exact
