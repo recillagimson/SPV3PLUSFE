@@ -55,6 +55,7 @@ export function QrPages() {
   const user: any = useSelector(selectUser);
   const [showUpgrade, setShowUpgrade] = React.useState(false);
   const { response: receiveResponse, goFetch: receiveGoFetch } = useFetch();
+  const { response: avatarResponse, goFetch: goFetchAvatar } = useFetch();
   const {
     response: scanQrResponse,
     error: scanQrError,
@@ -302,14 +303,24 @@ export function QrPages() {
 
   React.useEffect(() => {
     if (!isEmpty(scanQrResponse)) {
-      const { amount } = scanQrResponse;
+      const { amount, mobile_number } = scanQrResponse;
       if (amount && amount > 0) {
         setActiveStep('upload-qr-code');
       } else {
         setActiveStep('send-enter-amount');
       }
+      if (mobile_number) {
+        goFetchAvatar(
+          `/user/${mobile_number}/avatar`,
+          'GET',
+          '',
+          '',
+          true,
+          true,
+        );
+      }
     }
-  }, [scanQrResponse]);
+  }, [goFetchAvatar, scanQrResponse]);
 
   const onScanFile = () => {
     if (qrRef) {
@@ -318,6 +329,8 @@ export function QrPages() {
       }
     }
   };
+
+  const { link } = avatarResponse;
 
   const activeLayout = React.useMemo(() => {
     switch (activeStep) {
@@ -479,17 +492,57 @@ export function QrPages() {
         );
       case 'upload-qr-code':
         return (
-          <ScanQrInfo scanQrResponse={scanQrResponse} newAmount={newAmount} />
+          <>
+            {link && (
+              <div style={{ width: '100%' }}>
+                <div
+                  style={{
+                    backgroundImage: `url(${link})`,
+                    backgroundPosition: 'center',
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    margin: '0 auto',
+                    display: 'block',
+                    borderRadius: '50%',
+                    height: '100px',
+                    width: '100px',
+                    marginBlockEnd: '16px',
+                  }}
+                />
+              </div>
+            )}
+            <ScanQrInfo scanQrResponse={scanQrResponse} newAmount={newAmount} />
+          </>
         );
       case 'send-enter-amount':
         return (
-          <ScanQrInfo
-            scanQrResponse={scanQrResponse}
-            enterAmount
-            amount={amount}
-            balanceInfo={balanceInfo}
-            setAmount={setAmount}
-          />
+          <>
+            {link && (
+              <div style={{ width: '100%' }}>
+                <div
+                  style={{
+                    backgroundImage: `url(${link})`,
+                    backgroundPosition: 'center',
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    margin: '0 auto',
+                    display: 'block',
+                    borderRadius: '50%',
+                    height: '100px',
+                    width: '100px',
+                    marginBlockEnd: '16px',
+                  }}
+                />
+              </div>
+            )}
+            <ScanQrInfo
+              scanQrResponse={scanQrResponse}
+              enterAmount
+              amount={amount}
+              balanceInfo={balanceInfo}
+              setAmount={setAmount}
+            />
+          </>
         );
       default:
         return null;
@@ -501,6 +554,7 @@ export function QrPages() {
     amount,
     balanceInfo,
     purpose,
+    link,
     scanQrResponse,
     newAmount,
     renderQrCode,
