@@ -175,7 +175,6 @@ export function App() {
     if (refs) {
       dispatch(actions.getSaveAllReferences(refs));
     }
-
     /**
      * Check Session and necessary cookies for the token
      */
@@ -186,6 +185,7 @@ export function App() {
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
     const forceUpdate = getCookie('spv_uat_f');
     const bpiCode = new URLSearchParams(location.search).get('code'); // add money
+    const ubpCode = new URLSearchParams(location.search).get('code'); // add money
 
     let decrypt: any = false;
     let username: string = '';
@@ -196,7 +196,7 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (!forceUpdate && decrypt && bpiCode && path === '/') {
+    if (!forceUpdate && decrypt && bpiCode && ubpCode && path === '/') {
       dispatch(actions.getClientTokenLoading());
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
@@ -210,10 +210,27 @@ export function App() {
         dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(bpiCode));
       }, 2000);
 
-      history.push('/add-money/bpi/select-account');
+      if (bpiCode) {
+        history.push('/add-money/bpi/select-account');
+      }
+
+      if (ubpCode) {
+        history.push({
+          pathname: '/add-money/ubp',
+          state: {
+            success: true,
+          },
+        });
+      }
     }
 
-    if (!forceUpdate && decrypt && !path.includes('/postback') && !bpiCode) {
+    if (
+      !forceUpdate &&
+      decrypt &&
+      !path.includes('/postback') &&
+      !bpiCode &&
+      !ubpCode
+    ) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
