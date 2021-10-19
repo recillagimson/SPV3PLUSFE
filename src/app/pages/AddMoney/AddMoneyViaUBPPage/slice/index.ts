@@ -7,14 +7,14 @@ import { containerSaga } from './saga';
 
 export const initialState: ContainerState = {
   loading: false,
+  linkSuccess: false,
   error: {},
+  code: null,
   amount: null,
+  cashInSuccess: false,
   authorizeUrl: null,
-  accounts: null,
   request: null,
   data: null,
-  processData: null,
-  otp: null,
 };
 
 const slice = createSlice({
@@ -29,6 +29,16 @@ const slice = createSlice({
     getFetchSuccess(state, action: PayloadAction<object | null>) {
       state.error = {};
       state.amount = null;
+      state.loading = false;
+      state.cashInSuccess = action.payload;
+    },
+    getFetchError(state, action: PayloadAction<ErrorState>) {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    getFetchReset(state) {
+      state.loading = false;
+      state.error = {};
     },
     getGenerateAuthUrlLoading(state) {
       state.loading = true;
@@ -44,57 +54,33 @@ const slice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    getFetchAccountsSuccess(state, action: PayloadAction<object | null>) {
+    getLinkAccountLoading(state, action: PayloadAction<object | null>) {
       state.loading = false;
       state.error = {};
-      state.accounts = action.payload;
+      state.code = action.payload;
     },
-    getFetchFundTopUpLoading(state, action: PayloadAction<object | null>) {
-      state.loading = true;
-      state.error = {};
-      state.request = action.payload;
-    },
-    getFetchFundTopUpSuccess(state, action: PayloadAction<object | null>) {
+    getLinkAccountSuccess(state, action: PayloadAction<object | null>) {
       state.loading = false;
       state.error = {};
+      state.linkSuccess = true;
       state.data = action.payload;
     },
-    getFetchProcessTopUpLoading(state, action: PayloadAction<object | null>) {
-      state.loading = true;
-      state.error = {};
-      state.request = action.payload;
-    },
-    getFetchProcessTopUpSuccess(state, action: PayloadAction<object | null>) {
+    getLinkAccountError(state, action: PayloadAction<ErrorState>) {
       state.loading = false;
       state.error = {};
-      state.processData = action.payload;
-    },
-    getFetchResendOTPLoading(state, action: PayloadAction<object | null>) {
-      state.loading = true;
-      state.error = {};
+      state.linkSuccess = false;
       state.request = action.payload;
     },
-    getFetchResendOTPSuccess(state, action: PayloadAction<object | null>) {
-      state.loading = false;
-      state.error = {};
-      state.otp = action.payload;
-    },
-    getProcessTopUpReset(state) {
+    getTopUpReset(state) {
       state.loading = false;
       state.error = {};
       state.amount = null;
-      state.accounts = null;
       state.data = null;
-      state.processData = null;
       state.request = null;
-    },
-    getFetchError(state, action: PayloadAction<ErrorState>) {
-      state.error = action.payload;
-      state.loading = false;
-    },
-    getFetchReset(state) {
-      state.loading = false;
-      state.error = {};
+      state.code = null;
+      state.linkSuccess = false;
+      state.cashInSuccess = null;
+      state.authorizeUrl = null;
     },
     getFetchRedirectLoading(state) {
       state.loading = true;

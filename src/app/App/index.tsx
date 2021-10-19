@@ -184,8 +184,18 @@ export function App() {
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
     const forceUpdate = getCookie('spv_uat_f');
-    const bpiCode = new URLSearchParams(location.search).get('code'); // add money
-    const ubpCode = new URLSearchParams(location.search).get('code'); // add money
+    let code;
+    if (sessionStorage.getItem('ubpUrl')) {
+      code = {
+        type: 'ubp',
+        value: new URLSearchParams(location.search).get('code') ?? '',
+      };
+    } else {
+      code = {
+        type: 'bpi',
+        value: new URLSearchParams(location.search).get('code') ?? '',
+      };
+    }
 
     let decrypt: any = false;
     let username: string = '';
@@ -196,7 +206,7 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (!forceUpdate && decrypt && bpiCode && ubpCode && path === '/') {
+    if (!forceUpdate && decrypt && code && path === '/') {
       dispatch(actions.getClientTokenLoading());
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
@@ -210,27 +220,19 @@ export function App() {
         dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(bpiCode));
       }, 2000);
 
-      if (bpiCode) {
+      if (code?.type === 'bpi') {
         history.push('/add-money/bpi/select-account');
       }
 
-      if (ubpCode) {
+      if (code?.type === 'ubp') {
         history.push({
           pathname: '/add-money/ubp',
-          state: {
-            success: true,
-          },
+          search: `?code=${code?.value}`,
         });
       }
     }
 
-    if (
-      !forceUpdate &&
-      decrypt &&
-      !path.includes('/postback') &&
-      !bpiCode &&
-      !ubpCode
-    ) {
+    if (!forceUpdate && decrypt && !path.includes('/postback') && !code) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
