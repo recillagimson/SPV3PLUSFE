@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useHistory, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,21 +20,18 @@ import Logo from 'app/components/Assets/Logo';
 import UbpLogoImage from 'app/components/Assets/ubp-logo-add.png';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import H3 from 'app/components/Elements/H3';
-import RadioComponent from 'app/components/Elements/Radio';
 import Loading from 'app/components/Loading';
-import A from 'app/components/Elements/A';
 
 import Wrapper from './Wrapper';
 import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
-  selectAccounts,
   selectAuthUrl,
   selectData,
   selectLoading,
   selectError,
-  selectProcessData,
-  selectResendOTP,
+  selectLinkSuccess,
+  selectCashInSuccess,
 } from './slice/selectors';
 
 export function AddMoneyViaUBP() {
@@ -45,22 +42,25 @@ export function AddMoneyViaUBP() {
   const { actions } = useContainerSaga();
 
   const dashData: any = useSelector(selectDashData);
-  const accounts: object | any = useSelector(selectAccounts);
-  const data: object | any = useSelector(selectData);
-  const processData: object | any = useSelector(selectProcessData);
-  const resendOTP: object | any = useSelector(selectResendOTP);
+  const cashinSuccess: object | any = useSelector(selectData);
+  const data: object | any = useSelector(selectCashInSuccess);
+  const linkSuccess: object | any = useSelector(selectLinkSuccess);
   const error: any = useSelector(selectError);
   const loading: boolean = useSelector(selectLoading);
   const authUrlPayload: string | any = useSelector(selectAuthUrl);
   const [isError901, setIsError901] = useState(false);
-
+  const linkAccount = React.useCallback(
+    (code: string) => {
+      dispatch(actions.getLinkAccountLoading({ code }));
+    },
+    [actions, dispatch],
+  );
   useEffect(() => {
-    const { state } = location;
-    if (state) {
-      console.log(state);
-      // show modal
+    const code = new URLSearchParams(location.search).get('code');
+    if (code) {
+      linkAccount(code);
     }
-  }, [location]);
+  }, [linkAccount, location]);
 
   useEffect(() => {
     if (isError901) {
@@ -70,47 +70,17 @@ export function AddMoneyViaUBP() {
 
   const [isSuccess, setIsSuccess] = useState(false);
   const [isCashIn, setIsCashIn] = useState(true);
-  const [isSelectAccounts, setIsSelectAccounts] = useState(false);
-  const [isVerification, setIsVerification] = useState(false);
-
   const [isError412, setIsError412] = useState(false);
-  const [counter, setCounter] = useState(0);
   const [apiError, setApiError] = useState(false);
   const [apiErrorMsg, setApiErrorMsg] = useState('');
   const [amount, setAmount] = useState({
-    value: '',
-    isError: false,
-    errormsg: '',
-  });
-  const [accountDetail, setAccountDetail] = useState<{
-    value: {
-      accountNumberToken: string;
-      accountNumber: string;
-      accountPreferredName: string;
-      accountType: string;
-    };
-    isError: Boolean;
-    errormsg: string;
-  }>({
-    value: {
-      accountNumberToken: '',
-      accountNumber: '',
-      accountPreferredName: '',
-      accountType: '',
-    },
-    isError: false,
-    errormsg: '',
-  });
-  const [otp, setOtp] = useState({
-    value: '',
+    value: sessionStorage.getItem('amount') ?? '',
     isError: false,
     errormsg: '',
   });
 
   const resetAddMoney = () => {
     setIsCashIn(true);
-    setIsSelectAccounts(false);
-    setIsVerification(false);
     setAmount({
       ...amount,
       value: '',
@@ -118,13 +88,34 @@ export function AddMoneyViaUBP() {
       errormsg: '',
     });
     setIsError412(false);
-    // dispatch(actions.getProcessTopUpReset());
+    setIsError901(false);
+    dispatch(actions.getTopUpReset());
   };
+
+  const successLink = React.useMemo(() => {
+    return linkSuccess;
+  }, [linkSuccess]);
+
+  useEffect(() => {
+    if (successLink) {
+      const data = {
+        amount: parseFloat(amount.value),
+      };
+      dispatch(actions.getFetchLoading(data));
+    }
+  }, [actions, amount.value, dispatch, successLink]);
+
+  useEffect(() => {
+    if (cashinSuccess || (data && data?.status === 'SUCCESS')) {
+      setIsCashIn(false);
+      setIsSuccess(true);
+    }
+  }, [cashinSuccess, data]);
 
   useEffect(() => {
     if (authUrlPayload?.authorizeUrl) {
       sessionStorage.setItem('amount', amount.value);
-      sessionStorage.setItem('url', authUrlPayload?.authorizeUrl);
+      sessionStorage.setItem('ubpUrl', authUrlPayload?.authorizeUrl);
       window.location.href = authUrlPayload?.authorizeUrl;
     }
     return () => {};
@@ -139,64 +130,6 @@ export function AddMoneyViaUBP() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, amount.value]);
-
-  //View select accounts on postback
-  useEffect(() => {
-    if (window.location.pathname === '/add-money/bpi/select-account') {
-      const amountValue: string | null = sessionStorage.getItem('amount');
-      if (amountValue && !isVerification) {
-        setAmount({ ...amount, value: amountValue.toString() });
-        setIsCashIn(false);
-        setIsSelectAccounts(true);
-        setIsVerification(false);
-      }
-      if (!amountValue) {
-        setIsCashIn(true);
-        setIsSelectAccounts(false);
-        setIsVerification(false);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  //Show OTP view on /fundtopup submit
-  useEffect(() => {
-    if (data !== null) {
-      setIsCashIn(false);
-      setIsSelectAccounts(false);
-      setIsVerification(true);
-    }
-  }, [data]);
-
-  //Show success modal on /process submit
-  useEffect(() => {
-    if (processData !== null) {
-      setIsSuccess(true);
-    }
-  }, [processData]);
-
-  //OTP timer from /fundtopup and /resendotp
-  useEffect(() => {
-    if (data?.otpResponse?.body) {
-      setCounter(59);
-    }
-    if (resendOTP?.body) {
-      setCounter(59);
-    }
-  }, [data, resendOTP]);
-
-  //OTP Timer Countdown
-  useEffect(() => {
-    const timer: any =
-      data !== null &&
-      !loading &&
-      counter > 0 &&
-      setInterval(() => setCounter(counter - 1), 1000);
-    return () => {
-      clearInterval(timer);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [counter, data, apiError]);
 
   const onApiError = (err: object | any) => {
     let apiError = '';
@@ -290,97 +223,6 @@ export function AddMoneyViaUBP() {
     }
   };
 
-  //Fund TopUp
-  const onSubmitCashIn = () => {
-    // let error = false;
-    // if (accountDetail.value.accountNumberToken === '') {
-    //   error = true;
-    //   setAccountDetail({
-    //     ...accountDetail,
-    //     isError: true,
-    //     errormsg: 'Oops! Please select an account.',
-    //   });
-    // }
-    // if (!error) {
-    //   const data = {
-    //     amount: parseFloat(amount.value),
-    //     accountNumberToken: accountDetail.value.accountNumberToken,
-    //     token: accessToken,
-    //   };
-    //   dispatch(actions.getFetchFundTopUpLoading(data));
-    // }
-  };
-
-  //Process TopUp
-  const onSubmitVerification = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    resend = false,
-  ) => {
-    if (e && e.preventDefault) e.preventDefault();
-
-    // let error = false;
-    // if (otp.value === '') {
-    //   error = true;
-    //   setOtp({
-    //     ...otp,
-    //     isError: true,
-    //     errormsg: 'Oops! This field cannot be empty.',
-    //   });
-    // }
-    // if (otp.value.length !== 6) {
-    //   error = true;
-    //   setOtp({
-    //     ...otp,
-    //     isError: true,
-    //     errormsg: 'You entered invalid OTP.',
-    //   });
-    // }
-    // if (!error && data && !resend) {
-    //   const { transactionId, refId } = data;
-    //   const payload = {
-    //     token: accessToken,
-    //     otp: otp.value,
-    //     transactionId,
-    //     amount: parseFloat(amount.value),
-    //     refId,
-    //     accountNumber: accountDetail.value.accountNumber,
-    //   };
-    //   dispatch(actions.getFetchProcessTopUpLoading(payload));
-    // }
-
-    // if (data && resend) {
-    //   setOtp({
-    //     ...otp,
-    //     isError: false,
-    //     errormsg: '',
-    //   });
-    //   const { transactionId, response } = data;
-    //   const payload = {
-    //     token: accessToken,
-    //     mobileNumberToken: response?.body?.mobileNumberToken,
-    //     transactionId,
-    //   };
-    //   dispatch(actions.getFetchResendOTPLoading(payload));
-    // }
-  };
-
-  //Select accounts
-  const onRadioChange = (
-    _e: any,
-    item: {
-      accountNumberToken: string;
-      accountNumber: string;
-      accountPreferredName: string;
-      accountType: string;
-    },
-  ) => {
-    setAccountDetail({
-      ...accountDetail,
-      value: item,
-    });
-  };
-
-  //close Error modal
   const handlerCloseModal = () => {
     setApiError(false);
     setApiErrorMsg('');
@@ -389,6 +231,8 @@ export function AddMoneyViaUBP() {
       const url: any = sessionStorage.getItem('url');
       dispatch(actions.getFetchRedirectLoading());
       window.location.href = url;
+    } else {
+      sessionStorage.clear();
     }
   };
 
@@ -457,125 +301,6 @@ export function AddMoneyViaUBP() {
           </Card>
         )}
 
-        {isSelectAccounts && (
-          <Card title="Login to BPI Online" size="medium">
-            <Fragment>
-              <div className="text-center">
-                <p>Cash in amount (₱)</p>
-                <H3 className="total-amount">
-                  {amount.value ? numberCommas(amount.value) : '0.00'}
-                </H3>
-              </div>
-              <br />
-              <div className="text-left">
-                <H5>Select Bank Account</H5>
-                <p>
-                  Select your bank account with sufficient balance to link your
-                  account and complete the cash in.
-                </p>
-              </div>
-              <div className="list-account-wrapper reverse">
-                {accounts?.body?.transactionalAccounts?.map(
-                  (item: object | any) => (
-                    <Fragment key={`${item.displayOrder}${item.accountNumber}`}>
-                      <RadioComponent
-                        name={item.accountPreferredName}
-                        value={item.accountNumberToken}
-                        onChange={e => onRadioChange(e, item)}
-                      >
-                        {ubpLogo()}
-                        <div className="account-details">
-                          <span>{item.accountNumber}</span>
-                          <span>{item.accountType}</span>
-                        </div>
-                      </RadioComponent>
-                      <br />
-                    </Fragment>
-                  ),
-                )}
-              </div>
-              {accounts?.status === 'error' && <p>{accounts?.description}</p>}
-              {accountDetail.isError && (
-                <ErrorMsg formError>{accountDetail.errormsg}</ErrorMsg>
-              )}
-              <Flex justifyContent="flex-end">
-                <Button
-                  type="submit"
-                  color="default"
-                  size="large"
-                  variant="contained"
-                  onClick={onSubmitCashIn}
-                >
-                  Cash In
-                </Button>
-              </Flex>
-            </Fragment>
-          </Card>
-        )}
-
-        {isVerification && (
-          <Card title="Login to BPI Online" size="medium">
-            <Fragment>
-              <div className="text-center">
-                <H5>Enter Verification Code</H5>
-                <p>
-                  Authentication Code is 6 digits which is sent to your mobile
-                  number.
-                  <br />
-                  <br />
-                </p>
-                <p className="number">{data?.response?.body?.mobileNumber}</p>
-              </div>
-              <div className="otp-wrapper">
-                <div>
-                  <Input
-                    required
-                    type="text"
-                    placeholder="Enter SMS Code"
-                    value={otp.value}
-                    maxLength={6}
-                    onChange={e =>
-                      setOtp({
-                        value: e.currentTarget.value,
-                        isError: false,
-                        errormsg: '',
-                      })
-                    }
-                    error={otp.isError ? true : undefined}
-                  />
-                  {otp.isError && <ErrorMsg formError>{otp.errormsg}</ErrorMsg>}
-                </div>
-                <div className="timer">{counter} s</div>
-              </div>
-              <br />
-              <br />
-              <div className="verify-button-wrapper">
-                {data !== null && counter === 0 && resendOTP === null && (
-                  <div>
-                    Need a new code?{' '}
-                    <A
-                      color="gold"
-                      to=""
-                      onClick={(e: any) => onSubmitVerification(e, true)}
-                    >
-                      Resend code
-                    </A>
-                  </div>
-                )}
-                <Button
-                  type="submit"
-                  color="secondary"
-                  size="large"
-                  variant="contained"
-                  onClick={e => onSubmitVerification(e)}
-                >
-                  Verify
-                </Button>
-              </div>
-            </Fragment>
-          </Card>
-        )}
-
         <Dialog show={isSuccess} size="xsmall">
           <div className="text-center" style={{ margin: '20px' }}>
             <Logo size="small" margin="0 0 30px" />
@@ -586,10 +311,9 @@ export function AddMoneyViaUBP() {
             <Button
               fullWidth
               onClick={() => {
-                history.push('/dashboard');
+                sessionStorage.clear();
                 resetAddMoney();
-                sessionStorage.setItem('amount', '');
-                sessionStorage.setItem('url', '');
+                history.push('/dashboard');
               }}
               variant="contained"
               color="primary"

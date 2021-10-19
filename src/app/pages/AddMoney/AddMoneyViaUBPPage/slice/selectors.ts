@@ -10,15 +10,22 @@ export const selectAmount = createSelector(
   [selectDomain],
   subState => subState.amount,
 );
+export const selectCode = createSelector(
+  [selectDomain],
+  subState => subState.code,
+);
+export const selectLinkSuccess = createSelector(
+  [selectDomain],
+  subState => subState.linkSuccess,
+);
 
 export const selectAuthUrl = createSelector(
   [selectDomain],
   subState => subState.authorizeUrl,
 );
-
-export const selectAccounts = createSelector(
+export const selectCashInSuccess = createSelector(
   [selectDomain],
-  subState => subState.accounts,
+  subState => subState.cashInSuccess,
 );
 
 export const selectRequest = createSelector(
@@ -29,16 +36,6 @@ export const selectRequest = createSelector(
 export const selectData = createSelector(
   [selectDomain],
   subState => subState.data,
-);
-
-export const selectProcessData = createSelector(
-  [selectDomain],
-  subState => subState.processData,
-);
-
-export const selectResendOTP = createSelector(
-  [selectDomain],
-  subState => subState.otp,
 );
 
 export const selectLoading = createSelector(
