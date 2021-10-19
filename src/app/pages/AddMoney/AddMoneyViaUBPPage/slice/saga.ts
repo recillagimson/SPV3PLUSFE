@@ -14,7 +14,7 @@ import {
 } from 'app/App/slice/saga';
 
 import { containerActions as actions } from '.';
-import { selectAmount, selectRequest } from './selectors';
+import { selectAmount, selectCode } from './selectors';
 
 function* addMoney() {
   yield delay(500);
@@ -59,6 +59,7 @@ function* addMoney() {
 
       if (decryptData) {
         yield put(actions.getFetchSuccess(decryptData));
+        analytics.logEvent(events.addMoney, { type: 'ubp' });
       }
     } else {
       yield put(
@@ -134,11 +135,11 @@ function* generateUbpAuthorizeUrl() {
   }
 }
 
-function* fundTopUp() {
+function* linkAccount() {
   yield delay(500);
   const token = yield select(selectUserToken);
-  const payload = yield select(selectRequest);
-  const requestURL = `${process.env.REACT_APP_API_URL}/bpi/fundtopup`;
+  const payload = yield select(selectCode);
+  const requestURL = `${process.env.REACT_APP_API_URL}/ubp/auth/account/link`;
 
   let encryptPayload: string = '';
   let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
@@ -176,11 +177,12 @@ function* fundTopUp() {
       );
 
       if (decryptData) {
-        yield put(actions.getFetchFundTopUpSuccess(decryptData));
+        yield put(actions.getLinkAccountSuccess(decryptData));
+        analytics.logEvent(events.addMoney, { type: 'ubp' });
       }
     } else {
       yield put(
-        actions.getFetchError({
+        actions.getLinkAccountError({
           error: true,
           message: 'An error has occured.',
         }),
@@ -193,145 +195,13 @@ function* fundTopUp() {
         code: 422,
         ...body,
       };
-      yield put(actions.getFetchError(newError));
+      yield put(actions.getLinkAccountError(newError));
     } else {
-      yield put(actions.getFetchError(err));
+      yield put(actions.getLinkAccountError(err));
     }
   }
 }
 
-function* processTopUp() {
-  yield delay(500);
-  const token = yield select(selectUserToken);
-  const payload = yield select(selectRequest);
-  const requestURL = `${process.env.REACT_APP_API_URL}/bpi/process`;
-
-  let encryptPayload: string = '';
-  let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
-
-  if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
-    encryptPayload = spdCrypto.encrypt(
-      JSON.stringify(payload),
-      requestPhrase.passPhrase,
-    );
-  }
-
-  const options = {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token.access_token}`,
-    },
-    body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
-  };
-
-  try {
-    const apirequest = yield call(request, requestURL, options);
-    if (apirequest) {
-      // request decryption passphrase
-      let decryptPhrase: PassphraseState = yield call(
-        getResponsePassphrase,
-        apirequest.data.id,
-      );
-
-      // decrypt payload data
-      let decryptData = spdCrypto.decrypt(
-        apirequest.data.payload,
-        decryptPhrase.passPhrase,
-      );
-
-      if (decryptData) {
-        yield put(actions.getFetchProcessTopUpSuccess(decryptData));
-        analytics.logEvent(events.addMoney, { type: 'bpi' });
-      }
-    } else {
-      yield put(
-        actions.getFetchError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
-    }
-  } catch (err: any) {
-    if (err && err.response && err.response.status === 422) {
-      const body = yield err.response.json();
-      const newError = {
-        code: 422,
-        ...body,
-      };
-      yield put(actions.getFetchError(newError));
-    } else {
-      yield put(actions.getFetchError(err));
-    }
-  }
-}
-
-function* resendOTP() {
-  yield delay(500);
-  const token = yield select(selectUserToken);
-  const payload = yield select(selectRequest);
-  const requestURL = `${process.env.REACT_APP_API_URL}/bpi/otp`;
-
-  let encryptPayload: string = '';
-  let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
-
-  if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
-    encryptPayload = spdCrypto.encrypt(
-      JSON.stringify(payload),
-      requestPhrase.passPhrase,
-    );
-  }
-
-  const options = {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token.access_token}`,
-    },
-    body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
-  };
-
-  try {
-    const apirequest = yield call(request, requestURL, options);
-    if (apirequest) {
-      // request decryption passphrase
-      let decryptPhrase: PassphraseState = yield call(
-        getResponsePassphrase,
-        apirequest.data.id,
-      );
-
-      // decrypt payload data
-      let decryptData = spdCrypto.decrypt(
-        apirequest.data.payload,
-        decryptPhrase.passPhrase,
-      );
-
-      if (decryptData) {
-        yield put(actions.getFetchResendOTPSuccess(decryptData));
-      }
-    } else {
-      yield put(
-        actions.getFetchError({
-          error: true,
-          message: 'An error has occured.',
-        }),
-      );
-    }
-  } catch (err: any) {
-    if (err && err.response && err.response.status === 422) {
-      const body = yield err.response.json();
-      const newError = {
-        code: 422,
-        ...body,
-      };
-      yield put(actions.getFetchError(newError));
-    } else {
-      yield put(actions.getFetchError(err));
-    }
-  }
-}
 /**
  * Root saga manages watcher lifecycle
  */
@@ -341,11 +211,9 @@ export function* containerSaga() {
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
   yield takeLatest(actions.getFetchLoading.type, addMoney);
+  yield takeLatest(actions.getLinkAccountLoading.type, linkAccount);
   yield takeLatest(
     actions.getGenerateAuthUrlLoading.type,
     generateUbpAuthorizeUrl,
   );
-  yield takeLatest(actions.getFetchFundTopUpLoading.type, fundTopUp);
-  yield takeLatest(actions.getFetchProcessTopUpLoading.type, processTopUp);
-  yield takeLatest(actions.getFetchResendOTPLoading.type, resendOTP);
 }
