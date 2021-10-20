@@ -1,4 +1,3 @@
-import { AddMoneyViaUBP } from './../app/pages/AddMoney/AddMoneyViaUBPPage/Loadable';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 import { GlobalState } from 'app/App/slice/types';
 
