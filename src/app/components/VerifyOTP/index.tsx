@@ -221,7 +221,7 @@ export default function VerifyOTPComponent({
   };
 
   const onResendOTP = () => {
-    setCode({ ...code, error: false, msg: '' });
+    setCode({ value: '', error: false, msg: '' });
 
     if (verify.loading || resend.loading) {
       return;
@@ -294,7 +294,7 @@ export default function VerifyOTPComponent({
               Please wait{' '}
               <Timer
                 onStop={() => setIsLimit(false)}
-                count={99}
+                count={60}
                 start={isLimit}
               />
               s

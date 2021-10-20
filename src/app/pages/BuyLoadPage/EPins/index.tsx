@@ -32,6 +32,7 @@ import {
   numberCommas,
   regExMobile,
 } from 'app/components/Helpers';
+import useFetch from 'utils/useFetch';
 
 import { useContainerSaga } from './slice';
 import {
@@ -49,6 +50,7 @@ import {
 export function BuyEpinsPage() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
+  const getAvatar = useFetch();
 
   const success: any = useSelector(selectData);
   const loading: any = useSelector(selectLoading);
@@ -68,6 +70,7 @@ export function BuyEpinsPage() {
   }
   const humanReadable = date.toFormat('dd LLLL yyyy, t');
 
+  const [avatarLink, setAvatarLink] = React.useState('');
   const [mobile, setMobile] = React.useState<{
     value: string;
     error: boolean;
@@ -122,6 +125,12 @@ export function BuyEpinsPage() {
       dispatch(actions.getPayReset());
     };
   }, [actions, dispatch]);
+
+  React.useEffect(() => {
+    if (getAvatar.response) {
+      setAvatarLink(getAvatar.response.link);
+    }
+  }, [getAvatar.response]);
 
   React.useEffect(() => {
     if (Array.isArray(success)) {
@@ -313,6 +322,14 @@ export function BuyEpinsPage() {
         mobile_number: mobile.value,
       };
       dispatch(actions.getFetchLoading(data));
+      getAvatar.goFetch(
+        `/user/${mobile.value}/avatar`,
+        'GET',
+        '',
+        '',
+        true,
+        true,
+      );
     }
   };
 
@@ -498,7 +515,7 @@ export function BuyEpinsPage() {
               <>
                 <Flex justifyContent="center">
                   <Avatar
-                    image={validateSuccess.avatar_link || ''}
+                    image={avatarLink || ''}
                     size="medium"
                     style={{ marginBottom: '10px' }}
                   />
@@ -563,7 +580,7 @@ export function BuyEpinsPage() {
                   <div>
                     <Flex justifyContent="center">
                       <Avatar
-                        image=""
+                        image={avatarLink || ''}
                         size="medium"
                         style={{ marginBottom: '10px' }}
                       />

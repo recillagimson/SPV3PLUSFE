@@ -31,6 +31,7 @@ import {
   numberCommas,
   regExMobile,
 } from 'app/components/Helpers';
+import useFetch from 'utils/useFetch';
 
 import { useContainerSaga } from './slice';
 import {
@@ -48,6 +49,7 @@ import {
 export function BuyLoadPage() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
+  const getAvatar = useFetch();
 
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
@@ -64,6 +66,7 @@ export function BuyLoadPage() {
   const date = DateTime.fromISO(paySuccess.transaction_date);
   const humanReadable = date.toLocaleString(DateTime.DATETIME_MED);
 
+  const [avatarLink, setAvatarLink] = React.useState('');
   const [mobile, setMobile] = React.useState({
     value: '',
     error: false,
@@ -115,8 +118,15 @@ export function BuyLoadPage() {
         description: '',
         amount: '',
       });
+      setAvatarLink('');
     };
   }, [actions, dispatch]);
+
+  React.useEffect(() => {
+    if (getAvatar.response) {
+      setAvatarLink(getAvatar.response.link);
+    }
+  }, [getAvatar.response]);
 
   React.useEffect(() => {
     if (success && success.length > 0) {
@@ -354,6 +364,14 @@ export function BuyLoadPage() {
 
       // dispatch payload to saga
       dispatch(actions.getFetchLoading(data));
+      getAvatar.goFetch(
+        `/user/${mobile.value}/avatar`,
+        'GET',
+        '',
+        '',
+        true,
+        true,
+      );
     }
   };
 
@@ -473,7 +491,7 @@ export function BuyLoadPage() {
               <>
                 <Flex justifyContent="center">
                   <Avatar
-                    image={validateSuccess.avatar_link || ''}
+                    image={avatarLink || ''}
                     size="medium"
                     style={{ marginBottom: '10px' }}
                   />
@@ -567,7 +585,7 @@ export function BuyLoadPage() {
                   <div>
                     <Flex justifyContent="center">
                       <Avatar
-                        image=""
+                        image={avatarLink || ''}
                         size="medium"
                         style={{ marginBottom: '10px' }}
                       />
