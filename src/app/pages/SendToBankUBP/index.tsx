@@ -226,7 +226,9 @@ export function SendToBankUBP() {
             {step === 0 && (
               <form onSubmit={onSubmit}>
                 <Field>
-                  <Label>Enter Amount</Label>
+                  <Label>
+                    Enter Amount <i>*</i>
+                  </Label>
                   <InputTextWrapper>
                     <Input
                       type="number"
@@ -245,7 +247,9 @@ export function SendToBankUBP() {
                   )}
                 </Field>
                 <Field>
-                  <Label>Account Name</Label>
+                  <Label>
+                    Account Name <i>*</i>
+                  </Label>
                   <Input
                     value={formData.recipient_name.value}
                     onChange={onChangeFieldValue}
@@ -259,7 +263,9 @@ export function SendToBankUBP() {
                   )}
                 </Field>
                 <Field>
-                  <Label>Account Number</Label>
+                  <Label>
+                    Account Number <i>*</i>
+                  </Label>
                   <Input
                     value={formData.recipient_account_no.value}
                     onChange={onChangeFieldValue}
@@ -278,12 +284,14 @@ export function SendToBankUBP() {
                   )}
                 </Field>
                 <Field>
-                  <Label>Send Receipt to</Label>
+                  <Label>
+                    Send Receipt to <i>*</i>
+                  </Label>
                   <Input
                     value={formData.send_receipt_to.value}
                     onChange={onChangeFieldValue}
                     name="send_receipt_to"
-                    placeholder="Enter email or mobile number"
+                    placeholder="Enter a valid email address"
                     className={
                       formData.send_receipt_to.error ? 'error' : undefined
                     }
@@ -296,7 +304,9 @@ export function SendToBankUBP() {
                   )}
                 </Field>
                 <Field>
-                  <Label>Particulars</Label>
+                  <Label>
+                    Particulars <i>*</i>
+                  </Label>
                   <Input
                     value={formData.particulars.value}
                     onChange={onChangeFieldValue}
@@ -309,7 +319,9 @@ export function SendToBankUBP() {
                   )}
                 </Field>
                 <Field>
-                  <Label>Remarks</Label>
+                  <Label>
+                    Remarks <i>*</i>
+                  </Label>
                   <Input
                     value={formData.remarks.value}
                     onChange={onChangeFieldValue}
@@ -382,6 +394,10 @@ export function SendToBankUBP() {
                     <S.TotalAmountValue>
                       PHP {numberCommas(calculateTotalAmount)}
                     </S.TotalAmountValue>
+                    <p className="service-fees">
+                      Service Fee: PHP{' '}
+                      {parseToNumber(validateTransaction?.service_fee)}
+                    </p>
                   </S.TotalAmountWrapper>
                 </S.ReviewContainer>
                 <S.TransferButtonWrapper>
