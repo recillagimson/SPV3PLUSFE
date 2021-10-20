@@ -309,16 +309,14 @@ export function QrPages() {
       } else {
         setActiveStep('send-enter-amount');
       }
-      if (mobile_number || email) {
-        goFetchAvatar(
-          `/user/${mobile_number ?? email}/avatar`,
-          'GET',
-          '',
-          '',
-          true,
-          true,
-        );
-      }
+      goFetchAvatar(
+        `/user/${mobile_number ?? email}/avatar`,
+        'GET',
+        '',
+        '',
+        true,
+        true,
+      );
     }
   }, [goFetchAvatar, scanQrResponse]);
 
