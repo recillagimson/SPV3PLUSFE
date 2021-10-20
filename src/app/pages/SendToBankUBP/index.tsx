@@ -64,10 +64,7 @@ export function SendToBankUBP() {
     initialFormValues,
   );
 
-  const calculateTotalAmount = parseToNumber(
-    parseFloat(formData.amount.value) +
-      parseFloat(validateTransaction?.service_fee),
-  );
+  const calculateTotalAmount = parseToNumber(parseFloat(formData.amount.value));
 
   // #region handleForm Events
   const onChangeFieldValue = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -394,10 +391,6 @@ export function SendToBankUBP() {
                     <S.TotalAmountValue>
                       PHP {numberCommas(calculateTotalAmount)}
                     </S.TotalAmountValue>
-                    <p className="service-fees">
-                      Service Fee: PHP{' '}
-                      {parseToNumber(validateTransaction?.service_fee)}
-                    </p>
                   </S.TotalAmountWrapper>
                 </S.ReviewContainer>
                 <S.TransferButtonWrapper>

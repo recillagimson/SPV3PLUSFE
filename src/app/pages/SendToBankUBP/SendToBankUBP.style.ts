@@ -232,13 +232,6 @@ export const TotalAmountWrapper = styled.section`
   margin-block-start: 65px;
   margin-block-end: 97px;
   text-align: center;
-
-  .service-fees {
-    font-size: 14px;
-    font-weight: 400;
-    font-style: normal;
-    line-height: 21px;
-  }
 `;
 
 export const TotalAmountTitle = styled.p`
