@@ -349,13 +349,15 @@ export function BuyEpinsPage() {
   };
 
   const onClickPay = () => {
-    const data = {
-      mobile_number: mobile.value,
-      product_code: selectedProduct.productCode,
-      product_name: selectedProduct.productName,
-      amount: selectedProduct.amount,
-    };
-    dispatch(actions.getPayLoading(data));
+    if (!payLoading) {
+      const data = {
+        mobile_number: mobile.value,
+        product_code: selectedProduct.productCode,
+        product_name: selectedProduct.productName,
+        amount: selectedProduct.amount,
+      };
+      dispatch(actions.getPayLoading(data));
+    }
   };
 
   const onCloseValidateError = () => {
@@ -549,7 +551,7 @@ export function BuyEpinsPage() {
                             }}
                           >
                             <div>{promo.description}</div>
-                            <div>PHP {promo.denomination}.00</div>
+                            <div>PHP {numberCommas(promo.denomination)}</div>
                           </div>
                         ))}
                   </Scrollbars>

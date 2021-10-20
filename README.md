@@ -173,3 +173,8 @@ v1.2.1
 - Success Modal when user click Resend Code in Verify OTP (VP2-242)
 - Display Avatar on Buy Load and Send Money (VP2-251, VP2-338)
 - Loans Change Next Button to Confirm in generate ID and trigger sending of sms/email (VP2-631)
+
+v1.2.2
+
+- Fix double click (VP2-441, VP2-444, VP2-447, VP2-459, VP2-461)
+- QR Code - ScanQR, Receive and Send Money QR (VP2-358)

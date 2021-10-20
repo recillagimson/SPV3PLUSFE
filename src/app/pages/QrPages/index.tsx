@@ -303,22 +303,20 @@ export function QrPages() {
 
   React.useEffect(() => {
     if (!isEmpty(scanQrResponse)) {
-      const { amount, mobile_number } = scanQrResponse;
+      const { amount, mobile_number, email } = scanQrResponse;
       if (amount && amount > 0) {
         setActiveStep('upload-qr-code');
       } else {
         setActiveStep('send-enter-amount');
       }
-      if (mobile_number) {
-        goFetchAvatar(
-          `/user/${mobile_number}/avatar`,
-          'GET',
-          '',
-          '',
-          true,
-          true,
-        );
-      }
+      goFetchAvatar(
+        `/user/${mobile_number ?? email}/avatar`,
+        'GET',
+        '',
+        '',
+        true,
+        true,
+      );
     }
   }, [goFetchAvatar, scanQrResponse]);
 

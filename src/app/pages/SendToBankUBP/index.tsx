@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useSelector, useDispatch } from 'react-redux';
 
 // react router
 import { useHistory } from 'react-router-dom';
@@ -24,7 +25,6 @@ import ComponentLoading from 'app/components/ComponentLoading';
 import { numberCommas } from 'app/components/Helpers';
 
 // #region redux imports
-import { useSelector, useDispatch } from 'react-redux';
 import { useContainerSaga } from './slice';
 import {
   selectError,
@@ -57,6 +57,7 @@ export function SendToBankUBP() {
   const [errors, setErrors] = React.useState('');
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const validateTransaction = useSelector(selectValidateTransaction);
+
   // review cash out
   const [step, setStep] = React.useState<number>(0);
   // form
@@ -73,7 +74,7 @@ export function SendToBankUBP() {
       [event.currentTarget.name]: {
         ...formData[event.currentTarget.name],
         value: event.currentTarget.value,
-        error: event.currentTarget.value ? false : true,
+        error: false,
       },
     });
   };
@@ -145,7 +146,6 @@ export function SendToBankUBP() {
   }, [validateTransaction, isSubmitted]);
 
   React.useEffect(() => {
-    console.log(apiErrors);
     if (apiErrors?.errors?.error_code?.length) {
       apiErrors?.errors?.error_code?.map(err => {
         switch (err) {
@@ -234,7 +234,6 @@ export function SendToBankUBP() {
                       name="amount"
                       className={formData.amount.error ? 'error' : undefined}
                       placeholder="0.00"
-                      hidespinner
                     />
                     <span>PHP</span>
                   </InputTextWrapper>
