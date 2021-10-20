@@ -46,6 +46,11 @@ export const GlobalStyle = createGlobalStyle`
     height: auto;
   }
 
+  button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+  }
+
   ::-ms-input-placeholder {
     color: #777;
   }
