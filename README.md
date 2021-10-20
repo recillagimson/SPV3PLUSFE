@@ -172,3 +172,4 @@ v1.2.1
 
 - Success Modal when user click Resend Code in Verify OTP (VP2-242)
 - Display Avatar on Buy Load and Send Money (VP2-251, VP2-338)
+- Loans Change Next Button to Confirm in generate ID and trigger sending of sms/email (VP2-631)
