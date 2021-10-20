@@ -379,15 +379,17 @@ export function BuyLoadPage() {
 
   // 3rd API
   const onClickPay = () => {
-    const data = {
-      mobile_number: mobile.value,
-      product_code: selectedProduct.productCode,
-      product_name: selectedProduct.productName,
-      amount: selectedProduct.amount,
-    };
+    if (!payLoading) {
+      const data = {
+        mobile_number: mobile.value,
+        product_code: selectedProduct.productCode,
+        product_name: selectedProduct.productName,
+        amount: selectedProduct.amount,
+      };
 
-    // dispatch payload to saga
-    dispatch(actions.getPayLoading(data));
+      // dispatch payload to saga
+      dispatch(actions.getPayLoading(data));
+    }
   };
 
   const onCloseValidateError = () => {
@@ -496,134 +498,6 @@ export function BuyLoadPage() {
                     </Scrollbars>
                   </div>
                 )}
-                {/* {success[0].provider === 'SMART' && (
-                  <div className="pills">
-                    <Scrollbars style={{ height: 50 }}>
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        size="medium"
-                        variant={
-                          category === 'Regular' ? 'contained' : 'outlined'
-                        }
-                        onClick={() => setCategory('Regular')}
-                      >
-                        Regular
-                      </Button>
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        size="medium"
-                        variant={
-                          category === 'Broadband' ? 'contained' : 'outlined'
-                        }
-                        onClick={() => setCategory('Broadband')}
-                      >
-                        Broadband
-                      </Button>
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        size="medium"
-                        variant={
-                          category === 'Call & Text' ? 'contained' : 'outlined'
-                        }
-                        onClick={() => setCategory('Call & Text')}
-                      >
-                        Call &amp; Text
-                      </Button>
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        size="medium"
-                        variant={
-                          category === 'Utility' ? 'contained' : 'outlined'
-                        }
-                        onClick={() => setCategory('Utility')}
-                      >
-                        Utility
-                      </Button>
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        size="medium"
-                        variant={
-                          category === 'PayTV' ? 'contained' : 'outlined'
-                        }
-                        onClick={() => setCategory('PayTV')}
-                      >
-                        PayTV
-                      </Button>
-                    </Scrollbars>
-                  </div>
-                )}
-                {success[0].provider === 'GLOBE' && (
-                  <div className="pills">
-                    <Scrollbars style={{ height: 50 }}>
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        size="medium"
-                        variant={
-                          category === 'Regular' ? 'contained' : 'outlined'
-                        }
-                        onClick={() => setCategory('Regular')}
-                      >
-                        Regular
-                      </Button>
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        size="medium"
-                        variant={
-                          category === 'Broadband' ? 'contained' : 'outlined'
-                        }
-                        onClick={() => setCategory('Broadband')}
-                      >
-                        Broadband
-                      </Button>
-                    </Scrollbars>
-                  </div>
-                )}
-                {success[0].provider === 'SUN' && (
-                  <div className="pills">
-                    <Scrollbars style={{ height: 50 }}>
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        size="medium"
-                        variant={
-                          category === 'Regular' ? 'contained' : 'outlined'
-                        }
-                        onClick={() => setCategory('Regular')}
-                      >
-                        Regular
-                      </Button>
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        size="medium"
-                        variant={
-                          category === 'Broadband' ? 'contained' : 'outlined'
-                        }
-                        onClick={() => setCategory('Broadband')}
-                      >
-                        Broadband
-                      </Button>
-                      <Button
-                        type="submit"
-                        color="secondary"
-                        size="medium"
-                        variant={
-                          category === 'Call & Text' ? 'contained' : 'outlined'
-                        }
-                        onClick={() => setCategory('Call & Text')}
-                      >
-                        Call &amp; Text
-                      </Button>
-                    </Scrollbars>
-                  </div>
-                )} */}
 
                 <section>
                   <Scrollbars

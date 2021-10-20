@@ -23,6 +23,7 @@ import ListItemText from 'app/components/List/ListItemText';
 import { VerifyOTPPage } from './VerifyPage';
 
 /** slice */
+import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
@@ -53,6 +54,7 @@ import * as S from './SendToBank.style';
 import InstapayLogo from 'app/components/Assets/instapay.svg';
 import PesonetLogo from 'app/components/Assets/pesonet.svg';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
+import InputTextWrapper from 'app/components/Elements/InputTextWrapper';
 
 export function SendToBank() {
   const history = useHistory();
@@ -65,6 +67,7 @@ export function SendToBank() {
   const purposes = useSelector(selectPurposes);
   const bankTransactionType = useSelector(selectBankTransactionType);
   const validateTransaction = useSelector(selectValidateTransaction);
+  const dashData: any = useSelector(selectDashData);
 
   const [formData, setFormData] = React.useState(initialFormData);
   const [formErrors, setFormErrors] = React.useState(initialformErrors);
@@ -119,6 +122,16 @@ export function SendToBank() {
     if (formData.amount === '') {
       errors.amount = 'This is a required field.';
     }
+    if (formData.amount !== '') {
+      if (
+        dashData &&
+        dashData.balance_info &&
+        parseFloat(formData.amount).toFixed(2) >
+          parseFloat(dashData.balance_info.available_balance).toFixed(2)
+      ) {
+        errors.amount = 'Your account balance is insufficient.';
+      }
+    }
 
     if (formData.purpose === '') {
       errors.purpose = 'This is a required field.';
@@ -164,6 +177,10 @@ export function SendToBank() {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
+    });
+    setFormErrors({
+      ...formErrors,
+      [e.target.name]: '',
     });
   };
 
@@ -291,14 +308,17 @@ export function SendToBank() {
                 <Label>
                   Enter Amount <i>*</i>
                 </Label>
-                <Input
-                  required
-                  type="number"
-                  name="amount"
-                  value={formData.amount}
-                  onChange={_handleChangeFormFieldValues}
-                  placeholder="PHP 0.00"
-                />
+                <InputTextWrapper>
+                  <Input
+                    required
+                    type="number"
+                    name="amount"
+                    value={formData.amount}
+                    onChange={_handleChangeFormFieldValues}
+                    placeholder="0.00"
+                  />
+                  <span>PHP</span>
+                </InputTextWrapper>
                 {formErrors.amount && (
                   <ErrorMsg formError>{formErrors.amount}</ErrorMsg>
                 )}
@@ -330,6 +350,7 @@ export function SendToBank() {
                   maxLength={20}
                   value={formData.account_number}
                   onChange={_handleChangeFormFieldValues}
+                  hidespinner
                 />
                 {formErrors.account_number && (
                   <ErrorMsg formError>{formErrors.account_number}</ErrorMsg>
@@ -362,6 +383,10 @@ export function SendToBank() {
                     setFormData({
                       ...formData,
                       purpose: e.target.value,
+                    });
+                    setFormErrors({
+                      ...formErrors,
+                      purpose: '',
                     });
                   }}
                   className={formErrors.purpose ? 'error' : undefined}
