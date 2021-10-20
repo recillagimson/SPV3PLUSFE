@@ -57,6 +57,7 @@ export function LoansPage() {
   }, [isBronze, setShowUpgrade]);
 
   const { loading, response, error, goFetch } = useFetch();
+  const { response: saveLoanResponse, goFetch: saveLoanFetch } = useFetch();
 
   const [selectedPartner, setSelectedPartner] = React.useState<string>('');
   const [showExitModal, setShowExitModal] = React.useState<boolean>(false);
@@ -74,8 +75,28 @@ export function LoansPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [partnerStep]);
 
+  const saveLoans = React.useCallback(
+    reference_number => {
+      saveLoanFetch(
+        '/loans/reference_number',
+        'POST',
+        JSON.stringify({
+          user_account_id: profile.user_account.id,
+          reference_number,
+        }),
+        '',
+        true,
+        true,
+      );
+    },
+    [profile.user_account.id, saveLoanFetch],
+  );
+
+  console.log(saveLoanResponse);
+
   React.useEffect(() => {
     if (response && response.reference_number) {
+      saveLoans(response.reference_number);
       setLoanID({ value: response.reference_number, error: false, msg: '' });
     }
 
@@ -95,7 +116,7 @@ export function LoansPage() {
         setLoanID({ value: '', error: true, msg: error.message.join('\n') });
       }
     }
-  }, [response, error]);
+  }, [response, error, saveLoans]);
 
   const onFetchLoanID = React.useCallback(() => {
     setLoanID({ value: '', error: false, msg: '' });
@@ -183,7 +204,7 @@ export function LoansPage() {
                   color="primary"
                   onClick={e => setShowExitModal(true)}
                 >
-                  Next
+                  Confirm
                 </Button>
               )}
               {loanID.value === '' && loanID.error && (
