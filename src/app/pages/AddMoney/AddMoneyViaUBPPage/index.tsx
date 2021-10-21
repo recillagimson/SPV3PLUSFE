@@ -48,7 +48,7 @@ export function AddMoneyViaUBP() {
   const error: any = useSelector(selectError);
   const loading: boolean = useSelector(selectLoading);
   const authUrlPayload: string | any = useSelector(selectAuthUrl);
-  const [isError901, setIsError901] = useState(false);
+
   const linkAccount = React.useCallback(
     (code: string) => {
       dispatch(actions.getLinkAccountLoading({ code }));
@@ -62,11 +62,13 @@ export function AddMoneyViaUBP() {
     }
   }, [linkAccount, location]);
 
+  const [isError901, setIsError901] = useState(false);
+  const [isError902, setIsError902] = useState(false);
   useEffect(() => {
-    if (isError901) {
+    if (isError901 || isError902) {
       dispatch(actions.getGenerateAuthUrlLoading());
     }
-  }, [actions, dispatch, isError901]);
+  }, [actions, dispatch, isError901, isError902]);
 
   const [isSuccess, setIsSuccess] = useState(false);
   const [isCashIn, setIsCashIn] = useState(true);
@@ -89,6 +91,7 @@ export function AddMoneyViaUBP() {
     });
     setIsError412(false);
     setIsError901(false);
+    setIsError902(false);
     dispatch(actions.getTopUpReset());
   };
 
@@ -142,6 +145,7 @@ export function AddMoneyViaUBP() {
         const i426 = err.errors.error_code.findIndex(j => j === 426);
         const i412 = err.errors.error_code.findIndex(j => j === 412);
         const i901 = err.errors.error_code.findIndex(j => j === 901);
+        const i902 = err.errors.error_code.findIndex(j => j === 902);
 
         // dont reset on error i426 & i412
         if (i426 === -1 && i412 === -1 && i901 === -1) {
@@ -158,10 +162,15 @@ export function AddMoneyViaUBP() {
           setIsError412(true);
         }
 
-        // display error for 902
+        // display error for 901
         if (i901 !== -1) {
           apiError = err.errors.message.join('\n');
           setIsError901(true);
+        }
+        // display error for 902
+        if (i902 !== -1) {
+          apiError = err.errors.message.join('\n');
+          setIsError902(true);
         }
       }
       //diplay amount error
