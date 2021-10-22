@@ -409,7 +409,10 @@ export function SendToBank() {
                   size="medium"
                   color="secondary"
                   variant="outlined"
-                  onClick={() => setSteps(steps - 1)}
+                  onClick={() => {
+                    setSteps(steps - 1);
+                    setFormData(initialFormData);
+                  }}
                 >
                   Back
                 </Button>
@@ -444,6 +447,10 @@ export function SendToBank() {
             <S.ReviewTotal>
               <p className="total-description">Total amount plus service fee</p>
               <p className="total-amount">PHP {calculateTotalAmount}</p>
+              <p className="service-fees">
+                Service Fee: PHP{' '}
+                {parseToNumber(validateTransaction?.service_fee)}
+              </p>
               <Button
                 size="large"
                 color="primary"
