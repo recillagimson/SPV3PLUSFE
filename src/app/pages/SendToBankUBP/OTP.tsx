@@ -143,7 +143,7 @@ export default function OTP() {
             <p className="success-message">Money Successful sent to</p>
             {renderReviewContainer('successReview')}
             <S.ReviewTotal>
-              <p className="total-description">Total amount plus service fee</p>
+              <p className="total-description">Total amount</p>
               <p className="total-amount">
                 PHP {numberWithCommas(calculateTotalAmount)}
               </p>
