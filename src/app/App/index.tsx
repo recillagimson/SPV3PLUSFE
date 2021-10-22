@@ -39,6 +39,8 @@ import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
 import { AddMoneyViaBPI } from 'app/pages/AddMoney/AddMoneyViaBPIPage/Loadable';
+import { MyQrCodePage } from 'app/pages/MyQrCodePage/Loadable';
+import { QrPages } from 'app/pages/QrPages/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import {
   BuyLoadIndexPage,
@@ -72,6 +74,7 @@ import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
 import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
 import { AddMoney } from 'app/pages/AddMoney/Loadable';
 import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
+import { ECPay } from 'app/pages/AddMoney/ECPay/Loadable';
 // #endregion
 
 import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
@@ -116,6 +119,7 @@ const defaultFlags = {
   send_to_bank_ubp_enabled: true,
   pay_bills_enabled: true,
   add_money_bpi_enabled: true,
+  add_money_ecpay_enabled: true,
 };
 
 export function App() {
@@ -365,7 +369,9 @@ export function App() {
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
-
+            <PrivateRoute path="/my-qr-code" component={MyQrCodePage} />
+            <PrivateRoute path="/qr-code" component={QrPages} />
+            <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute exact path="/buy" component={BuyLoadIndexPage} />
             <PrivateRoute exact path="/buy/load" component={BuyLoadPage} />
@@ -396,6 +402,7 @@ export function App() {
               path="/add-money/bpi/select-account"
               component={AddMoneyViaBPI}
             />
+            <PrivateRoute exact path="/add-money/ecpay" component={ECPay} />
             <PrivateRoute
               exact
               path="/transaction-history"

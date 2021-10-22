@@ -44,6 +44,8 @@ const Wrapper = styled.div<DialogWrapperProps>`
 
     .dialog-content {
       flex: 1;
+      max-height: 85vh;
+      overflow-y: auto;
       /* padding: 20px; */
     }
   }
