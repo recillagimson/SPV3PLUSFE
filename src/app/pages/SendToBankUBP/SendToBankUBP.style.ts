@@ -231,6 +231,7 @@ export const TotalAmountWrapper = styled.section`
   width: 100%;
   margin-block-start: 65px;
   margin-block-end: 97px;
+  text-align: center;
 `;
 
 export const TotalAmountTitle = styled.p`
@@ -245,7 +246,7 @@ export const TotalAmountTitle = styled.p`
 export const TotalAmountValue = styled.p`
   margin: 0;
   padding: 0;
-  font-weight: 400;
+  font-weight: 600;
   font-size: 18px;
   text-align: center;
   line-height: 27px;
