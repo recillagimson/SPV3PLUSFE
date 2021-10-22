@@ -92,8 +92,6 @@ export function LoansPage() {
     [profile.user_account.id, saveLoanFetch],
   );
 
-  console.log(saveLoanResponse);
-
   React.useEffect(() => {
     if (response && response.reference_number) {
       saveLoans(response.reference_number);
