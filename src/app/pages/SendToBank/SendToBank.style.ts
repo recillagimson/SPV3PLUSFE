@@ -225,7 +225,7 @@ export const ReviewTotal = styled.div`
   }
 
   .total-description,
-  .service-fee {
+  .service-fees {
     font-size: 14px;
     font-weight: 400;
     font-style: normal;
@@ -239,7 +239,7 @@ export const ReviewTotal = styled.div`
     margin: 10px 0;
   }
 
-  .service-fee {
+  .service-fees {
     margin-bottom: 40px;
   }
 
