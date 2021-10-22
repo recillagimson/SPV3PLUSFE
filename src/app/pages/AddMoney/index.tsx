@@ -8,14 +8,12 @@ import List from 'app/components/List';
 import ListItem from 'app/components/List/ListItem';
 import ListItemText from 'app/components/List/ListItemText';
 import Button from 'app/components/Elements/Button';
-
 import H3 from 'app/components/Elements/H3';
 import Dialog from 'app/components/Dialog';
 import Logo from 'app/components/Assets/Logo';
 import maintenance from 'app/components/Assets/maintenance.png';
 
 import { useFlags } from 'utils/FlagsProvider';
-
 import { selectUser } from 'app/App/slice/selectors';
 
 export function AddMoney() {
@@ -68,6 +66,28 @@ export function AddMoney() {
                 }
               }}
               primary="BPI"
+              style={{
+                flexGrow: 1,
+              }}
+              icon
+            />
+          </ListItem>
+        </List>
+      </Box>
+
+      <Box title="Over the Counter" titleBorder withPadding>
+        <List divider>
+          <ListItem flex>
+            <ListItemText
+              role="presentation"
+              onClick={() => {
+                if (flags && !flags.add_money_ecpay_enabled) {
+                  setIsMaintenance(true);
+                } else {
+                  history.push('/add-money/ecpay');
+                }
+              }}
+              primary="ECPay"
               style={{
                 flexGrow: 1,
               }}
