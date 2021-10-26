@@ -219,7 +219,7 @@ export function ECPay() {
   const renderListItems = () => {
     let expDate = '';
     if (data && isSuccess) {
-      const { amount, expiry_date, ec_pay_reference_number } = data;
+      const { amount, expiry_date, reference_number } = data;
       let rawDate = DateTime.fromSQL(expiry_date);
       expDate = rawDate.toLocaleString(DateTime.DATE_MED);
       return [
@@ -229,7 +229,7 @@ export function ECPay() {
         },
         {
           label: 'Reference Number',
-          value: ec_pay_reference_number || 'None',
+          value: reference_number || 'None',
         },
         {
           label: 'Expiration Date',
@@ -357,7 +357,7 @@ export function ECPay() {
                 <span className="text-center" style={{ display: 'block' }}>
                   <img src={ECPayLogo} alt="ECPay" width="auto" height="auto" />
                 </span>
-                <StyleTransactionDetailsList id="QRCode">
+                <StyleTransactionDetailsList>
                   {renderListItems().map(d => (
                     <TransactionDetailsListItem key={d.value}>
                       <Paragraph>{d.label}</Paragraph>
