@@ -882,7 +882,7 @@ export default function UserProfileForm({
         ...otherFields,
       },
     };
-    console.log(data);
+
     dispatch(actions.getFetchLoading(data));
   };
 

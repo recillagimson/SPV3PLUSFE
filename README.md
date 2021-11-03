@@ -177,4 +177,9 @@ v1.2.1
 v1.2.2
 
 - Fix double click (VP2-441, VP2-444, VP2-447, VP2-459, VP2-461)
+- Added service fee in Instapay and Pesonet (VP2-528, VP2-525)
+
+v1.3.0
+
 - QR Code - ScanQR, Receive and Send Money QR (VP2-358)
+- ECPay (VP2-469)

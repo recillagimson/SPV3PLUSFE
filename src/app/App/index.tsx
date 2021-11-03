@@ -53,6 +53,7 @@ import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import {
   TransactionHistoryPage,
   TransactionHistoryDetailsPage,
+  TransactionRequestPage,
 } from 'app/pages/TransactionHistoryPage/Loadable';
 import {
   HelpCenterPage,
@@ -437,6 +438,11 @@ export function App() {
               exact
               path="/transaction-history/:id"
               component={TransactionHistoryDetailsPage}
+            />
+            <PrivateRoute
+              exact
+              path="/transaction-request"
+              component={TransactionRequestPage}
             />
             <PrivateRoute
               exact
