@@ -46,7 +46,6 @@ const slice = createSlice({
       state.authorizeUrl = null;
     },
     getGenerateAuthUrlSuccess(state, action: PayloadAction<string | any>) {
-      state.loading = false;
       state.error = {};
       state.authorizeUrl = action.payload;
     },
