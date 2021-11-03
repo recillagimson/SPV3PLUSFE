@@ -44,6 +44,7 @@ import {
   TransactionDetailsListItem,
   PaddingWrapper,
 } from 'app/pages/TransactionHistoryPage/TransactionHistory.style';
+import { StyleConstants } from 'styles/StyleConstants';
 
 const StyledTransactionDetailsWrapper = styled(TransactionDetailsWrapper)`
   width: 100%;
@@ -81,6 +82,21 @@ const StyledStepsWrapperContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+`;
+
+const StyledNoteWrapper = styled.div`
+  padding: 10px;
+  background: #f0f0f0;
+  margin: 0 0 20px;
+  border-radius: 6px;
+`;
+
+const StyledReferenceWrapper = styled.div`
+  padding: 10px;
+  background: ${StyleConstants.color.paleyellow2};
+  color: ${StyleConstants.color.primaryyellow};
+  margin: 0 0 4px;
+  border-radius: 12px;
 `;
 
 export function ECPay() {
@@ -213,27 +229,28 @@ export function ECPay() {
   let monthDateYearTime = '';
   if (data) {
     let rawDate = DateTime.fromSQL(data.transaction_date);
-    monthDateYearTime = rawDate.toLocaleString(DateTime.DATETIME_MED);
+    if (rawDate.invalid) {
+      rawDate = DateTime.fromISO(data.transaction_date);
+    }
+    monthDateYearTime = rawDate.toFormat('dd LLLL yyyy, t');
   }
 
   const renderListItems = () => {
-    let expDate = '';
     if (data && isSuccess) {
-      const { amount, expiry_date, reference_number } = data;
-      let rawDate = DateTime.fromSQL(expiry_date);
-      expDate = rawDate.toLocaleString(DateTime.DATE_MED);
+      const { amount, expiry_date } = data;
+      let expDate = DateTime.fromSQL(expiry_date);
+      if (expDate.invalid) {
+        expDate = DateTime.fromISO(expiry_date);
+      }
+
       return [
         {
-          label: 'Amount',
+          label: 'Transaction  Amount',
           value: `PHP ${numberWithCommas(amount)}`,
         },
         {
-          label: 'Reference Number',
-          value: reference_number || 'None',
-        },
-        {
-          label: 'Expiration Date',
-          value: expDate,
+          label: 'Valid Until',
+          value: expDate.toFormat('LLLL dd, yyyy'),
         },
       ];
     }
@@ -347,7 +364,7 @@ export function ECPay() {
         )}
 
         <Dialog show={isSuccess} size="small">
-          <div style={{ margin: ' 0px 20px' }}>
+          <div style={{ margin: ' 0px 10px' }}>
             <StyledTransactionDetailsWrapper>
               <CuttedImageWrapper
                 src={WrapperCuttedCornerTop}
@@ -366,7 +383,30 @@ export function ECPay() {
                   ))}
                 </StyleTransactionDetailsList>
 
+                <StyledNoteWrapper>
+                  <Paragraph size="xsmall" margin="unset">
+                    NOTE: Enter the exact transaction amount on the ECPay
+                    machine in any branch of your choice. The 2% service fee
+                    will be collected upon your payment.
+                  </Paragraph>
+                </StyledNoteWrapper>
+
                 <StyledStepsTitleWrapper>
+                  <StyledStepsTitleWrapperContent
+                    className="text-center"
+                    margin="20px 0px 0px"
+                  >
+                    <Paragraph size="regular">Reference Number</Paragraph>
+                    <StyledReferenceWrapper>
+                      <H3 margin="unset" style={{ fontWeight: 500 }}>
+                        {data?.reference_number}
+                      </H3>
+                    </StyledReferenceWrapper>
+                    <Paragraph size="xsmall" align="center">
+                      This reference number is valid for 24 hours only.
+                    </Paragraph>
+                  </StyledStepsTitleWrapperContent>
+
                   <StyledStepsTitleWrapperContent
                     className="text-center"
                     margin="20px 0px 0px"
