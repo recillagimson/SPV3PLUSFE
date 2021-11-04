@@ -185,13 +185,16 @@ export function App() {
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
     const forceUpdate = getCookie('spv_uat_f');
+
+    let param = new URLSearchParams(location.search).get('code');
     let code;
-    if (sessionStorage.getItem('ubpUrl')) {
+    if (param && sessionStorage.getItem('ubpUrl')) {
       code = {
         type: 'ubp',
         value: new URLSearchParams(location.search).get('code') ?? '',
       };
-    } else {
+    }
+    if (param && !sessionStorage.getItem('ubpUrl')) {
       code = {
         type: 'bpi',
         value: new URLSearchParams(location.search).get('code') ?? '',
