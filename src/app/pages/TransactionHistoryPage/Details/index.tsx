@@ -81,8 +81,6 @@ export function TransactionHistoryDetailsPage() {
     monthDateYearTime = date.toLocaleString(DateTime.DATETIME_MED);
   }
 
-  console.log(details);
-
   return (
     <ProtectedContent>
       <Helmet title="Transaction History - Details" />
