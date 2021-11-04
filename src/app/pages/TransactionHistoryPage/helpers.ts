@@ -200,6 +200,16 @@ export const bpiListData = transactionHistoryDetailsData => {
   ];
 };
 
+export const ecpayListData = transactionHistoryDetailsData => {
+  return [
+    {
+      label: 'Reference Number',
+      value:
+        transactionHistoryDetailsData?.transactable?.reference_number || '',
+    },
+  ];
+};
+
 export const loadListtData = transactionHistoryDetailsData => {
   return [
     {
