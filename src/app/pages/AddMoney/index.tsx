@@ -72,6 +72,19 @@ export function AddMoney() {
               icon
             />
           </ListItem>
+          <ListItem flex>
+            <ListItemText
+              role="presentation"
+              onClick={() => {
+                history.push('/add-money/ubp');
+              }}
+              primary="UnionBank"
+              style={{
+                flexGrow: 1,
+              }}
+              icon
+            />
+          </ListItem>
         </List>
       </Box>
 

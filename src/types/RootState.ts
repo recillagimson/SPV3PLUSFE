@@ -1,3 +1,4 @@
+import { AddMoneyViaUBP } from './../app/pages/AddMoney/AddMoneyViaUBPPage/Loadable';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 import { GlobalState } from 'app/App/slice/types';
 
@@ -14,6 +15,7 @@ import { NotificationsState } from 'app/pages/Notification/slice/types';
 import { AddMoneyDragonpayState } from 'app/pages/AddMoney/Dragonpay/slice/types';
 import { AddMoneyBpiState } from './../app/pages/AddMoney/AddMoneyViaBPIPage/slice/types';
 import { AddMoneyECPayState } from './../app/pages/AddMoney/ECPay/slice/types';
+import { AddMoneyUbpState } from './../app/pages/AddMoney/AddMoneyViaUBPPage/slice/types';
 import { ChangePasswordState } from 'app/pages/SettingsPage/ChangePassword/slice/types';
 import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 import { DashboardState } from 'app/pages/DashboardPage/slice/types';
@@ -54,6 +56,7 @@ export interface RootState {
   addMoneyDragonpay: AddMoneyDragonpayState;
   addMoneyBpi?: AddMoneyBpiState;
   addMoneyECPay?: AddMoneyECPayState;
+  addMoneyUbp: AddMoneyUbpState;
   transactionHistory?: TransactionHistoryState;
   foreignExchange?: ForeignExchangeState;
   changePassword?: ChangePasswordState;
