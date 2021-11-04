@@ -193,7 +193,7 @@ export function SendToBank() {
     const errors = validateForm(formData);
 
     if (!errors.hasErrors) {
-      // dispatch(actions.validateBankLoading(formData));
+      dispatch(actions.validateBankLoading(formData));
     }
   };
 
