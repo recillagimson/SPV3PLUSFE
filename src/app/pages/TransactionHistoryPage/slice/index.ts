@@ -24,6 +24,7 @@ export const transactionDetailsDefaultState = {
     message: '',
     reference_number: '',
     service_fee: '',
+    other_charges: '',
     receiver_details: {
       first_name: '',
       last_name: '',

@@ -63,7 +63,9 @@ function TransactionHistoryDetailsPage(props) {
   const isBankTransaction =
     transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
       'Bank',
-    ) !== -1;
+    ) !== -1 ||
+    transactionHistoryDetailsData?.transaction_category?.name ===
+      'ADDMONEYUBPDIRECT';
 
   const isReceiveMoneyTransaction =
     transactionHistoryDetailsData?.transaction_category?.title?.indexOf(
