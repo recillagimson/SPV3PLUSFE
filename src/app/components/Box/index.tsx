@@ -29,7 +29,7 @@ import Wrapper from './Wrapper';
 import Title from './Title';
 import Footer from './Footer';
 
-type BoxProps = {
+interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   title?: string;
   titleBorder?: boolean;
   titleAction?: React.ReactNode;
@@ -39,7 +39,7 @@ type BoxProps = {
   footerAlign?: 'left' | 'right' | 'center' | undefined;
   withPadding?: boolean;
   onBack?: () => void; // if defined, title will become a button with onBack as the click callback
-};
+}
 
 export default function BoxComponent({
   title,
@@ -51,6 +51,7 @@ export default function BoxComponent({
   footerAlign,
   withPadding,
   onBack,
+  ...rest
 }: BoxProps) {
   let showTitle = false;
   if (title && title !== '') {
@@ -61,7 +62,7 @@ export default function BoxComponent({
   }
 
   return (
-    <Wrapper pad={withPadding}>
+    <Wrapper pad={withPadding} {...rest}>
       {showTitle && (
         <Title
           border={titleBorder || undefined}

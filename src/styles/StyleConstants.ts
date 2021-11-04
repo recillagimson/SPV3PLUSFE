@@ -79,6 +79,7 @@ export const StyleConstants = Object.freeze({
       softred: '#FFD1CF',
       softgreen: '#BFE5C7',
       softblue: '#B3D7FF',
+      softyellow: '#FFF9DD',
     },
   },
   borderColor: '#E7EAF2',
