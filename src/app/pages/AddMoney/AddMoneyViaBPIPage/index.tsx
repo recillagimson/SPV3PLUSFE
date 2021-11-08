@@ -478,7 +478,10 @@ export function AddMoneyViaBPI() {
                       <br />
                     </Fragment>
                   ),
-                ) || <div className="empty">No accounts to show.</div>}
+                ) ||
+                  (!loading && accounts !== null && (
+                    <div className="empty">No accounts to show.</div>
+                  ))}
               </div>
               {accounts?.status === 'error' && <p>{accounts?.description}</p>}
               {accountDetail.isError && (
