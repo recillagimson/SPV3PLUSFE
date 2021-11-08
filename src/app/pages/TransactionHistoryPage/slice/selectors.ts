@@ -36,3 +36,13 @@ export const selectTransactionHistoryDetailsData = createSelector(
   [selectDomain],
   subState => subState.transactionHistoryDetails,
 );
+
+export const selectFormData = createSelector(
+  [selectDomain],
+  subState => subState.formData,
+);
+
+export const selectRequestTransactionHistory = createSelector(
+  [selectDomain],
+  subState => subState.requestTransactionHistory,
+);

@@ -14,20 +14,27 @@ export const bankListData = transactionHistoryDetailsData => {
         ?.last_name || ''
     } `;
   }
+
+  let accountNumber = transactionHistoryDetailsData?.transactable
+    ?.account_number
+    ? transactionHistoryDetailsData?.transactable?.account_number
+    : transactionHistoryDetailsData?.account_number
+    ? transactionHistoryDetailsData?.account_number
+    : '';
+
   return [
     {
       label: 'Bank',
-      value: transactionHistoryDetailsData?.transactable?.bank_name,
+      value:
+        transactionHistoryDetailsData?.transactable?.bank_name || 'No Data',
     },
     {
       label: 'Account Number',
-      value: maskCharacters(
-        transactionHistoryDetailsData?.transactable?.account_number,
-      ),
+      value: maskCharacters(accountNumber),
     },
     {
       label: 'Account Name',
-      value: fullName,
+      value: fullName || 'No Data',
     },
     // {
     //   label: 'Amount',
@@ -37,11 +44,13 @@ export const bankListData = transactionHistoryDetailsData => {
     // },
     {
       label: 'Send Receipt To',
-      value: transactionHistoryDetailsData?.transactable?.send_receipt_to,
+      value:
+        transactionHistoryDetailsData?.transactable?.send_receipt_to ||
+        'No Data',
     },
     {
       label: 'Purpose of transaction',
-      value: transactionHistoryDetailsData?.transactable?.purpose,
+      value: transactionHistoryDetailsData?.transactable?.purpose || 'No Data',
     },
     {
       label: 'Transaction Number',
@@ -191,6 +200,16 @@ export const bpiListData = transactionHistoryDetailsData => {
   ];
 };
 
+export const ecpayListData = transactionHistoryDetailsData => {
+  return [
+    {
+      label: 'Reference Number',
+      value:
+        transactionHistoryDetailsData?.transactable?.reference_number || '',
+    },
+  ];
+};
+
 export const loadListtData = transactionHistoryDetailsData => {
   return [
     {
@@ -281,3 +300,27 @@ export const drCrMemoData = transactionHistoryDetailsData => {
     // },
   ];
 };
+
+export const requestTransactionField = [
+  {
+    label: 'Email To',
+    type: 'email',
+    name: 'email',
+    placeholder: '',
+    required: true,
+  },
+  {
+    label: 'From',
+    type: 'date',
+    name: 'from',
+    placeholder: '',
+    required: true,
+  },
+  {
+    label: 'To',
+    type: 'date',
+    name: 'to',
+    placeholder: '',
+    required: true,
+  },
+];

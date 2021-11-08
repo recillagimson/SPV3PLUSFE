@@ -39,6 +39,9 @@ import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
 import { AddMoneyViaBPI } from 'app/pages/AddMoney/AddMoneyViaBPIPage/Loadable';
+import { MyQrCodePage } from 'app/pages/MyQrCodePage/Loadable';
+import { QrPages } from 'app/pages/QrPages/Loadable';
+import { AddMoneyViaUBP } from 'app/pages/AddMoney/AddMoneyViaUBPPage/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import {
   BuyLoadIndexPage,
@@ -50,6 +53,7 @@ import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import {
   TransactionHistoryPage,
   TransactionHistoryDetailsPage,
+  TransactionRequestPage,
 } from 'app/pages/TransactionHistoryPage/Loadable';
 import {
   HelpCenterPage,
@@ -72,6 +76,7 @@ import { TiersPage, TierUpgradePage } from 'app/pages/TierUpgradePage/Loadable';
 import { UpdateEmailPage } from 'app/pages/UpdateEmail/Loadable';
 import { AddMoney } from 'app/pages/AddMoney/Loadable';
 import { Dragonpay } from 'app/pages/AddMoney/Dragonpay/Loadable';
+import { ECPay } from 'app/pages/AddMoney/ECPay/Loadable';
 // #endregion
 
 import { ForeignExchangePage } from 'app/pages/ForeignExchangePage/Loadable';
@@ -109,13 +114,18 @@ import {
 
 // default flags for features
 const defaultFlags = {
-  add_money_dragon_pay_enabled: true,
-  buy_load_enabled: true,
-  send_money_enabled: true,
-  send_money_via_qr_enabled: true,
-  send_to_bank_ubp_enabled: true,
-  pay_bills_enabled: true,
-  add_money_bpi_enabled: true,
+  add_money_dragon_pay_enabled: false,
+  add_money_bpi_enabled: false,
+  add_money_ecpay_enabled: false,
+  add_money_ubp_enabled: false,
+  buy_load_enabled: false,
+  send_money_enabled: false,
+  send_money_via_qr_enabled: false,
+  send_money_via_mobile_enabled: false,
+  send_to_bank_ubp_enabled: false,
+  pay_bills_enabled: false,
+  loans_enabled: false,
+  forex_enabled: false,
 };
 
 export function App() {
@@ -170,7 +180,6 @@ export function App() {
     if (refs) {
       dispatch(actions.getSaveAllReferences(refs));
     }
-
     /**
      * Check Session and necessary cookies for the token
      */
@@ -180,7 +189,20 @@ export function App() {
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
     const forceUpdate = getCookie('spv_uat_f');
-    const bpiCode = new URLSearchParams(location.search).get('code'); // add money
+    let param = new URLSearchParams(location.search).get('code') ?? '';
+    let code;
+    if (param && sessionStorage.getItem('ubpUrl')) {
+      code = {
+        type: 'ubp',
+        value: param,
+      };
+    }
+    if (param && !sessionStorage.getItem('ubpUrl')) {
+      code = {
+        type: 'bpi',
+        value: param,
+      };
+    }
 
     let decrypt: any = false;
     let username: string = '';
@@ -191,7 +213,7 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (!forceUpdate && decrypt && bpiCode && path === '/') {
+    if (!forceUpdate && decrypt && code && path === '/') {
       dispatch(actions.getClientTokenLoading());
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
@@ -205,10 +227,19 @@ export function App() {
         dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(bpiCode));
       }, 2000);
 
-      history.push('/add-money/bpi/select-account');
+      if (code?.type === 'bpi') {
+        history.push('/add-money/bpi/select-account');
+      }
+
+      if (code?.type === 'ubp') {
+        history.push({
+          pathname: '/add-money/ubp',
+          search: `?code=${code?.value}`,
+        });
+      }
     }
 
-    if (!forceUpdate && decrypt && !path.includes('/postback') && !bpiCode) {
+    if (!forceUpdate && decrypt && !path.includes('/postback') && !code) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
@@ -365,7 +396,9 @@ export function App() {
             <PrivateRoute path="/dashboard" component={DashboardPage} />
             <PrivateRoute path="/sendmoney" component={SendMoney} />
             <PrivateRoute path="/generateqr" component={GenerateQR} />
-
+            <PrivateRoute path="/my-qr-code" component={MyQrCodePage} />
+            <PrivateRoute path="/qr-code" component={QrPages} />
+            <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute exact path="/buy" component={BuyLoadIndexPage} />
             <PrivateRoute exact path="/buy/load" component={BuyLoadPage} />
@@ -393,9 +426,15 @@ export function App() {
             />
             <PrivateRoute
               exact
+              path="/add-money/ubp"
+              component={AddMoneyViaUBP}
+            />
+            <PrivateRoute
+              exact
               path="/add-money/bpi/select-account"
               component={AddMoneyViaBPI}
             />
+            <PrivateRoute exact path="/add-money/ecpay" component={ECPay} />
             <PrivateRoute
               exact
               path="/transaction-history"
@@ -405,6 +444,11 @@ export function App() {
               exact
               path="/transaction-history/:id"
               component={TransactionHistoryDetailsPage}
+            />
+            <PrivateRoute
+              exact
+              path="/transaction-request"
+              component={TransactionRequestPage}
             />
             <PrivateRoute
               exact
