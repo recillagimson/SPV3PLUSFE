@@ -1,9 +1,9 @@
 const TRANSACTION_TYPE = {
-  ALL: 'ALL',
-  RECEIVED: 'RECEIVED',
-  SENT: 'SENT',
-  PENDING: 'PENDING',
-  FAILED: 'FAILED',
+  ALL: 'all',
+  RECEIVED: 'received',
+  SENT: 'sent',
+  PENDING: 'pending',
+  FAILED: 'failed',
 };
 
 export { TRANSACTION_TYPE };
