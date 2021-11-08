@@ -123,11 +123,15 @@ export function SendToBank() {
       errors.amount = 'This is a required field.';
     }
     if (formData.amount !== '') {
+      let balance =
+        dashData && dashData.balance_info
+          ? dashData.balance_info.available_balance
+          : false;
+
       if (
-        dashData &&
-        dashData.balance_info &&
-        parseFloat(formData.amount).toFixed(2) >
-          parseFloat(dashData.balance_info.available_balance).toFixed(2)
+        balance &&
+        Number(parseFloat(formData.amount).toFixed(2)) >
+          Number(parseFloat(dashData.balance_info.available_balance).toFixed(2)) // NOTE: parseFloat returns a string when used with toFixed(), messes up the validation of string
       ) {
         errors.amount = 'Your account balance is insufficient.';
       }
@@ -316,6 +320,7 @@ export function SendToBank() {
                     value={formData.amount}
                     onChange={_handleChangeFormFieldValues}
                     placeholder="0.00"
+                    hidespinner
                   />
                   <span>PHP</span>
                 </InputTextWrapper>

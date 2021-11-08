@@ -4,7 +4,6 @@ import { useHistory } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
-import styled from 'styled-components';
 import { numberWithCommas } from 'utils/common';
 import { faDownload } from '@fortawesome/free-solid-svg-icons';
 
@@ -34,54 +33,7 @@ import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/sele
 import { selectError, selectLoading, selectData } from './slice/selectors';
 import { useContainerSaga } from './slice';
 import { STEPS } from './helpers';
-
-// Styles
-import {
-  TransactionDetailsWrapper,
-  CuttedImageWrapper,
-  TransactionDetailsWrapperContent,
-  TransactionDetailsList,
-  TransactionDetailsListItem,
-  PaddingWrapper,
-} from 'app/pages/TransactionHistoryPage/TransactionHistory.style';
-
-const StyledTransactionDetailsWrapper = styled(TransactionDetailsWrapper)`
-  width: 100%;
-`;
-
-const StyledTransactionDetailsWrapperContent = styled(
-  TransactionDetailsWrapperContent,
-)`
-  margin: 24px 0px 10px;
-`;
-
-const StyleTransactionDetailsList = styled(TransactionDetailsList)`
-  margin: 20px 0;
-`;
-
-const StyledStepsTitleWrapper = styled.div`
-  background: #fff;
-  padding: 10px 20px;
-  border-radius: 12px;
-`;
-
-const StyledStepsTitleWrapperContent = styled.div<{ margin?: string }>`
-  border-bottom: 1px solid lightgray;
-  margin: ${p => (p.margin ? p.margin : '4px 0px 0px')};
-`;
-
-const StyledStepsWrapper = styled.div<{ large?: boolean }>`
-  display: flex;
-  align-items: center;
-  margin: ${p => (p.large ? '20px 0' : '10px 0')};
-`;
-
-const StyledStepsWrapperContent = styled.div`
-  margin: 0 0 0 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
+import * as Styled from './index.style';
 
 export function ECPay() {
   const dispatch = useDispatch();
@@ -213,27 +165,28 @@ export function ECPay() {
   let monthDateYearTime = '';
   if (data) {
     let rawDate = DateTime.fromSQL(data.transaction_date);
-    monthDateYearTime = rawDate.toLocaleString(DateTime.DATETIME_MED);
+    if (rawDate.invalid) {
+      rawDate = DateTime.fromISO(data.transaction_date);
+    }
+    monthDateYearTime = rawDate.toFormat('dd LLLL yyyy, t');
   }
 
   const renderListItems = () => {
-    let expDate = '';
     if (data && isSuccess) {
-      const { amount, expiry_date, ec_pay_reference_number } = data;
-      let rawDate = DateTime.fromSQL(expiry_date);
-      expDate = rawDate.toLocaleString(DateTime.DATE_MED);
+      const { amount, expiry_date } = data;
+      let expDate = DateTime.fromSQL(expiry_date);
+      if (expDate.invalid) {
+        expDate = DateTime.fromISO(expiry_date);
+      }
+
       return [
         {
-          label: 'Amount',
+          label: 'Transaction  Amount',
           value: `PHP ${numberWithCommas(amount)}`,
         },
         {
-          label: 'Reference Number',
-          value: ec_pay_reference_number || 'None',
-        },
-        {
-          label: 'Expiration Date',
-          value: expDate,
+          label: 'Valid Until',
+          value: expDate.toFormat('LLLL dd, yyyy'),
         },
       ];
     }
@@ -243,9 +196,9 @@ export function ECPay() {
   const renderSteps = (data, large = false) => {
     return data.map((item: any) => {
       return (
-        <StyledStepsWrapper key={item.value} large={large}>
+        <Styled.StepsWrapper key={item.value} large={large}>
           <img src={item.icon} alt={item.value} />
-          <StyledStepsWrapperContent>
+          <Styled.StepsWrapperContent>
             <Paragraph margin="0 0 8px" size="small">
               {item.label}
             </Paragraph>
@@ -255,8 +208,8 @@ export function ECPay() {
                 __html: item.description,
               }}
             />
-          </StyledStepsWrapperContent>
-        </StyledStepsWrapper>
+          </Styled.StepsWrapperContent>
+        </Styled.StepsWrapper>
       );
     });
   };
@@ -271,12 +224,12 @@ export function ECPay() {
 
         {isLanding && (
           <Card title="ECPay" size="medium">
-            <StyledStepsTitleWrapperContent className="text-center">
+            <Styled.StepsTitleWrapperContent className="text-center">
               <H3 margin="0 0 10px">How to To Add Money via ECPay</H3>
               <Paragraph margin="0px 0 24px" size="xsmall">
                 Please follow the quick and easy instructions below.
               </Paragraph>
-            </StyledStepsTitleWrapperContent>
+            </Styled.StepsTitleWrapperContent>
             {renderSteps(STEPS, true)}
             <Flex justifyContent="flex-end">
               <Button
@@ -347,27 +300,50 @@ export function ECPay() {
         )}
 
         <Dialog show={isSuccess} size="small">
-          <div style={{ margin: ' 0px 20px' }}>
-            <StyledTransactionDetailsWrapper>
-              <CuttedImageWrapper
+          <div style={{ margin: ' 0px 10px' }}>
+            <Styled.TransactionDetailsWrapper>
+              <Styled.CuttedImageWrapper
                 src={WrapperCuttedCornerTop}
                 alt="Squid pay"
               />
-              <StyledTransactionDetailsWrapperContent>
+              <Styled.TransactionDetailsWrapperContent>
                 <span className="text-center" style={{ display: 'block' }}>
                   <img src={ECPayLogo} alt="ECPay" width="auto" height="auto" />
                 </span>
-                <StyleTransactionDetailsList id="QRCode">
+                <Styled.TransactionDetailsList>
                   {renderListItems().map(d => (
-                    <TransactionDetailsListItem key={d.value}>
+                    <Styled.TransactionDetailsListItem key={d.value}>
                       <Paragraph>{d.label}</Paragraph>
                       <Paragraph>{d.value}</Paragraph>
-                    </TransactionDetailsListItem>
+                    </Styled.TransactionDetailsListItem>
                   ))}
-                </StyleTransactionDetailsList>
+                </Styled.TransactionDetailsList>
 
-                <StyledStepsTitleWrapper>
-                  <StyledStepsTitleWrapperContent
+                <Styled.NoteWrapper>
+                  <Paragraph size="xsmall" margin="unset">
+                    NOTE: Enter the exact transaction amount on the ECPay
+                    machine in any branch of your choice. The 2% service fee
+                    will be collected upon your payment.
+                  </Paragraph>
+                </Styled.NoteWrapper>
+
+                <Styled.StepsTitleWrapper>
+                  <Styled.StepsTitleWrapperContent
+                    className="text-center"
+                    margin="20px 0px 0px"
+                  >
+                    <Paragraph size="regular">Reference Number</Paragraph>
+                    <Styled.ReferenceWrapper>
+                      <H3 margin="unset" style={{ fontWeight: 500 }}>
+                        {data?.reference_number}
+                      </H3>
+                    </Styled.ReferenceWrapper>
+                    <Paragraph size="xsmall" align="center">
+                      This reference number is valid for 24 hours only.
+                    </Paragraph>
+                  </Styled.StepsTitleWrapperContent>
+
+                  <Styled.StepsTitleWrapperContent
                     className="text-center"
                     margin="20px 0px 0px"
                   >
@@ -382,7 +358,7 @@ export function ECPay() {
                       Please follow these remaining quick and easy instructions
                       below.
                     </Paragraph>
-                  </StyledStepsTitleWrapperContent>
+                  </Styled.StepsTitleWrapperContent>
 
                   <div
                     style={{
@@ -391,15 +367,18 @@ export function ECPay() {
                   >
                     {renderSteps(STEPS?.slice(1, 3))}
                   </div>
-                </StyledStepsTitleWrapper>
+                </Styled.StepsTitleWrapper>
 
                 <Logo size="small" margin="10px 0 20px" />
                 <Paragraph size="xsmall" align="center" margin="unset">
                   {monthDateYearTime}
                 </Paragraph>
-              </StyledTransactionDetailsWrapperContent>
-              <CuttedImageWrapper src={WrapperCuttedCornerBottom} alt="" />
-            </StyledTransactionDetailsWrapper>
+              </Styled.TransactionDetailsWrapperContent>
+              <Styled.CuttedImageWrapper
+                src={WrapperCuttedCornerBottom}
+                alt=""
+              />
+            </Styled.TransactionDetailsWrapper>
 
             <Button
               fullWidth
@@ -441,7 +420,7 @@ export function ECPay() {
         </Dialog>
 
         <Dialog show={isDownloadGuideOpen} size="small">
-          <PaddingWrapper>
+          <Styled.PaddingWrapper>
             <h3>Instructions</h3>
             <p>Capture and Save your receipt.</p>
             <img src={TransactionScreenshotLogo} alt="Squid pay transaction" />
@@ -454,7 +433,7 @@ export function ECPay() {
             >
               Ok
             </Button>
-          </PaddingWrapper>
+          </Styled.PaddingWrapper>
         </Dialog>
 
         <Dialog show={apiError} size="small">

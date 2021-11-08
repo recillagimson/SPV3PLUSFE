@@ -138,14 +138,19 @@ export default function Sidebar() {
           </NavButton>
           {/* <NavButton as={NavLink} to="/dashboard"> */}
           {flags && flags.send_money_via_qr_enabled ? (
+            // <NavButton
+            //   onClick={
+            //     tierName.toLowerCase() === 'bronze'
+            //       ? () => setShowUpgrade(true)
+            //       : () => {
+            //           history.push('/my-qr-code');
+            //         }
+            //   }
+            // >
             <NavButton
-              onClick={
-                tierName.toLowerCase() === 'bronze'
-                  ? () => setShowUpgrade(true)
-                  : () => {
-                      history.push('/my-qr-code');
-                    }
-              }
+              onClick={() => {
+                history.push('/my-qr-code');
+              }}
             >
               <QRCodeIcon />
               My QR Code

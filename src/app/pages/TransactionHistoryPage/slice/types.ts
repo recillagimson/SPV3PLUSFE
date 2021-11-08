@@ -40,6 +40,7 @@ export interface TransactionHistoryDetailsState {
     message: string;
     reference_number: string;
     service_fee: string;
+    other_charges: string;
     receiver_details: {
       first_name: string;
       last_name: string;
