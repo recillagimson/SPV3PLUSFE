@@ -397,15 +397,17 @@ export function BuyLoadPage() {
 
   // 3rd API
   const onClickPay = () => {
-    const data = {
-      mobile_number: mobile.value,
-      product_code: selectedProduct.productCode,
-      product_name: selectedProduct.productName,
-      amount: selectedProduct.amount,
-    };
+    if (!payLoading) {
+      const data = {
+        mobile_number: mobile.value,
+        product_code: selectedProduct.productCode,
+        product_name: selectedProduct.productName,
+        amount: selectedProduct.amount,
+      };
 
-    // dispatch payload to saga
-    dispatch(actions.getPayLoading(data));
+      // dispatch payload to saga
+      dispatch(actions.getPayLoading(data));
+    }
   };
 
   const onCloseValidateError = () => {

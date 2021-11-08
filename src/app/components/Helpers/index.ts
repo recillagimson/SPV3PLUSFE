@@ -224,6 +224,10 @@ export function sortBy(
  * @returns masked string except last 4 digits
  */
 export function maskCharacters(text: any = '') {
+  if (!text) {
+    return '';
+  }
+
   // /\w(?=(?:\W*\w){4})/g
   return text.replace(/\w(?=\w{4,}$)/g, '*');
 }
@@ -233,6 +237,10 @@ export function maskCharacters(text: any = '') {
  * @param {string}  value     Mobile number
  */
 export function maskMobileNumber(value: string) {
+  if (!value) {
+    return '';
+  }
+
   const head = value.slice(0, 2);
   const body = value.slice(2, -4);
   const tail = value.slice(-4);
@@ -245,6 +253,10 @@ export function maskMobileNumber(value: string) {
  * @param {string}  value     Email address
  */
 export function maskEmailAddress(value: string) {
+  if (!value) {
+    return '';
+  }
+
   const split = value.split('@');
   const head = split[0].slice(0, 3);
   const body = split[0].slice(3);

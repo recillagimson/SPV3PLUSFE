@@ -329,7 +329,12 @@ export function PayBillsPage() {
                 size="large"
                 color="primary"
                 variant="contained"
-                onClick={() => dispatch(actions.createPayBillsLoading())}
+                onClick={() => {
+                  if (loading) {
+                    return;
+                  }
+                  dispatch(actions.createPayBillsLoading());
+                }}
               >
                 Pay Bill
               </Button>

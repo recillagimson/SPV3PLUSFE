@@ -6,8 +6,15 @@ import spdCrypto from 'app/components/Helpers/EncyptDecrypt';
 import { PassphraseState } from 'types/Default';
 import { appActions } from 'app/App/slice';
 import { selectUserToken } from 'app/App/slice/selectors';
-import { getResponsePassphrase } from 'app/App/slice/saga';
-import { selectPage, selectTransactionHistoryId } from './selectors';
+import {
+  getRequestPassphrase,
+  getResponsePassphrase,
+} from 'app/App/slice/saga';
+import {
+  selectPage,
+  selectTransactionHistoryId,
+  selectFormData,
+} from './selectors';
 
 import { containerActions as actions } from '.';
 
@@ -55,7 +62,7 @@ function* getTransactionHistory() {
         }),
       );
     }
-  } catch (err) {
+  } catch (err: any) {
     // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
@@ -110,7 +117,7 @@ function* getTransactionHistoryDetails() {
 
       yield put(actions.getTransactionHistoryDetailsSuccess(decryptData));
     }
-  } catch (err) {
+  } catch (err: any) {
     // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
@@ -131,6 +138,76 @@ function* getTransactionHistoryDetails() {
   }
 }
 
+function* requestTransactionHistory() {
+  yield delay(500);
+  const token = yield select(selectUserToken);
+  const formData = yield select(selectFormData);
+  const requestURL = `${process.env.REACT_APP_API_URL}/transactions/generate`;
+  let encryptPayload: string = '';
+  let requestPhrase: PassphraseState = yield call(getRequestPassphrase);
+
+  if (requestPhrase && requestPhrase.id && requestPhrase.id !== '') {
+    encryptPayload = spdCrypto.encrypt(
+      JSON.stringify(formData),
+      requestPhrase.passPhrase,
+    );
+  }
+
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token.access_token}`,
+    },
+    body: JSON.stringify({ id: requestPhrase.id, payload: encryptPayload }),
+  };
+
+  try {
+    const apirequest = yield call(request, requestURL, options);
+    if (apirequest) {
+      // request decryption passphrase
+      let decryptPhrase: PassphraseState = yield call(
+        getResponsePassphrase,
+        apirequest.data.id,
+      );
+
+      // decrypt payload data
+      // function returns the parsed string
+      let decryptData = spdCrypto.decrypt(
+        apirequest.data.payload,
+        decryptPhrase.passPhrase,
+      );
+      yield put(actions.getFetchRequestTransactionHistorySuccess(decryptData));
+    } else {
+      yield put(
+        actions.getFetchRequestTransactionHistoryError({
+          error: true,
+          message: 'An error has occured.',
+        }),
+      );
+    }
+  } catch (err) {
+    // special case, check the 422 for invalid data (account already exists)
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.getFetchRequestTransactionHistoryError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(appActions.getIsServerError(true));
+      yield put(actions.getFetchRequestTransactionHistoryError({}));
+    } else if (err && err.response && err.response.status === 401) {
+      yield put(appActions.getIsSessionExpired(true));
+      yield put(actions.getFetchRequestTransactionHistoryError({}));
+    } else {
+      yield put(actions.getFetchRequestTransactionHistoryError(err));
+    }
+  }
+}
+
 /**
  * Root saga manages watcher lifecycle
  */
@@ -140,6 +217,10 @@ export function* containerSaga() {
   // It returns task descriptor (just like fork) so we can continue execution
   // It will be cancelled automatically on component unmount
   yield takeLatest(actions.getFetchLoading.type, getTransactionHistory);
+  yield takeLatest(
+    actions.getFetchRequestTransactionHistoryLoading.type,
+    requestTransactionHistory,
+  );
   yield takeLatest(
     actions.getTransactionHistoryDetailsLoading.type,
     getTransactionHistoryDetails,

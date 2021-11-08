@@ -24,6 +24,7 @@ export const transactionDetailsDefaultState = {
     message: '',
     reference_number: '',
     service_fee: '',
+    other_charges: '',
     receiver_details: {
       first_name: '',
       last_name: '',
@@ -58,6 +59,8 @@ export const initialState: ContainerState = {
   transactionHistoryDetails: transactionDetailsDefaultState,
   transactionHistoryDetailsError: {},
   transactionHistoryId: '',
+  formData: {},
+  requestTransactionHistory: {},
 };
 
 const slice = createSlice({
@@ -109,6 +112,35 @@ const slice = createSlice({
       state.transactionHistoryDetailsError = {};
       state.transactionHistoryDetails = transactionDetailsDefaultState;
       state.transactionHistoryId = '';
+    },
+    getFetchRequestTransactionHistoryLoading(
+      state,
+      action: PayloadAction<object>,
+    ) {
+      state.loading = true;
+      state.error = {};
+      state.formData = action.payload;
+      state.requestTransactionHistory = {};
+    },
+    getFetchRequestTransactionHistorySuccess(
+      state,
+      action: PayloadAction<any>,
+    ) {
+      state.loading = false;
+      state.requestTransactionHistory = action.payload;
+    },
+    getFetchRequestTransactionHistoryError(
+      state,
+      action: PayloadAction<ErrorState>,
+    ) {
+      state.error = action.payload;
+      state.loading = false;
+    },
+    getFetchRequestTransactionHistoryReset(state) {
+      state.loading = false;
+      state.error = {};
+      state.requestTransactionHistory = {};
+      state.formData = {};
     },
   },
 });
