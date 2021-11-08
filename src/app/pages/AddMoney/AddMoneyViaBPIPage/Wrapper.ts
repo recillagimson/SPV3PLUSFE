@@ -22,7 +22,15 @@ const Wrapper = styled.section`
       flex-direction: column;
       margin-left: 20px;
     }
+
+    .empty {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100px;
+    }
   }
+
   .number {
     height: 20px;
     font-weight: 700;
