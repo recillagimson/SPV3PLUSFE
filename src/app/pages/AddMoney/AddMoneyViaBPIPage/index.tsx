@@ -444,7 +444,7 @@ export function AddMoneyViaBPI() {
         )}
 
         {isSelectAccounts && (
-          <Card title="Login to BPI Online" size="medium">
+          <Card title="Select BPI Bank Account" size="medium">
             <Fragment>
               <div className="text-center">
                 <p>Cash in amount (₱)</p>
@@ -478,7 +478,10 @@ export function AddMoneyViaBPI() {
                       <br />
                     </Fragment>
                   ),
-                )}
+                ) ||
+                  (!loading && accounts !== null && (
+                    <div className="empty">No accounts to show.</div>
+                  ))}
               </div>
               {accounts?.status === 'error' && <p>{accounts?.description}</p>}
               {accountDetail.isError && (
@@ -487,7 +490,7 @@ export function AddMoneyViaBPI() {
               <Flex justifyContent="flex-end">
                 <Button
                   type="submit"
-                  color="default"
+                  color="primary"
                   size="large"
                   variant="contained"
                   onClick={onSubmitCashIn}
@@ -500,7 +503,7 @@ export function AddMoneyViaBPI() {
         )}
 
         {isVerification && (
-          <Card title="Login to BPI Online" size="medium">
+          <Card title="Verification" size="medium">
             <Fragment>
               <div className="text-center">
                 <H5>Enter Verification Code</H5>
@@ -550,7 +553,7 @@ export function AddMoneyViaBPI() {
                 )}
                 <Button
                   type="submit"
-                  color="secondary"
+                  color="primary"
                   size="large"
                   variant="contained"
                   onClick={e => onSubmitVerification(e)}

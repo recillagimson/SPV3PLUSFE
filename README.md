@@ -178,3 +178,13 @@ v1.2.2
 
 - Fix double click (VP2-441, VP2-444, VP2-447, VP2-459, VP2-461)
 - Added service fee in Instapay and Pesonet (VP2-528, VP2-525)
+
+v1.3.0
+
+- QR Code - ScanQR, Receive and Send Money QR (VP2-358)
+- ECPay (VP2-469)
+- Changes on Add Money via BPI (VP2-42)
+- Add Money via UBP (VP2-124)
+- Add Money via ECPay (VP2-469)
+- Request Transaction History to Email (VP2-581)
+- Send to Bank - PesoNet>UBP- I'm getting "not enough balance" if I enter amount more than php1 (QA-193)

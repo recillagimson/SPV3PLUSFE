@@ -19,6 +19,9 @@ export const Wrapper = styled.section<{
 `;
 
 export const TransactionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 20px;
   border-bottom: 1px solid #e7eaf2;
 
@@ -27,6 +30,10 @@ export const TransactionHeader = styled.div`
     font-weight: 600;
     line-height: 24px;
     margin: 0;
+  }
+
+  img {
+    cursor: pointer;
   }
 `;
 
@@ -56,6 +63,7 @@ export const ButtonContainer = styled.div<{
   button {
     margin-right: 12px;
     min-width: 100px;
+    text-transform: capitalize;
 
     &:last-child {
       margin-right: 0;
@@ -228,6 +236,7 @@ export const TransactionDetailsList = styled.ul`
   list-style: none;
   margin: 40px 0 60px;
   padding: 0;
+  min-height: 200px;
 `;
 
 export const TransactionDetailsListItem = styled.li`
@@ -265,7 +274,7 @@ export const FooterWrapper = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  margin: 80px 0 0;
+  margin: 55px 0 0;
 
   p {
     font-size: 12px;
@@ -303,6 +312,35 @@ export const TotalTransactions = styled.div`
 
   .--negative {
     color: ${StyleConstants.NEGATIVE};
+  }
+`;
+
+export const RequestTransactionForm = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px;
+`;
+
+export const ButtonContainerRequestForm = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+`;
+
+export const FieldContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+
+  label {
+    font-size: 16px;
+  }
+
+  & > div {
+    width: 80%;
   }
 `;
 
@@ -344,6 +382,13 @@ export const PaddingWrapper = styled.div`
     font-weight: 400;
     line-height: 27px;
     margin: 0 0 15px;
+
+    &.request-title {
+      text-align: center;
+      font-weight: 600;
+      margin-top: 30px;
+      font-size: 24px;
+    }
   }
 
   p {
@@ -351,6 +396,13 @@ export const PaddingWrapper = styled.div`
     font-weight: 400;
     line-height: 18px;
     margin: 0 0 70px;
+
+    &.request-desc {
+      font-size: 16px;
+      margin: 0px;
+      text-align: center;
+      line-height: 24px;
+    }
   }
 
   button {

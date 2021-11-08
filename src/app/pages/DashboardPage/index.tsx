@@ -278,7 +278,7 @@ export function DashboardPage() {
             if (flags && !flags.send_money_via_qr_enabled) {
               setIsMaintenance(true);
             } else {
-              history.push('/generateqr');
+              history.push('/qr-code');
             }
           }}
         >

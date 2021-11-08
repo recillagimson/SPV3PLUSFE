@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import { DateTime } from 'luxon';
+import { useHistory } from 'react-router-dom';
 
 // Components
 import Button from 'app/components/Elements/Button';
@@ -26,9 +27,11 @@ import * as S from './TransactionHistory.style';
 
 // Assets
 import NoTransactionsLogo from 'app/components/Assets/no-transactions.svg';
+import RequestTransactionLogo from 'app/components/Assets/search.svg';
 import { toTitleCase } from 'app/components/Helpers';
 
 export function TransactionHistoryPage(props) {
+  const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   // const loading = useSelector(selectLoading);
@@ -75,7 +78,6 @@ export function TransactionHistoryPage(props) {
         const { data, ...pageDetails } = success;
         const newArray = [...records, ...data];
         setRecords(newArray); // store all records in a state where we can reference it again when filter is All
-
         // check the filter first for proper handling of loading more data
         if (transactionType === TRANSACTION_TYPE.ALL) {
           setTransactionHistory(newArray);
@@ -85,7 +87,7 @@ export function TransactionHistoryPage(props) {
         ) {
           const newRecords = [...records];
           const data = newRecords.filter(
-            transaction => transaction.status === transactionType,
+            transaction => transaction.status.toLowerCase() === transactionType,
           );
           setTransactionHistory(data);
           if (data.length === 0) {
@@ -95,7 +97,8 @@ export function TransactionHistoryPage(props) {
           }
         } else {
           const data = newArray.filter(
-            transaction => transaction.transaction_type === transactionType,
+            transaction =>
+              transaction.transaction_type.toLowerCase() === transactionType,
           );
           if (data.length === 0) {
             setNoFiltered(true);
@@ -122,22 +125,28 @@ export function TransactionHistoryPage(props) {
   };
 
   const handleViewTransactionDetails = (id: string) => {
-    props.history.push(`/transaction-history/${id}`);
+    props.history.push({
+      pathname: `/transaction-history/${id}`,
+      state: id,
+    });
   };
 
   const filteredTransactionDetails = (type: string) => {
     setTransactionType(type);
 
-    if (type === TRANSACTION_TYPE.ALL) {
+    if (type.toLowerCase() === TRANSACTION_TYPE.ALL) {
       setTransactionHistory(records);
       setNoFiltered(false);
       return;
     }
 
-    if (type === TRANSACTION_TYPE.PENDING || type === TRANSACTION_TYPE.FAILED) {
+    if (
+      type.toLowerCase() === TRANSACTION_TYPE.PENDING ||
+      type.toLowerCase() === TRANSACTION_TYPE.FAILED
+    ) {
       const newRecords = [...records];
       const data = newRecords.filter(
-        transaction => transaction.status === type,
+        transaction => transaction.status.toLowerCase() === type,
       );
       setTransactionHistory(data);
       if (data.length === 0) {
@@ -150,7 +159,7 @@ export function TransactionHistoryPage(props) {
 
     const newRecords = [...records];
     const data = newRecords.filter(
-      transaction => transaction.transaction_type === type,
+      transaction => transaction.transaction_type.toLowerCase() === type,
     );
     setTransactionHistory(data);
     if (data.length === 0) {
@@ -178,6 +187,7 @@ export function TransactionHistoryPage(props) {
     }
   };
 
+  // console.log('TRANSACTION_TYPE', Object.keys(TRANSACTION_TYPE));
   return (
     <ProtectedContent>
       <Helmet>
@@ -186,75 +196,31 @@ export function TransactionHistoryPage(props) {
       <S.Wrapper>
         <S.TransactionHeader>
           <h3>Transaction History</h3>
+          <img
+            src={RequestTransactionLogo}
+            alt="Request Transaction"
+            onClick={() => history.push('/transaction-request')}
+          />
         </S.TransactionHeader>
         <S.TransactionContent>
           <S.ButtonContainer>
-            <Button
-              onClick={() => filteredTransactionDetails(TRANSACTION_TYPE.ALL)}
-              color="secondary"
-              size="medium"
-              variant={
-                transactionType === TRANSACTION_TYPE.ALL
-                  ? 'contained'
-                  : 'outlined'
-              }
-            >
-              All
-            </Button>
-            <Button
-              onClick={() => filteredTransactionDetails(TRANSACTION_TYPE.SENT)}
-              color="secondary"
-              size="medium"
-              variant={
-                transactionType === TRANSACTION_TYPE.SENT
-                  ? 'contained'
-                  : 'outlined'
-              }
-            >
-              Sent
-            </Button>
-            <Button
-              onClick={() =>
-                filteredTransactionDetails(TRANSACTION_TYPE.RECEIVED)
-              }
-              color="secondary"
-              size="medium"
-              variant={
-                transactionType === TRANSACTION_TYPE.RECEIVED
-                  ? 'contained'
-                  : 'outlined'
-              }
-            >
-              Received
-            </Button>
-            <Button
-              onClick={() =>
-                filteredTransactionDetails(TRANSACTION_TYPE.PENDING)
-              }
-              color="secondary"
-              size="medium"
-              variant={
-                transactionType === TRANSACTION_TYPE.PENDING
-                  ? 'contained'
-                  : 'outlined'
-              }
-            >
-              Pending
-            </Button>
-            <Button
-              onClick={() =>
-                filteredTransactionDetails(TRANSACTION_TYPE.FAILED)
-              }
-              color="secondary"
-              size="medium"
-              variant={
-                transactionType === TRANSACTION_TYPE.FAILED
-                  ? 'contained'
-                  : 'outlined'
-              }
-            >
-              Failed
-            </Button>
+            {Object.keys(TRANSACTION_TYPE).map((transaction, i) => (
+              <Button
+                key={i}
+                onClick={() =>
+                  filteredTransactionDetails(TRANSACTION_TYPE[transaction])
+                }
+                color="secondary"
+                size="medium"
+                variant={
+                  transactionType === TRANSACTION_TYPE[transaction]
+                    ? 'contained'
+                    : 'outlined'
+                }
+              >
+                {TRANSACTION_TYPE[transaction]}
+              </Button>
+            ))}
           </S.ButtonContainer>
           <S.TransactionTitle>
             {renderTransactionTypeTitle()}
@@ -277,7 +243,7 @@ export function TransactionHistoryPage(props) {
 
                   return (
                     <S.TransactionListItem
-                      key={d.transaction_id}
+                      key={d.transaction_id + i}
                       isLast={i + 1 === transactionHistory.length}
                     >
                       <S.ListContainer>

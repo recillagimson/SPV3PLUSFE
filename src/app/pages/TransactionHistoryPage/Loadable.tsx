@@ -10,6 +10,11 @@ export const TransactionHistoryPage = lazyLoad(
 );
 
 export const TransactionHistoryDetailsPage = lazyLoad(
-  () => import('./TransactionDetailsPage'),
+  () => import('./Details'),
   module => module.TransactionHistoryDetailsPage,
+);
+
+export const TransactionRequestPage = lazyLoad(
+  () => import('./TransactionRequest'),
+  module => module.TransactionRequestPage,
 );
