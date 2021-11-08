@@ -11,6 +11,8 @@ export interface TransactionHistoryState {
   transactionHistoryDetails: TransactionHistoryDetailsState;
   transactionHistoryDetailsError: object;
   transactionHistoryId: string;
+  formData: object;
+  requestTransactionHistory: object;
 }
 
 export interface TransactionHistoryDataState {

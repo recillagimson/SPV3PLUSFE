@@ -200,6 +200,16 @@ export const bpiListData = transactionHistoryDetailsData => {
   ];
 };
 
+export const ecpayListData = transactionHistoryDetailsData => {
+  return [
+    {
+      label: 'Reference Number',
+      value:
+        transactionHistoryDetailsData?.transactable?.reference_number || '',
+    },
+  ];
+};
+
 export const loadListtData = transactionHistoryDetailsData => {
   return [
     {
@@ -290,3 +300,27 @@ export const drCrMemoData = transactionHistoryDetailsData => {
     // },
   ];
 };
+
+export const requestTransactionField = [
+  {
+    label: 'Email To',
+    type: 'email',
+    name: 'email',
+    placeholder: '',
+    required: true,
+  },
+  {
+    label: 'From',
+    type: 'date',
+    name: 'from',
+    placeholder: '',
+    required: true,
+  },
+  {
+    label: 'To',
+    type: 'date',
+    name: 'to',
+    placeholder: '',
+    required: true,
+  },
+];

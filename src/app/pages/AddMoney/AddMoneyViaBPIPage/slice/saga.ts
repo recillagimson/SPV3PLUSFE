@@ -86,12 +86,11 @@ function* getAccessToken() {
   yield delay(500);
   const payloadToken = yield select(selectBpiUrlToken);
   const requestURL = `${process.env.REACT_APP_BURL}/oauth2/token`;
-  const cid = process.env.REACT_APP_BCID || '';
-  const cs = process.env.REACT_APP_BCS || '';
+  const { clientId, clientSecret } = yield call(getBCredentials);
 
   const payload = new URLSearchParams();
-  payload.append('client_id', cid);
-  payload.append('client_secret', cs);
+  payload.append('client_id', clientId);
+  payload.append('client_secret', clientSecret);
   payload.append('grant_type', 'authorization_code');
   payload.append('code', payloadToken);
 
@@ -163,6 +162,63 @@ function* getAccessToken() {
           message: 'An error has occured.',
         }),
       );
+    }
+  } catch (err: any) {
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.getFetchError(newError));
+    } else {
+      yield put(actions.getFetchError(err));
+    }
+  }
+}
+
+function* getBCredentials() {
+  const token = yield select(selectUserToken);
+  const requestURL = `${process.env.REACT_APP_API_URL}/bpi/credentials`;
+
+  const options = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token.access_token}`,
+    },
+  };
+
+  try {
+    const apirequest = yield call(request, requestURL, options);
+    if (apirequest) {
+      // request decryption passphrase
+      let decryptPhrase: PassphraseState = yield call(
+        getResponsePassphrase,
+        apirequest.data.id,
+      );
+
+      // decrypt payload data
+      let decryptData = spdCrypto.decrypt(
+        apirequest.data.payload,
+        decryptPhrase.passPhrase,
+      );
+      if (decryptData) {
+        if (decryptData?.clientId && decryptData?.clientSecret) {
+          return decryptData;
+        }
+        const newError = {
+          code: 422,
+          message: 'The given data was invalid.',
+          errors: {
+            error_code: [400],
+            message: ['ClientId is missing.'],
+          },
+        };
+        yield put(actions.getFetchError(newError));
+        return;
+      }
     }
   } catch (err: any) {
     if (err && err.response && err.response.status === 422) {
