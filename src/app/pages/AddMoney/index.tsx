@@ -76,7 +76,11 @@ export function AddMoney() {
             <ListItemText
               role="presentation"
               onClick={() => {
-                history.push('/add-money/ubp');
+                if (flags && !flags.add_money_ubp_enabled) {
+                  setIsMaintenance(true);
+                } else {
+                  history.push('/add-money/ubp');
+                }
               }}
               primary="UnionBank"
               style={{

@@ -26,7 +26,7 @@ export default function QrUserInfo(props: Props) {
 
   return (
     <Grid container justify="center" style={{ marginBlockEnd: '48px' }}>
-      <Grid item container md={3} justify="flex-start">
+      <Grid item container md={4} justify="flex-start">
         <Flex direction="column" alignItems="flex-start">
           <span style={{ marginBlockEnd: '16px' }}>Name</span>
           <span
@@ -39,8 +39,7 @@ export default function QrUserInfo(props: Props) {
           {amount && <span> Amount</span>}
         </Flex>
       </Grid>
-      <Grid item md={2} />
-      <Grid item md={7}>
+      <Grid item md={8}>
         <Flex direction="column" alignItems="flex-end">
           {typeof profile === 'object' ? (
             <span
