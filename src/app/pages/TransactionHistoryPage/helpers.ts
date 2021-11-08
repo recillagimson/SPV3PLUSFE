@@ -291,3 +291,27 @@ export const drCrMemoData = transactionHistoryDetailsData => {
     // },
   ];
 };
+
+export const requestTransactionField = [
+  {
+    label: 'Email To',
+    type: 'email',
+    name: 'email',
+    placeholder: '',
+    required: true,
+  },
+  {
+    label: 'From',
+    type: 'date',
+    name: 'from',
+    placeholder: '',
+    required: true,
+  },
+  {
+    label: 'To',
+    type: 'date',
+    name: 'to',
+    placeholder: '',
+    required: true,
+  },
+];

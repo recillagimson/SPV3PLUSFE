@@ -41,6 +41,7 @@ import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
 import { AddMoneyViaBPI } from 'app/pages/AddMoney/AddMoneyViaBPIPage/Loadable';
 import { MyQrCodePage } from 'app/pages/MyQrCodePage/Loadable';
 import { QrPages } from 'app/pages/QrPages/Loadable';
+import { AddMoneyViaUBP } from 'app/pages/AddMoney/AddMoneyViaUBPPage/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import {
   BuyLoadIndexPage,
@@ -52,6 +53,7 @@ import { UserProfilePage } from 'app/pages/ProfilePage/Loadable';
 import {
   TransactionHistoryPage,
   TransactionHistoryDetailsPage,
+  TransactionRequestPage,
 } from 'app/pages/TransactionHistoryPage/Loadable';
 import {
   HelpCenterPage,
@@ -174,7 +176,6 @@ export function App() {
     if (refs) {
       dispatch(actions.getSaveAllReferences(refs));
     }
-
     /**
      * Check Session and necessary cookies for the token
      */
@@ -184,7 +185,18 @@ export function App() {
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
     const forceUpdate = getCookie('spv_uat_f');
-    const bpiCode = new URLSearchParams(location.search).get('code'); // add money
+    let code;
+    if (sessionStorage.getItem('ubpUrl')) {
+      code = {
+        type: 'ubp',
+        value: new URLSearchParams(location.search).get('code') ?? '',
+      };
+    } else {
+      code = {
+        type: 'bpi',
+        value: new URLSearchParams(location.search).get('code') ?? '',
+      };
+    }
 
     let decrypt: any = false;
     let username: string = '';
@@ -195,7 +207,7 @@ export function App() {
       username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
     }
 
-    if (!forceUpdate && decrypt && bpiCode && path === '/') {
+    if (!forceUpdate && decrypt && code && path === '/') {
       dispatch(actions.getClientTokenLoading());
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
@@ -209,10 +221,19 @@ export function App() {
         dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(bpiCode));
       }, 2000);
 
-      history.push('/add-money/bpi/select-account');
+      if (code?.type === 'bpi') {
+        history.push('/add-money/bpi/select-account');
+      }
+
+      if (code?.type === 'ubp') {
+        history.push({
+          pathname: '/add-money/ubp',
+          search: `?code=${code?.value}`,
+        });
+      }
     }
 
-    if (!forceUpdate && decrypt && !path.includes('/postback') && !bpiCode) {
+    if (!forceUpdate && decrypt && !path.includes('/postback') && !code) {
       dispatch(actions.getIsAuthenticated(true));
       dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
       dispatch(actions.getUserToken(decrypt.user_token));
@@ -399,6 +420,11 @@ export function App() {
             />
             <PrivateRoute
               exact
+              path="/add-money/ubp"
+              component={AddMoneyViaUBP}
+            />
+            <PrivateRoute
+              exact
               path="/add-money/bpi/select-account"
               component={AddMoneyViaBPI}
             />
@@ -412,6 +438,11 @@ export function App() {
               exact
               path="/transaction-history/:id"
               component={TransactionHistoryDetailsPage}
+            />
+            <PrivateRoute
+              exact
+              path="/transaction-request"
+              component={TransactionRequestPage}
             />
             <PrivateRoute
               exact
