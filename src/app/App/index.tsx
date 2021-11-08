@@ -191,13 +191,13 @@ export function App() {
     if (param && sessionStorage.getItem('ubpUrl')) {
       code = {
         type: 'ubp',
-        value: new URLSearchParams(location.search).get('code') ?? '',
+        value: param ?? '',
       };
     }
     if (param && !sessionStorage.getItem('ubpUrl')) {
       code = {
         type: 'bpi',
-        value: new URLSearchParams(location.search).get('code') ?? '',
+        value: param ?? '',
       };
     }
 

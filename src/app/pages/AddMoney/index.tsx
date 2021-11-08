@@ -76,31 +76,13 @@ export function AddMoney() {
             <ListItemText
               role="presentation"
               onClick={() => {
-                history.push('/add-money/ubp');
-              }}
-              primary="UnionBank"
-              style={{
-                flexGrow: 1,
-              }}
-              icon
-            />
-          </ListItem>
-        </List>
-      </Box>
-
-      <Box title="Over the Counter" titleBorder withPadding>
-        <List divider>
-          <ListItem flex>
-            <ListItemText
-              role="presentation"
-              onClick={() => {
-                if (flags && !flags.add_money_ecpay_enabled) {
+                if (flags && !flags.add_money_ubp_enabled) {
                   setIsMaintenance(true);
                 } else {
-                  history.push('/add-money/ecpay');
+                  history.push('/add-money/ubp');
                 }
               }}
-              primary="ECPay"
+              primary="UnionBank"
               style={{
                 flexGrow: 1,
               }}
