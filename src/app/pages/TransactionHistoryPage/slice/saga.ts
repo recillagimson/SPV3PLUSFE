@@ -62,7 +62,7 @@ function* getTransactionHistory() {
         }),
       );
     }
-  } catch (err) {
+  } catch (err: any) {
     // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
@@ -117,7 +117,7 @@ function* getTransactionHistoryDetails() {
 
       yield put(actions.getTransactionHistoryDetailsSuccess(decryptData));
     }
-  } catch (err) {
+  } catch (err: any) {
     // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();

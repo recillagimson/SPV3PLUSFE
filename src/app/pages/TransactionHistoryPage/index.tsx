@@ -125,7 +125,10 @@ export function TransactionHistoryPage(props) {
   };
 
   const handleViewTransactionDetails = (id: string) => {
-    props.history.push(`/transaction-history/${id}`);
+    props.history.push({
+      pathname: `/transaction-history/${id}`,
+      state: id,
+    });
   };
 
   const filteredTransactionDetails = (type: string) => {
@@ -183,7 +186,8 @@ export function TransactionHistoryPage(props) {
         return 'All Transactions';
     }
   };
-  console.log('TRANSACTION_TYPE', Object.keys(TRANSACTION_TYPE));
+
+  // console.log('TRANSACTION_TYPE', Object.keys(TRANSACTION_TYPE));
   return (
     <ProtectedContent>
       <Helmet>

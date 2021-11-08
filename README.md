@@ -183,3 +183,4 @@ v1.3.0
 
 - QR Code - ScanQR, Receive and Send Money QR (VP2-358)
 - ECPay (VP2-469)
+- Send to Bank - PesoNet>UBP- I'm getting "not enough balace" if I enter amount more than php1 (QA-193)

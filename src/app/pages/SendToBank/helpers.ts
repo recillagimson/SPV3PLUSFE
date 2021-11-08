@@ -48,7 +48,7 @@ export const BANK_TRANSACTION_TYPE = [
     items: [
       'Use your Bank Account',
       'Transaction limit is PHP 50,000',
-      'Trasnfer is real- time',
+      'Transfer is real- time',
     ],
     onClick: true,
   },

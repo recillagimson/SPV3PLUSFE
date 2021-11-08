@@ -236,6 +236,7 @@ export const TransactionDetailsList = styled.ul`
   list-style: none;
   margin: 40px 0 60px;
   padding: 0;
+  min-height: 200px;
 `;
 
 export const TransactionDetailsListItem = styled.li`
@@ -273,7 +274,7 @@ export const FooterWrapper = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  margin: 80px 0 0;
+  margin: 55px 0 0;
 
   p {
     font-size: 12px;
