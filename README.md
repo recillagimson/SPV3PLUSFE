@@ -192,3 +192,4 @@ v1.3.0
 v1.3.1
 
 - Change Transaction History Details for ECPay, Added Service Fee display for Instapay/Pesonet and Paybills
+- Modified Paybills display of Categories (will be based on the billers category from API)
