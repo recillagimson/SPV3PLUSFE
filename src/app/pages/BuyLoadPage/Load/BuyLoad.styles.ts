@@ -17,6 +17,7 @@ export const ProviderButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 2px;
     /* padding: ${StyleConstants.spacing[4]}; */
     border-radius: ${StyleConstants.radius.small};
     border: 1px solid ${StyleConstants.borderColor};
