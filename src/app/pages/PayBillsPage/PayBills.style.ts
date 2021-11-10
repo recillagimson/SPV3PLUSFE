@@ -27,7 +27,7 @@ export const Wrapper = styled.section<{
 }>`
   background: ${StyleConstants.WHITE};
   border-radius: 10px;
-  width: 900px;
+  width: 100%;
   margin: 0 auto;
 
   ${({ isBoolean }) =>
@@ -76,6 +76,8 @@ export const BillersOptions = styled.ul`
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: row;
 `;
 
 export const BillerOptionsItem = styled.li`
@@ -84,10 +86,12 @@ export const BillerOptionsItem = styled.li`
   align-items: center;
   text-align: center;
   cursor: pointer;
-  width: 12%; // For 9 columns 2 rows biller options
+  width: 100px; // For 9 columns 2 rows biller options
+  transition: opacity 0.3ms ease-in;
 
   img {
-    width: 50px;
+    display: block;
+    height: 50px;
   }
 
   p {
@@ -96,6 +100,10 @@ export const BillerOptionsItem = styled.li`
     line-height: 18px;
     font-weight: 400;
     margin: 0 0 15px;
+  }
+
+  &:hover {
+    opacity: 0.85;
   }
 `;
 
