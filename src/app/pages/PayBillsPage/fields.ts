@@ -1,6 +1,6 @@
 export const RENDER_SELECT_ITEMS = name => {
   switch (name.toLowerCase()) {
-    case 'pldt6_service':
+    case 'pldt6_otherinfo.service':
       return [
         {
           value: 'PL',
@@ -165,7 +165,7 @@ export const RENDER_FIELDS = code => {
       return [
         {
           label: 'Account Number',
-          type: 'text',
+          type: 'number',
           name: 'referenceNumber',
           placeholder: '',
           required: true,
@@ -197,14 +197,14 @@ export const RENDER_FIELDS = code => {
         {
           label: 'Phone Number',
           type: 'text',
-          name: 'phone_number',
+          name: 'otherInfo.PhoneNumber',
           placeholder: '',
           required: true,
         },
         {
           label: 'Service',
           type: 'select',
-          name: 'service',
+          name: 'otherInfo.Service',
           placeholder: '',
           required: true,
         },
@@ -877,6 +877,37 @@ export const RENDER_FIELDS = code => {
           label: 'Due Date',
           type: 'date',
           name: 'otherInfo.DueDate',
+          placeholder: '',
+          required: true,
+        },
+      ];
+    case 'HCPHL':
+      return [
+        {
+          label: 'Account Number',
+          type: 'number',
+          name: 'account_number',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Name',
+          type: 'text',
+          name: 'otherInfo.Name',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Amount',
+          type: 'number',
+          name: 'amount',
+          placeholder: 'PHP 0.00',
+          required: true,
+        },
+        {
+          label: 'Phone number',
+          type: 'number',
+          name: 'otherInfo.PhoneNo',
           placeholder: '',
           required: true,
         },
