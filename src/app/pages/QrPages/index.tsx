@@ -348,7 +348,7 @@ export function QrPages() {
                 height="100px"
                 loading="lazy"
               />
-              <Paragraph align="center" weight="light">
+              <Paragraph align="center" margin="5px 0 0">
                 Upload Qr Code
               </Paragraph>
             </S.ButtonWrapper>
@@ -363,7 +363,7 @@ export function QrPages() {
                 height="100px"
                 loading="lazy"
               />
-              <Paragraph align="center" weight="light">
+              <Paragraph align="center" margin="5px 0 0">
                 Generate Qr Code
               </Paragraph>
             </S.ButtonWrapper>
@@ -388,7 +388,7 @@ export function QrPages() {
               }}
             >
               <QrReceiveMoney />
-              <Paragraph align="center" weight="light">
+              <Paragraph align="center" margin="5px 0 0">
                 Receive Money via QR
               </Paragraph>
             </S.ButtonWrapper>
@@ -397,7 +397,7 @@ export function QrPages() {
               onClick={clickSetStep('pay-via-qr-code')}
             >
               <QrPayMoney />
-              <Paragraph align="center" weight="light">
+              <Paragraph align="center" margin="5px 0 0">
                 Pay via QR
               </Paragraph>
             </S.ButtonWrapper>

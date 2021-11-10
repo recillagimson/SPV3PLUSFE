@@ -1,441 +1,143 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useSelector, useDispatch } from 'react-redux';
 import { DateTime } from 'luxon';
 
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
-import Loading from 'app/components/Loading';
-import H5 from 'app/components/Elements/H5';
-import Label from 'app/components/Elements/Label';
-import Field from 'app/components/Elements/Fields';
-import Input from 'app/components/Elements/Input';
-import ErrorMsg from 'app/components/Elements/ErrorMsg';
-import Button from 'app/components/Elements/Button';
 import Dialog from 'app/components/Dialog';
-import Avatar from 'app/components/Elements/Avatar';
 import Flex from 'app/components/Elements/Flex';
-import CircleIndicator from 'app/components/Elements/CircleIndicator';
-import Card from 'app/components/Elements/Card/Card';
-import Grid from 'app/components/Elements/Grid';
+import Box from 'app/components/Box';
 import Receipt from 'app/components/Receipt';
 
-// For the custom sidebar for the pills
-import { Scrollbars } from 'react-custom-scrollbars';
-// FontAwesome import
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import Wrapper from './Wrapper';
-
 import {
-  maskCharacters,
+  // maskCharacters,
   numberCommas,
-  regExMobile,
 } from 'app/components/Helpers';
 import useFetch from 'utils/useFetch';
 
-import { useContainerSaga } from './slice';
-import {
-  selectLoading,
-  selectError,
-  selectData,
-  selectValidateLoading,
-  selectValidateData,
-  selectValidateError,
-  selectPayData,
-  selectPayLoading,
-  selectPayError,
-} from './slice/selectors';
+import EnterMobileForm from './EnterMobile';
+import ProviderSelect from './ProviderSelect';
+import Promos from './Promos';
+
+import { ProductObject, PromoObject } from './types';
+
+import ReviewInfo from './ReviewInfo';
+import Paragraph from 'app/components/Elements/Paragraph';
+
+enum BuyLoadSteps {
+  EnterMobile = 'EnterMobile',
+  ShowProviders = 'ShowProviders',
+  ShowProducts = 'ShowProducts',
+  ShowReview = 'ShowReview',
+}
 
 export function BuyLoadPage() {
-  const { actions } = useContainerSaga();
-  const dispatch = useDispatch();
   const getAvatar = useFetch();
 
-  const loading = useSelector(selectLoading);
-  const error: any = useSelector(selectError);
-  const success: any = useSelector(selectData);
-
-  const validateLoading = useSelector(selectValidateLoading);
-  const validateSuccess: any = useSelector(selectValidateData);
-  const validateError: any = useSelector(selectValidateError);
-
-  const payLoading = useSelector(selectPayLoading);
-  const paySuccess: any = useSelector(selectPayData);
-  const payError: any = useSelector(selectPayError);
-
-  const date = DateTime.fromISO(paySuccess.transaction_date);
-  const humanReadable = date.toLocaleString(DateTime.DATETIME_MED);
-
   const [avatarLink, setAvatarLink] = React.useState('');
-  const [mobile, setMobile] = React.useState({
-    value: '',
-    error: false,
-    msg: '',
+  const [mobile, setMobile] = React.useState('');
+
+  const [showSteps, setShowSteps] = React.useState<BuyLoadSteps>(
+    BuyLoadSteps.EnterMobile,
+  );
+
+  const [promos, setPromos] = React.useState<PromoObject[]>([]); // all promose
+  const [providers, setProviders] = React.useState<string[]>([]);
+  const [selectedPromos, setSelectedPromos] = React.useState<PromoObject[]>([]);
+  const [selectedProduct, setSelectedProduct] = React.useState<ProductObject>(
+    {},
+  );
+  const [paySuccess, setPaySuccess] = React.useState({
+    recipient_mobile_number: '',
+    amount: 0,
+    transaction_number: '',
+    transaction_date: '',
   });
 
-  const [selectedProduct, setSelectedProduct] = React.useState({
-    productCode: '',
-    productName: '',
-    description: '',
-    amount: '',
-  });
-
-  const [showForm, setShowForm] = React.useState(true);
-  const [showProducts, setShowProducts] = React.useState(false);
-  const [isReview, setIsReview] = React.useState(false);
-
-  // const [isError, setIsError] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
-  const [isActive, setIsActive] = React.useState({ value: '' });
-
-  const [category, setCategory] = React.useState('');
-  const [categories, setCategories] = React.useState<any[]>([]);
-
-  const [validateApiMsg, setValidateApiMsg] = React.useState({
-    msg: '',
-    error: false,
-  });
-
-  const [payApiMsg, setPayApiMsg] = React.useState({
-    msg: '',
-    error: false,
-  });
 
   React.useEffect(() => {
     return () => {
-      dispatch(actions.getFetchReset());
-      dispatch(actions.getValidateReset());
-      dispatch(actions.getPayReset());
-      setShowForm(true);
-      setIsReview(false);
-      setShowProducts(false);
       setIsSuccess(false);
-      setCategory('');
-      setCategories([]);
-      setSelectedProduct({
-        productCode: '',
-        productName: '',
-        description: '',
-        amount: '',
-      });
+      setSelectedProduct({});
+      setMobile('');
       setAvatarLink('');
+      setPromos([]);
+      setProviders([]);
+      setPaySuccess({
+        recipient_mobile_number: '',
+        amount: 0,
+        transaction_number: '',
+        transaction_date: '',
+      });
+      setShowSteps(BuyLoadSteps.EnterMobile);
     };
-  }, [actions, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   React.useEffect(() => {
-    if (getAvatar.response) {
+    if (getAvatar.response && getAvatar.response.link) {
       setAvatarLink(getAvatar.response.link);
     }
   }, [getAvatar.response]);
 
-  React.useEffect(() => {
-    if (success && success.length > 0) {
-      const cats: string[] = Array.from(new Set(success.map(x => x.category)));
-
-      setCategories(cats);
-      setCategory(cats[0]);
-      setShowForm(false);
-      setShowProducts(true);
-    }
-  }, [success]);
-
-  React.useEffect(() => {
-    if (error && Object.keys(error).length > 0) {
-      onApiError(error);
-    }
-    if (validateError && Object.keys(validateError).length > 0) {
-      if (validateError.code && validateError.code === 422) {
-        if (
-          validateError.errors &&
-          validateError.errors.error_code &&
-          validateError.errors.error_code.length > 0
-        ) {
-          validateError.errors.error_code.forEach((i: any) => {
-            if (i === 302) {
-              setValidateApiMsg({
-                msg: 'Transaction failed. Please try again.',
-                error: true,
-              });
-            }
-            if (i === 401) {
-              setValidateApiMsg({
-                msg: 'User profile not updated.',
-                error: true,
-              });
-            }
-            if (i === 402) {
-              setValidateApiMsg({
-                msg: 'Transaction denied due to insufficient Squidpay Balance.',
-                error: true,
-              });
-            }
-            if (i === 405) {
-              setValidateApiMsg({
-                msg: 'Oh No! You have exceeded your monthly limit.',
-
-                error: true,
-              });
-            }
-            if (i === 406) {
-              setValidateApiMsg({
-                msg:
-                  'Oops! To completely access all Squidpay services, please update your profile. Thank you.',
-                error: true,
-              });
-            }
-            if (i === 501) {
-              setValidateApiMsg({
-                msg: 'Mobile number prefix is not supported.',
-                error: true,
-              });
-            }
-            if (i === 502) {
-              setPayApiMsg({
-                msg: 'Mobile number is not supported.',
-                error: true,
-              });
-            }
-          });
-        }
-      }
-    }
-
-    if (payError && Object.keys(payError).length > 0) {
-      if (payError.code && payError.code === 422) {
-        if (payError.errors && payError.errors.error_code) {
-          payError.errors.error_code.forEach((i: any) => {
-            if (i === 302) {
-              setPayApiMsg({
-                msg: 'Transaction failed. Please try again.',
-                error: true,
-              });
-            }
-            if (i === 401) {
-              setPayApiMsg({
-                msg: 'User profile not updated.',
-                error: true,
-              });
-            }
-            if (i === 402) {
-              setPayApiMsg({
-                msg: 'Transaction denied due to insufficient Squidpay Balance.',
-                error: true,
-              });
-            }
-            if (i === 405) {
-              setPayApiMsg({
-                msg: 'Oh No! You have exceeded your monthly limit.',
-
-                error: true,
-              });
-            }
-            if (i === 406) {
-              setPayApiMsg({
-                msg:
-                  'Oops! To completely access all Squidpay services, please update your profile. Thank you.',
-                error: true,
-              });
-            }
-            if (i === 501) {
-              setPayApiMsg({
-                msg: 'Mobile number prefix is not supported.',
-                error: true,
-              });
-            }
-            if (i === 502) {
-              setPayApiMsg({
-                msg: 'Mobile number is not supported.',
-                error: true,
-              });
-            }
-          });
-        }
-      }
-    }
-    if (validateSuccess) {
-      setShowProducts(false);
-      setIsReview(true);
-    }
-    if (paySuccess) {
-      setIsSuccess(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error, success, validateSuccess, validateError, paySuccess, payError]);
-
-  const onApiError = (err: any) => {
-    if (err.code && err.code === 422) {
-      if (
-        err.errors &&
-        err.errors.error_code &&
-        err.errors.error_code.length > 0
-      ) {
-        err.errors.error_code.forEach((i: any) => {
-          if (i === 302) {
-            setMobile({
-              ...mobile,
-              msg: 'Transaction failed. Please try again.',
-              error: true,
-            });
-            return;
-          }
-          if (i === 401) {
-            setMobile({
-              ...mobile,
-              msg: 'User profile not updated.',
-              error: true,
-            });
-            return;
-          }
-          if (i === 402) {
-            setMobile({
-              ...mobile,
-              msg: 'Transaction denied due to insufficient Squidpay Balance.',
-              error: true,
-            });
-            return;
-          }
-          if (i === 405) {
-            setMobile({
-              ...mobile,
-              msg: 'Oh No! You have exceeded your monthly limit.',
-              error: true,
-            });
-            return;
-          }
-          if (i === 406) {
-            setMobile({
-              ...mobile,
-              msg:
-                'Oops! To completely access all Squidpay services, please update your profile. Thank you.',
-              error: true,
-            });
-            return;
-          }
-          if (i === 501) {
-            setMobile({
-              ...mobile,
-              msg: 'Mobile number prefix is not supported.',
-              error: true,
-            });
-            return;
-          }
-          if (i === 502) {
-            setMobile({
-              ...mobile,
-              msg: 'Mobile number is not supported.',
-              error: true,
-            });
-            return;
-          }
-        });
-      }
-    }
+  const onSuccessMobileForm = (p: PromoObject[], mobile: string) => {
+    setMobile(mobile);
+    getAvatar.goFetch(`/user/${mobile}/avatar`, 'GET', '', '', true, true); // retrieve the avatar for entered mobile number
+    // store the retrieved promos
+    setPromos(p);
+    // get the unique providers
+    const prov: string[] = Array.from(new Set(p.map(x => x.provider)));
+    setProviders(prov);
+    // show next step
+    setShowSteps(BuyLoadSteps.ShowProviders);
   };
 
-  const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (e && e.preventDefault) e.preventDefault();
-
-    let error = false;
-
-    // first check if field is not empty
-    if (mobile.value === '') {
-      error = true;
-      setMobile({
-        ...mobile,
-        error: true,
-        msg: 'Please enter your mobile number',
-      });
-    }
-
-    if (mobile.value !== '' && !regExMobile.test(mobile.value)) {
-      error = true;
-      setMobile({
-        ...mobile,
-        error: true,
-        msg:
-          'Please enter valid mobile number (09 + 9 digit number) ie: 09xxxxxxxxx',
-      });
-    }
-
-    if (!error) {
-      const data = {
-        mobile_number: mobile.value,
-      };
-
-      // dispatch payload to saga
-      dispatch(actions.getFetchLoading(data));
-      getAvatar.goFetch(
-        `/user/${mobile.value}/avatar`,
-        'GET',
-        '',
-        '',
-        true,
-        true,
-      );
-    }
+  const onSelectProvider = (p: string) => {
+    // filter the selected provider only
+    const promo: PromoObject[] = promos.filter(x => p === x.provider);
+    // set the selected provider promos
+    setSelectedPromos(promo);
+    // show next step
+    setShowSteps(BuyLoadSteps.ShowProducts);
   };
 
-  // 2nd API
-  const OnClickValidate = () => {
-    let isEmpty = false;
-    if (selectedProduct.productCode === '') {
-      isEmpty = true;
-    }
-
-    if (!isEmpty) {
-      const data = {
-        mobile_number: mobile.value,
-        product_code: selectedProduct.productCode,
-        product_name: selectedProduct.productName,
-        amount: selectedProduct.amount,
-      };
-
-      // dispatch payload to saga
-      dispatch(actions.getValidateLoading(data));
-    }
+  const onSelectProduct = (product: ProductObject) => {
+    console.log(product);
+    setSelectedProduct(product);
+    setShowSteps(BuyLoadSteps.ShowReview);
   };
 
-  // 3rd API
-  const onClickPay = () => {
-    if (!payLoading) {
-      const data = {
-        mobile_number: mobile.value,
-        product_code: selectedProduct.productCode,
-        product_name: selectedProduct.productName,
-        amount: selectedProduct.amount,
-      };
-
-      // dispatch payload to saga
-      dispatch(actions.getPayLoading(data));
-    }
-  };
-
-  const onCloseValidateError = () => {
-    setValidateApiMsg({ msg: '', error: false });
-  };
-
-  const onClosePayError = () => {
-    setPayApiMsg({ msg: '', error: false });
+  const onPaySuccess = (pay: {
+    recipient_mobile_number: string;
+    amount: number;
+    transaction_number: string;
+    transaction_date: string;
+  }) => {
+    setPaySuccess(pay);
+    setIsSuccess(true);
   };
 
   const onCloseSuccessDialog = () => {
-    setIsReview(false);
-    setShowProducts(false);
     setIsSuccess(false);
-    setShowForm(true);
-    dispatch(actions.getFetchReset());
-    dispatch(actions.getValidateReset());
-    dispatch(actions.getPayReset());
-    setMobile({ value: '', error: false, msg: '' });
-    setSelectedProduct({
-      productCode: '',
-      productName: '',
-      description: '',
-      amount: '',
+    setShowSteps(BuyLoadSteps.EnterMobile);
+    setSelectedProduct({});
+    setMobile('');
+    setAvatarLink('');
+    setPromos([]);
+    setProviders([]);
+    setPaySuccess({
+      recipient_mobile_number: '',
+      amount: 0,
+      transaction_number: '',
+      transaction_date: '',
     });
-    setCategory('');
-    setCategories([]);
   };
+
+  let receiptDate = '';
+  if (paySuccess && paySuccess.transaction_number) {
+    const date = DateTime.fromISO(paySuccess.transaction_date);
+    receiptDate = date.toFormat('dd LLLL yyyy, h:mm a');
+  }
 
   return (
     <>
@@ -444,194 +146,41 @@ export function BuyLoadPage() {
           <title>Buy Load</title>
         </Helmet>
 
-        <Wrapper id="buyLoad">
-          <Card
-            title={!isReview ? 'Buy Load' : 'Review Load Purchase'}
-            size="medium"
-          >
-            {loading && <Loading position="absolute" />}
-            {validateLoading && <Loading position="absolute" />}
-            {payLoading && <Loading position="absolute" />}
-            {showForm && (
-              <>
-                <Field>
-                  <Label>Mobile Number</Label>
-                  <Input
-                    type="number"
-                    value={mobile.value}
-                    autoComplete="off"
-                    onChange={e =>
-                      setMobile({
-                        value: e.currentTarget.value,
-                        error: false,
-                        msg: '',
-                      })
-                    }
-                    error={mobile.error ? true : undefined}
-                    hidespinner
-                  />
-                  {mobile.error && <ErrorMsg formError>{mobile.msg}</ErrorMsg>}
-                </Field>
-                <Flex justifyContent="flex-end">
-                  <Button
-                    type="submit"
-                    color="primary"
-                    size="large"
-                    variant="contained"
-                    onClick={onSubmit}
-                    style={{ paddingLeft: '30px', paddingRight: '30px' }}
-                  >
-                    Next
-                  </Button>
-                </Flex>
-              </>
-            )}
+        <Box
+          title={
+            showSteps === BuyLoadSteps.ShowReview
+              ? 'Review Load Purchase'
+              : 'Buy Load'
+          }
+          titleBorder
+          withPadding
+        >
+          {showSteps === BuyLoadSteps.EnterMobile && (
+            <EnterMobileForm onSuccess={onSuccessMobileForm} />
+          )}
 
-            {showProducts && success && (
-              <>
-                <Flex justifyContent="center">
-                  <Avatar
-                    image={avatarLink || ''}
-                    size="medium"
-                    style={{ marginBottom: '10px' }}
-                  />
-                </Flex>
-                <H5 className="text-center">{mobile.value}</H5>
-                <br />
-                {categories && categories.length > 0 && (
-                  <div className="pills">
-                    <Scrollbars style={{ height: 50 }}>
-                      {categories.map((p, i: number) => (
-                        <Button
-                          key={i}
-                          type="submit"
-                          color="secondary"
-                          size="medium"
-                          variant={category === p ? 'contained' : 'outlined'}
-                          onClick={() => setCategory(p)}
-                        >
-                          {p}
-                        </Button>
-                      ))}
-                    </Scrollbars>
-                  </div>
-                )}
+          {showSteps === BuyLoadSteps.ShowProviders && (
+            <ProviderSelect providers={providers} onSelect={onSelectProvider} />
+          )}
+          {showSteps === BuyLoadSteps.ShowProducts && (
+            <Promos
+              mobile={mobile}
+              avatar={avatarLink}
+              promos={selectedPromos}
+              onSelect={onSelectProduct}
+            />
+          )}
 
-                <section>
-                  <Scrollbars
-                    autoHeight
-                    autoHeightMin={200}
-                    autoHeightMax={600}
-                  >
-                    {success
-                      .slice()
-                      .sort((a, b) =>
-                        a.denomination > b.denomination ? 1 : -1,
-                      )
-                      .map((promo, n) => (
-                        <div
-                          key={n}
-                          onClick={() => {
-                            setSelectedProduct({
-                              productCode: promo.productCode,
-                              productName: promo.productCode,
-                              description: promo.description,
-                              amount: promo.denomination,
-                            });
-                            setIsActive({ value: promo.productCode });
-                          }}
-                        >
-                          {category === promo.category ? (
-                            <div
-                              className={
-                                isActive.value === ''
-                                  ? 'product-list'
-                                  : isActive.value === promo.productCode
-                                  ? 'active product-list'
-                                  : 'product-list'
-                              }
-                            >
-                              <div>{promo.description}</div>
-                              <div>PHP {promo.denomination}.00</div>
-                            </div>
-                          ) : (
-                            ''
-                          )}
-                        </div>
-                      ))}
-                  </Scrollbars>
-                  <br />
-                  <Flex justifyContent="flex-end">
-                    <Button
-                      type="submit"
-                      color="primary"
-                      size="large"
-                      variant="contained"
-                      onClick={OnClickValidate}
-                      style={{ paddingLeft: '30px', paddingRight: '30px' }}
-                    >
-                      Next
-                    </Button>
-                  </Flex>
-                </section>
-              </>
-            )}
+          {showSteps === BuyLoadSteps.ShowReview && (
+            <ReviewInfo
+              product={selectedProduct}
+              avatar={avatarLink}
+              mobile={mobile}
+              onSuccess={onPaySuccess}
+            />
+          )}
 
-            {isReview && !showProducts && selectedProduct.productCode !== '' && (
-              <>
-                <br />
-                <Grid columns="1fr 2fr 1fr">
-                  <div></div>
-                  <div>
-                    <Flex justifyContent="center">
-                      <Avatar
-                        image={avatarLink || ''}
-                        size="medium"
-                        style={{ marginBottom: '10px' }}
-                      />
-                    </Flex>
-                    <H5 className="text-center">{mobile.value}</H5>
-                    <br />
-                    <section className="review-details">
-                      <Flex justifyContent="space-between">
-                        <p>Mobile Number</p>
-                        <p>{mobile.value}</p>
-                      </Flex>
-                      <Flex justifyContent="space-between">
-                        <p>Load</p>
-                        <p>{selectedProduct.description}</p>
-                      </Flex>
-                      <Flex justifyContent="space-between">
-                        <p>Amount</p>
-                        <p>PHP {numberCommas(selectedProduct.amount)}</p>
-                      </Flex>
-                    </section>
-                    <br />
-
-                    <p className="text-center" style={{ marginBottom: 8 }}>
-                      Total Amount
-                    </p>
-                    <H5 className="text-center" margin="0 0 80px">
-                      PHP {numberCommas(selectedProduct.amount)}
-                    </H5>
-
-                    <Button
-                      type="submit"
-                      color="primary"
-                      size="large"
-                      variant="contained"
-                      onClick={onClickPay}
-                      fullWidth={true}
-                    >
-                      Pay
-                    </Button>
-                  </div>
-                  <div></div>
-                </Grid>
-              </>
-            )}
-
-            <Dialog show={validateApiMsg.error} size="xsmall">
+          {/* <Dialog show={validateApiMsg.error} size="xsmall">
               <div style={{ margin: '20px', textAlign: 'center' }}>
                 <CircleIndicator size="medium" color="danger">
                   <FontAwesomeIcon icon="times" />
@@ -670,36 +219,51 @@ export function BuyLoadPage() {
                 </Button>
               </div>
             </Dialog>
+          */}
 
-            <Dialog show={isSuccess && Boolean(paySuccess)} size="small">
-              <Receipt
-                title="Load purchase successful!"
-                total={paySuccess.amount}
-                onClick={onCloseSuccessDialog}
-                date={humanReadable}
-              >
-                <Flex justifyContent="space-between">
-                  <span>Mobile Number</span>
-                  <span>
-                    {maskCharacters(paySuccess.recipient_mobile_number || '')}
-                  </span>
-                </Flex>
-                <Flex justifyContent="space-between">
-                  <span>Load</span>
-                  <span>{paySuccess.product_code}</span>
-                </Flex>
-                <Flex justifyContent="space-between">
-                  <span>Amount</span>
-                  <span>PHP {numberCommas(paySuccess.amount)}</span>
-                </Flex>
-                <Flex justifyContent="space-between">
-                  <span>Transaction Number</span>
-                  <span>{paySuccess.transaction_number}</span>
-                </Flex>
-              </Receipt>
-            </Dialog>
-          </Card>
-        </Wrapper>
+          <Dialog show={isSuccess} size="small">
+            <Receipt
+              title="Load purchase successful!"
+              total={paySuccess.amount.toString()}
+              onClick={onCloseSuccessDialog}
+              date={receiptDate}
+            >
+              <Flex justifyContent="space-between">
+                <Paragraph size="small" margin="0 0 8px">
+                  Mobile Number
+                </Paragraph>
+                <Paragraph size="small" margin="0 0 8px">
+                  {paySuccess.recipient_mobile_number || ''}
+                  {/* {maskMobileNumber(paySuccess.recipient_mobile_number || '')} */}
+                </Paragraph>
+              </Flex>
+              <Flex justifyContent="space-between">
+                <Paragraph size="small" margin="0 0 8px">
+                  Load
+                </Paragraph>
+                <Paragraph size="small" margin="0 0 8px">
+                  {selectedProduct.description}
+                </Paragraph>
+              </Flex>
+              <Flex justifyContent="space-between">
+                <Paragraph size="small" margin="0 0 8px">
+                  Amount
+                </Paragraph>
+                <Paragraph size="small" margin="0 0 8px">
+                  PHP {numberCommas(paySuccess.amount)}
+                </Paragraph>
+              </Flex>
+              <Flex justifyContent="space-between">
+                <Paragraph size="small" margin="0 0 8px">
+                  Transaction Number
+                </Paragraph>
+                <Paragraph size="small" margin="0 0 8px">
+                  {paySuccess.transaction_number}
+                </Paragraph>
+              </Flex>
+            </Receipt>
+          </Dialog>
+        </Box>
       </ProtectedContent>
     </>
   );

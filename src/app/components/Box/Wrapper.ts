@@ -25,7 +25,7 @@ const Wrapper = styled.div<{ children?: any; pad?: boolean }>`
   }
 
   .bt-child {
-    padding: ${p => (p.pad ? '20px 25px' : '0 0')};
+    padding: ${p => (p.pad ? '20px 24px' : '0 0')};
     flex-grow: 1;
   }
 

@@ -30,6 +30,7 @@ const Flex = styled.div<Partial<FlexProps>>`
   align-items: ${p => (p.alignItems ? p.alignItems : 'flex-start')};
   justify-content: ${p => (p.justifyContent ? p.justifyContent : 'flex-start')};
   flex-direction: ${p => (p.direction ? p.direction : 'row')};
+  flex-wrap: wrap;
 `;
 
 export default Flex;

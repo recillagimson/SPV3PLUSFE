@@ -21,7 +21,7 @@ const Wrapper = styled.span<LogoProps>`
 
   img {
     ${p => p.size === 'small' && 'width: 150px'};
-    ${p => p.size === 'medium' && 'width: 250px'};
+    ${p => p.size === 'medium' && 'width: 220px'};
     ${p => p.size === 'large' && 'width: 450px'};
   }
 `;

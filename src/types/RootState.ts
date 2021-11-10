@@ -1,4 +1,3 @@
-import { AddMoneyViaUBP } from './../app/pages/AddMoney/AddMoneyViaUBPPage/Loadable';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 import { GlobalState } from 'app/App/slice/types';
 
@@ -9,7 +8,6 @@ import { ForgotPasswordState } from 'app/pages/ForgotPasswordPage/slice/types';
 import { SendMoneyState } from 'app/pages/SendMoney/slice/types';
 import { GenerateQRState } from 'app/pages/GenerateQR/slice/types';
 import { BuyEpinsState } from 'app/pages/BuyLoadPage/EPins/slice/types';
-import { BuyLoadState } from 'app/pages/BuyLoadPage/Load/slice/types';
 import { ProfileState } from 'app/pages/ProfilePage/slice/types';
 import { NotificationsState } from 'app/pages/Notification/slice/types';
 import { AddMoneyDragonpayState } from 'app/pages/AddMoney/Dragonpay/slice/types';
@@ -47,7 +45,6 @@ export interface RootState {
   sendMoney?: SendMoneyState;
   generateQR?: GenerateQRState;
   buyEpins?: BuyEpinsState;
-  buyLoad?: BuyLoadState;
   profilePage?: ProfileState;
   profileBronze?: ProfileBronzeState;
   profileSilver?: ProfileSilverState;

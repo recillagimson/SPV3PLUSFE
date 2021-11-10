@@ -14,10 +14,10 @@ const Wrapper = styled.div`
     padding: 30px 20px;
 
     .logo-container {
-      margin: 0 auto 20px;
-      width: 200px;
+      margin: 0 auto 24px;
       text-align: center;
     }
+
     .bg-lightgold {
       background-color: #fff9ddff;
       border-radius: 10px;

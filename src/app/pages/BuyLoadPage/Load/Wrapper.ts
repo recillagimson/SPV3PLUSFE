@@ -9,7 +9,7 @@ import { StyleConstants } from 'styles/StyleConstants';
 //   font-weight: 500;
 // `;
 
-const Wrapper = styled.section`
+const Wrapper = styled.div`
   .product-list {
     display: flex;
     justify-content: space-between;

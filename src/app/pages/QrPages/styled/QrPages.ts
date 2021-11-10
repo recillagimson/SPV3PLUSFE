@@ -10,9 +10,10 @@ export const DetailsWrapper = styled.div<{
     `}
 `;
 
-export const ButtonWrapper = styled.section`
+export const ButtonWrapper = styled.button`
   width: 183px;
   height: 183px;
+  background-color: transparent;
   border: 0.5px solid #ced4da;
   display: flex;
   justify-content: center;
@@ -28,7 +29,7 @@ export const ButtonWrapper = styled.section`
   }
 
   &:hover {
-    opacity: 0.4;
+    opacity: 0.7;
   }
 `;
 

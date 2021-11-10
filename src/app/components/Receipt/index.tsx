@@ -10,11 +10,15 @@
 import * as React from 'react';
 
 import Wrapper from './Wrapper';
+import ReceiptWrapper from 'app/components/Elements/Receipt';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import Button from 'app/components/Elements/Button';
+import H6 from 'app/components/Elements/H6';
+import Paragraph from 'app/components/Elements/Paragraph';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { numberWithCommas } from 'utils/common';
+import Logo from '../Assets/Logo';
 
 type ReceiptProps = {
   title: string;
@@ -37,47 +41,48 @@ export default function ReceiptComponent({
     <Wrapper>
       <div className="dialog-container">
         <div className="logo-container">
-          <img
-            src={`${process.env.PUBLIC_URL}/img/SPLogo.png`}
-            alt="SquidPay"
-            className="logo"
-          />
+          <Logo size="medium" />
         </div>
-        <div className="bg-lightgold">
-          <div style={{ padding: '0px 10px' }}>
-            <section className="text-center">
-              <CircleIndicator size="medium" color="primary">
-                <FontAwesomeIcon icon="check" />
-              </CircleIndicator>
-              <p className="message">{title}</p>
-            </section>
-            <section className="details">
-              {React.Children.toArray(children)}
-            </section>
-            <section className="total">
-              <span>Total amount</span>
-              <p>PHP {numberWithCommas(total)}</p>
-              {serviceFee && <span>Service Fee: PHP 0.00</span>}
-            </section>
-            <div className="logo-container">
-              <img
-                src={`${process.env.PUBLIC_URL}/img/SPLogo.png`}
-                alt="SquidPay"
-                style={{ width: '75%', margin: 'auto', display: 'block' }}
-              />
-            </div>
-            <section className="date">
-              <span>{date}</span>
-            </section>
+        <ReceiptWrapper width="100%">
+          <div className="text-center" style={{ margin: '0 0 44px' }}>
+            <CircleIndicator size="large" color="primary">
+              <FontAwesomeIcon icon="check" />
+            </CircleIndicator>
+            <H6 margin="12px 0 0">{title}</H6>
           </div>
-        </div>
-        <br />
+
+          <section className="details">
+            {React.Children.toArray(children)}
+          </section>
+
+          <Paragraph margin="24px 0 4px" size="small" align="center">
+            Total Amount
+          </Paragraph>
+          <Paragraph
+            align="center"
+            margin={serviceFee ? '0 0 4px' : '0 0 64px'}
+          >
+            PHP {numberWithCommas(total)}
+          </Paragraph>
+          {serviceFee && (
+            <Paragraph size="small" align="center" margin="0 0 64px">
+              Service Fee: PHP 0.00
+            </Paragraph>
+          )}
+
+          <Logo size="small" />
+
+          <Paragraph margin="8px 0 0" size="xsmall" align="center">
+            {date}
+          </Paragraph>
+        </ReceiptWrapper>
+
         <Button fullWidth onClick={onClick} variant="contained" color="primary">
-          Ok
+          Close
         </Button>
-        <span className="note">
+        <Paragraph margin="8px 16px 0" size="xsmall" align="center">
           "You will receive an SMS notification for your confirmed transaction"
-        </span>
+        </Paragraph>
       </div>
     </Wrapper>
   );
