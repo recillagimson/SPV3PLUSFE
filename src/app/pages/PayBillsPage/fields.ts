@@ -154,7 +154,18 @@ export const RENDER_SELECT_ITEMS = name => {
   }
 };
 
-export const RENDER_FIELDS = code => {
+type IFieldTypes = {
+  label: string;
+  type: string;
+  name: string;
+  placeholder: string;
+  required?: boolean;
+  min?: number;
+  max?: number;
+  maxLength?: number;
+};
+
+export const RENDER_FIELDS = (code: string): IFieldTypes[] => {
   switch (code) {
     case 'MECOR':
     case 'MWCOM':
@@ -217,6 +228,7 @@ export const RENDER_FIELDS = code => {
           type: 'text',
           name: 'account_number',
           placeholder: '',
+          maxLength: 13,
           required: true,
         },
         {
@@ -224,11 +236,15 @@ export const RENDER_FIELDS = code => {
           type: 'number',
           name: 'amount',
           placeholder: 'PHP 0.00',
+          min: 1,
+          max: 100000,
+          maxLength: 6,
           required: true,
         },
         {
           label: 'Account Name',
           type: 'text',
+          maxLength: 100,
           name: 'otherInfo.AccountName',
           placeholder: '',
           required: true,

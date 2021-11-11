@@ -576,6 +576,9 @@ export function PayBillsPage() {
                           value={formData[field.name]}
                           onChange={onChangeFormData}
                           placeholder={field.placeholder}
+                          maxLength={field.maxLength}
+                          min={field.min}
+                          max={field.max}
                         />
                         {formErrors[field.name] && (
                           <ErrorMsg formError>
