@@ -8,6 +8,7 @@ export interface GlobalState {
   request: {} | boolean;
   login: string;
   user: UserProfileState | boolean;
+  isBronze: boolean;
   userToken: TokenState | string;
   otp: {
     isEmail: boolean;
@@ -19,6 +20,7 @@ export interface GlobalState {
   isSessionExpired: boolean;
   isBlankPage: boolean;
   isServerError: boolean;
+  isUpgradeTier: boolean;
   references: ReferenceTypes;
   tier: {} | boolean;
 }

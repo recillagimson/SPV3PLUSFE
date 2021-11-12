@@ -15,6 +15,7 @@ export const initialState: GlobalState = {
   login: '',
   user: false,
   userToken: '',
+  isBronze: true,
   otp: {
     isEmail: false,
     value: '',
@@ -25,6 +26,7 @@ export const initialState: GlobalState = {
   isSessionExpired: false,
   isBlankPage: false,
   isServerError: false,
+  isUpgradeTier: false,
   references: {
     nationalities: false,
     countries: false,
@@ -65,6 +67,9 @@ const slice = createSlice({
     getUserProfile(state, action: PayloadAction<UserProfileState>) {
       state.user = action.payload;
     },
+    getSaveIsBronze(state, action: PayloadAction<boolean>) {
+      state.isBronze = action.payload;
+    },
     getSaveLoginName(state, action: PayloadAction<string>) {
       // write the proper OTP details for displaying of messages in verify otp
       // as per BE, OTP sending will be based on the login name
@@ -95,6 +100,9 @@ const slice = createSlice({
     },
     getIsServerError(state, action: PayloadAction<boolean>) {
       state.isServerError = action.payload;
+    },
+    getIsUpgradeTier(state, action: PayloadAction<boolean>) {
+      state.isUpgradeTier = action.payload;
     },
     getLoadAllReferences() {}, // an action only to dispatch retrieving of all references
     getSaveAllReferences(state, action: PayloadAction<ReferenceTypes>) {

@@ -24,6 +24,8 @@ import Loading from 'app/components/Loading';
 import A from 'app/components/Elements/A';
 
 import Wrapper from './Wrapper';
+import { selectIsBronze } from 'app/App/slice/selectors';
+import { appActions } from 'app/App/slice';
 import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
@@ -42,6 +44,7 @@ export function AddMoneyViaBPI() {
   const history = useHistory();
   const { actions } = useContainerSaga();
 
+  const isBronze = useSelector(selectIsBronze);
   const dashData: any = useSelector(selectDashData);
   const bpiUrl: object | any = useSelector(selectBpiUrl);
   const accessToken: string = useSelector(selectAccessToken);
@@ -244,10 +247,10 @@ export function AddMoneyViaBPI() {
   //Generate BPI URL
   const onSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (e && e.preventDefault) e.preventDefault();
-    let error = false;
+    let hasError = false;
     // Check amount if it's valid
     if (amount.value === '') {
-      error = true;
+      hasError = true;
       setAmount({
         ...amount,
         isError: true,
@@ -256,14 +259,20 @@ export function AddMoneyViaBPI() {
     }
     // Check amount if it's less than 1
     if (parseFloat(amount.value) < 1) {
-      error = true;
+      hasError = true;
       setAmount({
         ...amount,
         isError: true,
         errormsg: 'The amount must be at least 1.',
       });
     }
-    if (!error) {
+
+    if (isBronze && parseFloat(amount.value) > 10000) {
+      hasError = true;
+      dispatch(appActions.getIsUpgradeTier(true));
+    }
+
+    if (!hasError) {
       const data = {
         amount: parseFloat(amount.value),
       };

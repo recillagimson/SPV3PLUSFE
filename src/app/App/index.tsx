@@ -26,12 +26,16 @@ import Sidebar from 'app/components/Sidebar';
 import Dialog from 'app/components/Dialog';
 import Button from 'app/components/Elements/Button';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import H3 from 'app/components/Elements/H3';
+import Paragraph from 'app/components/Elements/Paragraph';
+import tierUpgrade from 'app/components/Assets/tier_upgrade.png';
 
 import { doSignOut, getCookie } from 'app/components/Helpers';
 
 import FlagsProvider from 'utils/FlagsProvider';
 import { GlobalStyle } from 'styles/global-styles';
 
+// #startregion
 import { DashboardPage } from 'app/pages/DashboardPage/Loadable';
 import { LoginPage } from 'app/pages/LoginPage/Loadable';
 import { RegisterPage } from 'app/pages/RegisterPage/Loadable';
@@ -108,7 +112,9 @@ import {
   selectIsBlankPage,
   setIsUnathenticated,
   selectIsServerError,
+  selectIsUpgradeTier,
 } from './slice/selectors';
+
 // import { captureException } from 'utils/sentry';
 // import { usePrevious } from 'app/components/Helpers/Hooks';
 
@@ -142,6 +148,7 @@ export function App() {
   const isSessionExpired = useSelector(selectSessionExpired);
   const isBlankPage = useSelector(selectIsBlankPage);
   const isServerError = useSelector(selectIsServerError);
+  const isTierUpgrade = useSelector(selectIsUpgradeTier);
   const clientTokenExpired = useSelector(setIsUnathenticated); // use this only on users who hasn't logged in yet
 
   // const [flags, setFlags] = React.useState(defaultFlags);
@@ -572,6 +579,47 @@ export function App() {
             color="primary"
           >
             Refresh
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog show={isTierUpgrade} size="small">
+        <div className="text-center" style={{ padding: '20px 20px 30px' }}>
+          <img src={tierUpgrade} alt="Tier Upgrade" />
+          <H3 margin="30px 0 10px">Oops! Transaction error</H3>
+          <Paragraph margin="0 0 5px">
+            Uh-no! You are exceeding the allowable transaction for your current
+            tier.
+          </Paragraph>
+          <Paragraph margin="0 0 35px">
+            You may upgrade your account to enjoy additional SquidPay services.
+          </Paragraph>
+          <Button
+            fullWidth
+            onClick={() => {
+              dispatch(actions.getIsUpgradeTier(false));
+              history.push('/tiers');
+            }}
+            variant="contained"
+            color="primary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Upgrade Now
+          </Button>
+          <Button
+            fullWidth
+            onClick={() => dispatch(actions.getIsUpgradeTier(false))}
+            variant="outlined"
+            color="secondary"
+            size="large"
+            style={{
+              marginBottom: '10px',
+            }}
+          >
+            Close
           </Button>
         </div>
       </Dialog>

@@ -17,6 +17,7 @@ import H3 from 'app/components/Elements/H3';
 
 import { numberCommas } from 'app/components/Helpers';
 
+import { appActions } from 'app/App/slice';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
@@ -27,11 +28,13 @@ import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/sele
 import { containerActions as dashActions } from 'app/pages/DashboardPage/slice';
 import Label from 'app/components/Elements/Label';
 import Paragraph from 'app/components/Elements/Paragraph';
+import { selectIsBronze } from 'app/App/slice/selectors';
 
 export function Dragonpay() {
   const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
+  const isBronze = useSelector(selectIsBronze);
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
   const dashData: any = useSelector(selectDashData);
@@ -58,6 +61,11 @@ export function Dragonpay() {
     if (amount.value === '') {
       hasError = true;
       setAmount({ ...amount, error: true, msg: 'Please enter amount.' });
+    }
+
+    if (isBronze && parseFloat(amount.value) > 10000) {
+      hasError = true;
+      dispatch(appActions.getIsUpgradeTier(true));
     }
 
     if (amount.value !== '' && parseInt(amount.value) < 50) {

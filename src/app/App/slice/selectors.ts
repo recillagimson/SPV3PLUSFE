@@ -56,6 +56,15 @@ export const selectUserToken = createSelector(
   subState => subState.userToken,
 );
 
+export const selectIsBronze = createSelector(
+  [selectDomain],
+  subState => subState.isBronze,
+);
+
+export const selectIsUpgradeTier = createSelector(
+  [selectDomain],
+  subState => subState.isUpgradeTier,
+);
 /**
  * Use to display the proper OTP message
  */

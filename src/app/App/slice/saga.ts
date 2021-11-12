@@ -18,6 +18,7 @@ import {
   getSourceOfFunds,
 } from './references';
 import { ReferenceTypes } from './types';
+import { TierIDs } from 'app/components/Helpers/Tiers';
 
 /**
  * Global function for user data or other data
@@ -173,7 +174,11 @@ export function* getLoggedInUserProfile() {
       );
 
       if (decryptData) {
+        const isBronze =
+          decryptData.user_account &&
+          decryptData.user_account.tier_id === TierIDs.bronze;
         yield put(actions.getUserProfile(decryptData));
+        yield put(actions.getSaveIsBronze(isBronze));
       }
       return decryptData || true;
     }

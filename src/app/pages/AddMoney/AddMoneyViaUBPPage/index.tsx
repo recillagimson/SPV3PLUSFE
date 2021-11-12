@@ -23,6 +23,8 @@ import H3 from 'app/components/Elements/H3';
 import Loading from 'app/components/Loading';
 
 import Wrapper from './Wrapper';
+import { selectIsBronze } from 'app/App/slice/selectors';
+import { appActions } from 'app/App/slice';
 import { selectData as selectDashData } from 'app/pages/DashboardPage/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
@@ -40,6 +42,7 @@ export function AddMoneyViaUBP() {
 
   const location = useLocation();
   const { actions } = useContainerSaga();
+  const isBronze = useSelector(selectIsBronze);
 
   const dashData: any = useSelector(selectDashData);
   const cashinSuccess: object | any = useSelector(selectData);
@@ -224,6 +227,12 @@ export function AddMoneyViaUBP() {
         errormsg: 'The amount must be at least 1.',
       });
     }
+
+    if (isBronze && parseFloat(amount.value) > 10000) {
+      error = true;
+      dispatch(appActions.getIsUpgradeTier(true));
+    }
+
     if (!error) {
       const data = {
         amount: parseFloat(amount.value),
