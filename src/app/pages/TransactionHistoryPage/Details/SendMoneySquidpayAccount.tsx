@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { maskMobileNumber } from 'app/components/Helpers';
+import { maskEmailAddress, maskMobileNumber } from 'app/components/Helpers';
 
 import * as S from '../TransactionHistory.style';
 
@@ -24,15 +24,19 @@ export default function SendMoneySquidpayAccount({
   }
 
   let mobile = 'None';
+  let isEmail = false;
   if (details.transactable.sender) {
-    mobile =
-      maskMobileNumber(details.transactable.sender.mobile_number) || 'None';
+    isEmail = !details.transactable.sender.mobile_number;
+    mobile = details.transactable.sender.mobile_number
+      ? maskMobileNumber(details.transactable.sender.mobile_number)
+      : maskEmailAddress(details.transactable.sender.email);
   }
 
   if (details.transactable.receiver) {
-    mobile =
-      maskMobileNumber(details.transactable.receiver.mobile_number || '') ||
-      'None';
+    isEmail = !details.transactable.receiver.mobile_number;
+    mobile = details.transactable.receiver.mobile_number
+      ? maskMobileNumber(details.transactable.receiver.mobile_number)
+      : maskEmailAddress(details.transactable.receiver.email);
   }
 
   return (
@@ -42,7 +46,7 @@ export default function SendMoneySquidpayAccount({
         <p>{name}</p>
       </S.TransactionDetailsListItem>
       <S.TransactionDetailsListItem>
-        <p>Mobile Number</p>
+        <p>{isEmail ? 'Email Address' : 'Mobile Number'}</p>
         <p>{mobile}</p>
       </S.TransactionDetailsListItem>
       <S.TransactionDetailsListItem>

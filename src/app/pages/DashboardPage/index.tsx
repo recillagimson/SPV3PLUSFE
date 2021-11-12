@@ -123,7 +123,11 @@ export function DashboardPage() {
             bold
             align="right"
             primary={`PHP ${numberCommas(i.signed_total_amount)}`}
-            color={i.transaction_category.transaction_type}
+            color={
+              i.status !== 'PENDING'
+                ? i.transaction_category.transaction_type
+                : 'PENDING'
+            }
             small
           />
         </ListItem>

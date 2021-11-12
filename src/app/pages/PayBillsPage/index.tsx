@@ -34,7 +34,7 @@ import {
   selectValidatedBiller,
   selectCreatedPayBills,
 } from './slice/selectors';
-import { BillersState, BillerStateOptions } from './slice/types';
+import { BillersState } from './slice/types';
 
 // Helpers
 import { numberWithCommas } from 'utils/common';
@@ -55,6 +55,7 @@ import BayadCenterLogo from 'app/components/Assets/paybills/bayad-center-logo.sv
 
 // Styles
 import * as S from './PayBills.style';
+import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
 export function PayBillsPage() {
   const history = useHistory();
@@ -404,19 +405,35 @@ export function PayBillsPage() {
   };
 
   const activeCategories = () => {
-    const filteredCategories = CATEGORIES.map(cat => {
-      const isActive = !!billers?.find(
-        biller =>
-          biller.category.toLowerCase() === cat.value.toLowerCase() &&
-          biller.active === '1',
-      );
+    // check if we have billers data
+    if (billers && billers.length > 0) {
+      // Filter the list of billers, save only the active billers
+      const filter = billers.filter(j => j.active === '1');
 
-      return {
-        ...cat,
-        isActive,
-      };
-    });
-    return filteredCategories;
+      // create a new set of categories
+      // code will create a new array with unique categories
+      const cats = Array.from(new Set(filter.map(j => j.category)));
+
+      // return the new array
+      // ie: ['Electricity', 'Toll', ..etc]
+      return cats as string[];
+    }
+
+    // default return of empty array (if we don't have billers)
+    return [] as string[];
+    // const filteredCategories = CATEGORIES.map(cat => {
+    //   const isActive = !!billers?.find(
+    //     biller =>
+    //       biller.category.toLowerCase() === cat.value.toLowerCase() &&
+    //       biller.active === '1',
+    //   );
+
+    //   return {
+    //     ...cat,
+    //     isActive,
+    //   };
+    // });
+    // return filteredCategories;
   };
 
   const renderView = step => {
@@ -426,7 +443,27 @@ export function PayBillsPage() {
           <React.Fragment>
             <S.ContainerTitle className="title">Categories</S.ContainerTitle>
             <S.BillersOptions>
-              {activeCategories()?.map(
+              {activeCategories().map((category, idx) => {
+                // map the category with the saved icon in CATEGORIES helper
+                let i = CATEGORIES.findIndex(j =>
+                  j.value.includes(category.substring(0, 4).toLowerCase()),
+                );
+
+                return (
+                  <S.BillerOptionsItem
+                    key={idx}
+                    onClick={() => selectCategory(category)}
+                    role="button"
+                  >
+                    <img
+                      src={i !== -1 ? CATEGORIES[i].icon : ''}
+                      alt={category}
+                    />
+                    <p>{category}</p>
+                  </S.BillerOptionsItem>
+                );
+              })}
+              {/* {activeCategories()?.map(
                 (category: BillerStateOptions, i: number) => {
                   // eslint-disable-next-line array-callback-return
                   if (!category.isActive) return;
@@ -441,7 +478,7 @@ export function PayBillsPage() {
                     </S.BillerOptionsItem>
                   );
                 },
-              )}
+              )} */}
             </S.BillersOptions>
           </React.Fragment>
         );
@@ -655,7 +692,7 @@ export function PayBillsPage() {
   };
 
   return (
-    <>
+    <ProtectedContent>
       <Helmet>
         <title>Pay bills</title>
       </Helmet>
@@ -791,6 +828,6 @@ export function PayBillsPage() {
           </div>
         </S.DetailsWrapper>
       </Dialog>
-    </>
+    </ProtectedContent>
   );
 }
