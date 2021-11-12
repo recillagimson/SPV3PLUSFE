@@ -114,14 +114,18 @@ import {
 
 // default flags for features
 const defaultFlags = {
-  add_money_dragon_pay_enabled: true,
-  buy_load_enabled: true,
-  send_money_enabled: true,
-  send_money_via_qr_enabled: true,
-  send_to_bank_ubp_enabled: true,
-  pay_bills_enabled: true,
-  add_money_bpi_enabled: true,
-  add_money_ecpay_enabled: true,
+  add_money_dragon_pay_enabled: false,
+  add_money_bpi_enabled: false,
+  add_money_ecpay_enabled: false,
+  add_money_ubp_enabled: false,
+  buy_load_enabled: false,
+  send_money_enabled: false,
+  send_money_via_qr_enabled: false,
+  send_money_via_mobile_enabled: false,
+  send_to_bank_ubp_enabled: false,
+  pay_bills_enabled: false,
+  loans_enabled: false,
+  forex_enabled: false,
 };
 
 export function App() {
@@ -185,19 +189,18 @@ export function App() {
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
     const forceUpdate = getCookie('spv_uat_f');
-
-    let param = new URLSearchParams(location.search).get('code');
+    let param = new URLSearchParams(location.search).get('code') ?? '';
     let code;
     if (param && sessionStorage.getItem('ubpUrl')) {
       code = {
         type: 'ubp',
-        value: param ?? '',
+        value: param,
       };
     }
     if (param && !sessionStorage.getItem('ubpUrl')) {
       code = {
         type: 'bpi',
-        value: param ?? '',
+        value: param,
       };
     }
 

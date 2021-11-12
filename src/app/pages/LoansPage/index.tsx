@@ -57,7 +57,7 @@ export function LoansPage() {
   }, [isBronze, setShowUpgrade]);
 
   const { loading, response, error, goFetch } = useFetch();
-  const { response: saveLoanResponse, goFetch: saveLoanFetch } = useFetch();
+  const { goFetch: saveLoanFetch } = useFetch();
 
   const [selectedPartner, setSelectedPartner] = React.useState<string>('');
   const [showExitModal, setShowExitModal] = React.useState<boolean>(false);
