@@ -85,8 +85,17 @@ export function BuyLoadPage() {
     getAvatar.goFetch(`/user/${mobile}/avatar`, 'GET', '', '', true, true); // retrieve the avatar for entered mobile number
     // store the retrieved promos
     setPromos(p);
+
+    // enable code below if filtering will be done on the FE side
+    // const filterProviders = p.filter(j => j.productType === 'BUY LOAD');
+    // console.log('filtered', filterProviders);
+    // const prov: string[] = Array.from(
+    //   new Set(filterProviders.map(x => x.provider)),
+    // );
+
     // get the unique providers
     const prov: string[] = Array.from(new Set(p.map(x => x.provider)));
+
     setProviders(prov);
     // show next step
     setShowSteps(BuyLoadSteps.ShowProviders);
