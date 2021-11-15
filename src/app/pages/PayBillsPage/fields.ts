@@ -149,12 +149,42 @@ export const RENDER_SELECT_ITEMS = name => {
           label: 'Education Plan',
         },
       ];
+    case 'hdmf1_otherinfo.paymenttype':
+      return [
+        {
+          value: 'ST',
+          label: 'Short-term Loan',
+        },
+        {
+          value: 'MC',
+          label: 'Membership Saving',
+        },
+        {
+          value: 'HL',
+          label: 'Housing Loan',
+        },
+        {
+          value: 'MP2',
+          label: 'Modified PAG-IBIG 2',
+        },
+      ];
     default:
       return [];
   }
 };
 
-export const RENDER_FIELDS = code => {
+type IFieldTypes = {
+  label: string;
+  type: string;
+  name: string;
+  placeholder?: string;
+  required?: boolean;
+  min?: number;
+  max?: number;
+  maxLength?: number;
+};
+
+export const RENDER_FIELDS = (code: string): IFieldTypes[] => {
   switch (code) {
     case 'MECOR':
     case 'MWCOM':
@@ -879,6 +909,53 @@ export const RENDER_FIELDS = code => {
           name: 'otherInfo.DueDate',
           placeholder: '',
           required: true,
+        },
+      ];
+    case 'HDMF1':
+      return [
+        {
+          label: 'Account Number',
+          type: 'text',
+          name: 'account_number',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Amount',
+          type: 'number',
+          name: 'amount',
+          placeholder: 'PHP 0.00',
+          required: true,
+          min: 1,
+          max: 100000,
+        },
+        {
+          label: 'Payment Type',
+          type: 'select',
+          name: 'otherInfo.PaymentType',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Bill Date',
+          type: 'date',
+          name: 'otherInfo.BillDate',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Due Date',
+          type: 'date',
+          name: 'otherInfo.DueDate',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Contact Number',
+          type: 'number',
+          name: 'otherInfo.ContactNo',
+          required: true,
+          maxLength: 11,
         },
       ];
     default:
