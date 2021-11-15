@@ -690,7 +690,7 @@ export function PayBillsPage() {
         return <React.Fragment />;
     }
   };
-  console.log('billerCode', billerCode);
+
   return (
     <ProtectedContent>
       <Helmet>
