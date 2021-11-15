@@ -154,7 +154,18 @@ export const RENDER_SELECT_ITEMS = name => {
   }
 };
 
-export const RENDER_FIELDS = code => {
+type IFieldTypes = {
+  label: string;
+  type: string;
+  name: string;
+  placeholder?: string;
+  required?: boolean;
+  min?: number;
+  max?: number;
+  maxLength?: number;
+};
+
+export const RENDER_FIELDS = (code: string): IFieldTypes[] => {
   switch (code) {
     case 'MECOR':
     case 'MWCOM':
@@ -879,6 +890,39 @@ export const RENDER_FIELDS = code => {
           name: 'otherInfo.DueDate',
           placeholder: '',
           required: true,
+        },
+      ];
+    case 'VIECO':
+      return [
+        {
+          label: 'Account Number',
+          type: 'text',
+          name: 'account_number',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Amount',
+          type: 'number',
+          name: 'amount',
+          placeholder: 'PHP 0.00',
+          min: 1,
+          max: 100000,
+          required: true,
+        },
+        {
+          label: 'First Name',
+          type: 'text',
+          name: 'otherInfo.FirstName',
+          placeholder: '',
+          required: false,
+        },
+        {
+          label: 'Last Name',
+          type: 'text',
+          name: 'otherInfo.LastName',
+          placeholder: '',
+          required: false,
         },
       ];
     default:
