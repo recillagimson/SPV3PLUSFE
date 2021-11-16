@@ -193,3 +193,4 @@ v1.3.1
 
 - Change Transaction History Details for ECPay, Added Service Fee display for Instapay/Pesonet and Paybills
 - Modified Paybills display of Categories (will be based on the billers category from API)
+- Paybills (VP2-586, VP2-589, VP2-637, VP2-640)
