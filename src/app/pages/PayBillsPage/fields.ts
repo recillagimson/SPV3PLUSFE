@@ -15,6 +15,29 @@ export const RENDER_SELECT_ITEMS = name => {
           label: 'PLDT Ultera',
         },
       ];
+    case 'mecop_amount':
+      return [
+        {
+          value: '100.00',
+          label: '100.00',
+        },
+        {
+          value: '200.00',
+          label: '200.00',
+        },
+        {
+          value: '300.00',
+          label: '300.00',
+        },
+        {
+          value: '500.00',
+          label: '500.00',
+        },
+        {
+          value: '1000.00',
+          label: '1000.00',
+        },
+      ];
     case 'smart_otherinfo.product':
       return [
         {
@@ -168,6 +191,7 @@ type IFieldTypes = {
 export const RENDER_FIELDS = (code: string): IFieldTypes[] => {
   switch (code) {
     case 'MECOR':
+    case 'MECOP':
     case 'MWCOM':
     case 'MWSIN':
     case 'RFID1':
@@ -183,7 +207,7 @@ export const RENDER_FIELDS = (code: string): IFieldTypes[] => {
         },
         {
           label: 'Amount',
-          type: 'number',
+          type: code === 'MECOP' ? 'select' : 'number',
           name: 'amount',
           placeholder: 'PHP 0.00',
           required: true,

@@ -236,10 +236,12 @@ export function PayBillsPage() {
     } else {
       return (
         <React.Fragment>
-          <S.ReviewListItem>
-            <p>Account Name</p>
-            <p>{data.account_name || 'None'}</p>
-          </S.ReviewListItem>
+          {data.account_name && (
+            <S.ReviewListItem>
+              <p>Account Name</p>
+              <p>{data.account_name || 'None'}</p>
+            </S.ReviewListItem>
+          )}
           <S.ReviewListItem>
             <p>Account Number</p>
             <p>{data.account_number || data.referenceNumber || 'None'}</p>
@@ -267,7 +269,11 @@ export function PayBillsPage() {
           {successReview && (
             <S.ReviewListItem>
               <p>Transaction Number</p>
-              <p>{data.transaction_number || 'None'}</p>
+              <p>
+                {data.transaction_number ||
+                  data.transaction_category_id ||
+                  'None'}
+              </p>
             </S.ReviewListItem>
           )}
         </React.Fragment>
