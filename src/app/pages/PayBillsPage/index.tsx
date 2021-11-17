@@ -57,10 +57,14 @@ import BayadCenterLogo from 'app/components/Assets/paybills/bayad-center-logo.sv
 import * as S from './PayBills.style';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
+// import { appActions } from 'app/App/slice';
+import { selectIsBronze } from 'app/App/slice/selectors';
+
 export function PayBillsPage() {
   const history = useHistory();
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
+  const isBronze = useSelector(selectIsBronze);
   const loading = useSelector(selectLoading);
   const apiErrors: any = useSelector(selectError);
   const dashData: any = useSelector(selectData);
@@ -383,11 +387,16 @@ export function PayBillsPage() {
   const validate = form => {
     const keys = Object.keys(form);
     const errors = {};
-
     // Check if the field has an empty value
     keys.forEach(k => {
       if (form[k] === '') {
         errors[k] = 'This is a required field';
+      }
+      // NOTE: added by habs, validate if user is bronze and exceeding the maximum limit (10k)
+      if (isBronze && k === 'amount' && parseFloat(form[k]) > 10000) {
+        // dispatch(appActions.getIsUpgradeTier(true)); // enable to show global error message
+        errors['amount'] =
+          'Oops! You have exceeded the maximum limit for your current tier.';
       }
     });
 

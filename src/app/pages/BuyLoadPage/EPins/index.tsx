@@ -34,6 +34,8 @@ import {
 } from 'app/components/Helpers';
 import useFetch from 'utils/useFetch';
 
+import { appActions } from 'app/App/slice';
+import { selectIsBronze } from 'app/App/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
@@ -51,6 +53,7 @@ export function BuyEpinsPage() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const getAvatar = useFetch();
+  const isBronze = useSelector(selectIsBronze);
 
   const success: any = useSelector(selectData);
   const loading: any = useSelector(selectLoading);
@@ -350,13 +353,22 @@ export function BuyEpinsPage() {
 
   const onClickPay = () => {
     if (!payLoading) {
-      const data = {
-        mobile_number: mobile.value,
-        product_code: selectedProduct.productCode,
-        product_name: selectedProduct.productName,
-        amount: selectedProduct.amount,
-      };
-      dispatch(actions.getPayLoading(data));
+      let hasError = false;
+
+      if (isBronze && parseFloat(selectedProduct.amount) > 10000) {
+        hasError = true;
+        dispatch(appActions.getIsUpgradeTier(true));
+      }
+
+      if (!hasError) {
+        const data = {
+          mobile_number: mobile.value,
+          product_code: selectedProduct.productCode,
+          product_name: selectedProduct.productName,
+          amount: selectedProduct.amount,
+        };
+        dispatch(actions.getPayLoading(data));
+      }
     }
   };
 

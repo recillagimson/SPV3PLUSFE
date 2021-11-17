@@ -33,6 +33,8 @@ import {
 } from 'app/components/Helpers';
 import useFetch from 'utils/useFetch';
 
+import { appActions } from 'app/App/slice';
+import { selectIsBronze } from 'app/App/slice/selectors';
 import { useContainerSaga } from './slice';
 import {
   selectLoading,
@@ -50,6 +52,7 @@ export function BuyLoadPage() {
   const { actions } = useContainerSaga();
   const dispatch = useDispatch();
   const getAvatar = useFetch();
+  const isBronze = useSelector(selectIsBronze);
 
   const loading = useSelector(selectLoading);
   const error: any = useSelector(selectError);
@@ -398,15 +401,24 @@ export function BuyLoadPage() {
   // 3rd API
   const onClickPay = () => {
     if (!payLoading) {
-      const data = {
-        mobile_number: mobile.value,
-        product_code: selectedProduct.productCode,
-        product_name: selectedProduct.productName,
-        amount: selectedProduct.amount,
-      };
+      let hasError = false;
 
-      // dispatch payload to saga
-      dispatch(actions.getPayLoading(data));
+      if (isBronze && parseFloat(selectedProduct.amount) > 10000) {
+        hasError = true;
+        dispatch(appActions.getIsUpgradeTier(true));
+      }
+
+      if (!hasError) {
+        const data = {
+          mobile_number: mobile.value,
+          product_code: selectedProduct.productCode,
+          product_name: selectedProduct.productName,
+          amount: selectedProduct.amount,
+        };
+
+        // dispatch payload to saga
+        dispatch(actions.getPayLoading(data));
+      }
     }
   };
 
