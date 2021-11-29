@@ -18,6 +18,14 @@ import Others from 'app/components/Assets/paybills/others.svg';
 
 import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 
+export const VIEWS = {
+  categories: 'categories',
+  subCategories: 'subCategories',
+  fields: 'fields',
+  review: 'review',
+  receipt: 'receipt',
+};
+
 export const CATEGORIES = [
   {
     value: 'electric utility',

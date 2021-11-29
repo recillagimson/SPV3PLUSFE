@@ -57,6 +57,9 @@ import BayadCenterLogo from 'app/components/Assets/paybills/bayad-center-logo.sv
 import * as S from './PayBills.style';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 
+// component
+import Categories from './Categories';
+
 export function PayBillsPage() {
   const history = useHistory();
   const { actions } = useContainerSaga();
@@ -439,49 +442,7 @@ export function PayBillsPage() {
   const renderView = step => {
     switch (step) {
       case 0:
-        return (
-          <React.Fragment>
-            <S.ContainerTitle className="title">Categories</S.ContainerTitle>
-            <S.BillersOptions>
-              {activeCategories().map((category, idx) => {
-                // map the category with the saved icon in CATEGORIES helper
-                let i = CATEGORIES.findIndex(j =>
-                  j.value.includes(category.substring(0, 4).toLowerCase()),
-                );
-
-                return (
-                  <S.BillerOptionsItem
-                    key={idx}
-                    onClick={() => selectCategory(category)}
-                    role="button"
-                  >
-                    <img
-                      src={i !== -1 ? CATEGORIES[i].icon : ''}
-                      alt={category}
-                    />
-                    <p>{category}</p>
-                  </S.BillerOptionsItem>
-                );
-              })}
-              {/* {activeCategories()?.map(
-                (category: BillerStateOptions, i: number) => {
-                  // eslint-disable-next-line array-callback-return
-                  if (!category.isActive) return;
-
-                  return (
-                    <S.BillerOptionsItem
-                      key={i}
-                      onClick={() => selectCategory(category.value)}
-                    >
-                      <img src={category.icon} alt={category.label} />
-                      <p>{category.label}</p>
-                    </S.BillerOptionsItem>
-                  );
-                },
-              )} */}
-            </S.BillersOptions>
-          </React.Fragment>
-        );
+        return <Categories billers={billers} onSelect={selectCategory} />;
       case 1:
         return (
           <S.BillersList>

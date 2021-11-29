@@ -375,3 +375,35 @@ export const PayBillCTAContainer = styled.div`
     margin-top: 20px;
   }
 `;
+
+// added by habs
+export const Biller = styled.div`
+  border: 1px solid ${StyleConstants.borderColor};
+  border-radius: ${StyleConstants.radius.medium};
+  padding: ${StyleConstants.spacing[12]} ${StyleConstants.spacing[16]};
+  margin-bottom: ${StyleConstants.spacing[12]};
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 79px;
+  font-size: 0.85rem;
+
+  &[role='button'] {
+    cursor: pointer;
+
+    &:hover {
+      background-color: ${StyleConstants.color.highlight};
+    }
+  }
+
+  .biller-img {
+    display: inline-block;
+    margin-right: 12px;
+    width: 70px;
+    text-align: center;
+
+    img {
+      max-height: 50px;
+    }
+  }
+`;
