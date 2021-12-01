@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from 'styled-components/macro';
 
 import { StyleConstants } from 'styles/StyleConstants';
 
@@ -392,7 +392,7 @@ export const Biller = styled.div`
     cursor: pointer;
 
     &:hover {
-      background-color: ${StyleConstants.color.highlight};
+      border-color: ${StyleConstants.color.gray3};
     }
   }
 
@@ -405,5 +405,35 @@ export const Biller = styled.div`
     img {
       max-height: 50px;
     }
+  }
+`;
+
+export const CategoryButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  border: 0;
+  background-color: transparent;
+  padding: 4px;
+  width: 95px;
+  margin: 0 1px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+  color: inherit;
+  border-radius: ${StyleConstants.radius.small};
+
+  img {
+    width: auto;
+    height: 48px;
+  }
+
+  span {
+    font-size: 0.8rem;
+    padding-bottom: 4px;
+  }
+
+  &:hover {
+    background-color: ${StyleConstants.color.tones.mute};
   }
 `;

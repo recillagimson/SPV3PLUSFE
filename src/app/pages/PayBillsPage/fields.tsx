@@ -1,3 +1,6 @@
+import * as React from 'react';
+import { validateAmount, validateText } from './validators';
+
 export const RENDER_SELECT_ITEMS = name => {
   switch (name.toLowerCase()) {
     case 'pldt6_otherinfo.service':
@@ -196,73 +199,266 @@ export const RENDER_SELECT_ITEMS = name => {
   }
 };
 
-type IFieldTypes = {
+type TFields = (string | {})[];
+export type IFieldTypes = {
   label: string;
   type: string;
   name: string;
   placeholder?: string;
-  required?: boolean;
-  min?: number;
-  max?: number;
+  required?: boolean; // if true, will use the validator key
+  min?: number | string;
+  max?: number | string;
   maxLength?: number;
+  option?: { value: string; label: string }[]; // optional, only if type is select
+  /**
+   * @param {string}  balance     the wallet balance
+   * @param {string}  amount      the amount entered
+   * @returns {boolean}           returns true if amount is greater than the balance
+   */
+  validator?: (
+    balance: string,
+    amount: string,
+  ) => { error: boolean; msg: string };
 };
 
-export const RENDER_FIELDS = (code: string): IFieldTypes[] => {
+const mecor: IFieldTypes[] = [];
+
+const accoutNumberAndAmount: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+];
+
+const defaultFields: IFieldTypes[] = [
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'account_name',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Reference Number',
+    type: 'text',
+    name: 'reference',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: 'PHP 0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Send Receipt to (optional)',
+    type: 'text',
+    name: 'send_receipt_to',
+    placeholder: '',
+  },
+  {
+    label: 'Message (optional)',
+    type: 'text',
+    name: 'message',
+    placeholder: '',
+  },
+];
+
+const bneco: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Last Name',
+    type: 'text',
+    name: 'otherInfo.LastName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'First Name',
+    type: 'text',
+    name: 'otherInfo.FirstName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const hdmf1: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Payment Type',
+    type: 'select',
+    name: 'otherInfo.PaymentType',
+    placeholder: '',
+    required: true,
+    option: RENDER_SELECT_ITEMS('hdmf1_otherinfo.paymenttype'),
+    validator: validateText,
+  },
+  {
+    label: 'Bill Date',
+    type: 'date',
+    name: 'otherInfo.BillDate',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Contact Number',
+    type: 'number',
+    name: 'otherInfo.ContactNo',
+    required: true,
+    maxLength: 11,
+    validator: validateText,
+  },
+];
+
+const pldt6: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Phone Number',
+    type: 'text',
+    name: 'otherInfo.PhoneNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Service',
+    type: 'select',
+    name: 'otherInfo.Service',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+/**
+ *
+ * @param {string} code     biller code
+ * @returns {array}         returns an array of fields and additional note ie: [{}, <><span>note</span> Another text];
+ */
+// export const RENDER_FIELDS = (code: string): {fields: any, note: string | React.ReactNode} => {
+export const RENDER_FIELDS = (code: string): any => {
   switch (code) {
     case 'MECOR':
-    case 'MECOP':
-    case 'MWCOM':
-    case 'MWSIN':
-    case 'RFID1':
-    case 'ETRIP':
+      return {
+        fields: accoutNumberAndAmount,
+        note: (
+          <>
+            <span className="text-red">IMPORTANT NOTE:</span> To avoid
+            inconvenience, please input the exact amount of your total billing
+            amount due and settle before your due date.
+            <br />
+            <br />
+            Please review to ensure that the details are correct before you
+            proceed.
+          </>
+        ),
+      };
+    // case 'MECOP':
+    // case 'MWCOM':
+    // case 'MWSIN':
+    // case 'RFID1':
+    // case 'ETRIP':
     case 'DFA01':
-      return [
-        {
-          label: 'Account Number',
-          type: 'number',
-          name: 'referenceNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: code === 'MECOP' ? 'select' : 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-      ];
+      return {
+        fields: accoutNumberAndAmount,
+        note: '',
+      };
     case 'PLDT6':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'account_number',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Phone Number',
-          type: 'text',
-          name: 'otherInfo.PhoneNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Service',
-          type: 'select',
-          name: 'otherInfo.Service',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: pldt6,
+        note: '',
+      };
     case 'CNVRG':
     case 'AEON1':
       return [
@@ -294,43 +490,10 @@ export const RENDER_FIELDS = (code: string): IFieldTypes[] => {
         },
       ];
     case 'BNECO':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'account_number',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Last Name',
-          type: 'text',
-          name: 'otherInfo.LastName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'First Name',
-          type: 'text',
-          name: 'otherInfo.FirstName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Due Date',
-          type: 'date',
-          name: 'otherInfo.DueDate',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: bneco,
+        note: '',
+      };
     case 'PRULI':
       return [
         {
@@ -941,94 +1104,14 @@ export const RENDER_FIELDS = (code: string): IFieldTypes[] => {
         },
       ];
     case 'HDMF1':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'account_number',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-          min: 1,
-          max: 100000,
-        },
-        {
-          label: 'Payment Type',
-          type: 'select',
-          name: 'otherInfo.PaymentType',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Bill Date',
-          type: 'date',
-          name: 'otherInfo.BillDate',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Due Date',
-          type: 'date',
-          name: 'otherInfo.DueDate',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Contact Number',
-          type: 'number',
-          name: 'otherInfo.ContactNo',
-          required: true,
-          maxLength: 11,
-        },
-      ];
+      return {
+        fields: hdmf1,
+        note: '',
+      };
     default:
-      return [
-        {
-          label: 'Account Name',
-          type: 'text',
-          name: 'account_name',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'account_number',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Reference Number',
-          type: 'text',
-          name: 'reference',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Send Receipt to (optional)',
-          type: 'text',
-          name: 'send_receipt_to',
-          placeholder: '',
-        },
-        {
-          label: 'Message (optional)',
-          type: 'text',
-          name: 'message',
-          placeholder: '',
-        },
-      ];
+      return {
+        fields: defaultFields,
+        note: '',
+      };
   }
 };

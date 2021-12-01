@@ -35,8 +35,8 @@ type ParagraphProps = {
 };
 
 const fontSize = {
-  xsmall: '0.8rem',
-  small: '0.9rem',
+  xsmall: '0.75rem',
+  small: '0.85rem',
   regular: '1rem',
 };
 
@@ -50,7 +50,7 @@ const weights = {
 const colors = {
   default: 'inherit',
   primary: StyleConstants.color.primaryyellow,
-  secondary: StyleConstants.color.gray2,
+  secondary: StyleConstants.color.gray3,
   mute: StyleConstants.color.gray4,
   danger: StyleConstants.color.tones.red,
   success: StyleConstants.color.tones.green,

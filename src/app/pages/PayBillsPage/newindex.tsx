@@ -14,6 +14,7 @@ import { BillersState } from './slice/types';
 
 import Categories from './Categories';
 import Billers from './Biller';
+import FormFields from './FormFields';
 
 export function PayBillsPage() {
   const { loading, error, response, goFetch, fetchReset } = useFetch();
@@ -21,6 +22,7 @@ export function PayBillsPage() {
   const [view, setView] = React.useState(''); // initial view (no display)
   const [billers, setBillers] = React.useState<BillersState[]>([]); // empty set of all billers
   const [category, setCategory] = React.useState(''); // selected category
+  const [billerCode, setBillerCode] = React.useState('');
 
   React.useEffect(() => {
     // initial retrieval of all the billers
@@ -46,8 +48,19 @@ export function PayBillsPage() {
     setView(VIEWS.subCategories);
   };
 
+  const onBackToCategory = () => {
+    setCategory('');
+    setView(VIEWS.categories);
+  };
+
   const onSelectBiller = (code: string) => {
-    console.log(code);
+    setBillerCode(code);
+    setView(VIEWS.fields);
+  };
+
+  const onBackToBillers = () => {
+    setBillerCode('');
+    setView(VIEWS.categories);
   };
 
   let title = 'Pay Bills';
@@ -61,10 +74,9 @@ export function PayBillsPage() {
   return (
     <ProtectedContent>
       <Helmet title="Pay Bills" />
+      {loading && <Loading position="relative" />}
       {view === VIEWS.categories && (
         <Box title={title} titleBorder withPadding>
-          {loading && <Loading position="relative" />}
-
           <Categories billers={billers} onSelect={onSelectCategory} />
         </Box>
       )}
@@ -73,7 +85,11 @@ export function PayBillsPage() {
           category={category}
           billers={billers}
           onSelect={onSelectBiller}
+          onBack={onBackToCategory}
         />
+      )}
+      {view === VIEWS.fields && (
+        <FormFields billerCode={billerCode} onBack={onBackToBillers} />
       )}
     </ProtectedContent>
   );

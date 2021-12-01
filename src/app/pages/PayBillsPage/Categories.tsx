@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 import H6 from 'app/components/Elements/H6';
-import useFetch from 'utils/useFetch';
 
 import { CATEGORIES } from './helpers';
-import * as S from './PayBills.style';
+import { CategoryButton } from './PayBills.style';
 import { BillersState } from './slice/types';
+import Flex from 'app/components/Elements/Flex';
 
 type CategoriesProps = {
   billers: BillersState[];
@@ -40,7 +40,7 @@ export default function Categories({ billers, onSelect }: CategoriesProps) {
     <>
       <H6>Categories</H6>
 
-      <S.BillersOptions>
+      <Flex alignItems="flex-start" justifyContent="flex-start" wrap="wrap">
         {categories.map((category, idx) => {
           // map the category with the saved icon in CATEGORIES helper
           let i = CATEGORIES.findIndex(j =>
@@ -48,17 +48,17 @@ export default function Categories({ billers, onSelect }: CategoriesProps) {
           );
 
           return (
-            <S.BillerOptionsItem
+            <CategoryButton
               key={idx}
               onClick={() => onSelect(category)}
               role="button"
             >
               <img src={i !== -1 ? CATEGORIES[i].icon : ''} alt={category} />
-              <p>{category}</p>
-            </S.BillerOptionsItem>
+              <span>{category}</span>
+            </CategoryButton>
           );
         })}
-      </S.BillersOptions>
+      </Flex>
     </>
   );
 }

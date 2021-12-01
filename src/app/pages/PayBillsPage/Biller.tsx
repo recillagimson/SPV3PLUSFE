@@ -10,13 +10,20 @@ type BillersProps = {
   category: string;
   billers: BillersState[];
   onSelect: (code: string) => void;
+  onBack: () => void;
 };
 /**
  * @prop  {string}    category    selected category
  * @prop  {array}     billers     list of selected billers in the category
  * @prop  {function}  onSelect    on select of biller
+ * @prop  {function}  onBack      callback to return to selection of biller category
  */
-export default function Billers({ category, billers, onSelect }: BillersProps) {
+export default function Billers({
+  category,
+  billers,
+  onSelect,
+  onBack,
+}: BillersProps) {
   const [selectedBillers, setSelectedBillers] = React.useState<BillersState[]>(
     [],
   );
@@ -43,7 +50,7 @@ export default function Billers({ category, billers, onSelect }: BillersProps) {
 
     if (text !== '') {
       const newBillers = oldBillers.filter(f => {
-        if (f.name.toLowerCase().includes(text)) {
+        if (f.name.toLowerCase().includes(text.toLowerCase())) {
           return f;
         }
         return null;
@@ -62,6 +69,7 @@ export default function Billers({ category, billers, onSelect }: BillersProps) {
       titleBorder
       withPadding
       titleAction={<SearchBar onChange={onSearchBiller} noMargin />}
+      onBack={onBack}
     >
       {selectedBillers.map(b => (
         <Biller key={b.code} role="button" onClick={() => onSelect(b.code)}>

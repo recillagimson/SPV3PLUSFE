@@ -13,6 +13,10 @@ const Input = styled.input<{ hidespinner?: boolean; error?: boolean }>`
   width: 100%;
   display: block;
 
+  &[type='date']::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+  }
+
   // this will set to hide the spinner if input type is number
   // hidespinner should be declare in the <Input /> tag
   ${p =>

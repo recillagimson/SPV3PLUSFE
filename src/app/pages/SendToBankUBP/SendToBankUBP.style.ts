@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
 export const BodyWrapper = styled.section`
