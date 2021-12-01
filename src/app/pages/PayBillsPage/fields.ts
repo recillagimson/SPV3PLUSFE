@@ -172,6 +172,25 @@ export const RENDER_SELECT_ITEMS = name => {
           label: 'Education Plan',
         },
       ];
+    case 'hdmf1_otherinfo.paymenttype':
+      return [
+        {
+          value: 'ST',
+          label: 'Short-term Loan',
+        },
+        {
+          value: 'MC',
+          label: 'Membership Saving',
+        },
+        {
+          value: 'HL',
+          label: 'Housing Loan',
+        },
+        {
+          value: 'MP2',
+          label: 'Modified PAG-IBIG 2',
+        },
+      ];
     default:
       return [];
   }
@@ -181,7 +200,7 @@ type IFieldTypes = {
   label: string;
   type: string;
   name: string;
-  placeholder: string;
+  placeholder?: string;
   required?: boolean;
   min?: number;
   max?: number;
@@ -921,19 +940,12 @@ export const RENDER_FIELDS = (code: string): IFieldTypes[] => {
           required: true,
         },
       ];
-    case 'HCPHL':
+    case 'HDMF1':
       return [
         {
           label: 'Account Number',
-          type: 'number',
-          name: 'account_number',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Name',
           type: 'text',
-          name: 'otherInfo.Name',
+          name: 'account_number',
           placeholder: '',
           required: true,
         },
@@ -943,13 +955,36 @@ export const RENDER_FIELDS = (code: string): IFieldTypes[] => {
           name: 'amount',
           placeholder: 'PHP 0.00',
           required: true,
+          min: 1,
+          max: 100000,
         },
         {
-          label: 'Phone number',
-          type: 'number',
-          name: 'otherInfo.PhoneNo',
+          label: 'Payment Type',
+          type: 'select',
+          name: 'otherInfo.PaymentType',
           placeholder: '',
           required: true,
+        },
+        {
+          label: 'Bill Date',
+          type: 'date',
+          name: 'otherInfo.BillDate',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Due Date',
+          type: 'date',
+          name: 'otherInfo.DueDate',
+          placeholder: '',
+          required: true,
+        },
+        {
+          label: 'Contact Number',
+          type: 'number',
+          name: 'otherInfo.ContactNo',
+          required: true,
+          maxLength: 11,
         },
       ];
     default:
