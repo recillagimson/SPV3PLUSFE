@@ -19,6 +19,7 @@ import { selectData } from 'app/pages/DashboardPage/slice/selectors';
 import { numberCommas } from 'app/components/Helpers';
 
 import { IFieldTypes, RENDER_FIELDS } from './fields';
+import useFetch from 'utils/useFetch';
 
 type FormFieldsProps = {
   billerCode: string;
@@ -26,11 +27,14 @@ type FormFieldsProps = {
 };
 
 export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
+  const { error, response, goFetch, fetchReset } = useFetch();
+  const pay = useFetch();
+
   const dashData: any = useSelector(selectData);
   const [balance, setBalance] = React.useState('0.00');
   const [loading, setLoading] = React.useState(true);
   const [formData, setFormData] = React.useState({});
-  const [fields, setFields] = React.useState([]);
+  const [fields, setFields] = React.useState<IFieldTypes[]>([]);
   const [note, setNote] = React.useState<any>('');
 
   React.useEffect(() => {
@@ -57,6 +61,57 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
       setLoading(false);
     }, 500);
   }, [billerCode]);
+
+  React.useEffect(() => {
+    if (response) {
+    }
+    if (error) {
+      let providerError = error.provider_error || false;
+      if (providerError && providerError.length > 0) {
+        providerError.forEach(err => {
+          const k = err.errors ? Object.keys(err.errors) : [];
+
+          if (k && k.length > 0) {
+            k.forEach(key => {
+              if (key === 'general') {
+                if (formData['account_number']) {
+                  formData['account_number'].error = true;
+                }
+                if (formData['referenceNumber']) {
+                  formData['referenceNumber'].error = true;
+                }
+              } else {
+                formData[key].error = true;
+              }
+
+              if (err.errors[key].length > 0) {
+                let msg: string[] = [];
+                err.errors[key].forEach((e: { message: string }) =>
+                  msg.push(e.message),
+                );
+
+                if (key === 'general') {
+                  if (formData['account_number']) {
+                    formData['account_number'].msg =
+                      'Account number is invalid.';
+                  }
+                  if (formData['referenceNumber']) {
+                    formData['referenceNumber'].msg =
+                      'Account number is invalid.';
+                  }
+                } else {
+                  formData[key].msg = msg.join('\n');
+                }
+              }
+            });
+          }
+        });
+      }
+      fetchReset();
+      setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response, error]);
 
   const onChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
@@ -87,9 +142,8 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
 
     let hasError = false;
     let newFormData = { ...formData };
-    let payload = {};
 
-    fields.forEach((field: IFieldTypes) => {
+    fields.forEach((field: IFieldTypes, i: number) => {
       if (field.required && field.validator) {
         const validate = field.validator(formData[field.name].value, balance);
         if (validate.error) {
@@ -100,8 +154,7 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
           };
           return;
         }
-
-        payload[field.name] = formData[field.name].value;
+        // payload[field.name] = formData[field.name].value;
         return;
       }
     });
@@ -111,16 +164,51 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
     }
 
     if (!hasError) {
-      console.log(payload);
+      setLoading(true);
+
+      // initialize payload
+      let payload: { [name: string]: string; otherInfo?: any } = {};
+      let otherInfo = {};
+
+      // get all the key name in our formData object
+      const keys = Object.keys(formData);
+
+      // Iterate through the keys to dynamically populate payload
+      if (keys.length > 0) {
+        keys.forEach(k => {
+          // If key has otherInfo string
+          if (k.includes('otherInfo')) {
+            const o = k.split('.'); // Split the key name
+            otherInfo[o[1]] = formData[k].value;
+            return;
+          }
+          payload[k] = formData[k].value;
+          return;
+        });
+      }
+
+      if (Object.keys(otherInfo).length > 0) {
+        payload['otherInfo'] = otherInfo; // include the other info in our payload
+      }
+
+      const referenceNumber = payload.account_number || payload.referenceNumber;
+      goFetch(
+        `/pay/bills/validate/account/${billerCode}/${referenceNumber}`,
+        'POST',
+        JSON.stringify(payload),
+        '',
+        true,
+        true,
+      );
     }
   };
 
   return (
     <>
-      <Box title="Pay Bills" titleBorder withPadding>
-        {loading && <Loading position="relative" />}
+      <Box title="Pay Bills" titleBorder withPadding style={{ minHeight: 250 }}>
+        {loading && <Loading position="absolute" />}
         <form>
-          {!loading && fields.length > 0 && (
+          {fields && fields.length > 0 && (
             <>
               {fields.map((f: IFieldTypes) => {
                 if (f.type === 'select') {
@@ -135,6 +223,7 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
                         placeholder={f.placeholder}
                         required={f.required}
                       >
+                        <option value="">Please select</option>
                         {f.option &&
                           f.option.map(o => (
                             <option key={o.value} value={o.value}>

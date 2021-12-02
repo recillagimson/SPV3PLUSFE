@@ -2,10 +2,22 @@
  * Form validators
  */
 
-export const validateText = (text: string, value2?: string) => {
+export const validateText = (
+  text: string,
+  value2: string = '',
+  count: number = 0,
+  label: string = '',
+) => {
   if (text === '') {
     return { error: true, msg: 'Oops! This field is required.' };
   }
+
+  if (count > 0 && text) {
+    if (text.length > count) {
+      return { error: true, msg: `The ${label} must be ${count} digits.` };
+    }
+  }
+
   return { error: false, msg: '' };
 };
 
@@ -19,7 +31,8 @@ export const validateAmount = (
   if (parseFloat(amount) === 0) {
     return { error: true, msg: 'Oops! Please enter an amount greater than 0' };
   }
-  if (parseFloat(amount).toFixed(2) > parseFloat(balance).toFixed(2)) {
+
+  if (parseFloat(amount) > parseFloat(balance)) {
     return { error: true, msg: 'Oops! You do not have enough balance.' };
   }
   return { error: false, msg: '' };

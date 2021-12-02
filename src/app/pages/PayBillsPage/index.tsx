@@ -461,13 +461,13 @@ export function PayBillsPage() {
                   setFormErrors(initialFormData);
 
                   const fields = {};
-                  RENDER_FIELDS(biller.code).map((field: any) => {
-                    if (field.required) {
-                      fields[field.name] = '';
-                    }
+                  // RENDER_FIELDS(biller.code).map((field: any) => {
+                  //   if (field.required) {
+                  //     fields[field.name] = '';
+                  //   }
 
-                    return {};
-                  });
+                  //   return {};
+                  // });
 
                   // Set form data based on the biller fields
                   setFormData(fields);
@@ -493,7 +493,7 @@ export function PayBillsPage() {
       case 2:
         return (
           <S.FormWrapper>
-            {RENDER_FIELDS(billerCode).map((field: any, i) => {
+            {/* {RENDER_FIELDS(billerCode).map((field: any, i) => {
               const items = RENDER_SELECT_ITEMS(
                 billerCode.toLowerCase() + `_` + field.name,
               );
@@ -581,7 +581,7 @@ export function PayBillsPage() {
                     );
                 }
               }
-            })}
+            })} */}
             {isMECOR && (
               <S.NoteWrapper>
                 <p className="important">

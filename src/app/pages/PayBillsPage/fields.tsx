@@ -199,7 +199,11 @@ export const RENDER_SELECT_ITEMS = name => {
   }
 };
 
-type TFields = (string | {})[];
+type TReturnFields = {
+  fields: IFieldTypes[];
+  note: React.ReactNode | string;
+};
+
 export type IFieldTypes = {
   label: string;
   type: string;
@@ -220,8 +224,6 @@ export type IFieldTypes = {
     amount: string,
   ) => { error: boolean; msg: string };
 };
-
-const mecor: IFieldTypes[] = [];
 
 const accoutNumberAndAmount: IFieldTypes[] = [
   {
@@ -271,7 +273,7 @@ const defaultFields: IFieldTypes[] = [
     label: 'Amount',
     type: 'number',
     name: 'amount',
-    placeholder: 'PHP 0.00',
+    placeholder: '0.00',
     required: true,
     validator: validateAmount,
   },
@@ -421,13 +423,764 @@ const pldt6: IFieldTypes[] = [
   },
 ];
 
+const aeon1: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    maxLength: 13,
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    min: 1,
+    max: 100000,
+    maxLength: 6,
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    maxLength: 100,
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const pruli: IFieldTypes[] = [
+  {
+    label: 'Policy Number (reference number)',
+    type: 'text',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const aecor: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'due_date',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Customer Name',
+    type: 'text',
+    name: 'customer_name',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const lazae: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Name',
+    type: 'text',
+    name: 'name',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Contact Number',
+    type: 'text',
+    name: 'contact_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const smart: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: false,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Product',
+    type: 'select',
+    name: 'otherInfo.Product',
+    option: RENDER_SELECT_ITEMS('smart_otherinfo.product'),
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Telephone Number',
+    type: 'text',
+    name: 'otherInfo.TelephoneNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Service Reference No',
+    type: 'text',
+    name: 'otherInfo.ServiceReferenceNo',
+    placeholder: '',
+    required: false,
+  },
+];
+
+const sss01: IFieldTypes[] = [
+  {
+    label: 'Reference Number (Payment/Billing)',
+    type: 'text',
+    name: 'reference_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Pay for',
+    type: 'text',
+    name: 'pay_for',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Payment Type',
+    type: 'select',
+    name: 'payment_type',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Platform Type',
+    type: 'select',
+    name: 'platform_type',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const sss02: IFieldTypes[] = [
+  {
+    label: 'Payment Reference Number',
+    type: 'text',
+    name: 'payment_reference_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Payment Type',
+    type: 'select',
+    name: 'payment_type',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Loan Type',
+    type: 'select',
+    name: 'loan_type',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Platform Type',
+    type: 'select',
+    name: 'platform_type',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Country Code',
+    type: 'text',
+    name: 'country_code',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const sss03: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Payor Type',
+    type: 'select',
+    name: 'otherInfo.PayorType',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Rel Type',
+    type: 'text',
+    name: 'otherInfo.RelType',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Loan Account No.',
+    type: 'text',
+    name: 'otherInfo.LoanAccountNo',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Company Name',
+    type: 'text',
+    name: 'otherInfo.CompanyName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Last Name',
+    type: 'text',
+    name: 'otherInfo.LastName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'First Name',
+    type: 'text',
+    name: 'otherInfo.FirstName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Middle Initial',
+    type: 'text',
+    name: 'otherInfo.MI',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Platform Type',
+    type: 'select',
+    name: 'otherInfo.PlatformType',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const poea1: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'First Name',
+    type: 'text',
+    name: 'first_name',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Last Name',
+    type: 'text',
+    name: 'last_name',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Contact No.',
+    type: 'text',
+    name: 'contact_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const bpi00: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Customer name',
+    type: 'text',
+    name: 'otherInfo.ConsName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const bnkrd: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Bill Date',
+    type: 'date',
+    name: 'otherInfo.BillDate',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const unbnk: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Service',
+    type: 'select',
+    name: 'otherInfo.Service',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Customer name',
+    type: 'text',
+    name: 'otherInfo.ConsName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const admsn: IFieldTypes[] = [
+  {
+    label: 'Student Number',
+    type: 'text',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Last Name',
+    type: 'text',
+    name: 'otherInfo.LastName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'First Name',
+    type: 'text',
+    name: 'otherInfo.FirstName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Middle Name',
+    type: 'text',
+    name: 'otherInfo.MiddleName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Payment Type',
+    type: 'select',
+    name: 'otherInfo.PaymentType',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Course',
+    type: 'text',
+    name: 'otherInfo.Course',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Total Assessment',
+    type: 'text',
+    name: 'otherInfo.TotalAssessment',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'School Year',
+    type: 'text',
+    name: 'otherInfo.SchoolYear',
+    placeholder: 'YYYY-YYYY',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Term',
+    type: 'select',
+    name: 'otherInfo.Term',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const ubnk4: IFieldTypes[] = [
+  {
+    label: 'Student Number',
+    type: 'text',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Student Name',
+    type: 'text',
+    name: 'otherInfo.StudentName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Branch',
+    type: 'text',
+    name: 'otherInfo.Branch',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const aslnk: IFieldTypes[] = [
+  {
+    label: 'Student Number',
+    type: 'text',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Last Name',
+    type: 'text',
+    name: 'otherInfo.LastName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'First Name',
+    type: 'text',
+    name: 'otherInfo.FirstName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Middle Name',
+    type: 'text',
+    name: 'otherInfo.MiddleName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const pilam: IFieldTypes[] = [
+  {
+    label: 'Policy Number (reference number)',
+    type: 'text',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const splan: IFieldTypes[] = [
+  {
+    label: 'Policy Number (reference number)',
+    type: 'text',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateAmount,
+  },
+  {
+    label: 'Plan Type',
+    type: 'select',
+    name: 'otherInfo.PlanType',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const cnvrg: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 13,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+];
+
 /**
  *
  * @param {string} code     biller code
  * @returns {array}         returns an array of fields and additional note ie: [{}, <><span>note</span> Another text];
  */
 // export const RENDER_FIELDS = (code: string): {fields: any, note: string | React.ReactNode} => {
-export const RENDER_FIELDS = (code: string): any => {
+export const RENDER_FIELDS = (code: string): TReturnFields => {
   switch (code) {
     case 'MECOR':
       return {
@@ -460,649 +1213,108 @@ export const RENDER_FIELDS = (code: string): any => {
         note: '',
       };
     case 'CNVRG':
+      return {
+        fields: cnvrg,
+        note: (
+          <>
+            <span className="text-red">IMPORTANT NOTE:</span> To avoid
+            inconvenience, please input the exact amount of your total billing
+            amount due and settle before your due date. Please review to ensure
+            that the details are correct before you proceed.
+          </>
+        ),
+      };
     case 'AEON1':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'account_number',
-          placeholder: '',
-          maxLength: 13,
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          min: 1,
-          max: 100000,
-          maxLength: 6,
-          required: true,
-        },
-        {
-          label: 'Account Name',
-          type: 'text',
-          maxLength: 100,
-          name: 'otherInfo.AccountName',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: aeon1,
+        note: '',
+      };
     case 'BNECO':
       return {
         fields: bneco,
         note: '',
       };
     case 'PRULI':
-      return [
-        {
-          label: 'Policy Number (reference number)',
-          type: 'text',
-          name: 'referenceNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Account Name',
-          type: 'text',
-          name: 'otherInfo.AccountName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Due Date',
-          type: 'date',
-          name: 'otherInfo.DueDate',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: pruli,
+        note: '',
+      };
     case 'AECOR':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'account_number',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Due Date',
-          type: 'date',
-          name: 'due_date',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Customer Name',
-          type: 'text',
-          name: 'customer_name',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: aecor,
+        note: '',
+      };
     case 'LAZAE':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'account_number',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Name',
-          type: 'text',
-          name: 'name',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Contact Number',
-          type: 'text',
-          name: 'contact_number',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: lazae,
+        note: '',
+      };
     case 'SMART':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'referenceNumber',
-          placeholder: '',
-          required: false,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: false,
-        },
-        {
-          label: 'Product',
-          type: 'select',
-          name: 'otherInfo.Product',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Telephone Number',
-          type: 'text',
-          name: 'otherInfo.TelephoneNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Service Reference No',
-          type: 'text',
-          name: 'otherInfo.ServiceReferenceNo',
-          placeholder: '',
-          required: false,
-        },
-      ];
+      return {
+        fields: smart,
+        note: '',
+      };
     case 'SSS01':
-      return [
-        {
-          label: 'Reference Number (Payment/Billing)',
-          type: 'text',
-          name: 'reference_number',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Pay for',
-          type: 'text',
-          name: 'pay_for',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Payment Type',
-          type: 'select',
-          name: 'payment_type',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Platform Type',
-          type: 'select',
-          name: 'platform_type',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: sss01,
+        note: '',
+      };
     case 'SSS02':
-      return [
-        {
-          label: 'Payment Reference Number',
-          type: 'text',
-          name: 'payment_reference_number',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Payment Type',
-          type: 'select',
-          name: 'payment_type',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Loan Type',
-          type: 'select',
-          name: 'loan_type',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Platform Type',
-          type: 'select',
-          name: 'platform_type',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Country Code',
-          type: 'text',
-          name: 'country_code',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: sss02,
+        note: '',
+      };
     case 'SSS03':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'account_number',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Payor Type',
-          type: 'select',
-          name: 'otherInfo.PayorType',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Rel Type',
-          type: 'text',
-          name: 'otherInfo.RelType',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Loan Account No.',
-          type: 'text',
-          name: 'otherInfo.LoanAccountNo',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Company Name',
-          type: 'text',
-          name: 'otherInfo.CompanyName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Last Name',
-          type: 'text',
-          name: 'otherInfo.LastName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'First Name',
-          type: 'text',
-          name: 'otherInfo.FirstName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Middle Initial',
-          type: 'text',
-          name: 'otherInfo.MI',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Platform Type',
-          type: 'select',
-          name: 'otherInfo.PlatformType',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: sss03,
+        note: '',
+      };
     case 'POEA1':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'account_number',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'First Name',
-          type: 'text',
-          name: 'first_name',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Last Name',
-          type: 'text',
-          name: 'last_name',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Contact No.',
-          type: 'text',
-          name: 'contact_number',
-          placeholder: '',
-          required: true,
-        },
-      ];
-    case 'MBCCC':
+      return {
+        fields: poea1,
+        note: '',
+      };
+    // case 'MBCCC':
     case 'BPI00':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'referenceNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Customer name',
-          type: 'text',
-          name: 'otherInfo.ConsName',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: bpi00,
+        note: '',
+      };
     case 'BNKRD':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'referenceNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Account name',
-          type: 'text',
-          name: 'otherInfo.AccountName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Bill Date',
-          type: 'date',
-          name: 'otherInfo.BillDate',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: bnkrd,
+        note: '',
+      };
     case 'UNBNK':
-      return [
-        {
-          label: 'Account Number',
-          type: 'text',
-          name: 'referenceNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Service',
-          type: 'select',
-          name: 'otherInfo.Service',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Customer name',
-          type: 'text',
-          name: 'otherInfo.ConsName',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: unbnk,
+        note: '',
+      };
     case 'ADMSN':
-      return [
-        {
-          label: 'Student Number',
-          type: 'text',
-          name: 'referenceNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Last Name',
-          type: 'text',
-          name: 'otherInfo.LastName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'First Name',
-          type: 'text',
-          name: 'otherInfo.FirstName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Middle Name',
-          type: 'text',
-          name: 'otherInfo.MiddleName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Payment Type',
-          type: 'select',
-          name: 'otherInfo.PaymentType',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Course',
-          type: 'text',
-          name: 'otherInfo.Course',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Total Assessment',
-          type: 'text',
-          name: 'otherInfo.TotalAssessment',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'School Year',
-          type: 'text',
-          name: 'otherInfo.SchoolYear',
-          placeholder: 'YYYY-YYYY',
-          required: true,
-        },
-        {
-          label: 'Term',
-          type: 'select',
-          name: 'otherInfo.Term',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: admsn,
+        note: '',
+      };
     case 'UBNK4':
-      return [
-        {
-          label: 'Student Number',
-          type: 'text',
-          name: 'referenceNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Student Name',
-          type: 'text',
-          name: 'otherInfo.StudentName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Branch',
-          type: 'text',
-          name: 'otherInfo.Branch',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: ubnk4,
+        note: '',
+      };
     case 'ASLNK':
-      return [
-        {
-          label: 'Student Number',
-          type: 'text',
-          name: 'referenceNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Last Name',
-          type: 'text',
-          name: 'otherInfo.LastName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'First Name',
-          type: 'text',
-          name: 'otherInfo.FirstName',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Middle Name',
-          type: 'text',
-          name: 'otherInfo.MiddleName',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: aslnk,
+        note: '',
+      };
     case 'PILAM':
-      return [
-        {
-          label: 'Policy Number (reference number)',
-          type: 'text',
-          name: 'referenceNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Due Date',
-          type: 'date',
-          name: 'otherInfo.DueDate',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: pilam,
+        note: '',
+      };
     case 'SPLAN':
-      return [
-        {
-          label: 'Policy Number (reference number)',
-          type: 'text',
-          name: 'referenceNumber',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Amount',
-          type: 'number',
-          name: 'amount',
-          placeholder: 'PHP 0.00',
-          required: true,
-        },
-        {
-          label: 'Plan Type',
-          type: 'select',
-          name: 'otherInfo.PlanType',
-          placeholder: '',
-          required: true,
-        },
-        {
-          label: 'Due Date',
-          type: 'date',
-          name: 'otherInfo.DueDate',
-          placeholder: '',
-          required: true,
-        },
-      ];
+      return {
+        fields: splan,
+        note: '',
+      };
     case 'HDMF1':
       return {
         fields: hdmf1,

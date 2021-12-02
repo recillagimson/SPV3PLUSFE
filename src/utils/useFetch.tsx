@@ -41,7 +41,7 @@ const useFetch = () => {
     async (
       url: string,
       method: string,
-      payload: any,
+      payload: string,
       contentType?: '' | 'application/json' | 'form-data',
       isUserToken?: boolean,
       decrypt?: boolean,
