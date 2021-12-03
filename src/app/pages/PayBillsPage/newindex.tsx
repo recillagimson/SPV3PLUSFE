@@ -10,11 +10,12 @@ import Box from 'app/components/Box';
 
 import { VIEWS } from './helpers';
 
-import { BillersState } from './slice/types';
+import { BillersState, ValidateSuccessResponse } from './slice/types';
 
 import Categories from './Categories';
-import Billers from './Biller';
+import Billers from './Billers';
 import FormFields from './FormFields';
+import Review from './Review';
 
 export function PayBillsPage() {
   const { loading, error, response, goFetch, fetchReset } = useFetch();
@@ -22,7 +23,20 @@ export function PayBillsPage() {
   const [view, setView] = React.useState(''); // initial view (no display)
   const [billers, setBillers] = React.useState<BillersState[]>([]); // empty set of all billers
   const [category, setCategory] = React.useState(''); // selected category
-  const [billerCode, setBillerCode] = React.useState('');
+  const [biller, setBiller] = React.useState<BillersState>({
+    active: '',
+    category: '',
+    code: '',
+    description: '',
+    logo: '',
+    name: '',
+    type: '',
+  });
+  const [formInfo, setFormInfo] = React.useState<{
+    form: { [name: string]: { label: string; value: string } };
+    validate: ValidateSuccessResponse;
+    payload: { [name: string]: string };
+  }>({ form: {}, validate: {}, payload: {} });
 
   React.useEffect(() => {
     // initial retrieval of all the billers
@@ -53,14 +67,35 @@ export function PayBillsPage() {
     setView(VIEWS.categories);
   };
 
-  const onSelectBiller = (code: string) => {
-    setBillerCode(code);
+  const onSelectBiller = (obj: BillersState) => {
+    setBiller(obj);
     setView(VIEWS.fields);
   };
 
   const onBackToBillers = () => {
-    setBillerCode('');
+    setBiller({
+      active: '',
+      category: '',
+      code: '',
+      description: '',
+      logo: '',
+      name: '',
+      type: '',
+    });
     setView(VIEWS.categories);
+  };
+
+  const onSuccessFormValidation = (
+    form: { [name: string]: { label: string; value: string } },
+    validate: ValidateSuccessResponse,
+    payload: { [name: string]: string },
+  ) => {
+    setFormInfo({
+      form: form,
+      validate: validate,
+      payload: payload,
+    });
+    setView(VIEWS.review);
   };
 
   let title = 'Pay Bills';
@@ -89,8 +124,14 @@ export function PayBillsPage() {
         />
       )}
       {view === VIEWS.fields && (
-        <FormFields billerCode={billerCode} onBack={onBackToBillers} />
+        <FormFields
+          biller={biller}
+          onSuccess={onSuccessFormValidation}
+          onBack={onBackToBillers}
+        />
       )}
+
+      {view === VIEWS.review && <Review biller={biller} details={formInfo} />}
     </ProtectedContent>
   );
 }

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Loading from 'app/components/Loading';
 import Box from 'app/components/Box';
@@ -12,6 +13,9 @@ import Select from 'app/components/Elements/Select';
 import InputTextWrapper from 'app/components/Elements/InputTextWrapper';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
 import Label from 'app/components/Elements/Label';
+import Dialog from 'app/components/Dialog';
+import CircleIndicator from 'app/components/Elements/CircleIndicator';
+import H5 from 'app/components/Elements/H5';
 
 import bayadLogo from 'app/components/Assets/paybills/bayad-partner.png';
 
@@ -20,15 +24,24 @@ import { numberCommas } from 'app/components/Helpers';
 
 import { IFieldTypes, RENDER_FIELDS } from './fields';
 import useFetch from 'utils/useFetch';
+import { BillersState, ValidateSuccessResponse } from './slice/types';
 
 type FormFieldsProps = {
-  billerCode: string;
+  biller: BillersState;
+  onSuccess: (
+    form: { [name: string]: { label: string; value: string } },
+    validate: ValidateSuccessResponse,
+    payload: { [name: string]: any },
+  ) => void;
   onBack: () => void;
 };
 
-export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
+export default function FormFields({
+  biller,
+  onSuccess,
+  onBack,
+}: FormFieldsProps) {
   const { error, response, goFetch, fetchReset } = useFetch();
-  const pay = useFetch();
 
   const dashData: any = useSelector(selectData);
   const [balance, setBalance] = React.useState('0.00');
@@ -36,6 +49,8 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
   const [formData, setFormData] = React.useState({});
   const [fields, setFields] = React.useState<IFieldTypes[]>([]);
   const [note, setNote] = React.useState<any>('');
+  const [payload, setPayload] = React.useState<{ [name: string]: string }>({});
+  const [apiError, setApiError] = React.useState({ show: false, msg: '' });
 
   React.useEffect(() => {
     if (dashData) {
@@ -44,13 +59,13 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
   }, [dashData]);
 
   React.useEffect(() => {
-    const view = RENDER_FIELDS(billerCode);
+    const view = RENDER_FIELDS(biller.code);
     const data = {};
     view.fields.map(
       j =>
         (data[j.name] = j.required
-          ? { value: '', error: false, msg: '' }
-          : { value: '' }),
+          ? { label: j.label, value: '', error: false, msg: '' }
+          : { label: j.label, value: '' }),
     );
 
     setFormData(data);
@@ -60,12 +75,36 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
     setTimeout(() => {
       setLoading(false);
     }, 500);
-  }, [billerCode]);
+  }, [biller]);
 
   React.useEffect(() => {
     if (response) {
+      if (response.validationNumber) {
+        // initialize payload
+        const formInfo: {
+          [name: string]: { label: string; value: string };
+        } = {};
+
+        // get all the key name in our formData object
+        const keys = Object.keys(formData);
+
+        // Iterate through the keys to dynamically populate payload
+        if (keys.length > 0) {
+          keys.forEach(k => {
+            formInfo[k] = {
+              label: formData[k].label,
+              value: formData[k].value,
+            };
+            return;
+          });
+        }
+
+        onSuccess(formInfo, response, payload);
+      }
     }
+
     if (error) {
+      console.log(error);
       let providerError = error.provider_error || false;
       if (providerError && providerError.length > 0) {
         providerError.forEach(err => {
@@ -107,6 +146,24 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
           }
         });
       }
+
+      if (!providerError && error.errors) {
+        let errors = error.errors.error_code ? error.errors.error_code : [];
+        if (errors.length > 0) {
+          errors.forEach(err => {
+            if (err === 204) {
+              setApiError({ show: true, msg: err.message.join('\n') });
+              return;
+            }
+            if (err === 402) {
+              setApiError({ show: true, msg: err.message.join('\n') });
+              return;
+            }
+          });
+        } else {
+          setApiError({ show: true, msg: error.message || '' });
+        }
+      }
       fetchReset();
       setLoading(false);
     }
@@ -115,9 +172,12 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
 
   const onChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
+    const oldValue = formData[name] || {};
+
     setFormData({
       ...formData,
       [name]: {
+        ...oldValue,
         value: value,
         error: false,
         msg: '',
@@ -127,9 +187,12 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
 
   const onChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value, name } = e.currentTarget;
+    const oldValue = formData[name] || {};
+
     setFormData({
       ...formData,
       [name]: {
+        ...oldValue,
         value: value,
         error: false,
         msg: '',
@@ -167,7 +230,7 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
       setLoading(true);
 
       // initialize payload
-      let payload: { [name: string]: string; otherInfo?: any } = {};
+      let requestPayload: { [name: string]: string; otherInfo?: any } = {};
       let otherInfo = {};
 
       // get all the key name in our formData object
@@ -182,20 +245,23 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
             otherInfo[o[1]] = formData[k].value;
             return;
           }
-          payload[k] = formData[k].value;
+          requestPayload[k] = formData[k].value;
           return;
         });
       }
 
       if (Object.keys(otherInfo).length > 0) {
-        payload['otherInfo'] = otherInfo; // include the other info in our payload
+        requestPayload['otherInfo'] = otherInfo; // include the other info in our payload
       }
 
-      const referenceNumber = payload.account_number || payload.referenceNumber;
+      setPayload(requestPayload);
+      const referenceNumber =
+        requestPayload.account_number || requestPayload.referenceNumber;
+
       goFetch(
-        `/pay/bills/validate/account/${billerCode}/${referenceNumber}`,
+        `/pay/bills/validate/account/${biller.code}/${referenceNumber}`,
         'POST',
-        JSON.stringify(payload),
+        JSON.stringify(requestPayload),
         '',
         true,
         true,
@@ -208,6 +274,9 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
       <Box title="Pay Bills" titleBorder withPadding style={{ minHeight: 250 }}>
         {loading && <Loading position="absolute" />}
         <form>
+          {/* <Field style={{ textAlign: 'center' }}>
+            <img src={image} alt={biller.logo} style={{ maxWidth: 100 }} />
+          </Field> */}
           {fields && fields.length > 0 && (
             <>
               {fields.map((f: IFieldTypes) => {
@@ -320,8 +389,34 @@ export default function FormFields({ billerCode, onBack }: FormFieldsProps) {
       <img
         src={bayadLogo}
         alt="Bayad Partner"
-        style={{ width: 95, display: 'block', margin: '0 auto' }}
+        style={{
+          width: 95,
+          display: 'block',
+          margin: '0 auto',
+          padding: '10px 0 0',
+        }}
       />
+
+      <Dialog show={apiError.show} size="xsmall">
+        <div style={{ margin: '20px', textAlign: 'center' }}>
+          <CircleIndicator size="medium" color="danger">
+            <FontAwesomeIcon icon="times" />
+          </CircleIndicator>
+          <H5 margin="10px 0 5px">Oops! Transaction Error</H5>
+          <Paragraph size="small" margin="0 0 24px">
+            {apiError.msg}
+          </Paragraph>
+
+          <Button
+            fullWidth
+            onClick={() => setApiError({ show: false, msg: '' })}
+            variant="outlined"
+            size="medium"
+          >
+            Close
+          </Button>
+        </div>
+      </Dialog>
     </>
   );
 }

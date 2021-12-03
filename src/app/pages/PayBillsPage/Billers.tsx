@@ -9,7 +9,7 @@ import SearchBar from 'app/components/SearchBar';
 type BillersProps = {
   category: string;
   billers: BillersState[];
-  onSelect: (code: string) => void;
+  onSelect: (biller: BillersState) => void;
   onBack: () => void;
 };
 /**
@@ -72,7 +72,7 @@ export default function Billers({
       onBack={onBack}
     >
       {selectedBillers.map(b => (
-        <Biller key={b.code} role="button" onClick={() => onSelect(b.code)}>
+        <Biller key={b.code} role="button" onClick={() => onSelect(b)}>
           <span className="biller-img">
             <img src={b.logo} alt={b.name} />
           </span>

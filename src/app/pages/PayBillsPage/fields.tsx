@@ -264,7 +264,7 @@ const defaultFields: IFieldTypes[] = [
   {
     label: 'Reference Number',
     type: 'text',
-    name: 'reference',
+    name: 'referenceNumber',
     placeholder: '',
     required: true,
     validator: validateText,
@@ -416,6 +416,7 @@ const pldt6: IFieldTypes[] = [
   {
     label: 'Service',
     type: 'select',
+    option: RENDER_SELECT_ITEMS('pldt6_otherinfo.service'),
     name: 'otherInfo.Service',
     placeholder: '',
     required: true,
@@ -1174,6 +1175,47 @@ const cnvrg: IFieldTypes[] = [
   },
 ];
 
+const hcphl: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 13,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 150,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Name',
+    type: 'text',
+    name: 'otherInfo.Name',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Phone/Cellphone Number',
+    type: 'number',
+    name: 'otherInfo.PhoneNo',
+    placeholder: '',
+    required: true,
+    min: 1,
+    maxLength: 11,
+    validator: validateText,
+  },
+];
+
 /**
  *
  * @param {string} code     biller code
@@ -1320,6 +1362,12 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
         fields: hdmf1,
         note: '',
       };
+    case 'HCPHL': {
+      return {
+        fields: hcphl,
+        note: '',
+      };
+    }
     default:
       return {
         fields: defaultFields,
