@@ -230,25 +230,15 @@ export function TransactionHistoryPage(props) {
             {!noRecords && !noFiltered && transactionHistory.length > 0 && (
               <S.TransactionList>
                 {transactionHistory.map((d: any, i) => {
-                  const isPositiveAmount =
+                  const isPostiveAmount =
                     d.transaction_category.transaction_type === 'POSITIVE';
                   const isNegativeAmount =
                     d.transaction_category.transaction_type === 'NEGATIVE';
-
-                  let classColor = 'text-yellow';
-                  if (d.status !== 'PENDING') {
-                    classColor = isPositiveAmount
-                      ? 'text-green'
-                      : isNegativeAmount
-                      ? 'text-red'
-                      : 'text-yellow';
-                  }
-                  // check date
                   let date = DateTime.fromSQL(d.created_at);
                   if (date.invalid) {
                     date = DateTime.fromISO(d.created_at);
                   }
-                  const monthDateYear = date.toFormat('LLLL dd, yyyy');
+                  const monthDateYear = date.toLocaleString(DateTime.DATE_MED);
                   const time = date.toLocaleString(DateTime.TIME_SIMPLE);
 
                   return (
@@ -275,9 +265,12 @@ export function TransactionHistoryPage(props) {
                         <S.ListDescription>{time}</S.ListDescription>
                       </S.ListContainer>
                       <S.ListContainer textAlign="right">
-                        <S.ListTitle className={classColor}>
-                          PHP {isPositiveAmount ? '+' : '-'}
-                          {numberWithCommas(d.total_amount)}
+                        <S.ListTitle
+                          isPositive={isPostiveAmount}
+                          isNegative={isNegativeAmount}
+                        >
+                          PHP {isPostiveAmount && '+'}
+                          {numberWithCommas(d.signed_total_amount)}
                         </S.ListTitle>
                         <Button
                           onClick={() =>

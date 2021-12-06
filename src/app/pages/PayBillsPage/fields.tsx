@@ -291,6 +291,27 @@ const defaultFields: IFieldTypes[] = [
   },
 ];
 
+const mecor: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'referenceNumber',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    min: 5,
+    max: 100000,
+    required: true,
+    validator: validateAmount,
+  },
+];
+
 const bneco: IFieldTypes[] = [
   {
     label: 'Account Number',
@@ -471,6 +492,8 @@ const pruli: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
+    min: 1,
+    max: 100000,
     validator: validateAmount,
   },
   {
@@ -1226,13 +1249,12 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
   switch (code) {
     case 'MECOR':
       return {
-        fields: accoutNumberAndAmount,
+        fields: mecor,
         note: (
           <>
             <span className="text-red">IMPORTANT NOTE:</span> To avoid
             inconvenience, please input the exact amount of your total billing
             amount due and settle before your due date.
-            <br />
             <br />
             Please review to ensure that the details are correct before you
             proceed.

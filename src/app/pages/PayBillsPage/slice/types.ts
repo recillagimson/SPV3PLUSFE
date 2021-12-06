@@ -31,10 +31,4 @@ export interface BillerStateOptions {
   isActive?: boolean;
 }
 
-export type ValidateSuccessResponse = {
-  serviceFee?: string;
-  otherCharges?: string;
-  validationNumber?: string;
-};
-
 export type ContainerState = PayBillsState;

@@ -42,7 +42,7 @@ export default function FlagsProvider({
   const getRemoteConfig = () => {
     remoteConfig
       .fetchAndActivate()
-      .then(() => {
+      .then(activated => {
         return remoteConfig.getAll();
       })
       .then(remoteFlags => {

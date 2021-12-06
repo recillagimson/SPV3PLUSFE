@@ -234,7 +234,6 @@ export function SendToBankUBP() {
                       name="amount"
                       className={formData.amount.error ? 'error' : undefined}
                       placeholder="0.00"
-                      hidespinner
                     />
                     <span>PHP</span>
                   </InputTextWrapper>

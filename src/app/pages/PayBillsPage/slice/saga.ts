@@ -64,7 +64,7 @@ function* getBillers() {
         }),
       );
     }
-  } catch (err: any) {
+  } catch (err) {
     // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
@@ -137,7 +137,7 @@ function* validatePaybills() {
         }),
       );
     }
-  } catch (err: any) {
+  } catch (err) {
     // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
@@ -207,7 +207,7 @@ function* createPayBills() {
         analytics.logEvent(events.paybills, { code: billerCode });
       }
     }
-  } catch (err: any) {
+  } catch (err) {
     // special case, check the 422 for invalid data (account already exists)
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();

@@ -5,6 +5,6 @@
 import { lazyLoad } from 'utils/loadable';
 
 export const PayBillsPage = lazyLoad(
-  () => import('./newindex'),
+  () => import('./index'),
   module => module.PayBillsPage,
 );

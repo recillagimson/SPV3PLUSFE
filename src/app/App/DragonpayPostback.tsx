@@ -5,7 +5,7 @@
 import * as React from 'react';
 import { useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 
 import Logo from 'app/components/Assets/Logo';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';

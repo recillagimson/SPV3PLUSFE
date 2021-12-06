@@ -188,8 +188,3 @@ v1.3.0
 - Add Money via ECPay (VP2-469)
 - Request Transaction History to Email (VP2-581)
 - Send to Bank - PesoNet>UBP- I'm getting "not enough balance" if I enter amount more than php1 (QA-193)
-
-v1.3.1
-
-- Change Transaction History Details for ECPay, Added Service Fee display for Instapay/Pesonet and Paybills
-- Modified Paybills display of Categories (will be based on the billers category from API)

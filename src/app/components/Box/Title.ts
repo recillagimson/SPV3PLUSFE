@@ -12,7 +12,7 @@ const Title = styled.div<TitleProps>`
   padding: ${p => (p.hasbutton ? '0 8px 0 25px' : '0 25px')};
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: row;
   height: 65px;
   border-bottom: ${p =>
@@ -29,10 +29,6 @@ const Title = styled.div<TitleProps>`
         color: #000;
       }
     }
-  }
-
-  .search-bar {
-    max-width: 300px;
   }
 `;
 

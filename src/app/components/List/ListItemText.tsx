@@ -28,7 +28,7 @@ interface TypographyProps extends React.HTMLAttributes<any> {
   align?: 'left' | 'right' | 'center';
   bold?: boolean;
   icon?: boolean | IconProp; // Show Arrow Icon
-  color?: undefined | 'PENDING' | 'POSITIVE' | 'NEGATIVE';
+  color?: undefined | 'POSITIVE' | 'NEGATIVE';
 }
 
 const Wrapper = styled.div<{
@@ -67,15 +67,13 @@ const Wrapper = styled.div<{
 
 const Primary = styled.p<{
   bold?: boolean;
-  color?: undefined | 'PENDING' | 'POSITIVE' | 'NEGATIVE';
+  color?: undefined | 'POSITIVE' | 'NEGATIVE';
 }>`
   font-size: 1rem;
   font-weight: ${p => (p.bold ? '700' : '500')};
   margin: 0 0;
   color: ${p =>
-    p.color && p.color === 'PENDING'
-      ? StyleConstants.GOLD
-      : p.color === 'POSITIVE'
+    p.color && p.color === 'POSITIVE'
       ? StyleConstants.POSITIVE
       : p.color === 'NEGATIVE'
       ? StyleConstants.NEGATIVE

@@ -68,15 +68,9 @@ export function TransactionHistoryDetailsPage() {
     ? details?.transaction_category?.transaction_type === 'POSITIVE'
     : false;
 
-  let hasServiceFee = false;
-  if (
-    (details && details.transaction_category.name === 'WITHDRAWUBPPESONET') ||
-    details.transaction_category.name === 'WITHDRAWUBPINSTAPAY' ||
-    details.transaction_category.name === 'ADDMONEYECPAY' ||
-    details.transaction_category.name === 'BILLS'
-  ) {
-    hasServiceFee = true;
-  }
+  const hasServiceFee = details
+    ? details?.transaction_category?.title?.indexOf('Bills Payment') !== -1
+    : false;
 
   let monthDateYearTime = '';
   if (details) {
@@ -84,7 +78,7 @@ export function TransactionHistoryDetailsPage() {
     if (date.invalid) {
       date = DateTime.fromISO(details?.transactable?.created_at);
     }
-    monthDateYearTime = date.toFormat('dd LLLL yyyy, h:mm a');
+    monthDateYearTime = date.toLocaleString(DateTime.DATETIME_MED);
   }
 
   return (
@@ -163,8 +157,8 @@ export function TransactionHistoryDetailsPage() {
                   }`}
                 >
                   PHP&nbsp;
-                  {isPositiveAmount ? '+' : '-'}
-                  {numberWithCommas(details.total_amount)}
+                  {isPositiveAmount && '+'}
+                  {numberWithCommas(details.signed_total_amount)}
                 </p>
                 {hasServiceFee && (
                   <p>

@@ -337,7 +337,6 @@ export function LoginPage() {
                 }
                 placeholder="Email or Mobile No."
                 className={email.error ? 'error' : undefined}
-                autoComplete="email"
               />
               {email.error && <ErrorMsg formError>{email.msg}</ErrorMsg>}
             </Field>
@@ -359,7 +358,6 @@ export function LoginPage() {
                     })
                   }
                   className={password.error ? 'error' : undefined}
-                  autoComplete="current-password"
                 />
                 <IconButton
                   type="button"

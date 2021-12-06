@@ -41,7 +41,7 @@ const useFetch = () => {
     async (
       url: string,
       method: string,
-      payload: string,
+      payload: any,
       contentType?: '' | 'application/json' | 'form-data',
       isUserToken?: boolean,
       decrypt?: boolean,
@@ -139,7 +139,7 @@ const useFetch = () => {
           }
         }
         setLoading(false);
-      } catch (err: any) {
+      } catch (err) {
         // for development console logging only
         if (process.env.REACT_APP_SENTRY_ENV === 'development') {
           const cons = {

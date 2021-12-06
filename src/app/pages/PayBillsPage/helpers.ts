@@ -18,14 +18,6 @@ import Others from 'app/components/Assets/paybills/others.svg';
 
 import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 
-export const VIEWS = {
-  categories: 'categories',
-  subCategories: 'subCategories',
-  fields: 'fields',
-  review: 'review',
-  receipt: 'receipt',
-};
-
 export const CATEGORIES = [
   {
     value: 'electric utility',
@@ -307,35 +299,4 @@ export const disconnectionTitleMessage = val => {
     default:
       return 'Successful Payment';
   }
-};
-
-// sample error
-const error = {
-  message: 'The given data was invalid.',
-  errors: { error_code: [204], message: ['Provider Error.'] },
-  provider_error: [
-    {
-      exception: 'unprocessableEntityException',
-      message: 'Unprocessable Entity',
-      status: 422,
-      details: {
-        code: 5,
-        message: 'The telephone number must be at most 10 digits.',
-      },
-      errors: {
-        'otherInfo.TelephoneNumber': [
-          {
-            code: 5,
-            message: 'The telephone number must be at most 10 digits.',
-          },
-        ],
-        'otherInfo.ServiceReferenceNo': [
-          {
-            code: 5,
-            message: 'The service reference number must be 10 digits.',
-          },
-        ],
-      },
-    },
-  ],
 };

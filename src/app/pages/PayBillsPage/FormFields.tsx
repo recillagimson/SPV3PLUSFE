@@ -104,7 +104,6 @@ export default function FormFields({
     }
 
     if (error) {
-      console.log(error);
       let providerError = error.provider_error || false;
       if (providerError && providerError.length > 0) {
         providerError.forEach(err => {
