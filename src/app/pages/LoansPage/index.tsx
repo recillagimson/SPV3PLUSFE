@@ -288,7 +288,8 @@ export function LoansPage() {
             variant="contained"
             color="primary"
             as="a"
-            href="https://apps.rfc.com.ph/rfc360loans/squidpay.php"
+            href={process.env.REACT_APP_RSFC_URL}
+            // href="https://apps.rfc.com.ph/rfc360loans/squidpay.php"
             // onClick={e => {
             //   e.preventDefault();
             //   const Window = window;
