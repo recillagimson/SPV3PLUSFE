@@ -26,6 +26,7 @@ import { BillersState, ValidateSuccessResponse } from './slice/types';
 import RenderReceipt from './Receipt';
 
 type ReviewProps = {
+  onSuccess: () => void;
   biller: BillersState;
   details: {
     form: { [name: string]: { label: string; value: string } };
@@ -34,7 +35,7 @@ type ReviewProps = {
   };
 };
 
-export default function Review({ biller, details }: ReviewProps) {
+export default function Review({ onSuccess, biller, details }: ReviewProps) {
   const { loading, response, error, goFetch, fetchReset } = useFetch();
 
   const [success, setSuccess] = React.useState(false);
@@ -116,6 +117,12 @@ export default function Review({ biller, details }: ReviewProps) {
     }
   }
 
+  let totalAmountToPay = 0;
+  if (success) {
+    totalAmountToPay =
+      data.total_amount + data.service_fee + parseInt(data.other_charges);
+  }
+
   return (
     <>
       <Box title="Review Payment" titleBorder withPadding>
@@ -154,7 +161,14 @@ export default function Review({ biller, details }: ReviewProps) {
           >
             <Paragraph margin="0 0 3px">Total Amount</Paragraph>
             <H5 margin="0 0 2px">
-              PHP {numberCommas(details.payload.amount || '0')}
+              PHP{' '}
+              {numberCommas(
+                (
+                  parseInt(details.payload.amount) +
+                  parseInt(details.validate.serviceFee || '0') +
+                  parseInt(details.validate.otherCharges || '0')
+                ).toString() || '0',
+              )}
             </H5>
             <Paragraph size="small" margin="0 0 2px">
               Service Fee: {numberCommas(details.validate.serviceFee || '0')}
@@ -179,6 +193,7 @@ export default function Review({ biller, details }: ReviewProps) {
               color="primary"
               size="large"
               onClick={onPayBill}
+              minWidth="150px"
             >
               Pay Bill
             </Button>
@@ -192,7 +207,7 @@ export default function Review({ biller, details }: ReviewProps) {
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="times" />
           </CircleIndicator>
-          <H5 margin="10px 0 5px">Oops! Transaction Error</H5>
+          <H5 margin="10px 0 5px">Oh no!</H5>
           <Paragraph size="small" margin="0 0 24px">
             {apiError.msg}
           </Paragraph>
@@ -209,8 +224,8 @@ export default function Review({ biller, details }: ReviewProps) {
       </Dialog>
 
       {/* API Success */}
-      <Dialog show size="small">
-        <div style={{ padding: '20px 0' }}>
+      <Dialog show={success} size="small">
+        <div style={{ padding: '20px 10px' }}>
           <Logo size="medium" />
           <ReceiptWrapper>
             <div style={{ textAlign: 'center' }}>
@@ -225,7 +240,7 @@ export default function Review({ biller, details }: ReviewProps) {
             </div>
 
             {biller.code === 'MECOR' && (
-              <Paragraph align="center">
+              <Paragraph align="center" size="small">
                 "Sweet! We have received your MERALCO bill payment and are
                 currently processing it. Thank you. Have a great day ahead!"
               </Paragraph>
@@ -233,13 +248,13 @@ export default function Review({ biller, details }: ReviewProps) {
 
             <RenderReceipt billerCode={biller.code} data={data} />
 
-            <Paragraph margin="40px 0 8px" size="small" align="center">
+            <Paragraph margin="40px 0 4px" size="small" align="center">
               Total Amount
             </Paragraph>
-            <H5 margin="0 0 8px" align="center">
-              PHP {numberCommas(data.amount || 0)}
+            <H5 margin="0 0 4px" align="center">
+              PHP {numberCommas(totalAmountToPay || 0)}
             </H5>
-            <Paragraph margin="0 0 2px" size="small" align="center">
+            <Paragraph margin="0 0 0" size="small" align="center">
               Service Fee: {numberCommas(data.service_fee || 0)}
             </Paragraph>
             <Paragraph margin="0 0 72px" size="small" align="center">
@@ -257,10 +272,25 @@ export default function Review({ biller, details }: ReviewProps) {
               }}
             />
             <Logo size="small" />
-            <Paragraph margin="0 0 0" size="xsmall" align="center">
+            <Paragraph margin="2px 0 0" size="xsmall" align="center">
               {timeStamp.toFormat('dd LLLL yyyy, hh:mm a')}
             </Paragraph>
           </ReceiptWrapper>
+          <Button
+            color="primary"
+            variant="contained"
+            fullWidth
+            size="large"
+            onClick={onSuccess}
+          >
+            Close
+          </Button>
+          {biller.code === 'MECOR' && (
+            <Paragraph align="center" margin="5px 0 0" size="small">
+              Please note that payments made after 7PM will be posted 7AM the
+              next day.
+            </Paragraph>
+          )}
         </div>
       </Dialog>
     </>

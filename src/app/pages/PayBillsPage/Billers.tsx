@@ -7,19 +7,18 @@ import { BillersState } from './slice/types';
 import SearchBar from 'app/components/SearchBar';
 
 type BillersProps = {
-  category: string;
+  label: string;
   billers: BillersState[];
   onSelect: (biller: BillersState) => void;
   onBack: () => void;
 };
 /**
- * @prop  {string}    category    selected category
- * @prop  {array}     billers     list of selected billers in the category
+ * @prop  {array}     billers     list of selected billers in the category (should be filtered already)
  * @prop  {function}  onSelect    on select of biller
  * @prop  {function}  onBack      callback to return to selection of biller category
  */
 export default function Billers({
-  category,
+  label,
   billers,
   onSelect,
   onBack,
@@ -30,23 +29,12 @@ export default function Billers({
 
   React.useEffect(() => {
     if (billers && billers.length > 0) {
-      const filtered = onFilterBillers();
-      setSelectedBillers(filtered);
+      setSelectedBillers([...billers]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [billers, category]);
-
-  const onFilterBillers = () => {
-    const filtered = billers.filter(
-      (biller: BillersState) =>
-        biller.category.toLowerCase() === category?.toLowerCase() &&
-        biller.active === '1',
-    );
-    return filtered;
-  };
+  }, [billers]);
 
   const onSearchBiller = (text: string) => {
-    const oldBillers = onFilterBillers();
+    const oldBillers = billers;
 
     if (text !== '') {
       const newBillers = oldBillers.filter(f => {
@@ -65,7 +53,7 @@ export default function Billers({
 
   return (
     <Box
-      title={category}
+      title={label}
       titleBorder
       withPadding
       titleAction={<SearchBar onChange={onSearchBiller} noMargin />}

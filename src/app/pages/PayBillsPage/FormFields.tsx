@@ -16,6 +16,7 @@ import Label from 'app/components/Elements/Label';
 import Dialog from 'app/components/Dialog';
 import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import H5 from 'app/components/Elements/H5';
+import H3 from 'app/components/Elements/H3';
 
 import bayadLogo from 'app/components/Assets/paybills/bayad-partner.png';
 
@@ -50,6 +51,15 @@ export default function FormFields({
   const [fields, setFields] = React.useState<IFieldTypes[]>([]);
   const [note, setNote] = React.useState<any>('');
   const [payload, setPayload] = React.useState<{ [name: string]: string }>({});
+  const [isConfirm, setIsConfirm] = React.useState<{
+    show: boolean;
+    msg: string;
+    response: any;
+  }>({
+    show: false,
+    msg: '',
+    response: {},
+  });
   const [apiError, setApiError] = React.useState({ show: false, msg: '' });
 
   React.useEffect(() => {
@@ -104,6 +114,7 @@ export default function FormFields({
     }
 
     if (error) {
+      console.log(error);
       let providerError = error.provider_error || false;
       if (providerError && providerError.length > 0) {
         providerError.forEach(err => {
@@ -143,6 +154,14 @@ export default function FormFields({
               }
             });
           }
+
+          if (k.length === 0 && err.data && err.data.valid) {
+            setIsConfirm({
+              show: true,
+              msg: err.data.message,
+              response: { ...err.data },
+            });
+          }
         });
       }
 
@@ -168,6 +187,30 @@ export default function FormFields({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response, error]);
+
+  const onConfirm = () => {
+    // initialize payload
+    const formInfo: {
+      [name: string]: { label: string; value: string };
+    } = {};
+
+    // get all the key name in our formData object
+    const keys = Object.keys(formData);
+
+    // Iterate through the keys to dynamically populate payload
+    if (keys.length > 0) {
+      keys.forEach(k => {
+        formInfo[k] = {
+          label: formData[k].label,
+          value: formData[k].value,
+        };
+        return;
+      });
+    }
+
+    onSuccess(formInfo, isConfirm.response, payload);
+    setIsConfirm({ show: false, msg: '', response: {} });
+  };
 
   const onChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.currentTarget;
@@ -207,7 +250,19 @@ export default function FormFields({
 
     fields.forEach((field: IFieldTypes, i: number) => {
       if (field.required && field.validator) {
-        const validate = field.validator(formData[field.name].value, balance);
+        const validate =
+          field.name === 'amount' && field.type === 'number'
+            ? field.validator(
+                formData[field.name].value,
+                balance,
+                field.min,
+                field.max,
+              )
+            : field.validator(
+                formData[field.name].value,
+                field.maxLength,
+                field.label,
+              );
         if (validate.error) {
           hasError = true;
           newFormData[field.name] = {
@@ -216,8 +271,6 @@ export default function FormFields({
           };
           return;
         }
-        // payload[field.name] = formData[field.name].value;
-        return;
       }
     });
 
@@ -359,7 +412,7 @@ export default function FormFields({
                   </Field>
                 );
               })}
-              {note && <Paragraph size="small">{note}</Paragraph>}
+              {note && <Paragraph size="xsmall">{note}</Paragraph>}
             </>
           )}
 
@@ -398,7 +451,7 @@ export default function FormFields({
 
       <Dialog show={apiError.show} size="xsmall">
         <div style={{ margin: '20px', textAlign: 'center' }}>
-          <CircleIndicator size="medium" color="danger">
+          <CircleIndicator size="large" color="danger">
             <FontAwesomeIcon icon="times" />
           </CircleIndicator>
           <H5 margin="10px 0 5px">Oops! Transaction Error</H5>
@@ -413,6 +466,36 @@ export default function FormFields({
             size="medium"
           >
             Close
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog show={isConfirm.show} size="xsmall">
+        <div style={{ margin: '20px', textAlign: 'center' }}>
+          <CircleIndicator size="large" color="danger">
+            <FontAwesomeIcon icon="exclamation" />
+          </CircleIndicator>
+          <H3 margin="10px 0 5px">
+            {isConfirm.response?.code === 1 ? 'Heads up!' : 'Oops!'}
+          </H3>
+          <Paragraph size="small" margin="0 0 24px">
+            {isConfirm.msg}
+          </Paragraph>
+
+          <Button
+            onClick={onConfirm}
+            variant="contained"
+            size="medium"
+            color="primary"
+          >
+            Proceed
+          </Button>
+          <Button
+            onClick={() => setIsConfirm({ show: false, msg: '', response: {} })}
+            variant="outlined"
+            size="medium"
+          >
+            Cancel
           </Button>
         </div>
       </Dialog>

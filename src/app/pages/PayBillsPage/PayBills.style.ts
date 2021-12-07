@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from 'styled-components/macro';
 
 import { StyleConstants } from 'styles/StyleConstants';
 
@@ -27,7 +27,7 @@ export const Wrapper = styled.section<{
 }>`
   background: ${StyleConstants.WHITE};
   border-radius: 10px;
-  width: 900px;
+  width: 100%;
   margin: 0 auto;
 
   ${({ isBoolean }) =>
@@ -76,6 +76,8 @@ export const BillersOptions = styled.ul`
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
+  justify-content: space-between;
+  flex-direction: row;
 `;
 
 export const BillerOptionsItem = styled.li`
@@ -84,10 +86,12 @@ export const BillerOptionsItem = styled.li`
   align-items: center;
   text-align: center;
   cursor: pointer;
-  width: 12%; // For 9 columns 2 rows biller options
+  width: 100px; // For 9 columns 2 rows biller options
+  transition: opacity 0.3ms ease-in;
 
   img {
-    width: 50px;
+    display: block;
+    height: 50px;
   }
 
   p {
@@ -96,6 +100,10 @@ export const BillerOptionsItem = styled.li`
     line-height: 18px;
     font-weight: 400;
     margin: 0 0 15px;
+  }
+
+  &:hover {
+    opacity: 0.85;
   }
 `;
 
@@ -365,5 +373,67 @@ export const PayBillCTAContainer = styled.div`
 
   button {
     margin-top: 20px;
+  }
+`;
+
+// added by habs
+export const Biller = styled.div`
+  border: 1px solid ${StyleConstants.borderColor};
+  border-radius: ${StyleConstants.radius.medium};
+  padding: ${StyleConstants.spacing[12]} ${StyleConstants.spacing[16]};
+  margin-bottom: ${StyleConstants.spacing[12]};
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 79px;
+  font-size: 0.85rem;
+
+  &[role='button'] {
+    cursor: pointer;
+
+    &:hover {
+      border-color: ${StyleConstants.color.gray3};
+    }
+  }
+
+  .biller-img {
+    display: inline-block;
+    margin-right: 12px;
+    width: 70px;
+    text-align: center;
+
+    img {
+      max-height: 50px;
+    }
+  }
+`;
+
+export const CategoryButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  border: 0;
+  background-color: transparent;
+  padding: 4px;
+  width: 95px;
+  margin: 0 1px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease-in;
+  color: inherit;
+  border-radius: ${StyleConstants.radius.small};
+
+  img {
+    width: auto;
+    height: 48px;
+  }
+
+  span {
+    font-size: 0.8rem;
+    padding-bottom: 4px;
+  }
+
+  &:hover {
+    background-color: ${StyleConstants.color.tones.mute};
   }
 `;

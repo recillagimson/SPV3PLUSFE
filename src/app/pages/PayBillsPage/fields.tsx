@@ -88,6 +88,13 @@ export const RENDER_SELECT_ITEMS = name => {
           label: 'Employer',
         },
       ];
+    case 'sss03_otherinfo.reltype':
+      return [
+        {
+          value: 'LP',
+          label: 'Loan Payment',
+        },
+      ];
     case 'sss02_loan_type':
       return [
         {
@@ -214,22 +221,14 @@ export type IFieldTypes = {
   max?: number | string;
   maxLength?: number;
   option?: { value: string; label: string }[]; // optional, only if type is select
-  /**
-   * @param {string}  balance     the wallet balance
-   * @param {string}  amount      the amount entered
-   * @returns {boolean}           returns true if amount is greater than the balance
-   */
-  validator?: (
-    balance: string,
-    amount: string,
-  ) => { error: boolean; msg: string };
+  validator?: (...args: any) => { error: boolean; msg: string };
 };
 
 const accoutNumberAndAmount: IFieldTypes[] = [
   {
     label: 'Account Number',
     type: 'number',
-    name: 'referenceNumber',
+    name: 'account_number',
     placeholder: '',
     required: true,
     validator: validateText,
@@ -240,6 +239,8 @@ const accoutNumberAndAmount: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
+    min: 1,
+    max: 100000,
     validator: validateAmount,
   },
 ];
@@ -295,7 +296,7 @@ const mecor: IFieldTypes[] = [
   {
     label: 'Account Number',
     type: 'number',
-    name: 'referenceNumber',
+    name: 'account_number',
     placeholder: '',
     required: true,
     validator: validateText,
@@ -305,8 +306,28 @@ const mecor: IFieldTypes[] = [
     type: 'number',
     name: 'amount',
     placeholder: '0.00',
+    required: true,
     min: 5,
     max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const mecop: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'select',
+    name: 'amount',
+    placeholder: '0.00',
+    option: RENDER_SELECT_ITEMS('mecop_amount'),
     required: true,
     validator: validateAmount,
   },
@@ -327,6 +348,8 @@ const bneco: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
+    min: 1,
+    max: 100000,
     validator: validateAmount,
   },
   {
@@ -462,7 +485,6 @@ const aeon1: IFieldTypes[] = [
     placeholder: '0.00',
     min: 1,
     max: 100000,
-    maxLength: 6,
     required: true,
     validator: validateAmount,
   },
@@ -479,9 +501,9 @@ const aeon1: IFieldTypes[] = [
 
 const pruli: IFieldTypes[] = [
   {
-    label: 'Policy Number (reference number)',
+    label: 'Account Number (Policy Number)',
     type: 'text',
-    name: 'referenceNumber',
+    name: 'account_number',
     placeholder: '',
     required: true,
     validator: validateText,
@@ -588,7 +610,7 @@ const smart: IFieldTypes[] = [
   {
     label: 'Account Number',
     type: 'text',
-    name: 'referenceNumber',
+    name: 'account_number',
     placeholder: '',
     required: false,
     validator: validateText,
@@ -736,12 +758,15 @@ const sss03: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
+    min: 1,
+    max: 200000,
     validator: validateAmount,
   },
   {
     label: 'Payor Type',
     type: 'select',
     name: 'otherInfo.PayorType',
+    option: RENDER_SELECT_ITEMS('sss03_otherinfo.payortype'),
     placeholder: '',
     required: true,
     validator: validateText,
@@ -750,6 +775,7 @@ const sss03: IFieldTypes[] = [
     label: 'Rel Type',
     type: 'text',
     name: 'otherInfo.RelType',
+    option: RENDER_SELECT_ITEMS('sss03_otherinfo.reltype'),
     placeholder: '',
     required: true,
     validator: validateText,
@@ -798,6 +824,7 @@ const sss03: IFieldTypes[] = [
     label: 'Platform Type',
     type: 'select',
     name: 'otherInfo.PlatformType',
+    option: RENDER_SELECT_ITEMS('sss03_otherinfo.platformtype'),
     placeholder: '',
     required: true,
     validator: validateText,
@@ -851,7 +878,7 @@ const bpi00: IFieldTypes[] = [
   {
     label: 'Account Number',
     type: 'text',
-    name: 'referenceNumber',
+    name: 'account_number',
     placeholder: '',
     required: true,
     validator: validateText,
@@ -862,6 +889,8 @@ const bpi00: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
+    min: 1,
+    max: 100000,
     validator: validateAmount,
   },
   {
@@ -878,7 +907,7 @@ const bnkrd: IFieldTypes[] = [
   {
     label: 'Account Number',
     type: 'text',
-    name: 'referenceNumber',
+    name: 'account_number',
     placeholder: '',
     required: true,
     validator: validateText,
@@ -889,6 +918,8 @@ const bnkrd: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
+    min: 1,
+    max: 100000,
     validator: validateAmount,
   },
   {
@@ -913,7 +944,7 @@ const unbnk: IFieldTypes[] = [
   {
     label: 'Account Number',
     type: 'text',
-    name: 'referenceNumber',
+    name: 'account_number',
     placeholder: '',
     required: true,
     validator: validateText,
@@ -1107,9 +1138,9 @@ const aslnk: IFieldTypes[] = [
 
 const pilam: IFieldTypes[] = [
   {
-    label: 'Policy Number (reference number)',
+    label: 'Policy Number',
     type: 'text',
-    name: 'referenceNumber',
+    name: 'account_number',
     placeholder: '',
     required: true,
     validator: validateText,
@@ -1120,6 +1151,8 @@ const pilam: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
+    min: 1,
+    max: 100000,
     validator: validateAmount,
   },
   {
@@ -1214,7 +1247,7 @@ const hcphl: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
-    min: 150,
+    min: 1,
     max: 100000,
     validator: validateAmount,
   },
@@ -1239,6 +1272,152 @@ const hcphl: IFieldTypes[] = [
   },
 ];
 
+const mbccc: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 16,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Customer name',
+    type: 'text',
+    name: 'otherInfo.ConsName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const etrip: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 500,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const mwcom: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 20,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const inec1: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const cgnal: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'First Name',
+    type: 'text',
+    name: 'otherInfo.FirstName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Last Name',
+    type: 'text',
+    name: 'otherInfo.LastName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'External Entity Name',
+    type: 'text',
+    name: 'otherInfo.ExternalEntityName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
 /**
  *
  * @param {string} code     biller code
@@ -1254,18 +1433,51 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
           <>
             <span className="text-red">IMPORTANT NOTE:</span> To avoid
             inconvenience, please input the exact amount of your total billing
-            amount due and settle before your due date.
-            <br />
-            Please review to ensure that the details are correct before you
-            proceed.
+            amount due and settle before your due date. Please review to ensure
+            that the details are correct before you proceed.
           </>
         ),
       };
-    // case 'MECOP':
-    // case 'MWCOM':
-    // case 'MWSIN':
-    // case 'RFID1':
-    // case 'ETRIP':
+    case 'MECOP':
+      return {
+        fields: mecop,
+        note: '',
+      };
+    case 'INEC1':
+      return {
+        fields: inec1,
+        note: '',
+      };
+    case 'VIECO':
+      return {
+        fields: accoutNumberAndAmount,
+        note: '',
+      };
+    case 'DVOLT':
+      return {
+        fields: accoutNumberAndAmount,
+        note: '',
+      };
+    case 'MWCOM':
+      return {
+        fields: mwcom,
+        note: '',
+      };
+    case 'MWSIN':
+      return {
+        fields: mwcom,
+        note: '',
+      };
+    case 'RFID1':
+      return {
+        fields: accoutNumberAndAmount,
+        note: '',
+      };
+    case 'ETRIP':
+      return {
+        fields: etrip,
+        note: '',
+      };
     case 'DFA01':
       return {
         fields: accoutNumberAndAmount,
@@ -1287,6 +1499,11 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
             that the details are correct before you proceed.
           </>
         ),
+      };
+    case 'CGNAL':
+      return {
+        fields: cgnal,
+        note: '',
       };
     case 'AEON1':
       return {
@@ -1338,7 +1555,11 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
         fields: poea1,
         note: '',
       };
-    // case 'MBCCC':
+    case 'MBCCC':
+      return {
+        fields: mbccc,
+        note: '',
+      };
     case 'BPI00':
       return {
         fields: bpi00,

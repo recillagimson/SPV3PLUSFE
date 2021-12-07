@@ -15,6 +15,7 @@ type Props = {
   color?: 'default' | 'primary' | 'secondary' | 'danger';
   size?: 'small' | 'medium' | 'large';
   variant?: 'contained' | 'outlined' | 'default';
+  minWidth?: string;
   fullWidth?: boolean;
 };
 
@@ -172,6 +173,7 @@ const ButtonStyle = css<Props>`
   font-size: 1rem;
   transition: all 0.2s ease-in-out;
   border-radius: ${StyleConstants.BUTTON_RADIUS};
+  min-width: ${p => (p.minWidth ? p.minWidth : '0')};
   width: ${p => (p.fullWidth ? '100%' : 'auto')};
   margin: ${p => (p.fullWidth ? '0 0' : '0 5px')};
   display: inline-block;

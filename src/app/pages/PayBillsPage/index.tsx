@@ -34,7 +34,7 @@ import {
   selectValidatedBiller,
   selectCreatedPayBills,
 } from './slice/selectors';
-import { BillersState, BillerStateOptions } from './slice/types';
+import { BillersState } from './slice/types';
 
 // Helpers
 import { numberWithCommas } from 'utils/common';
@@ -55,6 +55,10 @@ import BayadCenterLogo from 'app/components/Assets/paybills/bayad-center-logo.sv
 
 // Styles
 import * as S from './PayBills.style';
+import ProtectedContent from 'app/components/Layouts/ProtectedContent';
+
+// component
+import Categories from './Categories';
 
 export function PayBillsPage() {
   const history = useHistory();
@@ -235,10 +239,12 @@ export function PayBillsPage() {
     } else {
       return (
         <React.Fragment>
-          <S.ReviewListItem>
-            <p>Account Name</p>
-            <p>{data.account_name || 'None'}</p>
-          </S.ReviewListItem>
+          {data.account_name && (
+            <S.ReviewListItem>
+              <p>Account Name</p>
+              <p>{data.account_name || 'None'}</p>
+            </S.ReviewListItem>
+          )}
           <S.ReviewListItem>
             <p>Account Number</p>
             <p>{data.account_number || data.referenceNumber || 'None'}</p>
@@ -266,7 +272,11 @@ export function PayBillsPage() {
           {successReview && (
             <S.ReviewListItem>
               <p>Transaction Number</p>
-              <p>{data.transaction_number || 'None'}</p>
+              <p>
+                {data.transaction_number ||
+                  data.transaction_category_id ||
+                  'None'}
+              </p>
             </S.ReviewListItem>
           )}
         </React.Fragment>
@@ -404,46 +414,46 @@ export function PayBillsPage() {
   };
 
   const activeCategories = () => {
-    const filteredCategories = CATEGORIES.map(cat => {
-      const isActive = !!billers?.find(
-        biller =>
-          biller.category.toLowerCase() === cat.value.toLowerCase() &&
-          biller.active === '1',
-      );
+    // check if we have billers data
+    if (billers && billers.length > 0) {
+      // Filter the list of billers, save only the active billers
+      const filter = billers.filter(j => j.active === '1');
 
-      return {
-        ...cat,
-        isActive,
-      };
-    });
-    return filteredCategories;
+      // create a new set of categories
+      // code will create a new array with unique categories
+      const cats = Array.from(new Set(filter.map(j => j.category)));
+
+      // return the new array
+      // ie: ['Electricity', 'Toll', ..etc]
+      return cats as string[];
+    }
+
+    // default return of empty array (if we don't have billers)
+    return [] as string[];
+    // const filteredCategories = CATEGORIES.map(cat => {
+    //   const isActive = !!billers?.find(
+    //     biller =>
+    //       biller.category.toLowerCase() === cat.value.toLowerCase() &&
+    //       biller.active === '1',
+    //   );
+
+    //   return {
+    //     ...cat,
+    //     isActive,
+    //   };
+    // });
+    // return filteredCategories;
   };
 
   const renderView = step => {
     switch (step) {
       case 0:
         return (
-          <React.Fragment>
-            <S.ContainerTitle className="title">Categories</S.ContainerTitle>
-            <S.BillersOptions>
-              {activeCategories()?.map(
-                (category: BillerStateOptions, i: number) => {
-                  // eslint-disable-next-line array-callback-return
-                  if (!category.isActive) return;
-
-                  return (
-                    <S.BillerOptionsItem
-                      key={i}
-                      onClick={() => selectCategory(category.value)}
-                    >
-                      <img src={category.icon} alt={category.label} />
-                      <p>{category.label}</p>
-                    </S.BillerOptionsItem>
-                  );
-                },
-              )}
-            </S.BillersOptions>
-          </React.Fragment>
+          <Categories
+            loading={false}
+            billers={billers}
+            onSelect={selectCategory}
+          />
         );
       case 1:
         return (
@@ -457,13 +467,13 @@ export function PayBillsPage() {
                   setFormErrors(initialFormData);
 
                   const fields = {};
-                  RENDER_FIELDS(biller.code).map((field: any) => {
-                    if (field.required) {
-                      fields[field.name] = '';
-                    }
+                  // RENDER_FIELDS(biller.code).map((field: any) => {
+                  //   if (field.required) {
+                  //     fields[field.name] = '';
+                  //   }
 
-                    return {};
-                  });
+                  //   return {};
+                  // });
 
                   // Set form data based on the biller fields
                   setFormData(fields);
@@ -489,7 +499,7 @@ export function PayBillsPage() {
       case 2:
         return (
           <S.FormWrapper>
-            {RENDER_FIELDS(billerCode).map((field: any, i) => {
+            {/* {RENDER_FIELDS(billerCode).map((field: any, i) => {
               const items = RENDER_SELECT_ITEMS(
                 billerCode.toLowerCase() + `_` + field.name,
               );
@@ -539,6 +549,9 @@ export function PayBillsPage() {
                           value={formData[field.name]}
                           onChange={onChangeFormData}
                           placeholder={field.placeholder}
+                          maxLength={field.maxLength}
+                          min={field.min}
+                          max={field.max}
                         />
                         {formErrors[field.name] && (
                           <ErrorMsg formError>
@@ -574,7 +587,7 @@ export function PayBillsPage() {
                     );
                 }
               }
-            })}
+            })} */}
             {isMECOR && (
               <S.NoteWrapper>
                 <p className="important">
@@ -655,7 +668,7 @@ export function PayBillsPage() {
   };
 
   return (
-    <>
+    <ProtectedContent>
       <Helmet>
         <title>Pay bills</title>
       </Helmet>
@@ -791,6 +804,6 @@ export function PayBillsPage() {
           </div>
         </S.DetailsWrapper>
       </Dialog>
-    </>
+    </ProtectedContent>
   );
 }

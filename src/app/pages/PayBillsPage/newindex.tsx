@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet-async';
 
 import useFetch from 'utils/useFetch';
 
-import Loading from 'app/components/Loading';
 import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import Box from 'app/components/Box';
 
@@ -20,9 +19,12 @@ import Review from './Review';
 export function PayBillsPage() {
   const { loading, error, response, goFetch, fetchReset } = useFetch();
 
-  const [view, setView] = React.useState(''); // initial view (no display)
+  const [view, setView] = React.useState(VIEWS.categories); // initial view (no display)
   const [billers, setBillers] = React.useState<BillersState[]>([]); // empty set of all billers
-  const [category, setCategory] = React.useState(''); // selected category
+  const [category, setCategory] = React.useState<string[]>([]); // selected category
+  const [selectedBillers, setSelectedBillers] = React.useState<BillersState[]>(
+    [],
+  );
   const [biller, setBiller] = React.useState<BillersState>({
     active: '',
     category: '',
@@ -41,12 +43,25 @@ export function PayBillsPage() {
   React.useEffect(() => {
     // initial retrieval of all the billers
     onGetBillers();
+
+    return () => {
+      setCategory([]);
+      setBiller({
+        active: '',
+        category: '',
+        code: '',
+        description: '',
+        logo: '',
+        name: '',
+        type: '',
+      });
+      setFormInfo({ form: {}, validate: {}, payload: {} });
+    };
   }, []);
 
   React.useEffect(() => {
     if (response && response.data && response.data.length > 0) {
       setBillers(response.data);
-      setView(VIEWS.categories); // display the categories
       fetchReset();
     }
   }, [response]);
@@ -57,13 +72,18 @@ export function PayBillsPage() {
     goFetch('/pay/bills', 'GET', '', '', true, true);
   };
 
-  const onSelectCategory = (category: string) => {
-    setCategory(category);
+  const onSelectCategory = (
+    category: string,
+    label: string,
+    selBillers: BillersState[],
+  ) => {
+    setCategory([category, label]);
+    setSelectedBillers(selBillers);
     setView(VIEWS.subCategories);
   };
 
   const onBackToCategory = () => {
-    setCategory('');
+    setCategory([]);
     setView(VIEWS.categories);
   };
 
@@ -98,27 +118,40 @@ export function PayBillsPage() {
     setView(VIEWS.review);
   };
 
-  let title = 'Pay Bills';
-  if (view === VIEWS.subCategories) {
-    title = category;
-  }
-  if (view === VIEWS.review) {
-    title = 'Review Payment';
-  }
+  const onSuccessPayment = () => {
+    setCategory([]);
+    setBiller({
+      active: '',
+      category: '',
+      code: '',
+      description: '',
+      logo: '',
+      name: '',
+      type: '',
+    });
+    setFormInfo({ form: {}, validate: {}, payload: {} });
+
+    setView(VIEWS.categories);
+  };
 
   return (
     <ProtectedContent>
-      <Helmet title="Pay Bills" />
-      {loading && <Loading position="relative" />}
+      <Helmet
+        title={`Pay Bills ${category.length > 1 ? ` [${category[1]}]` : ''}`}
+      />
       {view === VIEWS.categories && (
-        <Box title={title} titleBorder withPadding>
-          <Categories billers={billers} onSelect={onSelectCategory} />
+        <Box title="Pay Bills" titleBorder withPadding>
+          <Categories
+            loading={loading}
+            billers={billers}
+            onSelect={onSelectCategory}
+          />
         </Box>
       )}
       {view === VIEWS.subCategories && (
         <Billers
-          category={category}
-          billers={billers}
+          label={category[1]}
+          billers={selectedBillers}
           onSelect={onSelectBiller}
           onBack={onBackToCategory}
         />
@@ -131,7 +164,13 @@ export function PayBillsPage() {
         />
       )}
 
-      {view === VIEWS.review && <Review biller={biller} details={formInfo} />}
+      {view === VIEWS.review && (
+        <Review
+          biller={biller}
+          details={formInfo}
+          onSuccess={onSuccessPayment}
+        />
+      )}
     </ProtectedContent>
   );
 }
