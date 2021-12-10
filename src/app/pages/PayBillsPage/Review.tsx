@@ -14,8 +14,6 @@ import H5 from 'app/components/Elements/H5';
 import Logo from 'app/components/Assets/Logo';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import bayadLogo from 'app/components/Assets/paybills/bayad-partner.png';
-
 import { analytics } from 'utils/firebase';
 import { events } from 'utils/firebaseConstants';
 
@@ -178,7 +176,7 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
               {numberCommas(details.validate.otherCharges || '0')}
             </Paragraph>
             <img
-              src={bayadLogo}
+              src="/img/paybills/bayad-partner.png"
               alt="Bayad Partner"
               style={{
                 width: 95,
@@ -262,7 +260,7 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
             </Paragraph>
 
             <img
-              src={bayadLogo}
+              src="/img/paybills/bayad-partner.png"
               alt="Bayad Partner"
               style={{
                 width: 95,

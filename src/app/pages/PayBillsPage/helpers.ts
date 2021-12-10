@@ -288,34 +288,3 @@ export const disconnectionTitleMessage = val => {
       return 'Successful Payment';
   }
 };
-
-// sample error
-const error = {
-  message: 'The given data was invalid.',
-  errors: { error_code: [204], message: ['Provider Error.'] },
-  provider_error: [
-    {
-      exception: 'unprocessableEntityException',
-      message: 'Unprocessable Entity',
-      status: 422,
-      details: {
-        code: 5,
-        message: 'The telephone number must be at most 10 digits.',
-      },
-      errors: {
-        'otherInfo.TelephoneNumber': [
-          {
-            code: 5,
-            message: 'The telephone number must be at most 10 digits.',
-          },
-        ],
-        'otherInfo.ServiceReferenceNo': [
-          {
-            code: 5,
-            message: 'The service reference number must be 10 digits.',
-          },
-        ],
-      },
-    },
-  ],
-};

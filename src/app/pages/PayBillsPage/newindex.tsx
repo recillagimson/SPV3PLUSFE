@@ -102,7 +102,7 @@ export function PayBillsPage() {
       name: '',
       type: '',
     });
-    setView(VIEWS.categories);
+    setView(VIEWS.subCategories);
   };
 
   const onSuccessFormValidation = (

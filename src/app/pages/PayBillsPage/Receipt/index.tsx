@@ -10,6 +10,10 @@ import RFID from './RFID';
 import SkyCable from './SkyCable';
 import CreditCards from './CreditCards';
 import ETrip from './ETrip';
+import PLDT from './PLDT';
+import HomeCredit from './HomeCredit';
+import Converge from './Converge';
+import Ineco from './Ineco';
 
 export default function RenderReceipt({ billerCode, data }: ComponentProps) {
   return (
@@ -29,6 +33,13 @@ export default function RenderReceipt({ billerCode, data }: ComponentProps) {
       {billerCode === 'UNBNK' && <CreditCards data={data} />}
       {billerCode === 'BNKRD' && <AccountAmount data={data} />}
       {billerCode === 'BNKD1' && <AccountAmount data={data} />}
+      {billerCode === 'MECOP' && <AccountAmount data={data} />}
+      {billerCode === 'PLDT6' && <PLDT data={data} />}
+      {billerCode === 'HCPHL' && <HomeCredit data={data} />}
+      {billerCode === 'CNVRG' && <Converge data={data} />}
+      {billerCode === 'INEC1' && <Ineco data={data} />}
+      {billerCode === 'VIECO' && <AccountAmount data={data} />}
+      {billerCode === 'DVOLT' && <AccountAmount data={data} />}
     </>
   );
 }

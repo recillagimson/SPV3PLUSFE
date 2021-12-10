@@ -18,8 +18,6 @@ import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import H5 from 'app/components/Elements/H5';
 import H3 from 'app/components/Elements/H3';
 
-import bayadLogo from 'app/components/Assets/paybills/bayad-partner.png';
-
 import { selectData } from 'app/pages/DashboardPage/slice/selectors';
 import { numberCommas } from 'app/components/Helpers';
 
@@ -439,7 +437,7 @@ export default function FormFields({
         </form>
       </Box>
       <img
-        src={bayadLogo}
+        src="/img/paybills/bayad-partner.png"
         alt="Bayad Partner"
         style={{
           width: 95,
@@ -473,7 +471,9 @@ export default function FormFields({
       <Dialog show={isConfirm.show} size="xsmall">
         <div style={{ margin: '20px', textAlign: 'center' }}>
           <CircleIndicator size="large" color="danger">
-            <FontAwesomeIcon icon="exclamation" />
+            <FontAwesomeIcon
+              icon={isConfirm.response?.code === 1 ? 'exclamation' : 'times'}
+            />
           </CircleIndicator>
           <H3 margin="10px 0 5px">
             {isConfirm.response?.code === 1 ? 'Heads up!' : 'Oops!'}
@@ -482,20 +482,22 @@ export default function FormFields({
             {isConfirm.msg}
           </Paragraph>
 
-          <Button
-            onClick={onConfirm}
-            variant="contained"
-            size="medium"
-            color="primary"
-          >
-            Proceed
-          </Button>
+          {isConfirm.response?.code === 1 && (
+            <Button
+              onClick={onConfirm}
+              variant="contained"
+              size="medium"
+              color="primary"
+            >
+              Proceed
+            </Button>
+          )}
           <Button
             onClick={() => setIsConfirm({ show: false, msg: '', response: {} })}
             variant="outlined"
             size="medium"
           >
-            Cancel
+            {isConfirm.response?.code === 1 ? 'Cancel' : 'Close'}
           </Button>
         </div>
       </Dialog>
