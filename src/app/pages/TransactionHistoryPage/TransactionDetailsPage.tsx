@@ -129,7 +129,7 @@ function TransactionHistoryDetailsPage(props) {
   let date = DateTime.fromSQL(
     transactionHistoryDetailsData?.transactable?.created_at,
   );
-  if (date.invalid) {
+  if (!date.isValid) {
     date = DateTime.fromISO(
       transactionHistoryDetailsData?.transactable?.created_at,
     );

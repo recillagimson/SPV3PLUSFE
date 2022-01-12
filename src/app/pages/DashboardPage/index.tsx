@@ -97,7 +97,7 @@ export function DashboardPage() {
   if (transactionData && transactionData.length > 0) {
     transactionItems = transactionData.map(i => {
       let date = DateTime.fromSQL(i.created_at);
-      if (date.invalid) {
+      if (!date.isValid) {
         date = DateTime.fromISO(i.created_at);
       }
       return (

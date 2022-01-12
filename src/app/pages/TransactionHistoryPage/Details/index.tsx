@@ -75,7 +75,7 @@ export function TransactionHistoryDetailsPage() {
   let monthDateYearTime = '';
   if (details) {
     let date = DateTime.fromSQL(details?.transactable?.created_at);
-    if (date.invalid) {
+    if (!date.isValid) {
       date = DateTime.fromISO(details?.transactable?.created_at);
     }
     monthDateYearTime = date.toLocaleString(DateTime.DATETIME_MED);
