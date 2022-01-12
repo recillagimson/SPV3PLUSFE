@@ -333,7 +333,7 @@ export function App() {
       >
         <meta
           name="app-version"
-          content={`v${process.env.REACT_APP_VERSION} build: ${build.build_no}`}
+          content={`v${process.env.REACT_APP_VERSION} build: ${build.build_no} date: ${build.build_date}`}
         />
       </Helmet>
 

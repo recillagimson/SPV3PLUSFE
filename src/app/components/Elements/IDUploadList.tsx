@@ -6,7 +6,7 @@
  * @prop {string}   name      file name
  * @prop {size}     number    file size
  * @prop {string}   idType    idType id retrieve from the API
- * @prop {function} onSuccess return the index if upload is successfull
+ * @prop {function} onSuccess return the index if upload is Successful
  */
 import * as React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
