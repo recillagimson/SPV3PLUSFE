@@ -4,7 +4,7 @@
  * @prop {string}   title       title
  * @prop {size}     number      id number inputted by the user
  * @prop {string}   idType      idType id retrieve from the API
- * @prop {function} onSuccess   return the index if upload is successfull
+ * @prop {function} onSuccess   return the index if upload is Successful
  * @prop {function} onPrevious  callback when user click the previous button
  * @prop {boolean}  isPrimary
  */

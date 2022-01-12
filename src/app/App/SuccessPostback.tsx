@@ -112,7 +112,7 @@ export default function SuccessPostback() {
               <FontAwesomeIcon icon="check" />
             </CircleIndicator>
             <H3 margin="15px 0 10px" style={{ textAlign: 'center' }}>
-              Transaction Successfull
+              Transaction Successful
             </H3>
             {/* <p style={{ marginBottom: 30, textAlign: 'center' }}>
               You may now close this window.
