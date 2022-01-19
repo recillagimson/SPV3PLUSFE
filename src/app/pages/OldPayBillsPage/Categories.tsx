@@ -6,7 +6,7 @@ import Flex from 'app/components/Elements/Flex';
 
 import { CATEGORIES } from './helpers';
 import { CategoryButton } from './PayBills.style';
-import { BillersState } from './types';
+import { BillersState } from './slice/types';
 
 type CategoriesProps = {
   loading: boolean;

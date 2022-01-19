@@ -41,7 +41,7 @@ export default function Meralco({ data }: ComponentProps) {
           size="small"
           style={{ flex: 1 }}
         >
-          {data.reference_number || 'None'}
+          {maskCharacters(data.biller_reference_number) || 'None'}
         </Paragraph>
       </Flex>
       <Flex style={{ width: '100%' }} wrap="wrap">

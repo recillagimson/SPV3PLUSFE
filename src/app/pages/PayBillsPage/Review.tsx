@@ -20,14 +20,14 @@ import { events } from 'utils/firebaseConstants';
 import useFetch from 'utils/useFetch';
 import { numberCommas } from 'app/components/Helpers';
 
-import { BillersState, ValidateSuccessResponse } from './slice/types';
+import { BillersState, ValidateSuccessResponse } from './types';
 import RenderReceipt from './Receipt';
 
 type ReviewProps = {
   onSuccess: () => void;
   biller: BillersState;
   details: {
-    form: { [name: string]: { label: string; value: string } };
+    form: { [name: string]: { label: string; value: string; name: string } };
     validate: ValidateSuccessResponse;
     payload: { [name: string]: string };
   };
@@ -95,10 +95,16 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
       e.preventDefault();
     }
 
+    const newPayload = {
+      ...details.payload,
+      validationNumber: details.validate.validationNumber,
+      otherCharges: details.validate.otherCharges,
+    };
+
     goFetch(
       `/pay/bills/create/payment/${biller.code}`,
       'POST',
-      JSON.stringify(details.payload),
+      JSON.stringify(newPayload),
       '',
       true,
       true,
@@ -115,11 +121,13 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
     }
   }
 
-  let totalAmountToPay = 0;
-  if (success) {
-    totalAmountToPay =
-      data.total_amount + data.service_fee + parseInt(data.other_charges);
-  }
+  // let totalAmountToPay = 0;
+  // if (success) {
+  //   totalAmountToPay =
+  //     parseInt(data.total_amount) +
+  //     parseInt(data.service_fee) +
+  //     parseInt(data.other_charges);
+  // }
 
   return (
     <>
@@ -147,7 +155,7 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
                 >
                   {details.form[k].label.toLowerCase() === 'amount'
                     ? `PHP ${numberCommas(details.form[k].value)}`
-                    : details.form[k].value}
+                    : details.form[k].name || details.form[k].value}
                 </Paragraph>
               </Flex>
             ))}
@@ -250,7 +258,8 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
               Total Amount
             </Paragraph>
             <H5 margin="0 0 4px" align="center">
-              PHP {numberCommas(totalAmountToPay || 0)}
+              {/* PHP {numberCommas(totalAmountToPay || 0)} */}
+              PHP {numberCommas(data.total_amount || 0)}
             </H5>
             <Paragraph margin="0 0 0" size="small" align="center">
               Service Fee: {numberCommas(data.service_fee || 0)}
@@ -284,7 +293,7 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
             Close
           </Button>
           {biller.code === 'MECOR' && (
-            <Paragraph align="center" margin="5px 0 0" size="small">
+            <Paragraph align="center" margin="5px 0 0" size="xsmall">
               Please note that payments made after 7PM will be posted 7AM the
               next day.
             </Paragraph>

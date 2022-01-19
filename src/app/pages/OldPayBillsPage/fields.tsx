@@ -447,8 +447,6 @@ const pldt6: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
-    min: 200,
-    max: 100000,
     validator: validateAmount,
   },
   {

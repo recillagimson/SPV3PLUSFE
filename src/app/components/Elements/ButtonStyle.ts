@@ -20,7 +20,7 @@ type Props = {
 };
 
 const defaultstyle = css<Props>`
-  background-color: ${StyleConstants.WHITE};
+  background-color: ${StyleConstants.color.tones.mute};
 
   ${p =>
     p.color === 'primary' &&
@@ -56,11 +56,11 @@ const defaultstyle = css<Props>`
   ${p =>
     (!p.color || p.color === 'default') &&
     `
-    color: ${StyleConstants.BUTTONS.neutral.main};
+    color: inherit;
 
     &:focus-visible,
     &:hover {
-      color: ${StyleConstants.BUTTONS.neutral.dark};
+      color: ${StyleConstants.color.black};
     }
   `};
 `;

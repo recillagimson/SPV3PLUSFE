@@ -3,7 +3,7 @@ import * as React from 'react';
 import Box from 'app/components/Box';
 
 import { Biller } from './PayBills.style';
-import { BillersState } from './types';
+import { BillersState } from './slice/types';
 import SearchBar from 'app/components/SearchBar';
 
 type BillersProps = {

@@ -1,4 +1,3 @@
-import { AddMoneyViaUBP } from './../app/pages/AddMoney/AddMoneyViaUBPPage/Loadable';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 import { GlobalState } from 'app/App/slice/types';
 
@@ -21,7 +20,7 @@ import { ChangePinState } from 'app/pages/SettingsPage/ChangePin/slice/types';
 import { DashboardState } from 'app/pages/DashboardPage/slice/types';
 import { TransactionHistoryState } from 'app/pages/TransactionHistoryPage/slice/types';
 import { ForeignExchangeState } from 'app/pages/ForeignExchangePage/slice/types';
-import { PayBillsState } from 'app/pages/PayBillsPage/slice/types';
+import { PayBillsState } from 'app/pages/OldPayBillsPage/slice/types';
 import { TierUpgradeState } from 'app/pages/TierUpgradePage/slice/types';
 import { SendToBankUBPState } from 'app/pages/SendToBankUBP/slice/types';
 import { UpdateEmailState } from 'app/pages/UpdateEmail/slice/types';

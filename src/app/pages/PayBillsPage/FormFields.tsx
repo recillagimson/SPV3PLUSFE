@@ -23,12 +23,12 @@ import { numberCommas } from 'app/components/Helpers';
 
 import { IFieldTypes, RENDER_FIELDS } from './fields';
 import useFetch from 'utils/useFetch';
-import { BillersState, ValidateSuccessResponse } from './slice/types';
+import { BillersState, ValidateSuccessResponse } from './types';
 
 type FormFieldsProps = {
   biller: BillersState;
   onSuccess: (
-    form: { [name: string]: { label: string; value: string } },
+    form: { [name: string]: { label: string; value: string; name: string } },
     validate: ValidateSuccessResponse,
     payload: { [name: string]: any },
   ) => void;
@@ -72,8 +72,8 @@ export default function FormFields({
     view.fields.map(
       j =>
         (data[j.name] = j.required
-          ? { label: j.label, value: '', error: false, msg: '' }
-          : { label: j.label, value: '' }),
+          ? { label: j.label, value: '', error: false, msg: '', name: '' }
+          : { label: j.label, value: '', name: '' }),
     );
 
     setFormData(data);
@@ -90,7 +90,7 @@ export default function FormFields({
       if (response.validationNumber) {
         // initialize payload
         const formInfo: {
-          [name: string]: { label: string; value: string };
+          [name: string]: { label: string; value: string; name: string };
         } = {};
 
         // get all the key name in our formData object
@@ -102,6 +102,7 @@ export default function FormFields({
             formInfo[k] = {
               label: formData[k].label,
               value: formData[k].value,
+              name: formData[k].name || '',
             };
             return;
           });
@@ -189,7 +190,7 @@ export default function FormFields({
   const onConfirm = () => {
     // initialize payload
     const formInfo: {
-      [name: string]: { label: string; value: string };
+      [name: string]: { label: string; value: string; name: string };
     } = {};
 
     // get all the key name in our formData object
@@ -201,6 +202,7 @@ export default function FormFields({
         formInfo[k] = {
           label: formData[k].label,
           value: formData[k].value,
+          name: formData[k].name || '',
         };
         return;
       });
@@ -221,12 +223,14 @@ export default function FormFields({
         value: value,
         error: false,
         msg: '',
+        name: '',
       },
     });
   };
 
   const onChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value, name } = e.currentTarget;
+    const rn = e.target.options[e.target.selectedIndex].dataset.rn; // human readable name of the select options
     const oldValue = formData[name] || {};
 
     setFormData({
@@ -236,6 +240,7 @@ export default function FormFields({
         value: value,
         error: false,
         msg: '',
+        name: rn || '',
       },
     });
   };
@@ -345,7 +350,11 @@ export default function FormFields({
                         <option value="">Please select</option>
                         {f.option &&
                           f.option.map(o => (
-                            <option key={o.value} value={o.value}>
+                            <option
+                              key={o.value}
+                              value={o.value}
+                              data-rn={o.label}
+                            >
                               {o.label}
                             </option>
                           ))}
@@ -462,6 +471,7 @@ export default function FormFields({
             onClick={() => setApiError({ show: false, msg: '' })}
             variant="outlined"
             size="medium"
+            color="secondary"
           >
             Close
           </Button>
@@ -469,8 +479,11 @@ export default function FormFields({
       </Dialog>
 
       <Dialog show={isConfirm.show} size="xsmall">
-        <div style={{ margin: '20px', textAlign: 'center' }}>
-          <CircleIndicator size="large" color="danger">
+        <div style={{ margin: '24px 20px', textAlign: 'center' }}>
+          <CircleIndicator
+            size="large"
+            color={isConfirm.response?.code === 1 ? 'primary' : 'danger'}
+          >
             <FontAwesomeIcon
               icon={isConfirm.response?.code === 1 ? 'exclamation' : 'times'}
             />
@@ -489,12 +502,11 @@ export default function FormFields({
               size="medium"
               color="primary"
             >
-              Proceed
+              I Agree
             </Button>
           )}
           <Button
             onClick={() => setIsConfirm({ show: false, msg: '', response: {} })}
-            variant="outlined"
             size="medium"
           >
             {isConfirm.response?.code === 1 ? 'Cancel' : 'Close'}
