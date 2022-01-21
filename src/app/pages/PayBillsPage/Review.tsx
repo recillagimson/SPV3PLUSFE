@@ -252,7 +252,11 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
               </Paragraph>
             )}
 
-            <RenderReceipt billerCode={biller.code} data={data} />
+            <RenderReceipt
+              billerCode={biller.code}
+              data={data}
+              formData={details.form}
+            />
 
             <Paragraph margin="40px 0 4px" size="small" align="center">
               Total Amount

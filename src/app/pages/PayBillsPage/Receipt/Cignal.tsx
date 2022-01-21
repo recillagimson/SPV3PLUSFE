@@ -6,7 +6,7 @@ import Paragraph from 'app/components/Elements/Paragraph';
 import { numberCommas } from 'app/components/Helpers';
 import { ComponentProps } from './types';
 
-export default function Cignal({ data }: ComponentProps) {
+export default function Cignal({ data, formData }: ComponentProps) {
   return (
     <>
       <Flex style={{ width: '100%', marginTop: 32 }} wrap="wrap">
@@ -28,7 +28,7 @@ export default function Cignal({ data }: ComponentProps) {
           size="small"
           style={{ flex: 1 }}
         >
-          {data.first_name || 'None'}
+          {formData['otherInfo.FirstName'].value || data.first_name || 'None'}
         </Paragraph>
       </Flex>
       <Flex style={{ width: '100%' }} wrap="wrap">
@@ -39,7 +39,7 @@ export default function Cignal({ data }: ComponentProps) {
           size="small"
           style={{ flex: 1 }}
         >
-          {data.last_name || 'None'}
+          {formData['otherInfo.LastName'].value || data.last_name || 'None'}
         </Paragraph>
       </Flex>
       <Flex style={{ width: '100%' }} wrap="wrap">
@@ -61,7 +61,9 @@ export default function Cignal({ data }: ComponentProps) {
           size="small"
           style={{ flex: 1 }}
         >
-          {data.middle_name || 'None'}
+          {formData['otherInfo.ExternalEntityName'].name ||
+            data.middle_name ||
+            'None'}
         </Paragraph>
       </Flex>
     </>

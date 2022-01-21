@@ -14,32 +14,65 @@ import PLDT from './PLDT';
 import HomeCredit from './HomeCredit';
 import Converge from './Converge';
 import Ineco from './Ineco';
+import PagIbigFund from './PagIbigFund';
+import Cignal from './Cignal';
+import SSSRealEstate from './SSSRealEstate';
 
-export default function RenderReceipt({ billerCode, data }: ComponentProps) {
+export default function RenderReceipt({
+  billerCode,
+  data,
+  formData,
+}: ComponentProps) {
   return (
     <>
-      {billerCode === 'MECOR' && <Meralco data={data} />}
-      {billerCode === 'PRULI' && <PruLife data={data} />}
-      {billerCode === 'ASLNK' && <PruLife data={data} />}
-      {billerCode === 'MWCOM' && <AccountAmount data={data} />}
-      {billerCode === 'MWSIN' && <AccountAmount data={data} />}
-      {billerCode === 'ETRIP' && <AccountAmount data={data} />}
-      {billerCode === 'SMART' && <Smart data={data} />}
-      {billerCode === 'RFID1' && <RFID data={data} />}
-      {billerCode === 'ETRIP' && <ETrip data={data} />}
-      {billerCode === 'SKY01' && <SkyCable data={data} />}
-      {billerCode === 'MBCCC' && <CreditCards data={data} />}
-      {billerCode === 'BPI00' && <CreditCards data={data} />}
-      {billerCode === 'UNBNK' && <CreditCards data={data} />}
-      {billerCode === 'BNKRD' && <AccountAmount data={data} />}
-      {billerCode === 'BNKD1' && <AccountAmount data={data} />}
-      {billerCode === 'MECOP' && <AccountAmount data={data} />}
-      {billerCode === 'PLDT6' && <PLDT data={data} />}
-      {billerCode === 'HCPHL' && <HomeCredit data={data} />}
-      {billerCode === 'CNVRG' && <Converge data={data} />}
-      {billerCode === 'INEC1' && <Ineco data={data} />}
-      {billerCode === 'VIECO' && <AccountAmount data={data} />}
-      {billerCode === 'DVOLT' && <AccountAmount data={data} />}
+      {billerCode === 'MECOR' && <Meralco data={data} formData={formData} />}
+      {billerCode === 'PRULI' && <PruLife data={data} formData={formData} />}
+      {billerCode === 'ASLNK' && <PruLife data={data} formData={formData} />}
+      {billerCode === 'MWCOM' && (
+        <AccountAmount data={data} formData={formData} />
+      )}
+      {billerCode === 'MWSIN' && (
+        <AccountAmount data={data} formData={formData} />
+      )}
+      {billerCode === 'SMART' && <Smart data={data} formData={formData} />}
+      {billerCode === 'RFID1' && <RFID data={data} formData={formData} />}
+      {billerCode === 'ETRIP' && <ETrip data={data} formData={formData} />}
+      {billerCode === 'SKY01' && <SkyCable data={data} formData={formData} />}
+      {billerCode === 'MBCCC' && (
+        <CreditCards data={data} formData={formData} />
+      )}
+      {billerCode === 'BPI00' && (
+        <CreditCards data={data} formData={formData} />
+      )}
+      {billerCode === 'UNBNK' && (
+        <CreditCards data={data} formData={formData} />
+      )}
+      {billerCode === 'BNKRD' && (
+        <AccountAmount data={data} formData={formData} />
+      )}
+      {billerCode === 'BNKD1' && (
+        <AccountAmount data={data} formData={formData} />
+      )}
+      {billerCode === 'MECOP' && (
+        <AccountAmount data={data} formData={formData} />
+      )}
+      {billerCode === 'PLDT6' && <PLDT data={data} formData={formData} />}
+      {billerCode === 'HCPHL' && <HomeCredit data={data} formData={formData} />}
+      {billerCode === 'CNVRG' && <Converge data={data} formData={formData} />}
+      {billerCode === 'INEC1' && <Ineco data={data} formData={formData} />}
+      {billerCode === 'VIECO' && (
+        <AccountAmount data={data} formData={formData} />
+      )}
+      {billerCode === 'DVOLT' && (
+        <AccountAmount data={data} formData={formData} />
+      )}
+      {billerCode === 'HMDF1' && (
+        <PagIbigFund data={data} formData={formData} />
+      )}
+      {billerCode === 'CGNAL' && <Cignal data={data} formData={formData} />}
+      {billerCode === 'SSS03' && (
+        <SSSRealEstate data={data} formData={formData} />
+      )}
     </>
   );
 }

@@ -6,7 +6,7 @@ import Paragraph from 'app/components/Elements/Paragraph';
 import { numberCommas } from 'app/components/Helpers';
 import { ComponentProps } from './types';
 
-export default function PLDT({ data }: ComponentProps) {
+export default function PLDT({ data, formData }: ComponentProps) {
   return (
     <>
       <Flex style={{ width: '100%', marginTop: 32 }} wrap="wrap">
@@ -28,7 +28,9 @@ export default function PLDT({ data }: ComponentProps) {
           size="small"
           style={{ flex: 1 }}
         >
-          {data.phone_number || 'None'}
+          {formData['otherInfo.PhoneNumber'].value ||
+            data.phone_number ||
+            'None'}
         </Paragraph>
       </Flex>
       <Flex style={{ width: '100%' }} wrap="wrap">
@@ -50,7 +52,7 @@ export default function PLDT({ data }: ComponentProps) {
           size="small"
           style={{ flex: 1 }}
         >
-          {data.service || 'None'}
+          {formData['otherInfo.Service'].name || data.service || 'None'}
         </Paragraph>
       </Flex>
     </>

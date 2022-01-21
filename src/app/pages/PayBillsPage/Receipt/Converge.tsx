@@ -6,7 +6,7 @@ import Paragraph from 'app/components/Elements/Paragraph';
 import { numberCommas } from 'app/components/Helpers';
 import { ComponentProps } from './types';
 
-export default function Converge({ data }: ComponentProps) {
+export default function Converge({ data, formData }: ComponentProps) {
   return (
     <>
       <Flex style={{ width: '100%', marginTop: 32 }} wrap="wrap">
@@ -28,7 +28,9 @@ export default function Converge({ data }: ComponentProps) {
           size="small"
           style={{ flex: 1 }}
         >
-          {data.account_name || 'None'}
+          {formData['otherInfo.AccountName'].value ||
+            data.account_name ||
+            'None'}
         </Paragraph>
       </Flex>
       <Flex style={{ width: '100%' }} wrap="wrap">

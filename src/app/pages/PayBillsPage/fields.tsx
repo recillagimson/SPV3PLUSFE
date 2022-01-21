@@ -201,6 +201,13 @@ export const RENDER_SELECT_ITEMS = name => {
           label: 'Modified PAG-IBIG 2',
         },
       ];
+    case 'cgnal_otherinfo.externalentityname':
+      return [
+        {
+          value: 'BAYAD',
+          label: 'Bayad',
+        },
+      ];
     default:
       return [];
   }
@@ -775,7 +782,7 @@ const sss03: IFieldTypes[] = [
   },
   {
     label: 'Rel Type',
-    type: 'text',
+    type: 'select',
     name: 'otherInfo.RelType',
     option: RENDER_SELECT_ITEMS('sss03_otherinfo.reltype'),
     placeholder: '',
@@ -1366,6 +1373,14 @@ const inec1: IFieldTypes[] = [
     validator: validateAmount,
   },
   {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.Name',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
     label: 'Due Date',
     type: 'date',
     name: 'otherInfo.DueDate',
@@ -1412,8 +1427,9 @@ const cgnal: IFieldTypes[] = [
   },
   {
     label: 'External Entity Name',
-    type: 'text',
+    type: 'select',
     name: 'otherInfo.ExternalEntityName',
+    option: RENDER_SELECT_ITEMS('cgnal_otherinfo.externalentityname'),
     placeholder: '',
     required: true,
     validator: validateText,

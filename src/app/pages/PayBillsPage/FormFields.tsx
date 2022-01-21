@@ -121,7 +121,11 @@ export default function FormFields({
 
           if (k && k.length > 0) {
             k.forEach(key => {
-              if (key === 'general') {
+              if (
+                key === 'general' ||
+                key === 'account_number' ||
+                key === 'referenceNumber'
+              ) {
                 if (formData['account_number']) {
                   formData['account_number'].error = true;
                 }
@@ -138,7 +142,11 @@ export default function FormFields({
                   msg.push(e.message),
                 );
 
-                if (key === 'general') {
+                if (
+                  key === 'general' ||
+                  key === 'account_number' ||
+                  key === 'referenceNumber'
+                ) {
                   if (formData['account_number']) {
                     formData['account_number'].msg =
                       'Account number is invalid.';
@@ -160,6 +168,9 @@ export default function FormFields({
               msg: err.data.message,
               response: { ...err.data },
             });
+          }
+          if (k.length === 0 && !err.data && err.status === 500) {
+            setApiError({ show: true, msg: err.message });
           }
         });
       }
