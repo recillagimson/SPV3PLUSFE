@@ -165,7 +165,7 @@ export function ECPay() {
   let monthDateYearTime = '';
   if (data) {
     let rawDate = DateTime.fromSQL(data.transaction_date);
-    if (rawDate.invalid) {
+    if (!rawDate.isValid) {
       rawDate = DateTime.fromISO(data.transaction_date);
     }
     monthDateYearTime = rawDate.toFormat('dd LLLL yyyy, t');
@@ -175,7 +175,7 @@ export function ECPay() {
     if (data && isSuccess) {
       const { amount, expiry_date } = data;
       let expDate = DateTime.fromSQL(expiry_date);
-      if (expDate.invalid) {
+      if (!expDate.isValid) {
         expDate = DateTime.fromISO(expiry_date);
       }
 

@@ -224,11 +224,13 @@ export function App() {
       setTimeout(() => {
         dispatch(actions.getLoadUserProfile());
         dispatch(dashboardAction.getFetchLoading());
-        dispatch(addMoneyBpiAction.getFetchAccessTokenLoading(bpiCode));
       }, 2000);
 
       if (code?.type === 'bpi') {
-        history.push('/add-money/bpi/select-account');
+        history.push({
+          pathname: '/add-money/bpi/select-account',
+          state: code?.value,
+        });
       }
 
       if (code?.type === 'ubp') {
@@ -333,7 +335,7 @@ export function App() {
       >
         <meta
           name="app-version"
-          content={`v${process.env.REACT_APP_VERSION} build: ${build.build_no}`}
+          content={`v${process.env.REACT_APP_VERSION} build: ${build.build_no} date: ${build.build_date}`}
         />
       </Helmet>
 

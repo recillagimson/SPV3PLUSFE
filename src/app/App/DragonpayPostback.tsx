@@ -72,7 +72,7 @@ export default function DragonpaySuccessPostback() {
               <FontAwesomeIcon icon="check" />
             </CircleIndicator>
             <H3 margin="15px 0 25px" style={{ textAlign: 'center' }}>
-              Transaction Successfull
+              Transaction Successful
             </H3>
           </>
         )}

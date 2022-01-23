@@ -235,7 +235,7 @@ export function TransactionHistoryPage(props) {
                   const isNegativeAmount =
                     d.transaction_category.transaction_type === 'NEGATIVE';
                   let date = DateTime.fromSQL(d.created_at);
-                  if (date.invalid) {
+                  if (!date.isValid) {
                     date = DateTime.fromISO(d.created_at);
                   }
                   const monthDateYear = date.toLocaleString(DateTime.DATE_MED);

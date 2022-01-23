@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -40,6 +40,7 @@ import {
 export function AddMoneyViaBPI() {
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
   const { actions } = useContainerSaga();
 
   const dashData: any = useSelector(selectDashData);
@@ -131,7 +132,13 @@ export function AddMoneyViaBPI() {
 
   //View select accounts on postback
   useEffect(() => {
-    if (window.location.pathname === '/add-money/bpi/select-account') {
+    if (
+      location.pathname === '/add-money/bpi/select-account' &&
+      location.state &&
+      location.state !== ''
+    ) {
+      const code: any = location.state || '';
+      dispatch(actions.getFetchAccessTokenLoading(code));
       const amountValue: string | null = sessionStorage.getItem('amount');
       if (amountValue && !isVerification) {
         setAmount({ ...amount, value: amountValue.toString() });
@@ -146,7 +153,7 @@ export function AddMoneyViaBPI() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [location]);
 
   //Show OTP view on /fundtopup submit
   useEffect(() => {

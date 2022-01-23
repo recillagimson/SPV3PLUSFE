@@ -65,7 +65,7 @@ export function BuyEpinsPage() {
   const payError: any = useSelector(selectPayError);
 
   let date = DateTime.fromSQL(paySuccess.transaction_date);
-  if (date.invalid) {
+  if (!date.isValid) {
     date = DateTime.fromISO(paySuccess.transaction_date);
   }
   const humanReadable = date.toFormat('dd LLLL yyyy, t');
