@@ -24,6 +24,10 @@ type TimerProps = {
    * @default 1
    */
   step?: number;
+  /**
+   * Optional suffix for the timer
+   */
+  suffix?: string;
 };
 export default function Timer({
   count,
@@ -31,12 +35,15 @@ export default function Timer({
   interval = 1000,
   step = 1,
   onStop,
+  suffix = '',
 }: TimerProps) {
   const [countdown, setCountdown] = React.useState(count);
 
   React.useEffect(() => {
     setTimeout(() => {
-      setCountdown(countdown - step);
+      if (countdown > 0) {
+        setCountdown(countdown - step);
+      }
     }, interval);
 
     if (countdown === 0) {
@@ -46,10 +53,11 @@ export default function Timer({
 
   return (
     <Span
-      color="primary"
-      style={{ width: 20, textAlign: 'center', display: 'inline-block' }}
+      color="mute"
+      style={{ width: 40, textAlign: 'center', display: 'inline-block' }}
     >
       {countdown}
+      {suffix}
     </Span>
   );
 }

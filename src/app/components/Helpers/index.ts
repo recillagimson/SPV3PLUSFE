@@ -115,6 +115,10 @@ export function doSignOut() {
   deleteCookie('spv_cat');
   deleteCookie('spv_uat_u');
   deleteCookie('spv_uat_f');
+  sessionStorage.removeItem('spv_addmon'); // add money feature
+  sessionStorage.removeItem('spv_addmon_url'); // add money feature
+  sessionStorage.removeItem('spv_addmon_acto'); // add money access_token
+  sessionStorage.removeItem('spv_addmon_code'); // add money code in postback url
 
   removeSentryUser(); // remove user in the sentry
 

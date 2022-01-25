@@ -32,7 +32,7 @@ const useFetch = () => {
    * NOTE: Payload data must be encrypted when passed on this function
    * @param {string}    url           API url no need to pass the whole path, only the URL after the `/api` specified in the document ie: `/auth/login` or `/send/money/validate`
    * @param {string}    method        Fetch Method (GET, POST, PUT, DELETE)
-   * @param {string}    payload       Request payload, must be the JSON.stringify payload not the object
+   * @param {string}    payload       Request payload, must be the JSON.stringify payload if contentType is blank or application/json
    * @param {string}    contentType   Enter an empty string `''` for default application/json content type
    * @param {string}    isUserToken   If true, will use the user token instead of client token
    * @param {boolean}   decrypt       if we are going to decrypt the data set as true, if not, function will return the response as true
@@ -42,7 +42,11 @@ const useFetch = () => {
       url: string,
       method: string,
       payload: any,
-      contentType?: '' | 'application/json' | 'form-data',
+      contentType?:
+        | ''
+        | 'application/json'
+        | 'form-data'
+        | 'application/x-www-form-urlencoded',
       isUserToken?: boolean,
       decrypt?: boolean,
     ) => {
@@ -51,7 +55,8 @@ const useFetch = () => {
       // for development console logging only
       if (
         process.env.REACT_APP_SENTRY_ENV === 'development' &&
-        contentType !== 'form-data'
+        contentType !== 'form-data' &&
+        contentType !== 'application/x-www-form-urlencoded'
       ) {
         const cons = {
           url: url,
@@ -67,7 +72,7 @@ const useFetch = () => {
 
       let encryptedPayload = '';
       let reqPhrase: any = {};
-      if (contentType !== 'form-data') {
+      if (contentType === '' || contentType === 'application/json') {
         // NOTE: we might need to further enhance the validation of payload,
         //       one idea if we can use JSON.parse on the given payload string to validate
         if (payload && payload !== '') {
@@ -91,12 +96,17 @@ const useFetch = () => {
         headers['Content-Type'] = 'application/json';
       }
 
+      if (contentType === 'application/x-www-form-urlencoded') {
+        headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      }
+
       const options = {
         method: method || 'GET',
         headers: headers,
         credential: 'include',
         body:
-          contentType === 'form-data'
+          contentType === 'form-data' ||
+          contentType === 'application/x-www-form-urlencoded'
             ? payload
             : encryptedPayload !== ''
             ? JSON.stringify({ id: reqPhrase.id, payload: encryptedPayload })
@@ -104,10 +114,11 @@ const useFetch = () => {
       };
 
       try {
-        const resp: any = await request(
-          `${process.env.REACT_APP_API_URL}${url}`,
-          options,
-        );
+        const newUrl = url.includes('https')
+          ? url
+          : `${process.env.REACT_APP_API_URL}${url}`;
+
+        const resp: any = await request(newUrl, options);
 
         if (resp && resp.data) {
           if (decrypt) {
@@ -139,7 +150,7 @@ const useFetch = () => {
           }
         }
         setLoading(false);
-      } catch (err) {
+      } catch (err: any) {
         // for development console logging only
         if (process.env.REACT_APP_SENTRY_ENV === 'development') {
           const cons = {

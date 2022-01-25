@@ -38,7 +38,11 @@ import { RegisterPage } from 'app/pages/RegisterPage/Loadable';
 import { ForgotPasswordPage } from 'app/pages/ForgotPasswordPage/Loadable';
 import { SendMoney } from 'app/pages/SendMoney/Loadable';
 import { GenerateQR } from 'app/pages/GenerateQR/Loadable';
-import { AddMoneyViaBPI } from 'app/pages/AddMoney/AddMoneyViaBPIPage/Loadable';
+import {
+  AddMoneyViaBPIPage,
+  AddMoneyViaBPIAccountSelect,
+  AddMoneyViaBPIVerification,
+} from 'app/pages/AddMoney/BPI/Loadable';
 import { MyQrCodePage } from 'app/pages/MyQrCodePage/Loadable';
 import { QrPages } from 'app/pages/QrPages/Loadable';
 import { AddMoneyViaUBP } from 'app/pages/AddMoney/AddMoneyViaUBPPage/Loadable';
@@ -98,7 +102,6 @@ import SuccessPostBack from './SuccessPostback';
 import PrivateRoute from './PrivateRoute';
 
 /** selectors, slice */
-import { containerActions as addMoneyBpiAction } from 'app/pages/AddMoney/AddMoneyViaBPIPage/slice';
 import { useAppSaga } from './slice';
 import { useContainerSaga } from 'app/pages/DashboardPage/slice';
 
@@ -189,7 +192,9 @@ export function App() {
     const clientCookie = getCookie('spv_cat') || ''; // client token
     const userCookie = getCookie('spv_uat_u'); // login email/mobile
     const forceUpdate = getCookie('spv_uat_f');
+
     let param = new URLSearchParams(location.search).get('code') ?? '';
+    let addMoneyReferrer = sessionStorage.getItem('spv_addmon_url'); // add money referrer (ie: bpi, ubp, ecpay, dragonpay)
     let code;
     if (param && sessionStorage.getItem('ubpUrl')) {
       code = {
@@ -197,7 +202,9 @@ export function App() {
         value: param,
       };
     }
-    if (param && !sessionStorage.getItem('ubpUrl')) {
+    // bpi url
+    if (param && addMoneyReferrer && addMoneyReferrer === 'bpi') {
+      sessionStorage.setItem('spv_addmon_code', param);
       code = {
         type: 'bpi',
         value: param,
@@ -400,7 +407,6 @@ export function App() {
             <PrivateRoute path="/generateqr" component={GenerateQR} />
             <PrivateRoute path="/my-qr-code" component={MyQrCodePage} />
             <PrivateRoute path="/qr-code" component={QrPages} />
-            <PrivateRoute path="/addmoneyviabpi" component={AddMoneyViaBPI} />
             <PrivateRoute path="/onlinebank" component={OnlineBank} />
             <PrivateRoute exact path="/buy" component={BuyLoadIndexPage} />
             <PrivateRoute exact path="/buy/load" component={BuyLoadPage} />
@@ -424,17 +430,22 @@ export function App() {
             <PrivateRoute
               exact
               path="/add-money/bpi"
-              component={AddMoneyViaBPI}
+              component={AddMoneyViaBPIPage}
+            />
+            <PrivateRoute
+              exact
+              path="/add-money/bpi/select-account"
+              component={AddMoneyViaBPIAccountSelect}
+            />
+            <PrivateRoute
+              exact
+              path="/add-money/bpi/verification"
+              component={AddMoneyViaBPIVerification}
             />
             <PrivateRoute
               exact
               path="/add-money/ubp"
               component={AddMoneyViaUBP}
-            />
-            <PrivateRoute
-              exact
-              path="/add-money/bpi/select-account"
-              component={AddMoneyViaBPI}
             />
             <PrivateRoute exact path="/add-money/ecpay" component={ECPay} />
             <PrivateRoute
