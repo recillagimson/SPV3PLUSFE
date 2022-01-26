@@ -98,12 +98,12 @@ const useFetch = () => {
 
       if (contentType === 'application/x-www-form-urlencoded') {
         headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        headers['Authorization'] = '';
       }
 
       const options = {
         method: method || 'GET',
         headers: headers,
-        credential: 'include',
         body:
           contentType === 'form-data' ||
           contentType === 'application/x-www-form-urlencoded'

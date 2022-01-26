@@ -19,12 +19,13 @@ import { numberCommas } from 'app/components/Helpers';
 
 import { ListAccount } from './Style';
 import ErrorMsg from 'app/components/Elements/ErrorMsg';
+import useFetchAccessToken from './useBPIFetchs';
 
 export function BPISelectAccountPage() {
   const location = useLocation();
   const history = useHistory();
   const creds = useFetch(); // bpi credentials
-  const token = useFetch(); // bpi access token
+  const token = useFetchAccessToken(); // bpi access token
   const accts = useFetch(); // bpi accounts of logged in bpi user
   const topup = useFetch(); // bpi fund top up
 
@@ -100,7 +101,11 @@ export function BPISelectAccountPage() {
   }, [accts]);
 
   React.useEffect(() => {
-    if (topup.response) {
+    if (
+      topup.response &&
+      topup.response.response.status &&
+      topup.response.response.status === 'success'
+    ) {
       history.push({
         pathname: '/add-money/bpi/verification',
         state: {
@@ -131,14 +136,7 @@ export function BPISelectAccountPage() {
     payload.append('grant_type', 'authorization_code');
     payload.append('code', code);
 
-    token.goFetch(
-      `${process.env.REACT_APP_BURL}/oauth2/token`,
-      'POST',
-      payload,
-      'application/x-www-form-urlencoded',
-      true,
-      true,
-    );
+    token.goFetch(`${process.env.REACT_APP_BURL}/oauth2/token`, payload);
   };
 
   // get accounts
@@ -271,7 +269,7 @@ export function BPISelectAccountPage() {
         {accounts.length > 0 &&
           accounts.map((acct: any) => (
             <ListAccount
-              key={acct.displayOrder}
+              key={acct.accountNumberToken}
               selected={selectedAccount.value === acct.accountNumberToken}
               role="presentation"
               onClick={() =>
@@ -285,7 +283,7 @@ export function BPISelectAccountPage() {
               <img src="/banks/bpi.png" alt="BPI" width="48px" height="auto" />
               <div style={{ flex: 1, padding: '0 8px' }}>
                 <Paragraph margin="0 0 0">
-                  {acct.accountNumber.replace('X', '*')}
+                  {acct.accountNumber.replaceAll('X', '*')}
                 </Paragraph>
                 <Paragraph margin="0 0 0" size="xsmall">
                   {acct.accountType}
@@ -305,6 +303,7 @@ export function BPISelectAccountPage() {
             size="large"
             variant="contained"
             onClick={onSubmit}
+            disabled={!selectedAccount.value}
           >
             Cash In
           </Button>

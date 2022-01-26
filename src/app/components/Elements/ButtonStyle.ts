@@ -27,7 +27,7 @@ const defaultstyle = css<Props>`
     color: ${StyleConstants.BUTTONS.primary.main};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       color: ${StyleConstants.BUTTONS.primary.dark};
     }
   `};
@@ -37,7 +37,7 @@ const defaultstyle = css<Props>`
     color: ${StyleConstants.BUTTONS.secondary.main};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       color: ${StyleConstants.BUTTONS.secondary.dark};
     }
   `};
@@ -48,7 +48,7 @@ const defaultstyle = css<Props>`
     color: ${StyleConstants.BUTTONS.danger.main};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       color: ${StyleConstants.BUTTONS.danger.dark};
     }
   `};
@@ -58,7 +58,7 @@ const defaultstyle = css<Props>`
     color: ${StyleConstants.BUTTONS.neutral.main};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       color: ${StyleConstants.BUTTONS.neutral.dark};
     }
   `};
@@ -72,7 +72,7 @@ const contained = css<Props>`
     color: ${StyleConstants.BUTTONS.primary.textColor};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       background-color: ${StyleConstants.BUTTONS.primary.dark};
     }
   `};
@@ -83,7 +83,7 @@ const contained = css<Props>`
     color: ${StyleConstants.WHITE};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       background-color: ${StyleConstants.BUTTONS.secondary.dark};
     }
   `};
@@ -95,7 +95,7 @@ const contained = css<Props>`
     color: ${StyleConstants.WHITE};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       background-color: ${StyleConstants.BUTTONS.danger.dark};
     }
   `};
@@ -106,7 +106,7 @@ const contained = css<Props>`
     color: ${StyleConstants.BUTTONS.neutral.textColor};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       background-color: ${StyleConstants.BUTTONS.neutral.dark};
     }
   `};
@@ -122,7 +122,7 @@ const outlined = css<Props>`
     color: ${StyleConstants.BUTTONS.mainTextColor};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       border-color: ${StyleConstants.BUTTONS.primary.dark};
     }
   `};
@@ -133,7 +133,7 @@ const outlined = css<Props>`
     color: ${StyleConstants.BUTTONS.mainTextColor};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       border-color: ${StyleConstants.BUTTONS.secondary.dark};
     }
   `};
@@ -145,7 +145,7 @@ const outlined = css<Props>`
     color: ${StyleConstants.BUTTONS.danger.main};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       border-color: ${StyleConstants.BUTTONS.danger.dark};
       color: ${StyleConstants.BUTTONS.danger.dark};
     }
@@ -157,7 +157,7 @@ const outlined = css<Props>`
     color: ${StyleConstants.BUTTONS.mainTextColor};
 
     &:focus-visible,
-    &:hover {
+    &:not([disabled]):hover {
       border-color: ${StyleConstants.BUTTONS.neutral.dark};
     }
   `};
@@ -209,8 +209,9 @@ const ButtonStyle = css<Props>`
   }
 
   &:disabled {
-    cursor: default;
-    background-color: ${StyleConstants.BODY_COLOR};
+    cursor: not-allowed;
+    opacity: 0.85;
+    /* background-color: ${StyleConstants.BODY_COLOR}; */
     color: ${StyleConstants.MAIN_TEXT};
   }
 `;

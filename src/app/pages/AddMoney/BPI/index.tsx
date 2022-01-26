@@ -152,7 +152,7 @@ export function AddMoneyViaBPIPage() {
             marginBottom: 24,
           }}
         >
-          <img src="/banks/bpi.png" alt="BPI" width="140" />
+          <img src="/banks/bpi.png" alt="BPI" width="150" />
         </div>
         <form>
           <Field>
