@@ -1,6 +1,5 @@
 /**
- * This is for the BPI fetch only of
- * Credentials and Access Token
+ * This is for the BPI fetch only of Access Token
  * Other API should be used with the standard useFetch hook
  */
 import { useState, useCallback } from 'react';

@@ -155,28 +155,51 @@ export function BPIVerificationPage() {
     }
   };
 
-  const onVerifyOTP = () => {
-    const amount: string = sessionStorage.getItem('spv_addmon') || '';
-    const accessToken = sessionStorage.getItem('spv_addmon_acto');
+  const onVerifyOTP = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (e && e.preventDefault) e.preventDefault();
 
-    if (accessToken) {
-      const payload = {
-        token: accessToken,
-        otp: smsCode.value,
-        transactionId: topUpResponse.transactionId,
-        amount: parseFloat(amount),
-        refId: topUpResponse.refId,
-        accountNumber: accountNumber,
-      };
+    let hasError = false;
+    if (smsCode.value === '') {
+      hasError = true;
+      setSmsCode({
+        ...smsCode,
+        error: true,
+        msg: 'Oops! Please enter the SMS code.',
+      });
+    }
 
-      verifyOTP.goFetch(
-        '/bpi/process',
-        'POST',
-        JSON.stringify(payload),
-        '',
-        true,
-        true,
-      );
+    if (smsCode.value && smsCode.value.length < 6) {
+      hasError = true;
+      setSmsCode({
+        ...smsCode,
+        error: true,
+        msg: 'Oops! Please enter the 6 digit SMS code.',
+      });
+    }
+
+    if (!hasError) {
+      const amount: string = sessionStorage.getItem('spv_addmon') || '';
+      const accessToken = sessionStorage.getItem('spv_addmon_acto');
+
+      if (accessToken) {
+        const payload = {
+          token: accessToken,
+          otp: smsCode.value,
+          transactionId: topUpResponse.transactionId,
+          amount: parseFloat(amount),
+          refId: topUpResponse.refId,
+          accountNumber: accountNumber,
+        };
+
+        verifyOTP.goFetch(
+          '/bpi/process',
+          'POST',
+          JSON.stringify(payload),
+          '',
+          true,
+          true,
+        );
+      }
     }
   };
 
