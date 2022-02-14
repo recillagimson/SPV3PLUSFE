@@ -45,7 +45,7 @@ import {
 } from 'app/pages/AddMoney/BPI/Loadable';
 import { MyQrCodePage } from 'app/pages/MyQrCodePage/Loadable';
 import { QrPages } from 'app/pages/QrPages/Loadable';
-import { AddMoneyViaUBP } from 'app/pages/AddMoney/AddMoneyViaUBPPage/Loadable';
+import { AddMoneyViaUBPPage } from 'app/pages/AddMoney/UBP/Loadable';
 import { OnlineBank } from 'app/pages/OnlineBank/Loadable';
 import {
   BuyLoadIndexPage,
@@ -180,93 +180,100 @@ export function App() {
         : false,
     };
 
-    if (refs) {
+    // save only if one or more of the references has values
+    if (!Object.keys(refs).every(k => !refs[k])) {
       dispatch(actions.getSaveAllReferences(refs));
     }
+
     /**
      * Check Session and necessary cookies for the token
      */
-    const path: string | boolean = location ? location.pathname : '/dashboard';
-    const phrase = getCookie('spv_uat_hmc'); // retrieve the passphrase use for encrypting
     const sessionCookie = getCookie('spv_uat'); // user token
-    const clientCookie = getCookie('spv_cat') || ''; // client token
-    const userCookie = getCookie('spv_uat_u'); // login email/mobile
-    const forceUpdate = getCookie('spv_uat_f');
 
-    let param = new URLSearchParams(location.search).get('code') ?? '';
-    let addMoneyReferrer = sessionStorage.getItem('spv_addmon_url'); // add money referrer (ie: bpi, ubp, ecpay, dragonpay)
-    let code;
-    if (param && sessionStorage.getItem('ubpUrl')) {
-      code = {
-        type: 'ubp',
-        value: param,
-      };
-    }
-    // bpi url
-    if (param && addMoneyReferrer && addMoneyReferrer === 'bpi') {
-      sessionStorage.setItem('spv_addmon_code', param);
-      code = {
-        type: 'bpi',
-        value: param,
-      };
+    // check if we have session cookie (user token)
+    // if it exists we are authenticated
+    if (sessionCookie) {
+      onCheckRedirect(sessionCookie);
+      return;
     }
 
-    let decrypt: any = false;
-    let username: string = '';
-
-    // decrypted the encrypted cookies
-    if (phrase && sessionCookie) {
-      decrypt = spdCrypto.decrypt(sessionCookie, phrase);
-      username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
-    }
-
-    if (!forceUpdate && decrypt && code && path === '/') {
-      dispatch(actions.getClientTokenLoading());
-      dispatch(actions.getIsAuthenticated(true));
-      dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
-      dispatch(actions.getUserToken(decrypt.user_token));
-      dispatch(actions.getSaveLoginName(username));
-
-      // delay the retrieval of dashboard and user profile
-      setTimeout(() => {
-        dispatch(actions.getLoadUserProfile());
-        dispatch(dashboardAction.getFetchLoading());
-      }, 2000);
-
-      if (code?.type === 'bpi') {
-        history.push({
-          pathname: '/add-money/bpi/select-account',
-          state: code?.value,
-        });
-      }
-
-      if (code?.type === 'ubp') {
-        history.push({
-          pathname: '/add-money/ubp',
-          search: `?code=${code?.value}`,
-        });
-      }
-    }
-
-    if (!forceUpdate && decrypt && !path.includes('/postback') && !code) {
-      dispatch(actions.getIsAuthenticated(true));
-      dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
-      dispatch(actions.getUserToken(decrypt.user_token));
-      dispatch(actions.getSaveLoginName(username));
-
-      // delay the retrieval of references and user profile
-      setTimeout(() => {
-        // dispatch(actions.getLoadReferences());
-        dispatch(actions.getLoadUserProfile());
-      }, 2000);
-
-      history.push('/dashboard');
-    } else if (forceUpdate) {
-      dispatch(actions.getClientTokenLoading());
-      history.push('/register/update-profile');
-    } else {
+    // if no session cookie, proceed normally
+    if (!sessionCookie) {
       dispatch(actions.getClientTokenLoading());
     }
+
+    // phrase, client and session cookie exists, decrypt the data
+    // if (phrase && sessionCookie && clientCookie) {
+    //   decrypt = spdCrypto.decrypt(sessionCookie, phrase);
+    //   username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
+    // }
+
+    // // no session;
+    // if (!forceUpdate && !decrypt && path === '/') {
+    //   dispatch(actions.getClientTokenLoading());
+    // }
+
+    // // we have a session, redirect user to the dashboard
+    // if (!forceUpdate && decrypt && path === '/') {
+    //   dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
+    //   dispatch(actions.getUserToken(decrypt.user_token));
+    //   dispatch(actions.getSaveLoginName(username));
+    //   dispatch(actions.getIsAuthenticated(true));
+
+    //   // delay the retrieval of references and user profile
+    //   setTimeout(() => {
+    //     // dispatch(actions.getLoadReferences()); // disable for now
+    //     dispatch(actions.getLoadUserProfile());
+    //   }, 2000);
+    // }
+
+    // if (!forceUpdate && decrypt && code && path === '/') {
+    //   dispatch(actions.getClientTokenLoading());
+    //   dispatch(actions.getIsAuthenticated(true));
+    //   dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
+    //   dispatch(actions.getUserToken(decrypt.user_token));
+    //   dispatch(actions.getSaveLoginName(username));
+
+    //   // delay the retrieval of dashboard and user profile
+    //   setTimeout(() => {
+    //     dispatch(actions.getLoadUserProfile());
+    //     dispatch(dashboardAction.getFetchLoading());
+    //   }, 2000);
+
+    //   if (code?.type === 'bpi') {
+    //     history.push({
+    //       pathname: '/add-money/bpi/select-account',
+    //       state: code?.value,
+    //     });
+    //   }
+
+    //   if (code?.type === 'ubp') {
+    //     history.push({
+    //       pathname: '/add-money/ubp',
+    //       search: `?code=${code?.value}`,
+    //     });
+    //   }
+    // }
+
+    // if (!forceUpdate && decrypt && !path.includes('/postback') && !code) {
+    //   dispatch(actions.getIsAuthenticated(true));
+    //   dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
+    //   dispatch(actions.getUserToken(decrypt.user_token));
+    //   dispatch(actions.getSaveLoginName(username));
+
+    //   // delay the retrieval of references and user profile
+    //   setTimeout(() => {
+    //     // dispatch(actions.getLoadReferences());
+    //     dispatch(actions.getLoadUserProfile());
+    //   }, 2000);
+
+    //   history.push('/dashboard');
+    // } else if (forceUpdate) {
+    //   dispatch(actions.getClientTokenLoading());
+    //   history.push('/register/update-profile');
+    // } else {
+    //   dispatch(actions.getClientTokenLoading());
+    // }
 
     // remote config
     // getRemoteConfigValues();
@@ -289,6 +296,86 @@ export function App() {
       dispatch(actions.getIsServerError(false));
     }
   }, [isServerError]);
+
+  /**
+   * Function to check where to redirect the user
+   */
+  const onCheckRedirect = sessionCookie => {
+    let path = '/';
+    let locationState: any;
+    let locationSearch: any = '';
+    if (location && location.pathname) {
+      path = location.pathname;
+      locationState = location.state;
+      locationSearch = location.search;
+    }
+
+    // check necessary tokens and infos from cookie
+    const clientCookie = getCookie('spv_cat') || ''; // client token
+    const phrase = getCookie('spv_uat_hmc'); // retrieve the passphrase use for decryption
+    const userCookie = getCookie('spv_uat_u'); // login email/mobile
+    const forceUpdate = getCookie('spv_uat_f'); // first login, update the profile of the logged in user
+
+    // check if first time user and need to update profile
+    if (forceUpdate) {
+      // redirect to update profile page
+      history.push('/register/update-profile');
+      return;
+    }
+
+    // no force update, proceed normally
+    let decrypt: any = false; // variable holder for session tokens
+    let username: string = '';
+
+    if (phrase) {
+      decrypt = spdCrypto.decrypt(sessionCookie, phrase);
+      username = userCookie ? spdCrypto.decrypt(userCookie, phrase) : '';
+    }
+
+    let code = new URLSearchParams(locationSearch).get('code') ?? ''; // if it's a postback from add money (UBP and BPI) there should a code parameter in the url
+    let addMoneyReferrer = sessionStorage.getItem('spv_addmon_url') || ''; // add money referrer (ie: bpi, ubp, ecpay, dragonpay)
+
+    if (decrypt) {
+      dispatch(actions.getIsAuthenticated(true));
+      dispatch(actions.getClientTokenSuccess(JSON.parse(clientCookie)));
+      dispatch(actions.getUserToken(decrypt.user_token));
+      dispatch(actions.getSaveLoginName(username));
+
+      // delay the retrieval of dashboard and user profile
+      setTimeout(() => {
+        dispatch(actions.getLoadUserProfile());
+        dispatch(dashboardAction.getFetchLoading());
+      }, 2000);
+
+      if (code && addMoneyReferrer) {
+        if (addMoneyReferrer === 'bpi') {
+          history.push({
+            pathname: '/add-money/bpi/select-account',
+            search: locationSearch,
+            state: code,
+          });
+          return; // return, no need to continue on the code
+        }
+
+        if (addMoneyReferrer === 'ubp') {
+          history.push({
+            pathname: '/add-money/ubp',
+            search: locationSearch,
+            state: locationState,
+          });
+          return; // return, no need to continue on the code
+        }
+      }
+
+      // proceed normaly on the entered URL
+      history.push({
+        pathname: path,
+        search: locationSearch,
+        state: locationState,
+      });
+      return;
+    }
+  };
 
   const onClickSessionExpired = () => {
     doSignOut();
@@ -445,7 +532,7 @@ export function App() {
             <PrivateRoute
               exact
               path="/add-money/ubp"
-              component={AddMoneyViaUBP}
+              component={AddMoneyViaUBPPage}
             />
             <PrivateRoute exact path="/add-money/ecpay" component={ECPay} />
             <PrivateRoute
@@ -557,7 +644,10 @@ export function App() {
           <p style={{ margin: '15px 0 10px' }}>
             <strong>Oops, Your session has expired.</strong>
           </p>
-          <p>You have been automatically logged out due to session expiry.</p>
+          <p>
+            You have been automatically logged out due to expiration of your
+            session.
+          </p>
           <Button
             fullWidth
             onClick={onClickSessionExpired}

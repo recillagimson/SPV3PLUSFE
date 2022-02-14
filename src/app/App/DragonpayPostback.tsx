@@ -40,7 +40,7 @@ export default function DragonpaySuccessPostback() {
   const [pending, setPending] = React.useState(false);
 
   React.useEffect(() => {
-    const params = new URLSearchParams(window.location.href);
+    const params = new URLSearchParams(location.search); // use the search in location object instead of from window
     if (params && params.has('status')) {
       // passParams();
       if (params.get('status') === 'S') {

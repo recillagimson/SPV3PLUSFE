@@ -17,7 +17,8 @@ const InputTextWrapper = styled.div<{ position?: 'left' | 'right' }>`
     top: 50%;
     transform: translateY(-50%);
     color: #38434d;
-    padding-top: 2px;
+    /* padding-top: 2px; */
+    line-height: 1;
     ${p => (p.position === 'right' ? 'right: 5px;' : 'left: 10px')};
   }
 `;

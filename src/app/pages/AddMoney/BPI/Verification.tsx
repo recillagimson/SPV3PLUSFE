@@ -19,9 +19,12 @@ import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import H3 from 'app/components/Elements/H3';
 import Logo from 'app/components/Assets/Logo';
 
-import { FundTopUpTypes } from './types';
 import Timer from 'app/components/VerifyOTP/Timer';
 import useFetch from 'utils/useFetch';
+import { analytics } from 'utils/firebase';
+import { events } from 'utils/firebaseConstants';
+
+import { FundTopUpTypes } from './types';
 
 export function BPIVerificationPage() {
   const history = useHistory();
@@ -69,6 +72,8 @@ export function BPIVerificationPage() {
       verifyOTP.response.status === 'success'
     ) {
       setIsSuccess(true);
+      analytics.logEvent(events.addMoney, { type: 'bpi' }); // log the event in analytics (successful transaction only)
+      verifyOTP.fetchReset();
     }
     if (verifyOTP.error) {
       onApiError(verifyOTP.error);

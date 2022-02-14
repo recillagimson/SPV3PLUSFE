@@ -68,14 +68,14 @@ function* getLogin() {
       // set appropriate cookies
       // a 0 in parameter will set the cookie 1 hour from the current time
       setCookie('spv_expire', 'expiration', 0);
-      setCookie('spv_uat', apirequest.data.payload, 0);
-      setCookie('spv_uat_hmc', decryptPhrase.passPhrase, 0);
+      setCookie('spv_uat', apirequest.data.payload, 0); // user token
+      setCookie('spv_uat_hmc', decryptPhrase.passPhrase, 0); // decryption phrase
       // encrypt email/mobile used for logging and store in cookie for session persist
       const encryptUsername = yield spdCrypto.encrypt(
         JSON.stringify(payload.email ? payload.email : payload.mobile_number),
         decryptPhrase.passPhrase,
       );
-      setCookie('spv_uat_u', encryptUsername);
+      setCookie('spv_uat_u', encryptUsername); // save the username
 
       // write data in store state
       yield put(
@@ -93,7 +93,7 @@ function* getLogin() {
       const hasProfile = yield call(getLoggedInUserProfile); // retrieve the profile, NOTE: might be changed based on result
 
       if (!hasProfile) {
-        setCookie('spv_uat_f', encryptUsername);
+        setCookie('spv_uat_f', encryptUsername); // save that we have an update profile in case user refreshed the page
         yield put(
           actions.getFetchSuccess({ redirect: '/register/update-profile' }),
         );
@@ -109,7 +109,7 @@ function* getLogin() {
 
       return;
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
@@ -165,7 +165,7 @@ function* getResendActivationCode() {
     if (apirequest && apirequest.data) {
       yield put(actions.getResendCodeSuccess(true));
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err && err.response && err.response.status === 422) {
       const body = yield err.response.json();
       const newError = {
