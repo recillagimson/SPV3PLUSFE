@@ -188,3 +188,12 @@ v1.3.0
 - Add Money via ECPay (VP2-469)
 - Request Transaction History to Email (VP2-581)
 - Send to Bank - PesoNet>UBP- I'm getting "not enough balance" if I enter amount more than php1 (QA-193)
+
+v1.3.1
+
+- Fix typo errors
+- Updated RSFC loan url
+
+v1.3.2
+
+- Fix Add Money via BPI Account selection not showing
