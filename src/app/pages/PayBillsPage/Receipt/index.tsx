@@ -28,6 +28,7 @@ export default function RenderReceipt({
   data,
   formData,
 }: ComponentProps) {
+  console.log(billerCode);
   return (
     <>
       {billerCode === 'MECOR' && <Meralco data={data} formData={formData} />}
@@ -71,10 +72,10 @@ export default function RenderReceipt({
       {billerCode === 'DVOLT' && (
         <AccountAmount data={data} formData={formData} />
       )}
-      {billerCode === 'HMDF1' && (
+      {billerCode === 'HDMF1' && (
         <PagIbigFund data={data} formData={formData} />
       )}
-      {billerCode === 'HMDF3' && (
+      {billerCode === 'HDMF3' && (
         <PagIbigFund3 data={data} formData={formData} />
       )}
       {billerCode === 'CGNAL' && <Cignal data={data} formData={formData} />}

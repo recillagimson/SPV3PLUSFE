@@ -52,7 +52,7 @@ export default function PagIbigFund({ data, formData }: ComponentProps) {
           size="small"
           style={{ flex: 1 }}
         >
-          {formData['otherInfo.BillDate'].value || data.payment_type || 'None'}
+          {formData['otherInfo.BillDate'].value || data.bill_date || 'None'}
         </Paragraph>
       </Flex>
       <Flex style={{ width: '100%' }} wrap="wrap">
@@ -63,7 +63,7 @@ export default function PagIbigFund({ data, formData }: ComponentProps) {
           size="small"
           style={{ flex: 1 }}
         >
-          {formData['otherInfo.DueDate'].value || data.payment_type || 'None'}
+          {formData['otherInfo.DueDate'].value || data.due_date || 'None'}
         </Paragraph>
       </Flex>
       <Flex style={{ width: '100%' }} wrap="wrap">
