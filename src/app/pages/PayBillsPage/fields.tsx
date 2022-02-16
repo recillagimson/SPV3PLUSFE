@@ -201,11 +201,49 @@ export const RENDER_SELECT_ITEMS = name => {
           label: 'Modified PAG-IBIG 2',
         },
       ];
+    case 'hdmf3_otherinfo.paymenttype':
+      return [
+        {
+          value: 'ST',
+          label: 'Short-term Loan',
+        },
+        {
+          value: 'MC',
+          label: 'Membership Saving',
+        },
+        {
+          value: 'HL',
+          label: 'Housing Loan',
+        },
+        {
+          value: 'CL',
+          label: 'Calamity Loan',
+        },
+        {
+          value: 'MP2',
+          label: 'Modified PAG-IBIG 2',
+        },
+      ];
     case 'cgnal_otherinfo.externalentityname':
       return [
         {
           value: 'BAYAD',
           label: 'Bayad',
+        },
+      ];
+    case 'wldvs_otherinfo.pledge':
+      return [
+        {
+          value: 'OT',
+          label: 'One Time',
+        },
+        {
+          value: 'RD',
+          label: 'Regular Donor',
+        },
+        {
+          value: 'Unknown',
+          label: 'Unknown',
         },
       ];
     default:
@@ -228,6 +266,7 @@ export type IFieldTypes = {
   max?: number | string;
   maxLength?: number;
   option?: { value: string; label: string }[]; // optional, only if type is select
+  format?: string; // should be a valid luxon date time format
   validator?: (...args: any) => { error: boolean; msg: string };
 };
 
@@ -439,6 +478,99 @@ const hdmf1: IFieldTypes[] = [
   },
 ];
 
+const hdmf3: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Payment Type',
+    type: 'select',
+    name: 'otherInfo.PaymentType',
+    placeholder: '',
+    required: true,
+    option: RENDER_SELECT_ITEMS('hdmf3_otherinfo.paymenttype'),
+    validator: validateText,
+  },
+  {
+    label: 'Period From',
+    type: 'date',
+    name: 'otherInfo.PeriodFrom',
+    format: 'yyyy/LL',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Period To',
+    type: 'date',
+    name: 'otherInfo.PeriodTo',
+    format: 'yyyy/LL',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Region',
+    type: 'text',
+    name: 'otherInfo.Region',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Contact Number',
+    type: 'number',
+    name: 'otherInfo.ContactNo',
+    required: true,
+    maxLength: 11,
+    validator: validateText,
+  },
+];
+
+const nha01: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Beneficiary Name',
+    type: 'text',
+    name: 'otherInfo.BeneficiaryName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
 const pldt6: IFieldTypes[] = [
   {
     label: 'Account Number',
@@ -548,7 +680,46 @@ const pruli: IFieldTypes[] = [
 const aecor: IFieldTypes[] = [
   {
     label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 16,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 99999,
+    validator: validateAmount,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    format: 'LL/dd/yyyy',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Customer Name',
     type: 'text',
+    name: 'otherInfo.CustomerName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const pelc2: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
     name: 'account_number',
     placeholder: '',
     required: true,
@@ -560,20 +731,23 @@ const aecor: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
+    min: 1,
+    max: 100000,
     validator: validateAmount,
   },
   {
     label: 'Due Date',
     type: 'date',
-    name: 'due_date',
+    name: 'otherInfo.DueDate',
+    format: 'LL/dd/yyyy',
     placeholder: '',
     required: true,
     validator: validateText,
   },
   {
-    label: 'Customer Name',
+    label: 'Consumer Name',
     type: 'text',
-    name: 'customer_name',
+    name: 'otherInfo.ConsumerName',
     placeholder: '',
     required: true,
     validator: validateText,
@@ -1436,6 +1610,52 @@ const cgnal: IFieldTypes[] = [
   },
 ];
 
+const wldvs: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Pledge',
+    type: 'select',
+    name: 'otherInfo.Pledge',
+    option: RENDER_SELECT_ITEMS('wldvs_otherinfo.pledge'),
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
 /**
  *
  * @param {string} code     biller code
@@ -1543,6 +1763,11 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
         fields: aecor,
         note: '',
       };
+    case 'PELC2':
+      return {
+        fields: pelc2,
+        note: '',
+      };
     case 'LAZAE':
       return {
         fields: lazae,
@@ -1623,9 +1848,25 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
         fields: hdmf1,
         note: '',
       };
+    case 'HDMF3':
+      return {
+        fields: hdmf3,
+        note: '',
+      };
+    case 'NHA01':
+      return {
+        fields: nha01,
+        note: '',
+      };
     case 'HCPHL': {
       return {
         fields: hcphl,
+        note: '',
+      };
+    }
+    case 'WLDVS': {
+      return {
+        fields: wldvs,
         note: '',
       };
     }

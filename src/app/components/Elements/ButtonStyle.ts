@@ -12,7 +12,7 @@ import { css } from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
 type Props = {
-  color?: 'default' | 'primary' | 'secondary' | 'danger';
+  color?: 'default' | 'primary' | 'secondary' | 'danger' | 'mute';
   size?: 'small' | 'medium' | 'large';
   variant?: 'contained' | 'outlined' | 'default';
   minWidth?: string;
@@ -20,7 +20,7 @@ type Props = {
 };
 
 const defaultstyle = css<Props>`
-  background-color: ${StyleConstants.color.tones.mute};
+  background-color: ${StyleConstants.color.white};
 
   ${p =>
     p.color === 'primary' &&

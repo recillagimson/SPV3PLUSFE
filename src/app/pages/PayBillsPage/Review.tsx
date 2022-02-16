@@ -10,7 +10,7 @@ import CircleIndicator from 'app/components/Elements/CircleIndicator';
 import H3 from 'app/components/Elements/H3';
 import Dialog from 'app/components/Dialog';
 import ReceiptWrapper from 'app/components/Elements/Receipt';
-import H5 from 'app/components/Elements/H5';
+import H4 from 'app/components/Elements/H4';
 import Logo from 'app/components/Assets/Logo';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -166,7 +166,7 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
             style={{ marginTop: 50 }}
           >
             <Paragraph margin="0 0 3px">Total Amount</Paragraph>
-            <H5 margin="0 0 2px">
+            <H4 margin="0 0 2px">
               PHP{' '}
               {numberCommas(
                 (
@@ -175,7 +175,7 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
                   parseInt(details.validate.otherCharges || '0')
                 ).toString() || '0',
               )}
-            </H5>
+            </H4>
             <Paragraph size="small" margin="0 0 2px">
               Service Fee: {numberCommas(details.validate.serviceFee || '0')}
             </Paragraph>
@@ -213,7 +213,7 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
           <CircleIndicator size="medium" color="danger">
             <FontAwesomeIcon icon="times" />
           </CircleIndicator>
-          <H5 margin="10px 0 5px">Oh no!</H5>
+          <H4 margin="10px 0 5px">Oh no!</H4>
           <Paragraph size="small" margin="0 0 24px">
             {apiError.msg}
           </Paragraph>
@@ -261,10 +261,10 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
             <Paragraph margin="40px 0 4px" size="small" align="center">
               Total Amount
             </Paragraph>
-            <H5 margin="0 0 4px" align="center">
+            <H4 margin="0 0 4px" align="center">
               {/* PHP {numberCommas(totalAmountToPay || 0)} */}
               PHP {numberCommas(data.total_amount || 0)}
-            </H5>
+            </H4>
             <Paragraph margin="0 0 0" size="small" align="center">
               Service Fee: {numberCommas(data.service_fee || 0)}
             </Paragraph>

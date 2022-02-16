@@ -24,6 +24,7 @@ import { numberCommas } from 'app/components/Helpers';
 import { IFieldTypes, RENDER_FIELDS } from './fields';
 import useFetch from 'utils/useFetch';
 import { BillersState, ValidateSuccessResponse } from './types';
+import { DateTime } from 'luxon';
 
 type FormFieldsProps = {
   biller: BillersState;
@@ -90,7 +91,12 @@ export default function FormFields({
       if (response.validationNumber) {
         // initialize payload
         const formInfo: {
-          [name: string]: { label: string; value: string; name: string };
+          [name: string]: {
+            label: string;
+            value: string;
+            name: string;
+            date?: string | undefined;
+          };
         } = {};
 
         // get all the key name in our formData object
@@ -103,6 +109,7 @@ export default function FormFields({
               label: formData[k].label,
               value: formData[k].value,
               name: formData[k].name || '',
+              date: formData[k].date || undefined,
             };
             return;
           });
@@ -148,12 +155,14 @@ export default function FormFields({
                   key === 'referenceNumber'
                 ) {
                   if (formData['account_number']) {
-                    formData['account_number'].msg =
-                      'Account number is invalid.';
+                    // formData['account_number'].msg =
+                    //   'Account number is invalid.';
+                    formData['account_number'].msg = msg.join('\n');
                   }
                   if (formData['referenceNumber']) {
-                    formData['referenceNumber'].msg =
-                      'Account number is invalid.';
+                    // formData['referenceNumber'].msg =
+                    //   'Account number is invalid.';
+                    formData['referenceNumber'].msg = msg.join('\n');
                   }
                 } else {
                   formData[key].msg = msg.join('\n');
@@ -180,16 +189,16 @@ export default function FormFields({
         if (errors.length > 0) {
           errors.forEach(err => {
             if (err === 204) {
-              setApiError({ show: true, msg: err.message.join('\n') });
+              setApiError({ show: true, msg: error.errors.message.join('\n') });
               return;
             }
             if (err === 402) {
-              setApiError({ show: true, msg: err.message.join('\n') });
+              setApiError({ show: true, msg: error.errors.message.join('\n') });
               return;
             }
           });
         } else {
-          setApiError({ show: true, msg: error.message || '' });
+          setApiError({ show: true, msg: error.errors.message || '' });
         }
       }
       fetchReset();
@@ -224,13 +233,18 @@ export default function FormFields({
   };
 
   const onChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.currentTarget;
+    const { value, name, type } = e.currentTarget;
     const oldValue = formData[name] || {};
+    const hasFormat: any = e.currentTarget.dataset.format || false;
 
     setFormData({
       ...formData,
       [name]: {
         ...oldValue,
+        date:
+          type === 'date' && hasFormat
+            ? DateTime.fromISO(value).toFormat(hasFormat)
+            : undefined,
         value: value,
         error: false,
         msg: '',
@@ -308,10 +322,14 @@ export default function FormFields({
           // If key has otherInfo string
           if (k.includes('otherInfo')) {
             const o = k.split('.'); // Split the key name
-            otherInfo[o[1]] = formData[k].value;
+            otherInfo[o[1]] = formData[k].date
+              ? formData[k].date
+              : formData[k].value;
             return;
           }
-          requestPayload[k] = formData[k].value;
+          requestPayload[k] = formData[k].date
+            ? formData[k].date
+            : formData[k].value;
           return;
         });
       }
@@ -422,6 +440,7 @@ export default function FormFields({
                       min={f.min || undefined}
                       max={f.max || undefined}
                       maxLength={f.maxLength || undefined}
+                      data-format={f.type === 'date' ? f.format : undefined}
                       data-date-inline-picker="true"
                     />
                     {formData[f.name].error && (

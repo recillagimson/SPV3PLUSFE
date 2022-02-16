@@ -17,7 +17,7 @@ const InputTextWrapper = styled.div`
     top: 50%;
     transform: translateY(-50%);
     line-height: 1;
-    margin-top: 1px;
+    /* margin-top: 1px; */
     color: #38434d;
   }
 `;

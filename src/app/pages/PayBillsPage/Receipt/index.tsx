@@ -17,6 +17,11 @@ import Ineco from './Ineco';
 import PagIbigFund from './PagIbigFund';
 import Cignal from './Cignal';
 import SSSRealEstate from './SSSRealEstate';
+import PagIbigFund3 from './PagIbigFund3';
+import AngelesElectric from './AngelesElectric';
+import PampangaElectric from './PampangaElectric';
+import WorldVision from './WorldVision';
+import NationalHouseAuthority from './NationalHouseAuthority';
 
 export default function RenderReceipt({
   billerCode,
@@ -69,9 +74,24 @@ export default function RenderReceipt({
       {billerCode === 'HMDF1' && (
         <PagIbigFund data={data} formData={formData} />
       )}
+      {billerCode === 'HMDF3' && (
+        <PagIbigFund3 data={data} formData={formData} />
+      )}
       {billerCode === 'CGNAL' && <Cignal data={data} formData={formData} />}
       {billerCode === 'SSS03' && (
         <SSSRealEstate data={data} formData={formData} />
+      )}
+      {billerCode === 'AECOR' && (
+        <AngelesElectric data={data} formData={formData} />
+      )}
+      {billerCode === 'PELC2' && (
+        <PampangaElectric data={data} formData={formData} />
+      )}
+      {billerCode === 'WLDVS' && (
+        <WorldVision data={data} formData={formData} />
+      )}
+      {billerCode === 'NHA01' && (
+        <NationalHouseAuthority data={data} formData={formData} />
       )}
     </>
   );
