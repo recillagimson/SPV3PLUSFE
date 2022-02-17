@@ -120,7 +120,10 @@ export default function FormFields({
     }
 
     if (error) {
-      console.log(error);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(error);
+      }
+
       let providerError = error.provider_error || false;
       if (providerError && providerError.length > 0) {
         providerError.forEach(err => {
@@ -279,7 +282,7 @@ export default function FormFields({
     fields.forEach((field: IFieldTypes, i: number) => {
       if (field.required && field.validator) {
         const validate =
-          field.name === 'amount' && field.type === 'number'
+          field.name === 'amount'
             ? field.validator(
                 formData[field.name].value,
                 balance,
@@ -291,6 +294,7 @@ export default function FormFields({
                 field.maxLength,
                 field.label,
               );
+
         if (validate.error) {
           hasError = true;
           newFormData[field.name] = {

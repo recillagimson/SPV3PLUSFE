@@ -21,8 +21,36 @@ export const validateText = (
 
   if (count && count > 0 && text) {
     if (text.length > count) {
-      return { error: true, msg: `The ${label} must be ${count} digits.` };
+      return { error: true, msg: `The ${label} must not exceed ${count}.` };
     }
+  }
+
+  return { error: false, msg: '' };
+};
+
+/**
+ * Validate string if it is all digits and doesn't exceed the count length
+ * @param text        Text value to validate
+ * @param value2      optional value
+ * @param count       count length
+ * @param label       field label
+ * @returns {object}  returns { error: boolean, msg: string }
+ */
+export const validateDigits = (
+  text: string,
+  count: number = 0,
+  label: string = '',
+) => {
+  if (text === '' || text.length === 0) {
+    return { error: true, msg: 'Oops! This field is required.' };
+  }
+
+  if (text && !/^\d+$/.test(text)) {
+    return { error: true, msg: `The ${label} must only contain numbers.` };
+  }
+
+  if (text && text.length < count) {
+    return { error: true, msg: `The ${label} must be ${count} digits.` };
   }
 
   return { error: false, msg: '' };

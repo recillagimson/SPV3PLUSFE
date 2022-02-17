@@ -1,7 +1,20 @@
+/**
+ * Notes For Developers on creating new billers
+ *
+ * If fields like account_number only accepts digits, put the type = 'text' and maxLength in the object
+ * then use the validateDigits function to validate if the user input contains digits only
+ *
+ * For other fields that are required, use validateText to validate if it contains a value or not
+ *
+ * There is a specific validation for amounts (validateAmount), object contains min: 0 and max: 100000 properties,
+ * this will be used by the validator if they exceed the maximum amount or they don't have enough balance
+ *
+ * @author Habs Cervantes
+ */
 import * as React from 'react';
-import { validateAmount, validateText } from './validators';
+import { validateAmount, validateDigits, validateText } from './validators';
 
-export const RENDER_SELECT_ITEMS = name => {
+const RENDER_SELECT_ITEMS = (name: string) => {
   switch (name.toLowerCase()) {
     case 'pldt6_otherinfo.service':
       return [
@@ -341,11 +354,12 @@ const defaultFields: IFieldTypes[] = [
 const mecor: IFieldTypes[] = [
   {
     label: 'Account Number',
-    type: 'number',
+    type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 10,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -386,7 +400,8 @@ const bneco: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 11,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -485,7 +500,8 @@ const hdmf3: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 20,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -549,7 +565,8 @@ const nha01: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 9,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -578,7 +595,8 @@ const pldt6: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 10,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -615,9 +633,9 @@ const aeon1: IFieldTypes[] = [
     type: 'text',
     name: 'account_number',
     placeholder: '',
-    maxLength: 13,
     required: true,
-    validator: validateText,
+    maxLength: 10,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -647,7 +665,8 @@ const pruli: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 8,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -680,12 +699,12 @@ const pruli: IFieldTypes[] = [
 const aecor: IFieldTypes[] = [
   {
     label: 'Account Number',
-    type: 'number',
+    type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
     maxLength: 16,
-    validator: validateText,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -719,11 +738,12 @@ const aecor: IFieldTypes[] = [
 const pelc2: IFieldTypes[] = [
   {
     label: 'Account Number',
-    type: 'number',
+    type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 10,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -748,6 +768,82 @@ const pelc2: IFieldTypes[] = [
     label: 'Consumer Name',
     type: 'text',
     name: 'otherInfo.ConsumerName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const dvolt: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 13,
+    validator: validateDigits,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 99999,
+    validator: validateAmount,
+  },
+  {
+    label: 'First Name',
+    type: 'text',
+    name: 'otherInfo.FirstName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Last Name',
+    type: 'text',
+    name: 'otherInfo.LastName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const vieco: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 13,
+    validator: validateDigits,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 99999,
+    validator: validateAmount,
+  },
+  {
+    label: 'First Name',
+    type: 'text',
+    name: 'otherInfo.FirstName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Last Name',
+    type: 'text',
+    name: 'otherInfo.LastName',
     placeholder: '',
     required: true,
     validator: validateText,
@@ -796,7 +892,8 @@ const smart: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: false,
-    validator: validateText,
+    maxLength: 10,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -933,7 +1030,8 @@ const sss03: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 13,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1064,7 +1162,8 @@ const bpi00: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 16,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1093,7 +1192,8 @@ const bnkrd: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 16,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1326,7 +1426,8 @@ const pilam: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 10,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1386,12 +1487,12 @@ const splan: IFieldTypes[] = [
 const cnvrg: IFieldTypes[] = [
   {
     label: 'Account Number',
-    type: 'number',
+    type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
     maxLength: 13,
-    validator: validateText,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1417,12 +1518,12 @@ const cnvrg: IFieldTypes[] = [
 const hcphl: IFieldTypes[] = [
   {
     label: 'Account Number',
-    type: 'number',
+    type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
-    maxLength: 13,
-    validator: validateText,
+    maxLength: 10,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1458,12 +1559,12 @@ const hcphl: IFieldTypes[] = [
 const mbccc: IFieldTypes[] = [
   {
     label: 'Account Number',
-    type: 'number',
+    type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
     maxLength: 16,
-    validator: validateText,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1488,11 +1589,12 @@ const mbccc: IFieldTypes[] = [
 const etrip: IFieldTypes[] = [
   {
     label: 'Account Number',
-    type: 'number',
+    type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 12,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1509,11 +1611,12 @@ const etrip: IFieldTypes[] = [
 const mwcom: IFieldTypes[] = [
   {
     label: 'Account Number',
-    type: 'number',
+    type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 8,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1534,7 +1637,8 @@ const inec1: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 10,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1571,7 +1675,8 @@ const cgnal: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 10,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1617,7 +1722,8 @@ const wldvs: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 9,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1688,12 +1794,12 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
       };
     case 'VIECO':
       return {
-        fields: accoutNumberAndAmount,
+        fields: vieco,
         note: '',
       };
     case 'DVOLT':
       return {
-        fields: accoutNumberAndAmount,
+        fields: dvolt,
         note: '',
       };
     case 'MWCOM':

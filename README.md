@@ -197,3 +197,8 @@ v1.3.1
 v1.3.2
 
 - Fix Add Money via BPI Account selection not showing
+
+v1.3.3
+
+- Add new billers (World Vision, Angeles Electric Corporation, Pampanga II Electric Cooperative, Inc., National Housing Authority, Pag-Ibig, Pag-Ibig OFW)
+- Fix validation of account numbers in Paybills feature.
