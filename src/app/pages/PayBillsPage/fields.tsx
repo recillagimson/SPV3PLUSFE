@@ -259,6 +259,27 @@ const RENDER_SELECT_ITEMS = (name: string) => {
           label: 'Unknown',
         },
       ];
+    case 'adnu1_otherinfo.accounttype':
+      return [
+        {
+          value: 'ADNU1',
+          label: 'ADNU1',
+        },
+      ];
+    case 'adnu1_otherinfo.soa':
+      return [
+        {
+          value: '1',
+          label: 'APEC SOA',
+        },
+      ];
+    case 'adnu1_otherinfo.paymenttype':
+      return [
+        {
+          value: 'S',
+          label: 'Cash Only',
+        },
+      ];
     default:
       return [];
   }
@@ -731,6 +752,7 @@ const aecor: IFieldTypes[] = [
     name: 'otherInfo.CustomerName',
     placeholder: '',
     required: true,
+    maxLength: 100,
     validator: validateText,
   },
 ];
@@ -1260,12 +1282,13 @@ const unbnk: IFieldTypes[] = [
 
 const admsn: IFieldTypes[] = [
   {
-    label: 'Student Number',
+    label: 'Account Number',
     type: 'text',
-    name: 'referenceNumber',
+    name: 'account_number',
     placeholder: '',
     required: true,
-    validator: validateText,
+    maxLength: 9,
+    validator: validateDigits,
   },
   {
     label: 'Amount',
@@ -1273,6 +1296,8 @@ const admsn: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
+    min: 1,
+    max: 100000,
     validator: validateAmount,
   },
   {
@@ -1303,6 +1328,7 @@ const admsn: IFieldTypes[] = [
     label: 'Payment Type',
     type: 'select',
     name: 'otherInfo.PaymentType',
+    option: RENDER_SELECT_ITEMS('admsn_otherinfo.paymenttype'),
     placeholder: '',
     required: true,
     validator: validateText,
@@ -1313,6 +1339,7 @@ const admsn: IFieldTypes[] = [
     name: 'otherInfo.Course',
     placeholder: '',
     required: true,
+    maxLength: 10,
     validator: validateText,
   },
   {
@@ -1321,11 +1348,12 @@ const admsn: IFieldTypes[] = [
     name: 'otherInfo.TotalAssessment',
     placeholder: '',
     required: true,
-    validator: validateText,
+    min: 0,
+    validator: validateDigits,
   },
   {
     label: 'School Year',
-    type: 'text',
+    type: 'date',
     name: 'otherInfo.SchoolYear',
     placeholder: 'YYYY-YYYY',
     required: true,
@@ -1335,6 +1363,7 @@ const admsn: IFieldTypes[] = [
     label: 'Term',
     type: 'select',
     name: 'otherInfo.Term',
+    option: RENDER_SELECT_ITEMS('admsn_otherinfo.term'),
     placeholder: '',
     required: true,
     validator: validateText,
@@ -1762,6 +1791,178 @@ const wldvs: IFieldTypes[] = [
   },
 ];
 
+const adnu1: IFieldTypes[] = [
+  {
+    label: 'Student ID Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 9,
+    validator: validateDigits,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Type',
+    type: 'text',
+    name: 'otherInfo.AccountType',
+    option: RENDER_SELECT_ITEMS('adnu1_otherinfo.accounttype'),
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const antec: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 11,
+    validator: validateDigits,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    format: 'LL/dd/yyyy',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Bill Month',
+    type: 'text',
+    name: 'otherInfo.BillMonth',
+    placeholder: '',
+    required: true,
+    maxLength: 50,
+    validator: validateText,
+  },
+];
+
+const apec1: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 11,
+    validator: validateDigits,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Bill Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    validator: validateDigits,
+  },
+  {
+    label: 'SOA',
+    type: 'select',
+    name: 'otherInfo.SOA',
+    option: RENDER_SELECT_ITEMS('adnu1_otherinfo.soa'),
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Bill Month',
+    type: 'text',
+    name: 'otherInfo.BillMonth',
+    placeholder: '',
+    required: true,
+    maxLength: 50,
+    validator: validateText,
+  },
+  {
+    label: 'Bill Year',
+    type: 'text',
+    name: 'otherInfo.BillMonth',
+    placeholder: '',
+    required: true,
+    maxLength: 50,
+    validator: validateText,
+  },
+  {
+    label: 'Delivery Date',
+    type: 'date',
+    name: 'otherInfo.DeliveryDate',
+    format: 'yyyy-LL-dd',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    format: 'yyyy-LL-dd',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Payment Type',
+    type: 'select',
+    name: 'otherInfo.PaymentType',
+    option: RENDER_SELECT_ITEMS('adnu1_otherinfo.paymenttype'),
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Invoice Number',
+    type: 'number',
+    name: 'otherInfo.InvoiceNo',
+    placeholder: '',
+    required: true,
+    validator: validateDigits,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+];
+
 /**
  *
  * @param {string} code     biller code
@@ -1976,6 +2177,21 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
         note: '',
       };
     }
+    case 'ADNU1':
+      return {
+        fields: adnu1,
+        note: '',
+      };
+    case 'ANTEC':
+      return {
+        fields: antec,
+        note: '',
+      };
+    case 'APEC1':
+      return {
+        fields: apec1,
+        note: '',
+      };
     default:
       return {
         fields: defaultFields,

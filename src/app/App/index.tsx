@@ -98,7 +98,6 @@ import SuccessPostBack from './SuccessPostback';
 import PrivateRoute from './PrivateRoute';
 
 /** selectors, slice */
-import { containerActions as addMoneyBpiAction } from 'app/pages/AddMoney/AddMoneyViaBPIPage/slice';
 import { useAppSaga } from './slice';
 import { useContainerSaga } from 'app/pages/DashboardPage/slice';
 

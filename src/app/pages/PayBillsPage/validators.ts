@@ -49,7 +49,7 @@ export const validateDigits = (
     return { error: true, msg: `The ${label} must only contain numbers.` };
   }
 
-  if (text && text.length < count) {
+  if (text && count && text.length < count) {
     return { error: true, msg: `The ${label} must be ${count} digits.` };
   }
 
