@@ -152,7 +152,7 @@ export default function TermsCondition() {
       <p>
         SquidPay Stored Value Cards can be used by users of traditional modes of
         transportation and partner merchants enumerated in
-        http://www.squidpay.ph/. SquidPay Cash In/Out
+        https://www.squidpay.ph/. SquidPay Cash In/Out
       </p>
 
       <p>
@@ -273,7 +273,7 @@ export default function TermsCondition() {
 
       <p>
         Fees and other charges shall be in accordance with the Table of Fees and
-        Charges http://www.squidpay.ph/which may be subject to changes upon
+        Charges https://www.squidpay.ph/which may be subject to changes upon
         discretion of Squidpay and with the law, rules and regulations.
       </p>
 

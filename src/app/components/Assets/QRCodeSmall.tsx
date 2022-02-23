@@ -10,7 +10,7 @@ export default function QRCode() {
       height="38"
       viewBox="0 0 38 38"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
     >
       <rect
         width="24"

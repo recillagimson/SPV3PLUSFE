@@ -5,7 +5,7 @@ import * as React from 'react';
 
 export default function SendToBank() {
   return (
-    <svg viewBox="0 0 65 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 65 64" fill="none" xmlns="https://www.w3.org/2000/svg">
       <path
         d="M59.1741 23.8369H6.56552C5.6621 23.8369 4.92676 23.0937 4.92676 22.1807V18.8258C4.92676 18.1889 5.28393 17.6157 5.8512 17.3396L32.1555 4.17517C32.6177 3.94161 33.1639 3.94161 33.6052 4.17517L59.9095 17.3396C60.4767 17.6157 60.8339 18.1889 60.8339 18.8258V22.1807C60.8129 23.0937 60.0775 23.8369 59.1741 23.8369Z"
         fill="#E0AC36"

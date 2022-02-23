@@ -10,7 +10,7 @@ export default function ForeignExchange() {
       height="64"
       viewBox="0 0 65 64"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
     >
       <path
         d="M32 46.75C32 55.6012 25.046 62.75 16.5 62.75C7.95398 62.75 1 55.6012 1 46.75C1 37.8988 7.95398 30.75 16.5 30.75C25.046 30.75 32 37.8988 32 46.75Z"
