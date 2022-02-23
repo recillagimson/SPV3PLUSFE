@@ -12,278 +12,8 @@
  * @author Habs Cervantes
  */
 import * as React from 'react';
+import { RENDER_SELECT_ITEMS } from './options';
 import { validateAmount, validateDigits, validateText } from './validators';
-
-const RENDER_SELECT_ITEMS = (name: string) => {
-  switch (name.toLowerCase()) {
-    case 'pldt6_otherinfo.service':
-      return [
-        {
-          value: 'PL',
-          label: 'PLDT Landline',
-        },
-        {
-          value: 'PD',
-          label: 'PLDT DSL',
-        },
-        {
-          value: 'PU',
-          label: 'PLDT Ultera',
-        },
-      ];
-    case 'mecop_amount':
-      return [
-        {
-          value: '100.00',
-          label: '100.00',
-        },
-        {
-          value: '200.00',
-          label: '200.00',
-        },
-        {
-          value: '300.00',
-          label: '300.00',
-        },
-        {
-          value: '500.00',
-          label: '500.00',
-        },
-        {
-          value: '1000.00',
-          label: '1000.00',
-        },
-      ];
-    case 'smart_otherinfo.product':
-      return [
-        {
-          value: 'c',
-          label: 'Cellular/SUN',
-        },
-        {
-          value: 'b',
-          label: 'Bro',
-        },
-      ];
-    case 'sss01_payment_type':
-      return [
-        {
-          value: 'R',
-          label: 'Employer',
-        },
-        {
-          value: 'H',
-          label: 'Household',
-        },
-      ];
-    case 'sss01_platform_type':
-    case 'sss02_platform_type':
-    case 'sss03_otherinfo.platformtype':
-      return [
-        {
-          value: 'OTC',
-          label: 'Over the counter',
-        },
-        {
-          value: 'SS',
-          label: 'Self-service',
-        },
-      ];
-    case 'sss02_payment_type':
-    case 'sss03_otherinfo.payortype':
-      return [
-        {
-          value: 'I',
-          label: 'Individual',
-        },
-        {
-          value: 'R',
-          label: 'Employer',
-        },
-      ];
-    case 'sss03_otherinfo.reltype':
-      return [
-        {
-          value: 'LP',
-          label: 'Loan Payment',
-        },
-      ];
-    case 'sss02_loan_type':
-      return [
-        {
-          value: 'SL',
-          label: 'Salary Loan',
-        },
-        {
-          value: 'CL',
-          label: 'Calamity Loan',
-        },
-        {
-          value: 'EL',
-          label: 'Emergency Loan',
-        },
-        {
-          value: 'EDL',
-          label: 'Education Loan',
-        },
-        {
-          value: 'SIL',
-          label: 'Stock Investment Loan',
-        },
-        {
-          value: 'SLE',
-          label: 'Salary Loan Early Renewal Program (SLERP)',
-        },
-      ];
-    case 'unbnk_otherinfo.service':
-      return [
-        {
-          value: '0',
-          label: 'Mastercard',
-        },
-        {
-          value: '1',
-          label: 'Visa',
-        },
-      ];
-    case 'admsn_otherinfo.paymenttype':
-      return [
-        {
-          value: 'B2',
-          label: 'Old Accounts',
-        },
-        {
-          value: 'DP',
-          label: 'Down Payment',
-        },
-        {
-          value: 'PT',
-          label: 'Prelim Term',
-        },
-        {
-          value: 'MT',
-          label: 'Mid Term',
-        },
-        {
-          value: 'FT',
-          label: 'Final Term',
-        },
-      ];
-    case 'admsn_otherinfo.term':
-      return [
-        {
-          value: '1',
-          label: 'First Sem',
-        },
-        {
-          value: '2',
-          label: 'Second Sem',
-        },
-        {
-          value: '3',
-          label: 'Summer',
-        },
-      ];
-    case 'splan_otherinfo.plantype':
-      return [
-        {
-          value: 'P',
-          label: 'Pension Plan',
-        },
-        {
-          value: 'E',
-          label: 'Education Plan',
-        },
-      ];
-    case 'hdmf1_otherinfo.paymenttype':
-      return [
-        {
-          value: 'ST',
-          label: 'Short-term Loan',
-        },
-        {
-          value: 'MC',
-          label: 'Membership Saving',
-        },
-        {
-          value: 'HL',
-          label: 'Housing Loan',
-        },
-        {
-          value: 'MP2',
-          label: 'Modified PAG-IBIG 2',
-        },
-      ];
-    case 'hdmf3_otherinfo.paymenttype':
-      return [
-        {
-          value: 'ST',
-          label: 'Short-term Loan',
-        },
-        {
-          value: 'MC',
-          label: 'Membership Saving',
-        },
-        {
-          value: 'HL',
-          label: 'Housing Loan',
-        },
-        {
-          value: 'CL',
-          label: 'Calamity Loan',
-        },
-        {
-          value: 'MP2',
-          label: 'Modified PAG-IBIG 2',
-        },
-      ];
-    case 'cgnal_otherinfo.externalentityname':
-      return [
-        {
-          value: 'BAYAD',
-          label: 'Bayad',
-        },
-      ];
-    case 'wldvs_otherinfo.pledge':
-      return [
-        {
-          value: 'OT',
-          label: 'One Time',
-        },
-        {
-          value: 'RD',
-          label: 'Regular Donor',
-        },
-        {
-          value: 'Unknown',
-          label: 'Unknown',
-        },
-      ];
-    case 'adnu1_otherinfo.accounttype':
-      return [
-        {
-          value: 'ADNU1',
-          label: 'ADNU1',
-        },
-      ];
-    case 'adnu1_otherinfo.soa':
-      return [
-        {
-          value: '1',
-          label: 'APEC SOA',
-        },
-      ];
-    case 'adnu1_otherinfo.paymenttype':
-      return [
-        {
-          value: 'S',
-          label: 'Cash Only',
-        },
-      ];
-    default:
-      return [];
-  }
-};
 
 type TReturnFields = {
   fields: IFieldTypes[];
@@ -1963,6 +1693,64 @@ const apec1: IFieldTypes[] = [
   },
 ];
 
+const apecs: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 11,
+    validator: validateDigits,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Branch Code',
+    type: 'select',
+    name: 'otherInfo.BranchCode',
+    option: RENDER_SELECT_ITEMS('apecs_otherinfo.branchcode'),
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Payment Type',
+    type: 'select',
+    name: 'otherInfo.PaymentType',
+    option: RENDER_SELECT_ITEMS('apecs_otherinfo.paymenttype'),
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'First Name',
+    type: 'text',
+    name: 'otherInfo.FirstName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Last Name',
+    type: 'text',
+    name: 'otherInfo.LastName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+];
+
 /**
  *
  * @param {string} code     biller code
@@ -2190,6 +1978,11 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
     case 'APEC1':
       return {
         fields: apec1,
+        note: '',
+      };
+    case 'APECS':
+      return {
+        fields: apecs,
         note: '',
       };
     default:
