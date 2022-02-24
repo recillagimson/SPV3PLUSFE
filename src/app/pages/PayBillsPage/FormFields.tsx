@@ -359,7 +359,12 @@ export default function FormFields({
 
   return (
     <>
-      <Box title="Pay Bills" titleBorder withPadding style={{ minHeight: 250 }}>
+      <Box
+        title={`Pay Bills ${biller ? `- ${biller.name}` : ''}`}
+        titleBorder
+        withPadding
+        style={{ minHeight: 250 }}
+      >
         {loading && <Loading position="absolute" />}
         <form>
           {/* <Field style={{ textAlign: 'center' }}>

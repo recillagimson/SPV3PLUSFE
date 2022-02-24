@@ -13,7 +13,12 @@
  */
 import * as React from 'react';
 import { RENDER_SELECT_ITEMS } from './options';
-import { validateAmount, validateDigits, validateText } from './validators';
+import {
+  validateAmount,
+  validateDigits,
+  // validatePattern,
+  validateText,
+} from './validators';
 
 type TReturnFields = {
   fields: IFieldTypes[];
@@ -31,6 +36,7 @@ export type IFieldTypes = {
   maxLength?: number;
   option?: { value: string; label: string }[]; // optional, only if type is select
   format?: string; // should be a valid luxon date time format
+  pattern?: string; // a valid regexp for validating the pattern
   validator?: (...args: any) => { error: boolean; msg: string };
 };
 
@@ -1083,7 +1089,7 @@ const admsn: IFieldTypes[] = [
   },
   {
     label: 'School Year',
-    type: 'date',
+    type: 'text',
     name: 'otherInfo.SchoolYear',
     placeholder: 'YYYY-YYYY',
     required: true,
@@ -1751,6 +1757,50 @@ const apecs: IFieldTypes[] = [
   },
 ];
 
+const eqpmc: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 13,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const mspci: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 9,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 100,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
 /**
  *
  * @param {string} code     biller code
@@ -1983,6 +2033,21 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
     case 'APECS':
       return {
         fields: apecs,
+        note: '',
+      };
+    case 'EQPMC':
+      return {
+        fields: eqpmc,
+        note: '',
+      };
+    case 'MOLD1':
+      return {
+        fields: eqpmc,
+        note: '',
+      };
+    case 'MSPCI':
+      return {
+        fields: mspci,
         note: '',
       };
     default:

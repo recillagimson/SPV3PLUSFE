@@ -56,6 +56,25 @@ export const validateDigits = (
   return { error: false, msg: '' };
 };
 
+export const validatePattern = (
+  value: string = '',
+  pattern: string = '',
+  placeholder: string,
+) => {
+  if (!pattern || !value) {
+    return { error: false, msg: '' };
+  }
+
+  const regex = new RegExp(pattern);
+
+  if (!regex.test(value)) {
+    return {
+      error: true,
+      msg: `Please enter value in this format ${placeholder}`,
+    };
+  }
+};
+
 /**
  * Validate Amount
  * @param amount      amount field to validate

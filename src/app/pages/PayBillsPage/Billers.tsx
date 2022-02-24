@@ -51,6 +51,11 @@ export default function Billers({
     }
   };
 
+  const onImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.src = '/img/paybills/paybills.svg'; // alternate image if the given one doesn't load
+    e.currentTarget.onerror = null; // remove the onerror event to prevent loop
+  };
+
   return (
     <Box
       title={label}
@@ -62,7 +67,7 @@ export default function Billers({
       {selectedBillers.map(b => (
         <Biller key={b.code} role="button" onClick={() => onSelect(b)}>
           <span className="biller-img">
-            <img src={b.logo} alt={b.name} />
+            <img src={b.logo} alt={b.name} onError={onImageError} />
           </span>
           {b.name}
         </Biller>
