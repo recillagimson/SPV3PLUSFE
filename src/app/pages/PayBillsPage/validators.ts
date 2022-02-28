@@ -5,7 +5,6 @@
 /**
  * Validate Text
  * @param text        Text value to validate
- * @param value2      optional value
  * @param count       count length
  * @param label       field label
  * @returns {object}  returns { error: boolean, msg: string }
@@ -31,14 +30,15 @@ export const validateText = (
 /**
  * Validate string if it is all digits and doesn't exceed the count length
  * @param text        Text value to validate
- * @param value2      optional value
- * @param count       count length
+ * @param min         minimum count length
+ * @param max         max length
  * @param label       field label
  * @returns {object}  returns { error: boolean, msg: string }
  */
 export const validateDigits = (
   text: string,
-  count: number = 0,
+  min: number = 0,
+  max: number = 0,
   label: string = '',
 ) => {
   if (text === '' || text.length === 0) {
@@ -49,30 +49,45 @@ export const validateDigits = (
     return { error: true, msg: `The ${label} must only contain numbers.` };
   }
 
-  if (text && count && text.length < count) {
-    return { error: true, msg: `The ${label} must be ${count} digits.` };
+  if (text && min && text.length < min) {
+    return { error: true, msg: `The ${label} must be ${min} digits.` };
+  }
+
+  if (text && max && text.length > max) {
+    return { error: true, msg: `The ${label} must not exceed ${max} digits.` };
   }
 
   return { error: false, msg: '' };
 };
 
+/**
+ * Validate the value from the provided regular expression
+ *
+ * @param value Input field value
+ * @param regex Regex pattern to test the value
+ * @param placeholder what the value should look like
+ * @returns
+ */
 export const validatePattern = (
-  value: string = '',
-  pattern: string = '',
-  placeholder: string,
+  value: string,
+  regex: RegExp,
+  placeholder: string = '',
 ) => {
-  if (!pattern || !value) {
-    return { error: false, msg: '' };
+  if (regex) {
+    if (!value) {
+      return { error: true, msg: 'Oops! This field is required.' };
+    }
+
+    if (value && !regex.test(value)) {
+      console.log('failed');
+      return {
+        error: true,
+        msg: `Please enter value in this format ${placeholder}`,
+      };
+    }
   }
 
-  const regex = new RegExp(pattern);
-
-  if (!regex.test(value)) {
-    return {
-      error: true,
-      msg: `Please enter value in this format ${placeholder}`,
-    };
-  }
+  return { error: false, msg: '' };
 };
 
 /**

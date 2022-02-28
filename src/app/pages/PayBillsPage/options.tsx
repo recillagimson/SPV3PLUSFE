@@ -257,14 +257,22 @@ export const RENDER_SELECT_ITEMS = (
           label: 'ADNU1',
         },
       ];
-    case 'adnu1_otherinfo.soa':
+    case 'apec1_otherinfo.soa':
       return [
+        {
+          value: '0',
+          label: 'No SOA Presented',
+        },
         {
           value: '1',
           label: 'APEC SOA',
         },
+        {
+          value: '2',
+          label: 'ALECO SOA',
+        },
       ];
-    case 'adnu1_otherinfo.paymenttype':
+    case 'apec1_otherinfo.paymenttype':
       return [
         {
           value: 'S',
@@ -315,6 +323,77 @@ export const RENDER_SELECT_ITEMS = (
         {
           value: 'OTH',
           label: 'Others',
+        },
+      ];
+    case 'asvca_otherinfo.affiliatebranch':
+      return [
+        {
+          value: 'ASVCA1',
+          label: 'Olongapo (Colorview CATV)',
+        },
+        {
+          value: 'ASVCA6',
+          label: 'Iba (Colorview - Northwest)',
+        },
+        {
+          value: 'ASVCA11',
+          label: 'Lemery (Aclan Cable)',
+        },
+        {
+          value: 'ASVCA7',
+          label: 'Masinloc (Colorview - Northwest)',
+        },
+        {
+          value: 'ASVCA12',
+          label: 'Taal (Excelite CATV)',
+        },
+        {
+          value: 'ASVCA8',
+          label: 'Lucena (Quezon CATV)',
+        },
+        {
+          value: 'ASVCA9',
+          label: 'Tayabas (Tayabas Resources)',
+        },
+        {
+          value: 'ASVCA10',
+          label: 'Batangas (Batangas CATV)',
+        },
+        {
+          value: 'ASVCA2',
+          label: 'Subic (Subic CATV)',
+        },
+        {
+          value: 'ASVCA15',
+          label: 'Sariaya (Sariaya Cable)',
+        },
+        {
+          value: 'ASVCA3',
+          label: 'Barretto (Colorview CATV)',
+        },
+        {
+          value: 'ASVCA27',
+          label: 'Mabini (Batangas CATV)',
+        },
+        {
+          value: 'ASVCA4',
+          label: 'Castillejos (Wesky Cable)',
+        },
+        {
+          value: 'ASVCA13',
+          label: 'Padre Garcia (JM Cable)',
+        },
+        {
+          value: 'ASVCA35',
+          label: 'Mauban (Southeast Cable)',
+        },
+        {
+          value: 'ASVCA5',
+          label: 'San Marcelino (Subic CATV)',
+        },
+        {
+          value: 'ASVCA14',
+          label: 'Bauan (Batangas CATV)',
         },
       ];
     default:

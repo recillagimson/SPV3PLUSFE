@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /**
  * Notes For Developers on creating new billers
  *
@@ -16,7 +17,7 @@ import { RENDER_SELECT_ITEMS } from './options';
 import {
   validateAmount,
   validateDigits,
-  // validatePattern,
+  validatePattern,
   validateText,
 } from './validators';
 
@@ -33,10 +34,11 @@ export type IFieldTypes = {
   required?: boolean; // if true, will use the validator key
   min?: number | string;
   max?: number | string;
+  minLength?: number;
   maxLength?: number;
   option?: { value: string; label: string }[]; // optional, only if type is select
   format?: string; // should be a valid luxon date time format
-  pattern?: string; // a valid regexp for validating the pattern
+  regex?: RegExp; // a valid regexp for validating the pattern
   validator?: (...args: any) => { error: boolean; msg: string };
 };
 
@@ -1093,7 +1095,8 @@ const admsn: IFieldTypes[] = [
     name: 'otherInfo.SchoolYear',
     placeholder: 'YYYY-YYYY',
     required: true,
-    validator: validateText,
+    regex: new RegExp(/^\d{4}-\d{4}$/g),
+    validator: validatePattern,
   },
   {
     label: 'Term',
@@ -1548,8 +1551,17 @@ const adnu1: IFieldTypes[] = [
     validator: validateAmount,
   },
   {
-    label: 'Account Type',
+    label: 'Name',
     type: 'text',
+    name: 'otherInfo.Name',
+    placeholder: '',
+    required: true,
+    maxLength: 50,
+    validator: validateText,
+  },
+  {
+    label: 'Account Type',
+    type: 'select',
     name: 'otherInfo.AccountType',
     option: RENDER_SELECT_ITEMS('adnu1_otherinfo.accounttype'),
     placeholder: '',
@@ -1579,6 +1591,15 @@ const antec: IFieldTypes[] = [
     validator: validateAmount,
   },
   {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 50,
+    validator: validateText,
+  },
+  {
     label: 'Due Date',
     type: 'date',
     name: 'otherInfo.DueDate',
@@ -1591,9 +1612,9 @@ const antec: IFieldTypes[] = [
     label: 'Bill Month',
     type: 'text',
     name: 'otherInfo.BillMonth',
-    placeholder: '',
+    placeholder: 'MM/YYYY',
     required: true,
-    maxLength: 50,
+    regex: new RegExp(/^0[1-9]|1[0-2]\/(20)\d{2}$/g),
     validator: validateText,
   },
 ];
@@ -1605,7 +1626,8 @@ const apec1: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    maxLength: 11,
+    minLength: 15,
+    maxLength: 20,
     validator: validateDigits,
   },
   {
@@ -1619,46 +1641,46 @@ const apec1: IFieldTypes[] = [
     validator: validateAmount,
   },
   {
+    label: 'SOA',
+    type: 'select',
+    name: 'otherInfo.SOA',
+    option: RENDER_SELECT_ITEMS('apec1_otherinfo.soa'),
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
     label: 'Bill Amount',
     type: 'number',
-    name: 'amount',
+    name: 'otherInfo.BillAmount',
     placeholder: '0.00',
     required: true,
     validator: validateDigits,
   },
   {
-    label: 'SOA',
-    type: 'select',
-    name: 'otherInfo.SOA',
-    option: RENDER_SELECT_ITEMS('adnu1_otherinfo.soa'),
-    placeholder: '',
-    required: true,
-    validator: validateText,
-  },
-  {
     label: 'Bill Month',
     type: 'text',
     name: 'otherInfo.BillMonth',
-    placeholder: '',
+    placeholder: 'MM',
     required: true,
-    maxLength: 50,
-    validator: validateText,
+    regex: new RegExp(/^0[1-9]|1[0-2]\/(20)$/g),
+    validator: validatePattern,
   },
   {
     label: 'Bill Year',
     type: 'text',
-    name: 'otherInfo.BillMonth',
-    placeholder: '',
+    name: 'otherInfo.BillYear',
+    placeholder: 'YYYY',
     required: true,
-    maxLength: 50,
-    validator: validateText,
+    regex: new RegExp(/^\d{4}$/g),
+    validator: validatePattern,
   },
   {
     label: 'Delivery Date',
     type: 'date',
     name: 'otherInfo.DeliveryDate',
     format: 'yyyy-LL-dd',
-    placeholder: '',
+    placeholder: 'YYYY/MM/DD',
     required: true,
     validator: validateText,
   },
@@ -1667,7 +1689,7 @@ const apec1: IFieldTypes[] = [
     type: 'date',
     name: 'otherInfo.DueDate',
     format: 'yyyy-LL-dd',
-    placeholder: '',
+    placeholder: 'YYYY/MM/DD',
     required: true,
     validator: validateText,
   },
@@ -1675,7 +1697,7 @@ const apec1: IFieldTypes[] = [
     label: 'Payment Type',
     type: 'select',
     name: 'otherInfo.PaymentType',
-    option: RENDER_SELECT_ITEMS('adnu1_otherinfo.paymenttype'),
+    option: RENDER_SELECT_ITEMS('apec1_otherinfo.paymenttype'),
     placeholder: '',
     required: true,
     validator: validateText,
@@ -1686,6 +1708,8 @@ const apec1: IFieldTypes[] = [
     name: 'otherInfo.InvoiceNo',
     placeholder: '',
     required: true,
+    minLength: 2,
+    maxLength: 30,
     validator: validateDigits,
   },
   {
@@ -1706,8 +1730,8 @@ const apecs: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    maxLength: 11,
-    validator: validateDigits,
+    maxLength: 13,
+    validator: validateText,
   },
   {
     label: 'Amount',
@@ -1760,7 +1784,29 @@ const apecs: IFieldTypes[] = [
 const eqpmc: IFieldTypes[] = [
   {
     label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 13,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
     type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const mold1: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
@@ -1798,6 +1844,165 @@ const mspci: IFieldTypes[] = [
     min: 100,
     max: 100000,
     validator: validateAmount,
+  },
+];
+
+const asfin: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 9,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: 'Enter Account Name',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    format: 'LL/dd/yyyy',
+    placeholder: 'MM/DD/YYYY',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const asvca: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 9,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: 'Enter Account Name',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Affiliate Branch',
+    type: 'select',
+    name: 'otherInfo.AffiliateBranch',
+    placeholder: '',
+    option: RENDER_SELECT_ITEMS('asvca_otherinfo.affiliatebranch'),
+    required: true,
+    validator: validateText,
+  },
+];
+
+const avonc: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 13,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Name',
+    type: 'text',
+    name: 'otherInfo.Name',
+    placeholder: 'Enter Name',
+    required: true,
+    maxLength: 30,
+    validator: validateText,
+  },
+  {
+    label: 'Branch',
+    type: 'text',
+    name: 'otherInfo.Branch',
+    placeholder: '',
+    required: true,
+    maxLength: 30,
+    validator: validateText,
+  },
+];
+
+const bayan: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 13,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Customer Name',
+    type: 'text',
+    name: 'otherInfo.CustomerName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Phone Number',
+    type: 'text',
+    name: 'otherInfo.PhoneNo',
+    placeholder: '',
+    required: true,
+    maxLength: 11,
+    validator: validateDigits,
   },
 ];
 
@@ -2042,12 +2247,32 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
       };
     case 'MOLD1':
       return {
-        fields: eqpmc,
+        fields: mold1,
         note: '',
       };
     case 'MSPCI':
       return {
         fields: mspci,
+        note: '',
+      };
+    case 'ASFIN':
+      return {
+        fields: asfin,
+        note: '',
+      };
+    case 'ASVCA':
+      return {
+        fields: asvca,
+        note: '',
+      };
+    case 'AVONC':
+      return {
+        fields: avonc,
+        note: '',
+      };
+    case 'BAYAN':
+      return {
+        fields: bayan,
         note: '',
       };
     default:

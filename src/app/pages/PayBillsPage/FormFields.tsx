@@ -281,19 +281,41 @@ export default function FormFields({
 
     fields.forEach((field: IFieldTypes, i: number) => {
       if (field.required && field.validator) {
-        const validate =
-          field.name === 'amount'
-            ? field.validator(
-                formData[field.name].value,
-                balance,
-                field.min,
-                field.max,
-              )
-            : field.validator(
-                formData[field.name].value,
-                field.maxLength,
-                field.label,
-              );
+        let validate = field.validator(
+          formData[field.name].value,
+          field.maxLength,
+          field.label,
+        );
+
+        if (field.name === 'amount') {
+          validate = field.validator(
+            formData[field.name].value,
+            balance,
+            field.min,
+            field.max,
+          );
+        }
+
+        if (field.type === 'text' && field.regex) {
+          validate = field.validator(
+            formData[field.name].value,
+            field.regex,
+            field.placeholder,
+          );
+        }
+
+        if (
+          (field.type === 'number' || field.type === 'text') &&
+          field.name !== 'amount' &&
+          !field.regex
+        ) {
+          validate = field.validator(
+            formData[field.name].value,
+            field.minLength,
+            field.maxLength,
+            field.label,
+          );
+        }
 
         if (validate.error) {
           hasError = true;
