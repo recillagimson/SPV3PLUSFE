@@ -2006,6 +2006,99 @@ const bayan: IFieldTypes[] = [
   },
 ];
 
+const blkwc: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const bpims: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Contact Number',
+    type: 'text',
+    name: 'otherInfo.ContactNo',
+    placeholder: '',
+    required: true,
+    minLength: 11,
+    maxLength: 11,
+    validator: validateDigits,
+  },
+];
+
+const clnk1: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Contact Number',
+    type: 'text',
+    name: 'otherInfo.ContactNo',
+    placeholder: '',
+    required: true,
+    minLength: 7,
+    maxLength: 11,
+    validator: validateDigits,
+  },
+];
+
 /**
  *
  * @param {string} code     biller code
@@ -2273,6 +2366,21 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
     case 'BAYAN':
       return {
         fields: bayan,
+        note: '',
+      };
+    case 'BLKWC':
+      return {
+        fields: blkwc,
+        note: '',
+      };
+    case 'BPIMS':
+      return {
+        fields: bpims,
+        note: '',
+      };
+    case 'CLNK1':
+      return {
+        fields: clnk1,
         note: '',
       };
     default:
