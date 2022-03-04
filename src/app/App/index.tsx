@@ -268,7 +268,7 @@ export function App() {
     /** enable this for FB customer chat if we are going to use this */
     if (
       isAuthenticated &&
-      process.env.NODE_ENV === 'production' && // @ts-ignore
+      process.env.REACT_APP_SENTRY_ENV === 'release' && // @ts-ignore
       !window.fbAsyncInit
     ) {
       loadFbAsync(); // load fb
