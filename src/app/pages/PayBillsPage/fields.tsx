@@ -193,6 +193,7 @@ const bneco: IFieldTypes[] = [
     type: 'date',
     name: 'otherInfo.DueDate',
     placeholder: '',
+    format: 'LL/dd/yyyy',
     required: true,
     validator: validateText,
   },
@@ -2099,6 +2100,253 @@ const clnk1: IFieldTypes[] = [
   },
 ];
 
+const clpco: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 11,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 20000000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Power Company',
+    type: 'select',
+    name: 'otherInfo.PowerCompany',
+    option: RENDER_SELECT_ITEMS('clpco_otherinfo.powercompany'),
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const crmwd: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 20000000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: 'Enter Account Name',
+    required: true,
+    maxLength: 30,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    format: 'LL/dd/yyyy',
+    placeholder: 'MM/DD/YYYY',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const csbnk: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 20000000,
+    validator: validateAmount,
+  },
+];
+
+const cshlo: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 16,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 20000000,
+    validator: validateAmount,
+  },
+];
+
+const cvmfi: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 20000000,
+    validator: validateAmount,
+  },
+];
+
+const dasca: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 20000000,
+    validator: validateAmount,
+  },
+];
+
+const dctv1: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 20000000,
+    validator: validateAmount,
+  },
+];
+
+const ecnss: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 20000000,
+    validator: validateAmount,
+  },
+];
+
+const fusel: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 20000000,
+    validator: validateAmount,
+  },
+];
+
+const globe: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 20000000,
+    validator: validateAmount,
+  },
+];
+
 /**
  *
  * @param {string} code     biller code
@@ -2381,6 +2629,56 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
     case 'CLNK1':
       return {
         fields: clnk1,
+        note: '',
+      };
+    case 'CLPCO':
+      return {
+        fields: clpco,
+        note: '',
+      };
+    case 'CRMWD':
+      return {
+        fields: crmwd,
+        note: '',
+      };
+    case 'CSBNK':
+      return {
+        fields: csbnk,
+        note: '',
+      };
+    case 'CSHLO':
+      return {
+        fields: cshlo,
+        note: '',
+      };
+    case 'CVMFI':
+      return {
+        fields: cvmfi,
+        note: '',
+      };
+    case 'DASCA':
+      return {
+        fields: dasca,
+        note: '',
+      };
+    case 'DCTV1':
+      return {
+        fields: dctv1,
+        note: '',
+      };
+    case 'ECNSS':
+      return {
+        fields: ecnss,
+        note: '',
+      };
+    case 'FUSEL':
+      return {
+        fields: fusel,
+        note: '',
+      };
+    case 'GLOBE':
+      return {
+        fields: globe,
         note: '',
       };
     default:

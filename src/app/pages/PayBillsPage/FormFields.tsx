@@ -160,12 +160,32 @@ export default function FormFields({
                   if (formData['account_number']) {
                     // formData['account_number'].msg =
                     //   'Account number is invalid.';
-                    formData['account_number'].msg = msg.join('\n');
+                    if (biller.code === 'MECOR') {
+                      setIsConfirm({
+                        show: true,
+                        msg: err.data ? err.data.message : err.details.message,
+                        response: err.data
+                          ? { ...err.data }
+                          : { ...err.details },
+                      });
+                    } else {
+                      formData['account_number'].msg = msg.join('\n');
+                    }
                   }
                   if (formData['referenceNumber']) {
                     // formData['referenceNumber'].msg =
                     //   'Account number is invalid.';
-                    formData['referenceNumber'].msg = msg.join('\n');
+                    if (biller.code === 'MECOR') {
+                      setIsConfirm({
+                        show: true,
+                        msg: err.data ? err.data.message : err.details.message,
+                        response: err.data
+                          ? { ...err.data }
+                          : { ...err.details },
+                      });
+                    } else {
+                      formData['referenceNumber'].msg = msg.join('\n');
+                    }
                   }
                 } else {
                   formData[key].msg = msg.join('\n');
@@ -181,6 +201,14 @@ export default function FormFields({
               response: { ...err.data },
             });
           }
+
+          // if (k.length === 0 && err.details) {
+          //   setIsConfirm({
+          //     show: true,
+          //     msg: err.details.message,
+          //     response: { ...err.details },
+          //   });
+          // }
           if (k.length === 0 && !err.data && err.status === 500) {
             setApiError({ show: true, msg: err.message });
           }
@@ -569,6 +597,9 @@ export default function FormFields({
           <Button
             onClick={() => setIsConfirm({ show: false, msg: '', response: {} })}
             size="medium"
+            variant="outlined"
+            color="secondary"
+            fullWidth={isConfirm.response?.code !== 1}
           >
             {isConfirm.response?.code === 1 ? 'Cancel' : 'Close'}
           </Button>

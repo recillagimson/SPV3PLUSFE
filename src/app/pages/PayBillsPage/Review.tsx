@@ -22,12 +22,20 @@ import { numberCommas } from 'app/components/Helpers';
 
 import { BillersState, ValidateSuccessResponse } from './types';
 import RenderReceipt from './Receipt';
+import H5 from 'app/components/Elements/H5';
 
 type ReviewProps = {
   onSuccess: () => void;
   biller: BillersState;
   details: {
-    form: { [name: string]: { label: string; value: string; name: string } };
+    form: {
+      [name: string]: {
+        label: string;
+        value: string;
+        name: string;
+        date?: string;
+      };
+    };
     validate: ValidateSuccessResponse;
     payload: { [name: string]: string };
   };
@@ -155,6 +163,8 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
                 >
                   {details.form[k].label.toLowerCase() === 'amount'
                     ? `PHP ${numberCommas(details.form[k].value)}`
+                    : details.form[k].date
+                    ? details.form[k].date
                     : details.form[k].name || details.form[k].value}
                 </Paragraph>
               </Flex>
@@ -238,11 +248,12 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
               <CircleIndicator size="large" color="primary">
                 <FontAwesomeIcon icon="check" />
               </CircleIndicator>
-              <H3 margin="12px 0 24px">
+              <H3 margin="12px 0">
                 {biller.code === 'MECOR'
                   ? 'Transaction successful!'
                   : 'Successful Payment'}
               </H3>
+              <H5 margin="0 0 24px">{biller.name}</H5>
             </div>
 
             {biller.code === 'MECOR' && (
@@ -268,7 +279,7 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
             <Paragraph margin="0 0 0" size="small" align="center">
               Service Fee: {numberCommas(data.service_fee || 0)}
             </Paragraph>
-            <Paragraph margin="0 0 72px" size="small" align="center">
+            <Paragraph margin="0 0 64px" size="small" align="center">
               Other Chargers: {numberCommas(data.other_charges || 0)}
             </Paragraph>
 

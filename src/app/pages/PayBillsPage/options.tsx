@@ -396,6 +396,13 @@ export const RENDER_SELECT_ITEMS = (
           label: 'Bauan (Batangas CATV)',
         },
       ];
+    case 'clpco_otherinfo.powercompany':
+      return [
+        {
+          value: 'CLPC',
+          label: 'CLPC',
+        },
+      ];
     default:
       return [];
   }
