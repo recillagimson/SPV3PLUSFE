@@ -141,7 +141,7 @@ export const RENDER_SELECT_ITEMS = (
       return [
         {
           value: 'B2',
-          label: 'Old Accounts',
+          label: 'Old Account',
         },
         {
           value: 'DP',
@@ -394,6 +394,13 @@ export const RENDER_SELECT_ITEMS = (
         {
           value: 'ASVCA14',
           label: 'Bauan (Batangas CATV)',
+        },
+      ];
+    case 'blkwc_otherinfo.accountype':
+      return [
+        {
+          value: 'BLKWC',
+          label: 'BLKWC',
         },
       ];
     case 'clpco_otherinfo.powercompany':

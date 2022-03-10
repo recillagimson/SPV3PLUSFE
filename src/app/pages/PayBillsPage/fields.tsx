@@ -178,6 +178,7 @@ const bneco: IFieldTypes[] = [
     name: 'otherInfo.LastName',
     placeholder: '',
     required: true,
+    maxLength: 100,
     validator: validateText,
   },
   {
@@ -186,13 +187,14 @@ const bneco: IFieldTypes[] = [
     name: 'otherInfo.FirstName',
     placeholder: '',
     required: true,
+    maxLength: 100,
     validator: validateText,
   },
   {
     label: 'Due Date',
     type: 'date',
     name: 'otherInfo.DueDate',
-    placeholder: '',
+    placeholder: 'MM/DD/YYYY',
     format: 'LL/dd/yyyy',
     required: true,
     validator: validateText,
@@ -320,7 +322,7 @@ const hdmf3: IFieldTypes[] = [
 
 const nha01: IFieldTypes[] = [
   {
-    label: 'Account Number',
+    label: 'BIN Number',
     type: 'text',
     name: 'account_number',
     placeholder: '',
@@ -329,22 +331,22 @@ const nha01: IFieldTypes[] = [
     validator: validateDigits,
   },
   {
-    label: 'Amount',
-    type: 'number',
-    name: 'amount',
-    placeholder: '0.00',
-    required: true,
-    min: 1,
-    max: 100000,
-    validator: validateAmount,
-  },
-  {
-    label: 'Beneficiary Name',
+    label: 'Account Name',
     type: 'text',
     name: 'otherInfo.BeneficiaryName',
     placeholder: '',
     required: true,
     validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 200,
+    max: 100000,
+    validator: validateAmount,
   },
 ];
 
@@ -503,8 +505,27 @@ const pelc2: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    maxLength: 10,
+    minLength: 11,
+    maxLength: 13,
     validator: validateDigits,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.ConsumerName',
+    placeholder: 'First M.I. Last',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    format: 'LL/dd/yyyy',
+    placeholder: 'MM/DD/YYYY',
+    required: true,
+    validator: validateText,
   },
   {
     label: 'Amount',
@@ -515,23 +536,6 @@ const pelc2: IFieldTypes[] = [
     min: 1,
     max: 100000,
     validator: validateAmount,
-  },
-  {
-    label: 'Due Date',
-    type: 'date',
-    name: 'otherInfo.DueDate',
-    format: 'LL/dd/yyyy',
-    placeholder: '',
-    required: true,
-    validator: validateText,
-  },
-  {
-    label: 'Consumer Name',
-    type: 'text',
-    name: 'otherInfo.ConsumerName',
-    placeholder: '',
-    required: true,
-    validator: validateText,
   },
 ];
 
@@ -1021,31 +1025,13 @@ const unbnk: IFieldTypes[] = [
 
 const admsn: IFieldTypes[] = [
   {
-    label: 'Account Number',
+    label: 'Student Number',
     type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
     maxLength: 9,
     validator: validateDigits,
-  },
-  {
-    label: 'Amount',
-    type: 'number',
-    name: 'amount',
-    placeholder: '0.00',
-    required: true,
-    min: 1,
-    max: 100000,
-    validator: validateAmount,
-  },
-  {
-    label: 'Last Name',
-    type: 'text',
-    name: 'otherInfo.LastName',
-    placeholder: '',
-    required: true,
-    validator: validateText,
   },
   {
     label: 'First Name',
@@ -1064,10 +1050,9 @@ const admsn: IFieldTypes[] = [
     validator: validateText,
   },
   {
-    label: 'Payment Type',
-    type: 'select',
-    name: 'otherInfo.PaymentType',
-    option: RENDER_SELECT_ITEMS('admsn_otherinfo.paymenttype'),
+    label: 'Last Name',
+    type: 'text',
+    name: 'otherInfo.LastName',
     placeholder: '',
     required: true,
     validator: validateText,
@@ -1080,15 +1065,6 @@ const admsn: IFieldTypes[] = [
     required: true,
     maxLength: 10,
     validator: validateText,
-  },
-  {
-    label: 'Total Assessment',
-    type: 'text',
-    name: 'otherInfo.TotalAssessment',
-    placeholder: '',
-    required: true,
-    min: 0,
-    validator: validateDigits,
   },
   {
     label: 'School Year',
@@ -1107,6 +1083,42 @@ const admsn: IFieldTypes[] = [
     placeholder: '',
     required: true,
     validator: validateText,
+  },
+  {
+    label: 'Payment Type',
+    type: 'select',
+    name: 'otherInfo.PaymentType',
+    option: RENDER_SELECT_ITEMS('admsn_otherinfo.paymenttype'),
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Total Assessment',
+    type: 'text',
+    name: 'otherInfo.TotalAssessment',
+    placeholder: '',
+    required: true,
+    min: 0,
+    validator: validateDigits,
+  },
+  {
+    label: 'Email Address (Optional)',
+    type: 'email',
+    name: 'otherInfo.Email',
+    placeholder: '',
+    required: false,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
   },
 ];
 
@@ -1486,7 +1498,7 @@ const cgnal: IFieldTypes[] = [
 
 const wldvs: IFieldTypes[] = [
   {
-    label: 'Account Number',
+    label: 'Partner Refernce ID',
     type: 'text',
     name: 'account_number',
     placeholder: '',
@@ -1495,19 +1507,10 @@ const wldvs: IFieldTypes[] = [
     validator: validateDigits,
   },
   {
-    label: 'Amount',
-    type: 'number',
-    name: 'amount',
-    placeholder: '0.00',
-    required: true,
-    min: 1,
-    max: 100000,
-    validator: validateAmount,
-  },
-  {
-    label: 'Account Name',
-    type: 'text',
-    name: 'otherInfo.AccountName',
+    label: 'Pledge Code',
+    type: 'select',
+    name: 'otherInfo.Pledge',
+    option: RENDER_SELECT_ITEMS('wldvs_otherinfo.pledge'),
     placeholder: '',
     required: true,
     validator: validateText,
@@ -1521,13 +1524,22 @@ const wldvs: IFieldTypes[] = [
     validator: validateText,
   },
   {
-    label: 'Pledge',
-    type: 'select',
-    name: 'otherInfo.Pledge',
-    option: RENDER_SELECT_ITEMS('wldvs_otherinfo.pledge'),
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
     placeholder: '',
     required: true,
     validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
   },
 ];
 
@@ -1582,22 +1594,21 @@ const antec: IFieldTypes[] = [
     validator: validateDigits,
   },
   {
-    label: 'Amount',
-    type: 'number',
-    name: 'amount',
-    placeholder: '0.00',
-    required: true,
-    min: 1,
-    max: 100000,
-    validator: validateAmount,
-  },
-  {
     label: 'Account Name',
     type: 'text',
     name: 'otherInfo.AccountName',
     placeholder: '',
     required: true,
     maxLength: 50,
+    validator: validateText,
+  },
+  {
+    label: 'Bill Month',
+    type: 'text',
+    name: 'otherInfo.BillMonth',
+    placeholder: 'MM/YYYY',
+    required: true,
+    regex: new RegExp(/^0[1-9]|1[0-2]\/(20)\d{2}$/g),
     validator: validateText,
   },
   {
@@ -1610,13 +1621,14 @@ const antec: IFieldTypes[] = [
     validator: validateText,
   },
   {
-    label: 'Bill Month',
-    type: 'text',
-    name: 'otherInfo.BillMonth',
-    placeholder: 'MM/YYYY',
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
     required: true,
-    regex: new RegExp(/^0[1-9]|1[0-2]\/(20)\d{2}$/g),
-    validator: validateText,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
   },
 ];
 
@@ -2026,6 +2038,15 @@ const blkwc: IFieldTypes[] = [
     max: 100000,
     validator: validateAmount,
   },
+  // {
+  //   label: 'Account Type',
+  //   type: 'select',
+  //   name: 'otherInfo.AccountType',
+  //   option: RENDER_SELECT_ITEMS('blkwc_otherinfo.accountype'),
+  //   placeholder: '',
+  //   required: true,
+  //   validator: validateDigits,
+  // },
 ];
 
 const bpims: IFieldTypes[] = [
@@ -2053,8 +2074,6 @@ const bpims: IFieldTypes[] = [
     name: 'otherInfo.ContactNo',
     placeholder: '',
     required: true,
-    minLength: 11,
-    maxLength: 11,
     validator: validateDigits,
   },
 ];
@@ -2120,15 +2139,15 @@ const clpco: IFieldTypes[] = [
     max: 20000000,
     validator: validateAmount,
   },
-  {
-    label: 'Power Company',
-    type: 'select',
-    name: 'otherInfo.PowerCompany',
-    option: RENDER_SELECT_ITEMS('clpco_otherinfo.powercompany'),
-    placeholder: '',
-    required: true,
-    validator: validateText,
-  },
+  // {
+  //   label: 'Power Company',
+  //   type: 'select',
+  //   name: 'otherInfo.PowerCompany',
+  //   option: RENDER_SELECT_ITEMS('clpco_otherinfo.powercompany'),
+  //   placeholder: '',
+  //   required: true,
+  //   validator: validateText,
+  // },
 ];
 
 const crmwd: IFieldTypes[] = [
@@ -2188,8 +2207,18 @@ const csbnk: IFieldTypes[] = [
     placeholder: '0.00',
     required: true,
     min: 1,
-    max: 20000000,
+    max: 100000,
     validator: validateAmount,
+  },
+  {
+    label: 'Contact Number',
+    type: 'text',
+    name: 'otherInfo.ContactNo',
+    placeholder: '',
+    required: true,
+    minLength: 7,
+    maxLength: 11,
+    validator: validateDigits,
   },
 ];
 
@@ -2210,8 +2239,18 @@ const cshlo: IFieldTypes[] = [
     placeholder: '0.00',
     required: true,
     min: 1,
-    max: 20000000,
+    max: 100000,
     validator: validateAmount,
+  },
+  {
+    label: 'Contact Number',
+    type: 'text',
+    name: 'otherInfo.ContactNo',
+    placeholder: '',
+    required: true,
+    minLength: 7,
+    maxLength: 11,
+    validator: validateDigits,
   },
 ];
 
@@ -2226,13 +2265,22 @@ const cvmfi: IFieldTypes[] = [
     validator: validateText,
   },
   {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
     label: 'Amount',
     type: 'number',
     name: 'amount',
     placeholder: '0.00',
     required: true,
     min: 1,
-    max: 20000000,
+    max: 100000,
     validator: validateAmount,
   },
 ];
@@ -2254,8 +2302,26 @@ const dasca: IFieldTypes[] = [
     placeholder: '0.00',
     required: true,
     min: 1,
-    max: 20000000,
+    max: 100000,
     validator: validateAmount,
+  },
+  {
+    label: 'First Name',
+    type: 'text',
+    name: 'otherInfo.FirstName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Last Name',
+    type: 'text',
+    name: 'otherInfo.LastName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
   },
 ];
 
@@ -2276,8 +2342,26 @@ const dctv1: IFieldTypes[] = [
     placeholder: '0.00',
     required: true,
     min: 1,
-    max: 20000000,
+    max: 100000,
     validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Bill Month',
+    type: 'text',
+    name: 'otherInfo.BillMonth',
+    placeholder: 'MM/YYYY',
+    required: true,
+    regex: new RegExp(/^0[1-9]|1[0-2]\/(20)\d{2}$/g),
+    validator: validateText,
   },
 ];
 
@@ -2298,8 +2382,25 @@ const ecnss: IFieldTypes[] = [
     placeholder: '0.00',
     required: true,
     min: 1,
-    max: 20000000,
+    max: 100000,
     validator: validateAmount,
+  },
+  {
+    label: 'Payor Name',
+    type: 'text',
+    name: 'otherInfo.PayorName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Contact Number',
+    type: 'text',
+    name: 'otherInfo.ContactNo',
+    placeholder: '',
+    required: true,
+    validator: validateDigits,
   },
 ];
 
@@ -2320,7 +2421,7 @@ const fusel: IFieldTypes[] = [
     placeholder: '0.00',
     required: true,
     min: 1,
-    max: 20000000,
+    max: 100000,
     validator: validateAmount,
   },
 ];
@@ -2342,8 +2443,403 @@ const globe: IFieldTypes[] = [
     placeholder: '0.00',
     required: true,
     min: 1,
-    max: 20000000,
+    max: 100000,
     validator: validateAmount,
+  },
+];
+
+const gntwc: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const ilec2: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: 'MM/DD/YYYY',
+    format: 'LL/dd/yyyy',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const larc1: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    format: 'LL/dd/yyyy',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const lcwd1: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Bill Month',
+    type: 'text',
+    name: 'otherInfo.BillMonth',
+    placeholder: 'MM/YYYY',
+    required: true,
+    regex: new RegExp(/^0[1-9]|1[0-2]\/(20)\d{2}$/g),
+    validator: validateText,
+  },
+];
+
+const lgnwc: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    format: 'LL/dd/yyyy',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const lopci: IFieldTypes[] = [
+  {
+    label: 'Contact Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.ClientName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    format: 'LL/dd/yyyy',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const lpu01: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Student Name',
+    type: 'text',
+    name: 'otherInfo.StudentName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Campus',
+    type: 'text',
+    name: 'otherInfo.Campus',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+];
+
+const mamem: IFieldTypes[] = [
+  {
+    label: 'Contact Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    format: 'LL/dd/yyyy',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const mclac: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    format: 'LL/dd/yyyy',
+    required: true,
+    validator: validateText,
+  },
+];
+
+const miico: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+];
+
+const mlife: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'number',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 6,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: '',
+    format: 'LL/dd/yyyy',
+    required: true,
+    validator: validateText,
   },
 ];
 
@@ -2679,6 +3175,61 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
     case 'GLOBE':
       return {
         fields: globe,
+        note: '',
+      };
+    case 'GNTWC':
+      return {
+        fields: gntwc,
+        note: '',
+      };
+    case 'ILEC2':
+      return {
+        fields: ilec2,
+        note: '',
+      };
+    case 'LARC1':
+      return {
+        fields: larc1,
+        note: '',
+      };
+    case 'LCWD1':
+      return {
+        fields: lcwd1,
+        note: '',
+      };
+    case 'LGNWC':
+      return {
+        fields: lgnwc,
+        note: '',
+      };
+    case 'LOPCI':
+      return {
+        fields: lopci,
+        note: '',
+      };
+    case 'LPU01':
+      return {
+        fields: lpu01,
+        note: '',
+      };
+    case 'MAMEM':
+      return {
+        fields: mamem,
+        note: '',
+      };
+    case 'MCLAC':
+      return {
+        fields: mclac,
+        note: '',
+      };
+    case 'MIICO':
+      return {
+        fields: miico,
+        note: '',
+      };
+    case 'MLIFE':
+      return {
+        fields: mlife,
         note: '',
       };
     default:

@@ -59,7 +59,7 @@ export const CATEGORIES = [
     value: 'credit cards',
     icon: '/img/paybills/credit-card.svg',
     isActive: true,
-    label: 'Credit Card',
+    label: 'Credit Cards',
   },
   {
     value: 'insurance',

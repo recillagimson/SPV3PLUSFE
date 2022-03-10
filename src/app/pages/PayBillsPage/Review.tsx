@@ -23,6 +23,7 @@ import { numberCommas } from 'app/components/Helpers';
 import { BillersState, ValidateSuccessResponse } from './types';
 import RenderReceipt from './Receipt';
 import H5 from 'app/components/Elements/H5';
+import BillerLogo from './BillerLogo';
 
 type ReviewProps = {
   onSuccess: () => void;
@@ -147,9 +148,8 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
           direction="column"
           style={{ maxWidth: 400, margin: '0 auto' }}
         >
-          <CircleIndicator size="large" color="primary">
-            {biller ? biller.name.charAt(0) : 'SP'}
-          </CircleIndicator>
+          <BillerLogo biller={biller.name} path={biller.logo} width="64px" />
+
           <H3 margin="12px 0 40px">{biller ? biller.name : 'Biller Name'}</H3>
           {details &&
             keys.length > 0 &&

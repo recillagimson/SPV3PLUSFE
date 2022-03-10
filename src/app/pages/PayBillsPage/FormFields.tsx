@@ -509,6 +509,12 @@ export default function FormFields({
                 );
               })}
               {note && <Paragraph size="xsmall">{note}</Paragraph>}
+              {!note && (
+                <Paragraph size="xsmall" margin="32px 0 24px">
+                  Please review to ensure that the details are correct before
+                  you proceed
+                </Paragraph>
+              )}
             </>
           )}
 
