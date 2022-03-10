@@ -10,7 +10,7 @@ export default function Loans() {
       height="64"
       viewBox="0 0 65 64"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
     >
       <rect
         x="6"

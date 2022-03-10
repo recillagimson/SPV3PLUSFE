@@ -61,7 +61,26 @@ export function* getRequestToken() {
 
     return apirequest;
   } catch (err: any) {
-    yield put(actions.getClientTokenError(err));
+    if (err && err.response && err.response.status === 422) {
+      const body = yield err.response.json();
+      const newError = {
+        code: 422,
+        ...body,
+      };
+      yield put(actions.getClientTokenError(newError));
+    } else if (err && err.response && err.response.status === 500) {
+      yield put(actions.getIsServerError(true));
+    } else if (
+      err &&
+      !err.response &&
+      err.message &&
+      err.message === 'Failed to fetch'
+    ) {
+      yield put(actions.getIsServerError(true));
+    } else {
+      yield put(actions.getClientTokenError(err));
+    }
+
     return err;
   }
 }

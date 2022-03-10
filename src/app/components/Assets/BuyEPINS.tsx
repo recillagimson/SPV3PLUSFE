@@ -10,7 +10,7 @@ export default function BuyEPINS() {
       height="85"
       viewBox="0 0 85 85"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
     >
       <rect
         x="11.8608"

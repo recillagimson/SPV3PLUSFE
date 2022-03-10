@@ -18,7 +18,7 @@
   Header set Expires 0
 </IfModule>
 
-<FilesMatch "\.(css|flv|gif|ico|jpe|jpeg|jpg|mp3|mp4|png|pdf|swf|txt)$">
+<FilesMatch "\.(css|flv|gif|ico|jpe|jpeg|jpg|mp3|mp4|png|pdf|swf|txt|svg)$">
   <IfModule mod_headers.c>
     Header unset Cache-Control
     Header set Cache-Control "max-age=31536000, must-revalidate"

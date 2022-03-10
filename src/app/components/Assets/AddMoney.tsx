@@ -10,7 +10,7 @@ export default function AddMoney() {
       height="64"
       viewBox="0 0 64 64"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
     >
       <mask id="add-money-inside-1" fill="white">
         <path d="M59 47.6591V58.3918C59 60.3912 57.3838 62 55.3751 62H4.62502C2.61626 62 1 60.3912 1 58.3918V24.6082C1 22.6088 2.61626 21 4.62502 21H55.3751C57.3838 21 59 22.6088 59 24.6082V35.3408" />

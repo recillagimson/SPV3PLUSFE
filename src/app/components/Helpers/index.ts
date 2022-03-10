@@ -220,12 +220,38 @@ export function sortBy(
 /**
  * Mask characters
  * @param {string}  text          the string to be masked
+ * @param {number}  first         retain the first n characters
+ * @param {number}  last          retain the last n characters
  *
  * @returns masked string except last 4 digits
  */
-export function maskCharacters(text: any = '') {
+export function maskCharacters(
+  text: any = '',
+  first: number = 0,
+  last: number = 0,
+) {
   if (!text) {
     return '';
+  }
+
+  if (first && first > 0 && !last) {
+    const head = text.slice(0, first);
+    const body = text.slice(first);
+    return head + body.replace(/./g, '*');
+  }
+
+  if (last && last > 0 && !first) {
+    const body = text.slice(0, -last);
+    const tail = text.slice(-last);
+    return body.replace(/./g, '*') + tail;
+  }
+
+  if (first && last && first > 0 && last > 0) {
+    const head = text.slice(0, first);
+    const body = text.slice(first, -last);
+    const tail = text.slice(-last);
+
+    return head + body.replace(/./g, '*') + tail;
   }
 
   // /\w(?=(?:\W*\w){4})/g
