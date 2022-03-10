@@ -10,10 +10,10 @@ import Input from 'app/components/Elements/Input';
 
 import { usePrevious } from 'app/components/Helpers/Hooks';
 
-const Form = styled.form`
+const Form = styled.form<{ noMargin?: boolean }>`
   width: 100%;
   position: relative;
-  margin: 8px 0 25px;
+  margin: ${({ noMargin }) => (noMargin ? '0 0' : '8px 0 25px')};
 
   input {
     padding-left: 40px;
@@ -29,9 +29,14 @@ const Form = styled.form`
 
 type SearchBarProps = {
   onChange: (s: string) => void;
+  noMargin?: boolean;
 };
 
-export default function SearchBard({ onChange }: SearchBarProps) {
+export default function SearchBar({
+  onChange,
+  noMargin,
+  ...rest
+}: SearchBarProps) {
   const [search, setSearch] = React.useState('');
   const prevSearch = usePrevious(search);
 
@@ -42,7 +47,7 @@ export default function SearchBard({ onChange }: SearchBarProps) {
   }, [onChange, prevSearch, search]);
 
   return (
-    <Form>
+    <Form className="search-bar" noMargin={noMargin || undefined}>
       <Input
         onChange={e => setSearch(e.currentTarget.value)}
         type="text"
@@ -51,7 +56,7 @@ export default function SearchBard({ onChange }: SearchBarProps) {
         name="search"
       />
 
-      <FontAwesomeIcon icon={search === '' ? 'search' : 'times'} />
+      <FontAwesomeIcon icon="search" />
     </Form>
   );
 }

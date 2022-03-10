@@ -34,8 +34,8 @@ const sizes = {
 };
 const fontSize = {
   small: '0.9rem',
-  medium: '1.25rem',
-  large: '1.5rem',
+  medium: '1.275rem',
+  large: '1.85rem',
 };
 
 const CircleIndicator = styled.span<CircleIndicatorProps>`

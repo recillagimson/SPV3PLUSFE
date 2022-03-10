@@ -5,7 +5,7 @@ import * as React from 'react';
 
 export default function GetStarted() {
   return (
-    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="https://www.w3.org/2000/svg">
       <path
         d="M11.643 1.5H39.5286L54.5079 16.4794V59.3571C54.5079 61.0892 53.0971 62.5 51.365 62.5H11.643C9.91085 62.5 8.5 61.0892 8.5 59.3571V4.64293C8.5 2.9108 9.91085 1.5 11.643 1.5Z"
         fill="white"

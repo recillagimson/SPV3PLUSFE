@@ -23,7 +23,7 @@ import ProtectedContent from 'app/components/Layouts/ProtectedContent';
 import H3 from 'app/components/Elements/H3';
 import Paragraph from 'app/components/Elements/Paragraph';
 import { numberCommas } from 'app/components/Helpers';
-import ECPayLogo from 'app/components/Assets/ecpay/ecpay.svg';
+
 import WrapperCuttedCornerTop from 'app/components/Assets/WrapperCuttedCornerTop.svg';
 import WrapperCuttedCornerBottom from 'app/components/Assets/WrapperCuttedCornerBottom.svg';
 import TransactionScreenshotLogo from 'app/components/Assets/TransactionScreenshotLogo.svg';
@@ -308,7 +308,11 @@ export function ECPay() {
               />
               <Styled.TransactionDetailsWrapperContent>
                 <span className="text-center" style={{ display: 'block' }}>
-                  <img src={ECPayLogo} alt="ECPay" width="auto" height="auto" />
+                  <img
+                    src="/img/ecpay/ecpay_logo.png"
+                    alt="ECPay"
+                    width="150px"
+                  />
                 </span>
                 <Styled.TransactionDetailsList>
                   {renderListItems().map(d => (

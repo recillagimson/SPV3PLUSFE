@@ -5,7 +5,7 @@ import * as React from 'react';
 
 export default function BuyLoad() {
   return (
-    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="https://www.w3.org/2000/svg">
       <path
         d="M10.7344 55.5601H16.2506"
         stroke="#38434D"

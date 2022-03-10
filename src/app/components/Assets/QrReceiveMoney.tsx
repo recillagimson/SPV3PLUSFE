@@ -10,7 +10,7 @@ export default function QrReceiveMoney() {
       height="100"
       viewBox="0 0 101 100"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
     >
       <path
         d="M47.2502 18.8401H47.2402V18.8301L47.2502 18.8401Z"

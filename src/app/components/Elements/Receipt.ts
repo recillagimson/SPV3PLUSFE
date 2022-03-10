@@ -9,7 +9,7 @@ const ReceiptWrapper = styled.div<{ width?: string; isDark?: boolean }>`
       ? StyleConstants.color.paleyellow2
       : StyleConstants.color.tones.softyellow};
   padding: ${StyleConstants.spacing[16]} ${StyleConstants.spacing[24]};
-  margin: 20px auto 35px;
+  margin: 24px auto 32px;
 
   &:before,
   &:after {
