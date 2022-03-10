@@ -197,3 +197,13 @@ v1.3.1
 v1.3.2
 
 - Fix Add Money via BPI Account selection not showing
+
+v1.3.3
+
+- Add new billers (World Vision, Angeles Electric Corporation, Pampanga II Electric Cooperative, Inc., National Housing Authority, Pag-Ibig, Pag-Ibig OFW)
+- Fix validation of account numbers in Paybills feature.
+
+v1.3.4
+
+- Fix image path in Add Money - ECPay
+- Added new billers (ADMSN, ADNU1, AECOR, ANTEC, APEC1, APECS, EQPMC, MOLD1, MSPCI, ASFIN, ASVCA, AVONC, BAYAN, BLKWC, BPIMS, CLNK1, CLPCO)

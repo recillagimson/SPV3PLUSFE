@@ -9,7 +9,7 @@ export default function NewsUpdate() {
       width="65"
       height="64"
       viewBox="0 0 65 64"
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns="https://www.w3.org/2000/svg"
     >
       <rect
         x="4.76465"

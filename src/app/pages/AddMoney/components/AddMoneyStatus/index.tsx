@@ -30,7 +30,7 @@ export default function AddMoneyStatus(props) {
             height="112"
             viewBox="0 0 112 112"
             fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+            xmlns="https://www.w3.org/2000/svg"
           >
             <circle cx="56" cy="56" r="32" fill="#E0AC39" />
             <path
@@ -56,7 +56,7 @@ export default function AddMoneyStatus(props) {
             height="112"
             viewBox="0 0 112 112"
             fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+            xmlns="https://www.w3.org/2000/svg"
           >
             <circle cx="56" cy="56" r="32" fill="#E0AC39" />
             <path
@@ -82,7 +82,7 @@ export default function AddMoneyStatus(props) {
             height="112"
             viewBox="0 0 112 112"
             fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+            xmlns="https://www.w3.org/2000/svg"
           >
             <circle cx="56" cy="56" r="32" fill="#FF645E" />
             <path

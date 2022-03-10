@@ -12,14 +12,15 @@ import { css } from 'styled-components/macro';
 import { StyleConstants } from 'styles/StyleConstants';
 
 type Props = {
-  color?: 'default' | 'primary' | 'secondary' | 'danger';
+  color?: 'default' | 'primary' | 'secondary' | 'danger' | 'mute';
   size?: 'small' | 'medium' | 'large';
   variant?: 'contained' | 'outlined' | 'default';
+  minWidth?: string;
   fullWidth?: boolean;
 };
 
 const defaultstyle = css<Props>`
-  background-color: ${StyleConstants.WHITE};
+  background-color: ${StyleConstants.color.white};
 
   ${p =>
     p.color === 'primary' &&
@@ -55,11 +56,11 @@ const defaultstyle = css<Props>`
   ${p =>
     (!p.color || p.color === 'default') &&
     `
-    color: ${StyleConstants.BUTTONS.neutral.main};
+    color: inherit;
 
     &:focus-visible,
     &:hover {
-      color: ${StyleConstants.BUTTONS.neutral.dark};
+      color: ${StyleConstants.color.black};
     }
   `};
 `;
@@ -172,6 +173,7 @@ const ButtonStyle = css<Props>`
   font-size: 1rem;
   transition: all 0.2s ease-in-out;
   border-radius: ${StyleConstants.BUTTON_RADIUS};
+  min-width: ${p => (p.minWidth ? p.minWidth : '0')};
   width: ${p => (p.fullWidth ? '100%' : 'auto')};
   margin: ${p => (p.fullWidth ? '0 0' : '0 5px')};
   display: inline-block;

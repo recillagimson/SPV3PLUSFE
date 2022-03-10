@@ -151,7 +151,7 @@ export default function TermsConditionTagalog() {
       <p>
         Ang mga Squidpay Stored Value Cards ay maaring gamitin ng mga gumagamit
         ng tradisyonal na paraan ng transportasyon at sa mga Partner Merchants
-        na maaring makita sa http://www.squidpay.ph.
+        na maaring makita sa https://www.squidpay.ph.
       </p>
 
       <p>
@@ -265,7 +265,7 @@ export default function TermsConditionTagalog() {
 
       <p>
         Ang bayad at iba pang mga singil ay naayon sa Listahan ng mga Dagdag na
-        Bayad/Fees at Singil na makikita sa http://www.squidpay.ph, at ito ay
+        Bayad/Fees at Singil na makikita sa https://www.squidpay.ph, at ito ay
         pwedeng baguhin ng SquidPay ayon sa kanyang diskresyon at naayon sa
         batas, patakaran at regulasyon.
       </p>

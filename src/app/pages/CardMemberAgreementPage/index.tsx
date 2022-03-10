@@ -90,7 +90,7 @@ export function CardMemberAgreementPage() {
 
             <p>
               The fees for using the Squid Services are set out in
-              http://www.Squid.com/fees
+              https://www.Squid.com/fees
             </p>
 
             <p>
