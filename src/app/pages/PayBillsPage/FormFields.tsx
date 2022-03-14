@@ -275,7 +275,7 @@ export default function FormFields({
         date:
           type === 'date' && hasFormat
             ? DateTime.fromISO(value).toFormat(hasFormat)
-            : undefined,
+            : value,
         value: value,
         error: false,
         msg: '',
@@ -308,6 +308,7 @@ export default function FormFields({
     let newFormData = { ...formData };
 
     fields.forEach((field: IFieldTypes, i: number) => {
+      console.log(field);
       if (field.required && field.validator) {
         let validate = field.validator(
           formData[field.name].value,

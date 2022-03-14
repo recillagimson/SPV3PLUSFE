@@ -41,6 +41,7 @@ export const validateDigits = (
   max: number = 0,
   label: string = '',
 ) => {
+  console.log(text);
   if (text === '' || text.length === 0) {
     return { error: true, msg: 'Oops! This field is required.' };
   }
