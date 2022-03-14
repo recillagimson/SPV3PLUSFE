@@ -1676,7 +1676,7 @@ const apec1: IFieldTypes[] = [
     name: 'otherInfo.BillMonth',
     placeholder: 'MM',
     required: true,
-    regex: new RegExp(/^0[1-9]|1[0-2]\/(20)$/g),
+    regex: new RegExp(/^0[1-9]|1[012]$/g),
     validator: validatePattern,
   },
   {
@@ -1685,7 +1685,7 @@ const apec1: IFieldTypes[] = [
     name: 'otherInfo.BillYear',
     placeholder: 'YYYY',
     required: true,
-    regex: new RegExp(/^\d{4}$/g),
+    regex: new RegExp(/^(19|20)\d\d$/g),
     validator: validatePattern,
   },
   {
