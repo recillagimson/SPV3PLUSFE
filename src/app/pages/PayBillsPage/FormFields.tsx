@@ -308,26 +308,26 @@ export default function FormFields({
     let newFormData = { ...formData };
 
     fields.forEach((field: IFieldTypes, i: number) => {
-      console.log(field);
       if (field.required && field.validator) {
         let validate = field.validator(
-          formData[field.name].value,
+          newFormData[field.name].value,
+          field.minLength,
           field.maxLength,
           field.label,
         );
 
-        if (field.name === 'amount') {
+        if (field.name === 'amount' && !field.regex) {
           validate = field.validator(
-            formData[field.name].value,
+            newFormData[field.name].value,
             balance,
             field.min,
             field.max,
           );
         }
 
-        if (field.type === 'text' && field.regex) {
+        if (field.regex) {
           validate = field.validator(
-            formData[field.name].value,
+            newFormData[field.name].value,
             field.regex,
             field.placeholder,
           );
@@ -339,7 +339,7 @@ export default function FormFields({
           !field.regex
         ) {
           validate = field.validator(
-            formData[field.name].value,
+            newFormData[field.name].value,
             field.minLength,
             field.maxLength,
             field.label,
@@ -349,7 +349,7 @@ export default function FormFields({
         if (validate.error) {
           hasError = true;
           newFormData[field.name] = {
-            ...formData[field.name],
+            ...newFormData[field.name],
             ...validate,
           };
           return;

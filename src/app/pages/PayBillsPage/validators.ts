@@ -11,6 +11,7 @@
  */
 export const validateText = (
   text: string,
+  min: number = 0,
   count: number = 0,
   label: string = '',
 ) => {
@@ -41,7 +42,6 @@ export const validateDigits = (
   max: number = 0,
   label: string = '',
 ) => {
-  console.log(text);
   if (text === '' || text.length === 0) {
     return { error: true, msg: 'Oops! This field is required.' };
   }
@@ -79,8 +79,7 @@ export const validatePattern = (
       return { error: true, msg: 'Oops! This field is required.' };
     }
 
-    if (value && !regex.test(value)) {
-      console.log('failed');
+    if (value && !!regex.test(value)) {
       return {
         error: true,
         msg: `Please enter value in this format ${placeholder}`,
