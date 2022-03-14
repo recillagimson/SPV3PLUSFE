@@ -36,7 +36,7 @@ export const validateText = (
  * @returns {object}  returns { error: boolean, msg: string }
  */
 export const validateDigits = (
-  text: string,
+  text: any,
   min: number = 0,
   max: number = 0,
   label: string = '',
@@ -45,7 +45,7 @@ export const validateDigits = (
     return { error: true, msg: 'Oops! This field is required.' };
   }
 
-  if (text && !/^\d+$/.test(text)) {
+  if (text && isNaN(text)) {
     return { error: true, msg: `The ${label} must only contain numbers.` };
   }
 
