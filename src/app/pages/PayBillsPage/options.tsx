@@ -228,6 +228,13 @@ export const RENDER_SELECT_ITEMS = (
           label: 'Modified PAG-IBIG 2',
         },
       ];
+    case 'hdmf3_otherinfo.region':
+      return [
+        {
+          value: 'PH',
+          label: 'Philippines',
+        },
+      ];
     case 'cgnal_otherinfo.externalentityname':
       return [
         {

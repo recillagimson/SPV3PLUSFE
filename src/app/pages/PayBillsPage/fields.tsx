@@ -216,7 +216,7 @@ const hdmf1: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
-    min: 1,
+    min: 100,
     max: 100000,
     validator: validateAmount,
   },
@@ -257,31 +257,31 @@ const hdmf1: IFieldTypes[] = [
 
 const hdmf3: IFieldTypes[] = [
   {
-    label: 'Account Number',
-    type: 'text',
-    name: 'account_number',
-    placeholder: '',
-    required: true,
-    maxLength: 20,
-    validator: validateDigits,
-  },
-  {
-    label: 'Amount',
-    type: 'number',
-    name: 'amount',
-    placeholder: '0.00',
-    required: true,
-    min: 1,
-    max: 100000,
-    validator: validateAmount,
-  },
-  {
     label: 'Payment Type',
     type: 'select',
     name: 'otherInfo.PaymentType',
     placeholder: '',
     required: true,
     option: RENDER_SELECT_ITEMS('hdmf3_otherinfo.paymenttype'),
+    validator: validateText,
+  },
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    minLength: 10,
+    maxLength: 20,
+    validator: validateDigits,
+  },
+  {
+    label: 'Region',
+    type: 'select',
+    name: 'otherInfo.Region',
+    placeholder: '',
+    required: true,
+    option: RENDER_SELECT_ITEMS('hdmf3_otherinfo.region'),
     validator: validateText,
   },
   {
@@ -302,14 +302,7 @@ const hdmf3: IFieldTypes[] = [
     required: true,
     validator: validateText,
   },
-  {
-    label: 'Region',
-    type: 'text',
-    name: 'otherInfo.Region',
-    placeholder: '',
-    required: true,
-    validator: validateText,
-  },
+
   {
     label: 'Contact Number',
     type: 'number',
@@ -317,6 +310,16 @@ const hdmf3: IFieldTypes[] = [
     required: true,
     maxLength: 11,
     validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 100,
+    max: 100000,
+    validator: validateAmount,
   },
 ];
 
@@ -622,6 +625,7 @@ const lazae: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
+    maxLength: 8,
     validator: validateText,
   },
   {
@@ -635,17 +639,19 @@ const lazae: IFieldTypes[] = [
   {
     label: 'Name',
     type: 'text',
-    name: 'name',
+    name: 'otherInfo.Name',
     placeholder: '',
     required: true,
+    maxLength: 40,
     validator: validateText,
   },
   {
     label: 'Contact Number',
     type: 'text',
-    name: 'contact_number',
+    name: 'otherInfo.ContactNo',
     placeholder: '',
     required: true,
+    maxLength: 12,
     validator: validateText,
   },
 ];
@@ -795,6 +801,7 @@ const sss03: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
+    minLength: 10,
     maxLength: 13,
     validator: validateDigits,
   },
@@ -1276,6 +1283,15 @@ const cnvrg: IFieldTypes[] = [
     validator: validateDigits,
   },
   {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
     label: 'Amount',
     type: 'number',
     name: 'amount',
@@ -1284,15 +1300,6 @@ const cnvrg: IFieldTypes[] = [
     min: 1,
     max: 100000,
     validator: validateAmount,
-  },
-  {
-    label: 'Account Name',
-    type: 'text',
-    name: 'otherInfo.AccountName',
-    placeholder: '',
-    required: true,
-    maxLength: 100,
-    validator: validateText,
   },
 ];
 
@@ -1312,7 +1319,7 @@ const hcphl: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
-    min: 1,
+    min: 150,
     max: 100000,
     validator: validateAmount,
   },
@@ -2372,7 +2379,7 @@ const ecnss: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    maxLength: 6,
+    maxLength: 16,
     validator: validateText,
   },
   {
@@ -2391,7 +2398,7 @@ const ecnss: IFieldTypes[] = [
     name: 'otherInfo.PayorName',
     placeholder: '',
     required: true,
-    maxLength: 100,
+    maxLength: 40,
     validator: validateText,
   },
   {
@@ -2400,6 +2407,7 @@ const ecnss: IFieldTypes[] = [
     name: 'otherInfo.ContactNo',
     placeholder: '',
     required: true,
+    maxLength: 20,
     validator: validateDigits,
   },
 ];
@@ -2433,7 +2441,26 @@ const globe: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    maxLength: 6,
+    minLength: 8,
+    maxLength: 10,
+    validator: validateText,
+  },
+  {
+    label: 'Contact Number',
+    type: 'text',
+    name: 'otherInfo.Telephone_Number',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
     validator: validateText,
   },
   {
@@ -2916,14 +2943,15 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
     case 'CNVRG':
       return {
         fields: cnvrg,
-        note: (
-          <>
-            <span className="text-red">IMPORTANT NOTE:</span> To avoid
-            inconvenience, please input the exact amount of your total billing
-            amount due and settle before your due date. Please review to ensure
-            that the details are correct before you proceed.
-          </>
-        ),
+        note: '',
+        // note: (
+        //   <>
+        //     <span className="text-red">IMPORTANT NOTE:</span> To avoid
+        //     inconvenience, please input the exact amount of your total billing
+        //     amount due and settle before your due date. Please review to ensure
+        //     that the details are correct before you proceed.
+        //   </>
+        // ),
       };
     case 'CGNAL':
       return {

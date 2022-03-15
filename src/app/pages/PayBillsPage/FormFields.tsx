@@ -143,7 +143,9 @@ export default function FormFields({
                   formData['referenceNumber'].error = true;
                 }
               } else {
-                formData[key].error = true;
+                if (formData[key]) {
+                  formData[key].error = true;
+                }
               }
 
               if (err.errors[key].length > 0) {
@@ -188,7 +190,12 @@ export default function FormFields({
                     }
                   }
                 } else {
-                  formData[key].msg = msg.join('\n');
+                  if (formData[key]) {
+                    formData[key].msg = msg.join('\n');
+                  } else {
+                    // object key doesn't exist in the object state
+                    setApiError({ show: true, msg: msg.join('\n') });
+                  }
                 }
               }
             });
