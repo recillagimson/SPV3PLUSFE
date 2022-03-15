@@ -417,6 +417,20 @@ export const RENDER_SELECT_ITEMS = (
           label: 'CLPC',
         },
       ];
+    case 'slife_otherinfo.producttype':
+      return [
+        {
+          value: 'SLife2',
+          label: 'SLife 2',
+        },
+      ];
+    case 'skyaf_otherinfo.affiliate':
+      return [
+        {
+          value: 'SKYAF1',
+          label: 'Sky Affiliate 1',
+        },
+      ];
     default:
       return [];
   }

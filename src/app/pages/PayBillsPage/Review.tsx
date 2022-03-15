@@ -148,9 +148,16 @@ export default function Review({ onSuccess, biller, details }: ReviewProps) {
           direction="column"
           style={{ maxWidth: 400, margin: '0 auto' }}
         >
-          <BillerLogo biller={biller.name} path={biller.logo} width="64px" />
+          <BillerLogo
+            biller={biller.name}
+            path={biller.logo}
+            width="144px"
+            size="large"
+          />
 
-          <H3 margin="12px 0 40px">{biller ? biller.name : 'Biller Name'}</H3>
+          <H3 margin="12px 0 40px" align="center">
+            {biller ? biller.name : 'Biller Name'}
+          </H3>
           {details &&
             keys.length > 0 &&
             keys.map(k => (

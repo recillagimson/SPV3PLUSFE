@@ -216,7 +216,7 @@ const hdmf1: IFieldTypes[] = [
     name: 'amount',
     placeholder: '0.00',
     required: true,
-    min: 100,
+    min: 1,
     max: 100000,
     validator: validateAmount,
   },
@@ -403,6 +403,15 @@ const aeon1: IFieldTypes[] = [
     validator: validateDigits,
   },
   {
+    label: 'Account Name',
+    type: 'text',
+    maxLength: 100,
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    validator: validateText,
+  },
+  {
     label: 'Amount',
     type: 'number',
     name: 'amount',
@@ -411,15 +420,6 @@ const aeon1: IFieldTypes[] = [
     max: 100000,
     required: true,
     validator: validateAmount,
-  },
-  {
-    label: 'Account Name',
-    type: 'text',
-    maxLength: 100,
-    name: 'otherInfo.AccountName',
-    placeholder: '',
-    required: true,
-    validator: validateText,
   },
 ];
 
@@ -472,6 +472,24 @@ const aecor: IFieldTypes[] = [
     validator: validateDigits,
   },
   {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.CustomerName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    format: 'LL/dd/yyyy',
+    placeholder: 'MM/DD/YYYY',
+    required: true,
+    validator: validateText,
+  },
+  {
     label: 'Amount',
     type: 'number',
     name: 'amount',
@@ -480,24 +498,6 @@ const aecor: IFieldTypes[] = [
     min: 1,
     max: 99999,
     validator: validateAmount,
-  },
-  {
-    label: 'Due Date',
-    type: 'date',
-    name: 'otherInfo.DueDate',
-    format: 'LL/dd/yyyy',
-    placeholder: '',
-    required: true,
-    validator: validateText,
-  },
-  {
-    label: 'Customer Name',
-    type: 'text',
-    name: 'otherInfo.CustomerName',
-    placeholder: '',
-    required: true,
-    maxLength: 100,
-    validator: validateText,
   },
 ];
 
@@ -508,7 +508,7 @@ const pelc2: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    minLength: 11,
+    minLength: 10,
     maxLength: 13,
     validator: validateDigits,
   },
@@ -1237,41 +1237,6 @@ const pilam: IFieldTypes[] = [
   },
 ];
 
-const splan: IFieldTypes[] = [
-  {
-    label: 'Policy Number (reference number)',
-    type: 'text',
-    name: 'referenceNumber',
-    placeholder: '',
-    required: true,
-    validator: validateText,
-  },
-  {
-    label: 'Amount',
-    type: 'number',
-    name: 'amount',
-    placeholder: '0.00',
-    required: true,
-    validator: validateAmount,
-  },
-  {
-    label: 'Plan Type',
-    type: 'select',
-    name: 'otherInfo.PlanType',
-    placeholder: '',
-    required: true,
-    validator: validateText,
-  },
-  {
-    label: 'Due Date',
-    type: 'date',
-    name: 'otherInfo.DueDate',
-    placeholder: '',
-    required: true,
-    validator: validateText,
-  },
-];
-
 const cnvrg: IFieldTypes[] = [
   {
     label: 'Account Number',
@@ -1505,7 +1470,7 @@ const cgnal: IFieldTypes[] = [
 
 const wldvs: IFieldTypes[] = [
   {
-    label: 'Partner Refernce ID',
+    label: 'Partner Reference ID',
     type: 'text',
     name: 'account_number',
     placeholder: '',
@@ -1874,7 +1839,7 @@ const asfin: IFieldTypes[] = [
     name: 'account_number',
     placeholder: '',
     required: true,
-    maxLength: 9,
+    maxLength: 11,
     validator: validateText,
   },
   {
@@ -2232,7 +2197,7 @@ const csbnk: IFieldTypes[] = [
 const cshlo: IFieldTypes[] = [
   {
     label: 'Account Number',
-    type: 'number',
+    type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
@@ -2779,16 +2744,6 @@ const mclac: IFieldTypes[] = [
     validator: validateText,
   },
   {
-    label: 'Amount',
-    type: 'number',
-    name: 'amount',
-    placeholder: '0.00',
-    required: true,
-    min: 1,
-    max: 100000,
-    validator: validateAmount,
-  },
-  {
     label: 'Account Name',
     type: 'text',
     name: 'otherInfo.AccountName',
@@ -2801,10 +2756,20 @@ const mclac: IFieldTypes[] = [
     label: 'Due Date',
     type: 'date',
     name: 'otherInfo.DueDate',
-    placeholder: '',
+    placeholder: 'MM/DD/YYYY',
     format: 'LL/dd/yyyy',
     required: true,
     validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
   },
 ];
 
@@ -2841,12 +2806,21 @@ const miico: IFieldTypes[] = [
 
 const mlife: IFieldTypes[] = [
   {
-    label: 'Account Number',
-    type: 'number',
+    label: 'Reference Number',
+    type: 'text',
     name: 'account_number',
     placeholder: '',
     required: true,
-    maxLength: 6,
+    maxLength: 9,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: 'MM/DD/YYYY',
+    format: 'LL/dd/yyyy',
+    required: true,
     validator: validateText,
   },
   {
@@ -2859,14 +2833,166 @@ const mlife: IFieldTypes[] = [
     max: 100000,
     validator: validateAmount,
   },
+];
+
+const slife: IFieldTypes[] = [
+  {
+    label: 'Product Type',
+    type: 'select',
+    name: 'otherInfo.ProductType',
+    placeholder: '',
+    required: true,
+    option: RENDER_SELECT_ITEMS('slife_otherinfo.producttype'),
+    validator: validateText,
+  },
+  {
+    label: 'Policy Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    minLength: 7,
+    maxLength: 10,
+    validator: validateText,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const splan: IFieldTypes[] = [
+  {
+    label: 'Plan Type',
+    type: 'select',
+    name: 'otherInfo.PlanType',
+    placeholder: '',
+    required: true,
+    option: RENDER_SELECT_ITEMS('splan_otherinfo.plantype'),
+    validator: validateText,
+  },
+  {
+    label: 'Policy Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 15,
+    validator: validateText,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const mplan: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 10,
+    validator: validateText,
+  },
   {
     label: 'Due Date',
     type: 'date',
     name: 'otherInfo.DueDate',
-    placeholder: '',
+    placeholder: 'MM/DD/YYYY',
     format: 'LL/dd/yyyy',
     required: true,
     validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
+  },
+];
+
+const skyaf: IFieldTypes[] = [
+  {
+    label: 'Account Number',
+    type: 'text',
+    name: 'account_number',
+    placeholder: '',
+    required: true,
+    maxLength: 10,
+    validator: validateText,
+  },
+  {
+    label: 'Account Name',
+    type: 'text',
+    name: 'otherInfo.AccountName',
+    placeholder: '',
+    required: true,
+    maxLength: 100,
+    validator: validateText,
+  },
+  {
+    label: 'Due Date',
+    type: 'date',
+    name: 'otherInfo.DueDate',
+    placeholder: 'MM/DD/YYYY',
+    format: 'LL/dd/yyyy',
+    required: true,
+    validator: validateText,
+  },
+  {
+    label: 'Affiliate',
+    type: 'select',
+    name: 'otherInfo.Affiliate',
+    placeholder: '',
+    required: true,
+    option: RENDER_SELECT_ITEMS('skyaf_otherinfo.affiliate'),
+    validator: validateText,
+  },
+  {
+    label: 'Amount',
+    type: 'number',
+    name: 'amount',
+    placeholder: '0.00',
+    required: true,
+    min: 1,
+    max: 100000,
+    validator: validateAmount,
   },
 ];
 
@@ -3258,6 +3384,21 @@ export const RENDER_FIELDS = (code: string): TReturnFields => {
     case 'MLIFE':
       return {
         fields: mlife,
+        note: '',
+      };
+    case 'SLIFE':
+      return {
+        fields: slife,
+        note: '',
+      };
+    case 'MPLAN':
+      return {
+        fields: mplan,
+        note: '',
+      };
+    case 'SKYAF':
+      return {
+        fields: skyaf,
         note: '',
       };
     default:

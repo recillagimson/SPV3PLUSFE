@@ -12,10 +12,12 @@ import CircleIndicator from 'app/components/Elements/CircleIndicator';
 export default function BillerLogo({
   biller,
   path,
+  size,
   ...rest
 }: {
   biller: string;
   path: string;
+  size?: 'small' | 'medium' | 'large' | undefined;
   [name: string]: any;
 }) {
   const [isAccessible, setIsAccessible] = React.useState(true);
@@ -28,7 +30,7 @@ export default function BillerLogo({
   return isAccessible ? (
     <img src={path} alt={biller} {...rest} onError={onImageError} />
   ) : (
-    <CircleIndicator size="large" color="primary">
+    <CircleIndicator size={size ? size : 'medium'} color="primary">
       {biller ? biller.charAt(0) : 'SP'}
     </CircleIndicator>
   );
