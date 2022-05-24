@@ -444,6 +444,7 @@ export function RegisterPage() {
         {showChoose && (
           <div className="text-center" style={{ padding: '0 40px' }}>
             <H3>Create your Account</H3>
+            <H4>KAHIT ANO TESTING FE CHANGES <H4>
             <p className="f-small">
               We got you! Let us know which contact detail you want to use to
               create your account
