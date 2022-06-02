@@ -60,12 +60,12 @@ export function Dragonpay() {
       setAmount({ ...amount, error: true, msg: 'Please enter amount.' });
     }
 
-    if (amount.value !== '' && parseInt(amount.value) < 50) {
+    if (amount.value !== '' && parseInt(amount.value) < 200) {
       hasError = true;
       setAmount({
         ...amount,
         error: true,
-        msg: 'The amount must be at least 50 or greater.',
+        msg: 'The amount must be at least 200 or greater.',
       });
     }
 
